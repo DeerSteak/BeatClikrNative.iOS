@@ -8,9 +8,9 @@
 import SwiftUI
 import SwiftData
 
-struct ContentView: View {
+struct LibraryView: View {
     @Environment(\.modelContext) private var modelContext
-    @Query private var items: [Item]
+    @Query private var items: [Song]
 
     var body: some View {
         NavigationSplitView {
@@ -19,7 +19,7 @@ struct ContentView: View {
                     NavigationLink {
                         Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
                     } label: {
-                        Text(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))
+                        Text(item, format: Date.FormatStyle(date: .numeric, time: .standard))
                     }
                 }
                 .onDelete(perform: deleteItems)
@@ -56,6 +56,6 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    LibraryView()
         .modelContainer(for: Item.self, inMemory: true)
 }
