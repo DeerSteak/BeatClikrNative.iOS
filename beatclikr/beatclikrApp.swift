@@ -13,8 +13,8 @@ struct beatclikrApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            LibraryView()
         }
-        .modelContainer(for: Item.self)
+        .modelContainer(for: Song.self)
     }
 }

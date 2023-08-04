@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EE34F0762A7C7D8300CA5BD0 /* InstantMetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE34F0752A7C7D8300CA5BD0 /* InstantMetronomeView.swift */; };
 		EE84F2F52A7C7A21009E2F23 /* beatclikrApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F2F42A7C7A21009E2F23 /* beatclikrApp.swift */; };
-		EE84F2F72A7C7A21009E2F23 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F2F62A7C7A21009E2F23 /* ContentView.swift */; };
-		EE84F2F92A7C7A21009E2F23 /* Item.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F2F82A7C7A21009E2F23 /* Item.swift */; };
+		EE84F2F72A7C7A21009E2F23 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F2F62A7C7A21009E2F23 /* LibraryView.swift */; };
+		EE84F2F92A7C7A21009E2F23 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F2F82A7C7A21009E2F23 /* Song.swift */; };
 		EE84F2FB2A7C7A23009E2F23 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE84F2FA2A7C7A23009E2F23 /* Assets.xcassets */; };
 		EE84F2FE2A7C7A23009E2F23 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE84F2FD2A7C7A23009E2F23 /* Preview Assets.xcassets */; };
 		EE84F30A2A7C7A23009E2F23 /* beatclikrTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F3092A7C7A23009E2F23 /* beatclikrTests.swift */; };
@@ -35,10 +36,11 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EE34F0752A7C7D8300CA5BD0 /* InstantMetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantMetronomeView.swift; sourceTree = "<group>"; };
 		EE84F2F12A7C7A21009E2F23 /* beatclikr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = beatclikr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE84F2F42A7C7A21009E2F23 /* beatclikrApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beatclikrApp.swift; sourceTree = "<group>"; };
-		EE84F2F62A7C7A21009E2F23 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		EE84F2F82A7C7A21009E2F23 /* Item.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Item.swift; sourceTree = "<group>"; };
+		EE84F2F62A7C7A21009E2F23 /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
+		EE84F2F82A7C7A21009E2F23 /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
 		EE84F2FA2A7C7A23009E2F23 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		EE84F2FD2A7C7A23009E2F23 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		EE84F2FF2A7C7A23009E2F23 /* beatclikr.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = beatclikr.entitlements; sourceTree = "<group>"; };
@@ -98,9 +100,11 @@
 		EE84F2F32A7C7A21009E2F23 /* beatclikr */ = {
 			isa = PBXGroup;
 			children = (
+				EE84F3222A7C7A45009E2F23 /* Model */,
+				EE84F3242A7C7A50009E2F23 /* ViewModel */,
+				EE84F3232A7C7A4D009E2F23 /* View */,
+				EE84F3252A7C7A55009E2F23 /* Services */,
 				EE84F2F42A7C7A21009E2F23 /* beatclikrApp.swift */,
-				EE84F2F62A7C7A21009E2F23 /* ContentView.swift */,
-				EE84F2F82A7C7A21009E2F23 /* Item.swift */,
 				EE84F2FA2A7C7A23009E2F23 /* Assets.xcassets */,
 				EE84F2FF2A7C7A23009E2F23 /* beatclikr.entitlements */,
 				EE84F3002A7C7A23009E2F23 /* Info.plist */,
@@ -132,6 +136,37 @@
 				EE84F3152A7C7A24009E2F23 /* beatclikrUITestsLaunchTests.swift */,
 			);
 			path = beatclikrUITests;
+			sourceTree = "<group>";
+		};
+		EE84F3222A7C7A45009E2F23 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				EE84F2F82A7C7A21009E2F23 /* Song.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		EE84F3232A7C7A4D009E2F23 /* View */ = {
+			isa = PBXGroup;
+			children = (
+				EE84F2F62A7C7A21009E2F23 /* LibraryView.swift */,
+				EE34F0752A7C7D8300CA5BD0 /* InstantMetronomeView.swift */,
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		EE84F3242A7C7A50009E2F23 /* ViewModel */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = ViewModel;
+			sourceTree = "<group>";
+		};
+		EE84F3252A7C7A55009E2F23 /* Services */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -264,9 +299,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE84F2F72A7C7A21009E2F23 /* ContentView.swift in Sources */,
-				EE84F2F92A7C7A21009E2F23 /* Item.swift in Sources */,
+				EE84F2F72A7C7A21009E2F23 /* LibraryView.swift in Sources */,
+				EE84F2F92A7C7A21009E2F23 /* Song.swift in Sources */,
 				EE84F2F52A7C7A21009E2F23 /* beatclikrApp.swift in Sources */,
+				EE34F0762A7C7D8300CA5BD0 /* InstantMetronomeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

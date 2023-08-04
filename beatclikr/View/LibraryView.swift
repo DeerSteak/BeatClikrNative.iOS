@@ -9,6 +9,11 @@ import SwiftUI
 import SwiftData
 
 struct LibraryView: View {
+    @State var showAlert = false
+    @State var title: String = ""
+    @State var artist: String = ""
+    @State var beatsPerMinute: String = ""
+    @State var beatsPerMeasure: String = ""
     @Environment(\.modelContext) private var modelContext
     @Query private var items: [Song]
 
@@ -17,19 +22,30 @@ struct LibraryView: View {
             List {
                 ForEach(items) { item in
                     NavigationLink {
-                        Text("Item at \(item.timestamp, format: Date.FormatStyle(date: .numeric, time: .standard))")
+                        Text("\(item.title) by \(item.artist)")
                     } label: {
-                        Text(item, format: Date.FormatStyle(date: .numeric, time: .standard))
+                        Text(item.title)
+                            .bold()
                     }
                 }
                 .onDelete(perform: deleteItems)
+            }
+            .alert(Text("Add a song"), isPresented: $showAlert) {
+                TextField("Title", text: $title)
+                TextField("Artist", text: $artist)
+                TextField("Tempo (BPM)", text: $beatsPerMinute)
+                    .keyboardType(.numberPad)
+                TextField("Beats in a Measure", text: $beatsPerMeasure)
+                    .keyboardType(.numberPad)
+                Button("Save", action: addItem)
+                Button("Cancel") {}
             }
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
                 }
                 ToolbarItem {
-                    Button(action: addItem) {
+                    Button(action: createNewSong) {
                         Label("Add Item", systemImage: "plus")
                     }
                 }
@@ -38,10 +54,16 @@ struct LibraryView: View {
             Text("Select an item")
         }
     }
+    
+    private func createNewSong() {
+        showAlert = true
+    }
 
     private func addItem() {
+        let tempo = Int(beatsPerMinute) ?? 120
+        let inAMeasure = Int(beatsPerMeasure) ?? 4
         withAnimation {
-            let newItem = Item(timestamp: Date())
+            let newItem = Song(title: self.title, artist: self.artist, beatsPerMinute: tempo, beatsPerMeasure: inAMeasure)
             modelContext.insert(newItem)
         }
     }
@@ -57,5 +79,5 @@ struct LibraryView: View {
 
 #Preview {
     LibraryView()
-        .modelContainer(for: Item.self, inMemory: true)
+        .modelContainer(for: Song.self, inMemory: true)
 }
