@@ -20,6 +20,22 @@
 		EE84F3162A7C7A24009E2F23 /* beatclikrUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F3152A7C7A24009E2F23 /* beatclikrUITestsLaunchTests.swift */; };
 		EE97D59C2A7E7C3200FA11A0 /* SongLibraryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE97D59B2A7E7C3200FA11A0 /* SongLibraryViewModel.swift */; };
 		EE97D5A12A7E7EB900FA11A0 /* SongDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE97D5A02A7E7EB900FA11A0 /* SongDetailsView.swift */; };
+		EEE911412A7EDCB1008DFDED /* tamb.wav in Resources */ = {isa = PBXBuildFile; fileRef = EEE911312A7EDCB1008DFDED /* tamb.wav */; };
+		EEE911422A7EDCB1008DFDED /* hatopen.wav in Resources */ = {isa = PBXBuildFile; fileRef = EEE911322A7EDCB1008DFDED /* hatopen.wav */; };
+		EEE911432A7EDCB1008DFDED /* kick.wav in Resources */ = {isa = PBXBuildFile; fileRef = EEE911332A7EDCB1008DFDED /* kick.wav */; };
+		EEE911442A7EDCB1008DFDED /* ride.wav in Resources */ = {isa = PBXBuildFile; fileRef = EEE911342A7EDCB1008DFDED /* ride.wav */; };
+		EEE911452A7EDCB1008DFDED /* hatclosed.wav in Resources */ = {isa = PBXBuildFile; fileRef = EEE911352A7EDCB1008DFDED /* hatclosed.wav */; };
+		EEE911462A7EDCB1008DFDED /* clickhi.wav in Resources */ = {isa = PBXBuildFile; fileRef = EEE911362A7EDCB1008DFDED /* clickhi.wav */; };
+		EEE911472A7EDCB1008DFDED /* silence.wav in Resources */ = {isa = PBXBuildFile; fileRef = EEE911372A7EDCB1008DFDED /* silence.wav */; };
+		EEE911482A7EDCB1008DFDED /* clicklo.wav in Resources */ = {isa = PBXBuildFile; fileRef = EEE911382A7EDCB1008DFDED /* clicklo.wav */; };
+		EEE911492A7EDCB1008DFDED /* crashr.wav in Resources */ = {isa = PBXBuildFile; fileRef = EEE911392A7EDCB1008DFDED /* crashr.wav */; };
+		EEE9114A2A7EDCB1008DFDED /* crashl.wav in Resources */ = {isa = PBXBuildFile; fileRef = EEE9113A2A7EDCB1008DFDED /* crashl.wav */; };
+		EEE9114B2A7EDCB1008DFDED /* tommid.wav in Resources */ = {isa = PBXBuildFile; fileRef = EEE9113B2A7EDCB1008DFDED /* tommid.wav */; };
+		EEE9114C2A7EDCB1008DFDED /* tomhi.wav in Resources */ = {isa = PBXBuildFile; fileRef = EEE9113C2A7EDCB1008DFDED /* tomhi.wav */; };
+		EEE9114D2A7EDCB1008DFDED /* tomlow.wav in Resources */ = {isa = PBXBuildFile; fileRef = EEE9113D2A7EDCB1008DFDED /* tomlow.wav */; };
+		EEE9114E2A7EDCB1008DFDED /* ridebell.wav in Resources */ = {isa = PBXBuildFile; fileRef = EEE9113E2A7EDCB1008DFDED /* ridebell.wav */; };
+		EEE9114F2A7EDCB1008DFDED /* snare.wav in Resources */ = {isa = PBXBuildFile; fileRef = EEE9113F2A7EDCB1008DFDED /* snare.wav */; };
+		EEE911502A7EDCB1008DFDED /* cowbell.wav in Resources */ = {isa = PBXBuildFile; fileRef = EEE911402A7EDCB1008DFDED /* cowbell.wav */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -58,6 +74,22 @@
 		EE84F3152A7C7A24009E2F23 /* beatclikrUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beatclikrUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		EE97D59B2A7E7C3200FA11A0 /* SongLibraryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongLibraryViewModel.swift; sourceTree = "<group>"; };
 		EE97D5A02A7E7EB900FA11A0 /* SongDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongDetailsView.swift; sourceTree = "<group>"; };
+		EEE911312A7EDCB1008DFDED /* tamb.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = tamb.wav; sourceTree = "<group>"; };
+		EEE911322A7EDCB1008DFDED /* hatopen.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hatopen.wav; sourceTree = "<group>"; };
+		EEE911332A7EDCB1008DFDED /* kick.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = kick.wav; sourceTree = "<group>"; };
+		EEE911342A7EDCB1008DFDED /* ride.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ride.wav; sourceTree = "<group>"; };
+		EEE911352A7EDCB1008DFDED /* hatclosed.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hatclosed.wav; sourceTree = "<group>"; };
+		EEE911362A7EDCB1008DFDED /* clickhi.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = clickhi.wav; sourceTree = "<group>"; };
+		EEE911372A7EDCB1008DFDED /* silence.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = silence.wav; sourceTree = "<group>"; };
+		EEE911382A7EDCB1008DFDED /* clicklo.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = clicklo.wav; sourceTree = "<group>"; };
+		EEE911392A7EDCB1008DFDED /* crashr.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = crashr.wav; sourceTree = "<group>"; };
+		EEE9113A2A7EDCB1008DFDED /* crashl.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = crashl.wav; sourceTree = "<group>"; };
+		EEE9113B2A7EDCB1008DFDED /* tommid.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = tommid.wav; sourceTree = "<group>"; };
+		EEE9113C2A7EDCB1008DFDED /* tomhi.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = tomhi.wav; sourceTree = "<group>"; };
+		EEE9113D2A7EDCB1008DFDED /* tomlow.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = tomlow.wav; sourceTree = "<group>"; };
+		EEE9113E2A7EDCB1008DFDED /* ridebell.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ridebell.wav; sourceTree = "<group>"; };
+		EEE9113F2A7EDCB1008DFDED /* snare.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = snare.wav; sourceTree = "<group>"; };
+		EEE911402A7EDCB1008DFDED /* cowbell.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = cowbell.wav; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -116,6 +148,7 @@
 		EE84F2F32A7C7A21009E2F23 /* beatclikr */ = {
 			isa = PBXGroup;
 			children = (
+				EEE9112F2A7EDC89008DFDED /* Resources */,
 				EE0939E52A7EA825005491BB /* CustomViews */,
 				EE97D59F2A7E7C8900FA11A0 /* Helpers */,
 				EE84F3222A7C7A45009E2F23 /* Model */,
@@ -195,6 +228,37 @@
 				EE07558E2A7E84D400E34D29 /* FormatterHelper.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		EEE9112F2A7EDC89008DFDED /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				EEE911302A7EDC94008DFDED /* Sounds */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		EEE911302A7EDC94008DFDED /* Sounds */ = {
+			isa = PBXGroup;
+			children = (
+				EEE911362A7EDCB1008DFDED /* clickhi.wav */,
+				EEE911382A7EDCB1008DFDED /* clicklo.wav */,
+				EEE911402A7EDCB1008DFDED /* cowbell.wav */,
+				EEE9113A2A7EDCB1008DFDED /* crashl.wav */,
+				EEE911392A7EDCB1008DFDED /* crashr.wav */,
+				EEE911352A7EDCB1008DFDED /* hatclosed.wav */,
+				EEE911322A7EDCB1008DFDED /* hatopen.wav */,
+				EEE911332A7EDCB1008DFDED /* kick.wav */,
+				EEE911342A7EDCB1008DFDED /* ride.wav */,
+				EEE9113E2A7EDCB1008DFDED /* ridebell.wav */,
+				EEE911372A7EDCB1008DFDED /* silence.wav */,
+				EEE9113F2A7EDCB1008DFDED /* snare.wav */,
+				EEE911312A7EDCB1008DFDED /* tamb.wav */,
+				EEE9113C2A7EDCB1008DFDED /* tomhi.wav */,
+				EEE9113D2A7EDCB1008DFDED /* tomlow.wav */,
+				EEE9113B2A7EDCB1008DFDED /* tommid.wav */,
+			);
+			path = Sounds;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -301,7 +365,23 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EEE9114D2A7EDCB1008DFDED /* tomlow.wav in Resources */,
+				EEE911472A7EDCB1008DFDED /* silence.wav in Resources */,
+				EEE9114B2A7EDCB1008DFDED /* tommid.wav in Resources */,
+				EEE911442A7EDCB1008DFDED /* ride.wav in Resources */,
+				EEE911432A7EDCB1008DFDED /* kick.wav in Resources */,
+				EEE9114A2A7EDCB1008DFDED /* crashl.wav in Resources */,
+				EEE911452A7EDCB1008DFDED /* hatclosed.wav in Resources */,
+				EEE911492A7EDCB1008DFDED /* crashr.wav in Resources */,
+				EEE911412A7EDCB1008DFDED /* tamb.wav in Resources */,
+				EEE9114C2A7EDCB1008DFDED /* tomhi.wav in Resources */,
 				EE84F2FE2A7C7A23009E2F23 /* Preview Assets.xcassets in Resources */,
+				EEE911502A7EDCB1008DFDED /* cowbell.wav in Resources */,
+				EEE9114F2A7EDCB1008DFDED /* snare.wav in Resources */,
+				EEE9114E2A7EDCB1008DFDED /* ridebell.wav in Resources */,
+				EEE911482A7EDCB1008DFDED /* clicklo.wav in Resources */,
+				EEE911422A7EDCB1008DFDED /* hatopen.wav in Resources */,
+				EEE911462A7EDCB1008DFDED /* clickhi.wav in Resources */,
 				EE84F2FB2A7C7A23009E2F23 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
