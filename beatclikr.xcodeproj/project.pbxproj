@@ -36,6 +36,8 @@
 		EEE9114E2A7EDCB1008DFDED /* ridebell.wav in Resources */ = {isa = PBXBuildFile; fileRef = EEE9113E2A7EDCB1008DFDED /* ridebell.wav */; };
 		EEE9114F2A7EDCB1008DFDED /* snare.wav in Resources */ = {isa = PBXBuildFile; fileRef = EEE9113F2A7EDCB1008DFDED /* snare.wav */; };
 		EEE911502A7EDCB1008DFDED /* cowbell.wav in Resources */ = {isa = PBXBuildFile; fileRef = EEE911402A7EDCB1008DFDED /* cowbell.wav */; };
+		EEE911532A7EDE07008DFDED /* FileConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE911522A7EDE07008DFDED /* FileConstants.swift */; };
+		EEE911552A7EDEDC008DFDED /* PreferenceKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE911542A7EDEDC008DFDED /* PreferenceKeys.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -90,6 +92,8 @@
 		EEE9113E2A7EDCB1008DFDED /* ridebell.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ridebell.wav; sourceTree = "<group>"; };
 		EEE9113F2A7EDCB1008DFDED /* snare.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = snare.wav; sourceTree = "<group>"; };
 		EEE911402A7EDCB1008DFDED /* cowbell.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = cowbell.wav; sourceTree = "<group>"; };
+		EEE911522A7EDE07008DFDED /* FileConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileConstants.swift; sourceTree = "<group>"; };
+		EEE911542A7EDEDC008DFDED /* PreferenceKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceKeys.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -148,6 +152,7 @@
 		EE84F2F32A7C7A21009E2F23 /* beatclikr */ = {
 			isa = PBXGroup;
 			children = (
+				EEE911512A7EDDF5008DFDED /* Constants */,
 				EEE9112F2A7EDC89008DFDED /* Resources */,
 				EE0939E52A7EA825005491BB /* CustomViews */,
 				EE97D59F2A7E7C8900FA11A0 /* Helpers */,
@@ -233,6 +238,7 @@
 		EEE9112F2A7EDC89008DFDED /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				EEE911572A7EDF68008DFDED /* Fonts */,
 				EEE911302A7EDC94008DFDED /* Sounds */,
 			);
 			path = Resources;
@@ -259,6 +265,22 @@
 				EEE9113B2A7EDCB1008DFDED /* tommid.wav */,
 			);
 			path = Sounds;
+			sourceTree = "<group>";
+		};
+		EEE911512A7EDDF5008DFDED /* Constants */ = {
+			isa = PBXGroup;
+			children = (
+				EEE911522A7EDE07008DFDED /* FileConstants.swift */,
+				EEE911542A7EDEDC008DFDED /* PreferenceKeys.swift */,
+			);
+			path = Constants;
+			sourceTree = "<group>";
+		};
+		EEE911572A7EDF68008DFDED /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -409,7 +431,9 @@
 			files = (
 				EE97D5A12A7E7EB900FA11A0 /* SongDetailsView.swift in Sources */,
 				EE84F2F72A7C7A21009E2F23 /* LibraryView.swift in Sources */,
+				EEE911552A7EDEDC008DFDED /* PreferenceKeys.swift in Sources */,
 				EE97D59C2A7E7C3200FA11A0 /* SongLibraryViewModel.swift in Sources */,
+				EEE911532A7EDE07008DFDED /* FileConstants.swift in Sources */,
 				EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */,
 				EE0939E72A7EA838005491BB /* RectangleText.swift in Sources */,
 				EE84F2F92A7C7A21009E2F23 /* Song.swift in Sources */,
