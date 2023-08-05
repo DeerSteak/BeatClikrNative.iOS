@@ -33,6 +33,8 @@ struct LibraryView: View {
                             Text(item.title)
                                 .bold()
                                 .font(.title3)
+                                .truncationMode(.tail)
+                                .lineLimit(1)
                             Text("\(item.artist) /  \(FormatterHelper.formatDouble(item.beatsPerMinute)) BPM")
                         }                        
                     }
