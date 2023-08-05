@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07558E2A7E84D400E34D29 /* FormatterHelper.swift */; };
+		EE0939E72A7EA838005491BB /* RectangleText.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0939E62A7EA838005491BB /* RectangleText.swift */; };
 		EE34F0762A7C7D8300CA5BD0 /* InstantMetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE34F0752A7C7D8300CA5BD0 /* InstantMetronomeView.swift */; };
 		EE84F2F52A7C7A21009E2F23 /* beatclikrApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F2F42A7C7A21009E2F23 /* beatclikrApp.swift */; };
 		EE84F2F72A7C7A21009E2F23 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F2F62A7C7A21009E2F23 /* LibraryView.swift */; };
@@ -40,6 +41,7 @@
 
 /* Begin PBXFileReference section */
 		EE07558E2A7E84D400E34D29 /* FormatterHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterHelper.swift; sourceTree = "<group>"; };
+		EE0939E62A7EA838005491BB /* RectangleText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectangleText.swift; sourceTree = "<group>"; };
 		EE34F0752A7C7D8300CA5BD0 /* InstantMetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantMetronomeView.swift; sourceTree = "<group>"; };
 		EE84F2F12A7C7A21009E2F23 /* beatclikr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = beatclikr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE84F2F42A7C7A21009E2F23 /* beatclikrApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beatclikrApp.swift; sourceTree = "<group>"; };
@@ -83,6 +85,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		EE0939E52A7EA825005491BB /* CustomViews */ = {
+			isa = PBXGroup;
+			children = (
+				EE0939E62A7EA838005491BB /* RectangleText.swift */,
+			);
+			path = CustomViews;
+			sourceTree = "<group>";
+		};
 		EE84F2E82A7C7A21009E2F23 = {
 			isa = PBXGroup;
 			children = (
@@ -106,6 +116,7 @@
 		EE84F2F32A7C7A21009E2F23 /* beatclikr */ = {
 			isa = PBXGroup;
 			children = (
+				EE0939E52A7EA825005491BB /* CustomViews */,
 				EE97D59F2A7E7C8900FA11A0 /* Helpers */,
 				EE84F3222A7C7A45009E2F23 /* Model */,
 				EE84F3242A7C7A50009E2F23 /* ViewModel */,
@@ -320,6 +331,7 @@
 				EE84F2F72A7C7A21009E2F23 /* LibraryView.swift in Sources */,
 				EE97D59C2A7E7C3200FA11A0 /* SongLibraryViewModel.swift in Sources */,
 				EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */,
+				EE0939E72A7EA838005491BB /* RectangleText.swift in Sources */,
 				EE84F2F92A7C7A21009E2F23 /* Song.swift in Sources */,
 				EE84F2F52A7C7A21009E2F23 /* beatclikrApp.swift in Sources */,
 				EE34F0762A7C7D8300CA5BD0 /* InstantMetronomeView.swift in Sources */,

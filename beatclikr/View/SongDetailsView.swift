@@ -16,9 +16,10 @@ struct SongDetailsView: View {
     @State var artist: String
     @State var beatsPerMinute: Double
     @State var beatsPerMeasure: Int
-    var song: Song
-    @State var navBarTitle: String
+    
     @State var showAlert: Bool
+    
+    var song: Song
     
     init () {
         self.song = Song()
@@ -26,14 +27,12 @@ struct SongDetailsView: View {
         _artist = State(initialValue: self.song.artist)
         _beatsPerMinute = State(initialValue: self.song.beatsPerMinute)
         _beatsPerMeasure = State(initialValue: self.song.beatsPerMeasure)
-        _navBarTitle = State(initialValue: "Add Song")
         _showAlert = State(initialValue: false)
         
     }
     
     init (song: Song) {
         self.song = song
-        _navBarTitle = State(initialValue: "Song Details")
         _title = State(initialValue: song.title)
         _artist = State(initialValue: song.artist)
         _beatsPerMinute = State(initialValue: song.beatsPerMinute)
@@ -42,7 +41,7 @@ struct SongDetailsView: View {
     }
     
     var body: some View {
-        VStack {
+        VStack (alignment: .leading, spacing: 10) {
             Grid {
                 GridRow {
                     Text("Title")
@@ -69,19 +68,28 @@ struct SongDetailsView: View {
                 }
             }
             .contentMargins(10)
-            .padding()
-            Button("Save") {
+            
+            Button(action: {
                 if (saveSong()) {
                     dismiss()
                 }
-            }
-            .alert(isPresented: /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Is Presented@*/.constant(false)/*@END_MENU_TOKEN@*/, content: {
-                /*@START_MENU_TOKEN@*//*@PLACEHOLDER=Content@*/Alert(title: Text("Alert"))/*@END_MENU_TOKEN@*/
+            }, label: {
+                RectangleText("Save", color: songIsValid() ? .blue : .gray)
+            })
+            .alert(isPresented: $showAlert, content: {
+                Alert(title: Text("Error saving"))
             })
             .disabled(title == "" || artist == "" || beatsPerMinute < 30 || beatsPerMeasure <= 0)
+            Button(action: {
+                dismiss()
+            }, label: {
+                RectangleText("Cancel", color: .red)
+            })
+            Spacer()
+                .navigationBarTitleDisplayMode(.automatic)
+                .navigationTitle(navTitle())
         }
-        .navigationTitle(navBarTitle)
-        .navigationBarBackButtonHidden(true)
+        .padding()
     }
     
     public func saveSong() -> Bool {
@@ -90,7 +98,6 @@ struct SongDetailsView: View {
         song.beatsPerMinute = beatsPerMinute
         song.beatsPerMeasure = beatsPerMeasure
         
-        //validate
         if (song.title.isEmpty || song.artist.isEmpty || song.beatsPerMinute < 30 || song.beatsPerMeasure < 1) {
             return false
         }
@@ -99,13 +106,21 @@ struct SongDetailsView: View {
             try modelContext.save()
             return true
         } catch {
-            print(error)
             return false
         }
+    }
+    
+    public func songIsValid() -> Bool {
+        return title != "" && artist != "" && beatsPerMinute >= 30 && beatsPerMeasure > 0
+    }
+    
+    public func navTitle() -> String {
+        return song.title.isEmpty ? "Add Song" : "Song Details"
     }
 }
 
 #Preview {
     SongDetailsView()
         .environmentObject(SongLibraryViewModel())
+        .modelContainer(for: Song.self, inMemory: true)
 }

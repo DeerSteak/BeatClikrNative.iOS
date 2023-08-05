@@ -27,13 +27,15 @@ struct LibraryView: View {
                 })) { item in
                     NavigationLink {
                         SongDetailsView(song: item)
+                            
                     } label: {
                         VStack (alignment: .leading) {
-                            Text("\(item.title) by \(item.artist)")
+                            Text(item.title)
                                 .bold()
-                            Text("\(FormatterHelper.formatDouble(item.beatsPerMinute)) BPM")
-                        }
-                    }                    
+                                .font(.title3)
+                            Text("\(item.artist) /  \(FormatterHelper.formatDouble(item.beatsPerMinute)) BPM")
+                        }                        
+                    }
                 }
                 .onDelete(perform: deleteItems)
             }
@@ -48,19 +50,16 @@ struct LibraryView: View {
                 }
                 ToolbarItem {
                     NavigationLink(destination: SongDetailsView()) {
-                        Label("Add Item", systemImage: "plus")
+                        Label("Add Song", systemImage: "plus")
                     }
-                }
+                }                
             }
+            .toolbarTitleDisplayMode(.automatic)
+            .navigationTitle("Song Library")
         } detail: {
             Text("Select an item")
         }
     }
-    
-    private func createNewSong() {
-        
-    }
-
 
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
