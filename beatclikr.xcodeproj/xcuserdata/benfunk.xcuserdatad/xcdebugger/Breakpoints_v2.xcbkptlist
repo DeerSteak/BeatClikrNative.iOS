@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   uuid = "8DDDEE04-34A4-4C40-851E-FBE9AE2EE964"
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "87338BE4-E3E7-4323-A27C-7D8165749C4A"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "beatclikr/View/SongDetailsView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "36"
+            endingLineNumber = "36"
+            landmarkName = "init(song:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "87338BE4-E3E7-4323-A27C-7D8165749C4A - 5037b8e279c78ada"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "beatclikr.SongDetailsView.body.getter : some"
+                  moduleName = "beatclikr"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/benfunk/Projects/beatclikr/beatclikr/View/SongDetailsView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "35"
+                  endingLineNumber = "35"
+                  offsetFromSymbolStart = "560">
+               </Location>
+               <Location
+                  uuid = "87338BE4-E3E7-4323-A27C-7D8165749C4A - 836759c31fa61d5b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "beatclikr.SongDetailsView.init(song: beatclikr.Song) -&gt; beatclikr.SongDetailsView"
+                  moduleName = "beatclikr"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/benfunk/Projects/beatclikr/beatclikr/View/SongDetailsView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "34"
+                  endingLineNumber = "34"
+                  offsetFromSymbolStart = "272">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "95D3359D-45BE-4C4A-A9AE-A83D6534CA01"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "beatclikr/View/SongDetailsView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "74"
+            endingLineNumber = "74"
+            landmarkName = "body"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "95D3359D-45BE-4C4A-A9AE-A83D6534CA01 - 3959c820efff2d80"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 () -&gt; () in closure #1 () -&gt; SwiftUI.TupleView&lt;(&lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0, &lt;&lt;opaque return type of SwiftUI.View.disabled(Swift.Bool) -&gt; some&gt;&gt;.0)&gt; in beatclikr.SongDetailsView.body.getter : some"
+                  moduleName = "beatclikr"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/benfunk/Projects/beatclikr/beatclikr/View/SongDetailsView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "71"
+                  endingLineNumber = "71"
+                  offsetFromSymbolStart = "912">
+               </Location>
+               <Location
+                  uuid = "95D3359D-45BE-4C4A-A9AE-A83D6534CA01 - 3959c820efff2d25"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #2 () -&gt; () in closure #1 () -&gt; SwiftUI.TupleView&lt;(&lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0, &lt;&lt;opaque return type of SwiftUI.View.disabled(Swift.Bool) -&gt; some&gt;&gt;.0)&gt; in beatclikr.SongDetailsView.body.getter : some"
+                  moduleName = "beatclikr"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/benfunk/Projects/beatclikr/beatclikr/View/SongDetailsView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "76"
+                  endingLineNumber = "76"
+                  offsetFromSymbolStart = "2132">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>

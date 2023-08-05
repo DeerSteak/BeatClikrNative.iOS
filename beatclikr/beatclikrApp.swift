@@ -14,6 +14,7 @@ struct beatclikrApp: App {
     var body: some Scene {
         WindowGroup {
             LibraryView()
+                .environmentObject(SongLibraryViewModel())
         }
         .modelContainer(for: Song.self)
     }

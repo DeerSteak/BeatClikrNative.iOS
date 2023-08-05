@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07558E2A7E84D400E34D29 /* FormatterHelper.swift */; };
 		EE34F0762A7C7D8300CA5BD0 /* InstantMetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE34F0752A7C7D8300CA5BD0 /* InstantMetronomeView.swift */; };
 		EE84F2F52A7C7A21009E2F23 /* beatclikrApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F2F42A7C7A21009E2F23 /* beatclikrApp.swift */; };
 		EE84F2F72A7C7A21009E2F23 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F2F62A7C7A21009E2F23 /* LibraryView.swift */; };
@@ -16,6 +17,8 @@
 		EE84F30A2A7C7A23009E2F23 /* beatclikrTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F3092A7C7A23009E2F23 /* beatclikrTests.swift */; };
 		EE84F3142A7C7A24009E2F23 /* beatclikrUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F3132A7C7A24009E2F23 /* beatclikrUITests.swift */; };
 		EE84F3162A7C7A24009E2F23 /* beatclikrUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F3152A7C7A24009E2F23 /* beatclikrUITestsLaunchTests.swift */; };
+		EE97D59C2A7E7C3200FA11A0 /* SongLibraryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE97D59B2A7E7C3200FA11A0 /* SongLibraryViewModel.swift */; };
+		EE97D5A12A7E7EB900FA11A0 /* SongDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE97D5A02A7E7EB900FA11A0 /* SongDetailsView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -36,6 +39,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EE07558E2A7E84D400E34D29 /* FormatterHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterHelper.swift; sourceTree = "<group>"; };
 		EE34F0752A7C7D8300CA5BD0 /* InstantMetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantMetronomeView.swift; sourceTree = "<group>"; };
 		EE84F2F12A7C7A21009E2F23 /* beatclikr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = beatclikr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE84F2F42A7C7A21009E2F23 /* beatclikrApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beatclikrApp.swift; sourceTree = "<group>"; };
@@ -50,6 +54,8 @@
 		EE84F30F2A7C7A24009E2F23 /* beatclikrUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = beatclikrUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE84F3132A7C7A24009E2F23 /* beatclikrUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beatclikrUITests.swift; sourceTree = "<group>"; };
 		EE84F3152A7C7A24009E2F23 /* beatclikrUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beatclikrUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		EE97D59B2A7E7C3200FA11A0 /* SongLibraryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongLibraryViewModel.swift; sourceTree = "<group>"; };
+		EE97D5A02A7E7EB900FA11A0 /* SongDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongDetailsView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,6 +106,7 @@
 		EE84F2F32A7C7A21009E2F23 /* beatclikr */ = {
 			isa = PBXGroup;
 			children = (
+				EE97D59F2A7E7C8900FA11A0 /* Helpers */,
 				EE84F3222A7C7A45009E2F23 /* Model */,
 				EE84F3242A7C7A50009E2F23 /* ViewModel */,
 				EE84F3232A7C7A4D009E2F23 /* View */,
@@ -151,6 +158,7 @@
 			children = (
 				EE84F2F62A7C7A21009E2F23 /* LibraryView.swift */,
 				EE34F0752A7C7D8300CA5BD0 /* InstantMetronomeView.swift */,
+				EE97D5A02A7E7EB900FA11A0 /* SongDetailsView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -158,6 +166,7 @@
 		EE84F3242A7C7A50009E2F23 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				EE97D59B2A7E7C3200FA11A0 /* SongLibraryViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -167,6 +176,14 @@
 			children = (
 			);
 			path = Services;
+			sourceTree = "<group>";
+		};
+		EE97D59F2A7E7C8900FA11A0 /* Helpers */ = {
+			isa = PBXGroup;
+			children = (
+				EE07558E2A7E84D400E34D29 /* FormatterHelper.swift */,
+			);
+			path = Helpers;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -299,7 +316,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE97D5A12A7E7EB900FA11A0 /* SongDetailsView.swift in Sources */,
 				EE84F2F72A7C7A21009E2F23 /* LibraryView.swift in Sources */,
+				EE97D59C2A7E7C3200FA11A0 /* SongLibraryViewModel.swift in Sources */,
+				EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */,
 				EE84F2F92A7C7A21009E2F23 /* Song.swift in Sources */,
 				EE84F2F52A7C7A21009E2F23 /* beatclikrApp.swift in Sources */,
 				EE34F0762A7C7D8300CA5BD0 /* InstantMetronomeView.swift in Sources */,

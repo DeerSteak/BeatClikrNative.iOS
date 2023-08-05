@@ -9,43 +9,45 @@ import SwiftUI
 import SwiftData
 
 struct LibraryView: View {
-    @State var showAlert = false
     @State var title: String = ""
     @State var artist: String = ""
     @State var beatsPerMinute: String = ""
     @State var beatsPerMeasure: String = ""
+    
     @Environment(\.modelContext) private var modelContext
+    @EnvironmentObject var model: SongLibraryViewModel
+    
     @Query private var items: [Song]
 
     var body: some View {
         NavigationSplitView {
             List {
-                ForEach(items) { item in
+                ForEach(items.sorted(by: { a, b in
+                    a.title < b.title 
+                })) { item in
                     NavigationLink {
-                        Text("\(item.title) by \(item.artist)")
+                        SongDetailsView(song: item)
                     } label: {
-                        Text(item.title)
-                            .bold()
-                    }
+                        VStack (alignment: .leading) {
+                            Text("\(item.title) by \(item.artist)")
+                                .bold()
+                            Text("\(FormatterHelper.formatDouble(item.beatsPerMinute)) BPM")
+                        }
+                    }                    
                 }
                 .onDelete(perform: deleteItems)
             }
-            .alert(Text("Add a song"), isPresented: $showAlert) {
-                TextField("Title", text: $title)
-                TextField("Artist", text: $artist)
-                TextField("Tempo (BPM)", text: $beatsPerMinute)
-                    .keyboardType(.numberPad)
-                TextField("Beats in a Measure", text: $beatsPerMeasure)
-                    .keyboardType(.numberPad)
-                Button("Save", action: addItem)
-                Button("Cancel") {}
-            }
+            .overlay(content: {
+                if (items.isEmpty) {
+                    Text("Press the + button to add a song")
+                }
+            })
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     EditButton()
                 }
                 ToolbarItem {
-                    Button(action: createNewSong) {
+                    NavigationLink(destination: SongDetailsView()) {
                         Label("Add Item", systemImage: "plus")
                     }
                 }
@@ -56,22 +58,15 @@ struct LibraryView: View {
     }
     
     private func createNewSong() {
-        showAlert = true
+        
     }
 
-    private func addItem() {
-        let tempo = Int(beatsPerMinute) ?? 120
-        let inAMeasure = Int(beatsPerMeasure) ?? 4
-        withAnimation {
-            let newItem = Song(title: self.title, artist: self.artist, beatsPerMinute: tempo, beatsPerMeasure: inAMeasure)
-            modelContext.insert(newItem)
-        }
-    }
 
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
             for index in offsets {
                 modelContext.delete(items[index])
+                try! modelContext.save()
             }
         }
     }
