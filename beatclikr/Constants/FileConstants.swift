@@ -7,7 +7,7 @@
 
 import Foundation
 struct FileConstants {
-    static let FileExt: STring = "wav"
+    static let FileExt: String = "wav"
     
     static let ClickHi: String = "clickhi"
     static let ClickLo: String = "clicklo"
