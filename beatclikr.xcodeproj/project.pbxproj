@@ -10,6 +10,17 @@
 		EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07558E2A7E84D400E34D29 /* FormatterHelper.swift */; };
 		EE0939E72A7EA838005491BB /* RectangleText.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0939E62A7EA838005491BB /* RectangleText.swift */; };
 		EE34F0762A7C7D8300CA5BD0 /* InstantMetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE34F0752A7C7D8300CA5BD0 /* InstantMetronomeView.swift */; };
+		EE6406A62A7EE9E300DEDED2 /* MetronomeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406A52A7EE9E300DEDED2 /* MetronomeService.swift */; };
+		EE6406A92A7EEB1F00DEDED2 /* Awesome in Frameworks */ = {isa = PBXBuildFile; productRef = EE6406A82A7EEB1F00DEDED2 /* Awesome */; };
+		EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */; };
+		EE6406BC2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */; };
+		EE6406CB2A7EF5B400DEDED2 /* fa-duotone-900.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE6406C42A7EF5B400DEDED2 /* fa-duotone-900.ttf */; };
+		EE6406CC2A7EF5B400DEDED2 /* fa-v4compatibility.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE6406C52A7EF5B400DEDED2 /* fa-v4compatibility.ttf */; };
+		EE6406CD2A7EF5B400DEDED2 /* fa-light-300.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE6406C62A7EF5B400DEDED2 /* fa-light-300.ttf */; };
+		EE6406CE2A7EF5B400DEDED2 /* fa-thin-100.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE6406C72A7EF5B400DEDED2 /* fa-thin-100.ttf */; };
+		EE6406CF2A7EF5B400DEDED2 /* fa-regular-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE6406C82A7EF5B400DEDED2 /* fa-regular-400.ttf */; };
+		EE6406D02A7EF5B400DEDED2 /* fa-solid-900.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE6406C92A7EF5B400DEDED2 /* fa-solid-900.ttf */; };
+		EE6406D12A7EF5B400DEDED2 /* fa-brands-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE6406CA2A7EF5B400DEDED2 /* fa-brands-400.ttf */; };
 		EE84F2F52A7C7A21009E2F23 /* beatclikrApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F2F42A7C7A21009E2F23 /* beatclikrApp.swift */; };
 		EE84F2F72A7C7A21009E2F23 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F2F62A7C7A21009E2F23 /* LibraryView.swift */; };
 		EE84F2F92A7C7A21009E2F23 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F2F82A7C7A21009E2F23 /* Song.swift */; };
@@ -61,6 +72,16 @@
 		EE07558E2A7E84D400E34D29 /* FormatterHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterHelper.swift; sourceTree = "<group>"; };
 		EE0939E62A7EA838005491BB /* RectangleText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectangleText.swift; sourceTree = "<group>"; };
 		EE34F0752A7C7D8300CA5BD0 /* InstantMetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantMetronomeView.swift; sourceTree = "<group>"; };
+		EE6406A52A7EE9E300DEDED2 /* MetronomeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MetronomeService.swift; path = beatclikr/Service/MetronomeService.swift; sourceTree = SOURCE_ROOT; };
+		EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlayerView.swift; sourceTree = "<group>"; };
+		EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlaybackViewModel.swift; sourceTree = "<group>"; };
+		EE6406C42A7EF5B400DEDED2 /* fa-duotone-900.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fa-duotone-900.ttf"; sourceTree = "<group>"; };
+		EE6406C52A7EF5B400DEDED2 /* fa-v4compatibility.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fa-v4compatibility.ttf"; sourceTree = "<group>"; };
+		EE6406C62A7EF5B400DEDED2 /* fa-light-300.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fa-light-300.ttf"; sourceTree = "<group>"; };
+		EE6406C72A7EF5B400DEDED2 /* fa-thin-100.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fa-thin-100.ttf"; sourceTree = "<group>"; };
+		EE6406C82A7EF5B400DEDED2 /* fa-regular-400.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fa-regular-400.ttf"; sourceTree = "<group>"; };
+		EE6406C92A7EF5B400DEDED2 /* fa-solid-900.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fa-solid-900.ttf"; sourceTree = "<group>"; };
+		EE6406CA2A7EF5B400DEDED2 /* fa-brands-400.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fa-brands-400.ttf"; sourceTree = "<group>"; };
 		EE84F2F12A7C7A21009E2F23 /* beatclikr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = beatclikr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE84F2F42A7C7A21009E2F23 /* beatclikrApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beatclikrApp.swift; sourceTree = "<group>"; };
 		EE84F2F62A7C7A21009E2F23 /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
@@ -101,6 +122,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE6406A92A7EEB1F00DEDED2 /* Awesome in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -125,8 +147,23 @@
 			isa = PBXGroup;
 			children = (
 				EE0939E62A7EA838005491BB /* RectangleText.swift */,
+				EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */,
 			);
 			path = CustomViews;
+			sourceTree = "<group>";
+		};
+		EE6406AA2A7EED1000DEDED2 /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				EE6406CA2A7EF5B400DEDED2 /* fa-brands-400.ttf */,
+				EE6406C42A7EF5B400DEDED2 /* fa-duotone-900.ttf */,
+				EE6406C62A7EF5B400DEDED2 /* fa-light-300.ttf */,
+				EE6406C82A7EF5B400DEDED2 /* fa-regular-400.ttf */,
+				EE6406C92A7EF5B400DEDED2 /* fa-solid-900.ttf */,
+				EE6406C72A7EF5B400DEDED2 /* fa-thin-100.ttf */,
+				EE6406C52A7EF5B400DEDED2 /* fa-v4compatibility.ttf */,
+			);
+			path = Fonts;
 			sourceTree = "<group>";
 		};
 		EE84F2E82A7C7A21009E2F23 = {
@@ -159,7 +196,7 @@
 				EE84F3222A7C7A45009E2F23 /* Model */,
 				EE84F3242A7C7A50009E2F23 /* ViewModel */,
 				EE84F3232A7C7A4D009E2F23 /* View */,
-				EE84F3252A7C7A55009E2F23 /* Services */,
+				EE84F3252A7C7A55009E2F23 /* Service */,
 				EE84F2F42A7C7A21009E2F23 /* beatclikrApp.swift */,
 				EE84F2FA2A7C7A23009E2F23 /* Assets.xcassets */,
 				EE84F2FF2A7C7A23009E2F23 /* beatclikr.entitlements */,
@@ -216,15 +253,17 @@
 			isa = PBXGroup;
 			children = (
 				EE97D59B2A7E7C3200FA11A0 /* SongLibraryViewModel.swift */,
+				EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		EE84F3252A7C7A55009E2F23 /* Services */ = {
+		EE84F3252A7C7A55009E2F23 /* Service */ = {
 			isa = PBXGroup;
 			children = (
+				EE6406A52A7EE9E300DEDED2 /* MetronomeService.swift */,
 			);
-			path = Services;
+			path = Service;
 			sourceTree = "<group>";
 		};
 		EE97D59F2A7E7C8900FA11A0 /* Helpers */ = {
@@ -238,7 +277,7 @@
 		EEE9112F2A7EDC89008DFDED /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				EEE911572A7EDF68008DFDED /* Fonts */,
+				EE6406AA2A7EED1000DEDED2 /* Fonts */,
 				EEE911302A7EDC94008DFDED /* Sounds */,
 			);
 			path = Resources;
@@ -276,13 +315,6 @@
 			path = Constants;
 			sourceTree = "<group>";
 		};
-		EEE911572A7EDF68008DFDED /* Fonts */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Fonts;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -299,6 +331,9 @@
 			dependencies = (
 			);
 			name = beatclikr;
+			packageProductDependencies = (
+				EE6406A82A7EEB1F00DEDED2 /* Awesome */,
+			);
 			productName = beatclikr;
 			productReference = EE84F2F12A7C7A21009E2F23 /* beatclikr.app */;
 			productType = "com.apple.product-type.application";
@@ -371,6 +406,9 @@
 				Base,
 			);
 			mainGroup = EE84F2E82A7C7A21009E2F23;
+			packageReferences = (
+				EE6406A72A7EEB1F00DEDED2 /* XCRemoteSwiftPackageReference "Awesome" */,
+			);
 			productRefGroup = EE84F2F22A7C7A21009E2F23 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -387,22 +425,29 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EE6406CF2A7EF5B400DEDED2 /* fa-regular-400.ttf in Resources */,
 				EEE9114D2A7EDCB1008DFDED /* tomlow.wav in Resources */,
+				EE6406CD2A7EF5B400DEDED2 /* fa-light-300.ttf in Resources */,
+				EE6406CE2A7EF5B400DEDED2 /* fa-thin-100.ttf in Resources */,
 				EEE911472A7EDCB1008DFDED /* silence.wav in Resources */,
 				EEE9114B2A7EDCB1008DFDED /* tommid.wav in Resources */,
 				EEE911442A7EDCB1008DFDED /* ride.wav in Resources */,
 				EEE911432A7EDCB1008DFDED /* kick.wav in Resources */,
 				EEE9114A2A7EDCB1008DFDED /* crashl.wav in Resources */,
+				EE6406D02A7EF5B400DEDED2 /* fa-solid-900.ttf in Resources */,
 				EEE911452A7EDCB1008DFDED /* hatclosed.wav in Resources */,
 				EEE911492A7EDCB1008DFDED /* crashr.wav in Resources */,
 				EEE911412A7EDCB1008DFDED /* tamb.wav in Resources */,
 				EEE9114C2A7EDCB1008DFDED /* tomhi.wav in Resources */,
+				EE6406D12A7EF5B400DEDED2 /* fa-brands-400.ttf in Resources */,
+				EE6406CC2A7EF5B400DEDED2 /* fa-v4compatibility.ttf in Resources */,
 				EE84F2FE2A7C7A23009E2F23 /* Preview Assets.xcassets in Resources */,
 				EEE911502A7EDCB1008DFDED /* cowbell.wav in Resources */,
 				EEE9114F2A7EDCB1008DFDED /* snare.wav in Resources */,
 				EEE9114E2A7EDCB1008DFDED /* ridebell.wav in Resources */,
 				EEE911482A7EDCB1008DFDED /* clicklo.wav in Resources */,
 				EEE911422A7EDCB1008DFDED /* hatopen.wav in Resources */,
+				EE6406CB2A7EF5B400DEDED2 /* fa-duotone-900.ttf in Resources */,
 				EEE911462A7EDCB1008DFDED /* clickhi.wav in Resources */,
 				EE84F2FB2A7C7A23009E2F23 /* Assets.xcassets in Resources */,
 			);
@@ -431,14 +476,17 @@
 			files = (
 				EE97D5A12A7E7EB900FA11A0 /* SongDetailsView.swift in Sources */,
 				EE84F2F72A7C7A21009E2F23 /* LibraryView.swift in Sources */,
+				EE6406A62A7EE9E300DEDED2 /* MetronomeService.swift in Sources */,
 				EEE911552A7EDEDC008DFDED /* PreferenceKeys.swift in Sources */,
 				EE97D59C2A7E7C3200FA11A0 /* SongLibraryViewModel.swift in Sources */,
 				EEE911532A7EDE07008DFDED /* FileConstants.swift in Sources */,
+				EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */,
 				EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */,
 				EE0939E72A7EA838005491BB /* RectangleText.swift in Sources */,
 				EE84F2F92A7C7A21009E2F23 /* Song.swift in Sources */,
 				EE84F2F52A7C7A21009E2F23 /* beatclikrApp.swift in Sources */,
 				EE34F0762A7C7D8300CA5BD0 /* InstantMetronomeView.swift in Sources */,
+				EE6406BC2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -772,6 +820,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		EE6406A72A7EEB1F00DEDED2 /* XCRemoteSwiftPackageReference "Awesome" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/LiveUI/Awesome.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.4.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		EE6406A82A7EEB1F00DEDED2 /* Awesome */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EE6406A72A7EEB1F00DEDED2 /* XCRemoteSwiftPackageReference "Awesome" */;
+			productName = Awesome;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = EE84F2E92A7C7A21009E2F23 /* Project object */;
 }

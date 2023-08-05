@@ -7,14 +7,20 @@
 
 import SwiftUI
 import SwiftData
+import Awesome
 
 @main
 struct beatclikrApp: App {
+    
+    init() {
+        AwesomePro.loadFonts(from: Bundle.main)
+    }
 
     var body: some Scene {
         WindowGroup {
             LibraryView()
                 .environmentObject(SongLibraryViewModel())
+                .environmentObject(MetronomePlaybackViewModel())
         }
         .modelContainer(for: Song.self)
     }

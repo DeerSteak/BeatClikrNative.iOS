@@ -2,6 +2,16 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>UIAppFonts</key>
+	<array>
+		<string>/Resources/Fonts/fa-brands-400.ttf</string>
+		<string>/Resources/Fonts/fa-duotone-900.ttf</string>
+		<string>/Resources/Fonts/fa-light-300.ttf</string>
+		<string>/Resources/Fonts/fa-regular-400.ttf</string>
+		<string>/Resources/Fonts/fa-solid-900.ttf</string>
+		<string>/Resources/Fonts/fa-thin-100.ttf</string>
+		<string>/Resources/Fonts/fa-v4compatibility.ttf</string>
+	</array>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>remote-notification</string>

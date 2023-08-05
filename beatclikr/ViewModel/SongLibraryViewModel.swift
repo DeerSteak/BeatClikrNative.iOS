@@ -8,9 +8,7 @@
 import Foundation
 import SwiftData
 
-class SongLibraryViewModel : ObservableObject {
-    @Published var isError = true
-        
+class SongLibraryViewModel : ObservableObject {        
     private var context: ModelContext
     
     init() {

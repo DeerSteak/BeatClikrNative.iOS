@@ -6,10 +6,16 @@
 //
 
 import SwiftUI
+import Awesome
 
 struct InstantMetronomeView: View {
+    @State var isBeat: Bool = false
+    
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        AwesomePro.Regular.lightbulbOn.image
+            .size(80)
+            .foregroundColor(isBeat ? .orange : .black)
+        
     }
 }
 
