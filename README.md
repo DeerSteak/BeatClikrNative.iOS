@@ -5,6 +5,6 @@ Note: This project relies on FontAwesome Pro 6 and a series of .WAV files that a
 
 - FAPro fonts go with their default names in Resources/Fonts
 - WAV files go with their correct names in Resources/Sounds
-- See Constants/FileConstants for filenames
+- See Constants/FileConstants for the correct WAV filenames
 
 FontAwesome Pro is a paid font and distributing it is against its license. The WAV files are proprietary and I recorded them myself. You're free to use this code, but you'll need your own files. :D 
