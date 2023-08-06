@@ -8,5 +8,6 @@
 import Foundation
 
 class MetronomeService {
+    static var instance = MetronomeService()
     
 }

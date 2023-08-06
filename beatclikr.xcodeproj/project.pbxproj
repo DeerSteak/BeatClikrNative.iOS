@@ -37,6 +37,10 @@
 		EE6406EF2A7EF6B900DEDED2 /* clicklo.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406DF2A7EF6B900DEDED2 /* clicklo.wav */; };
 		EE6406F02A7EF6B900DEDED2 /* ride.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406E02A7EF6B900DEDED2 /* ride.wav */; };
 		EE6406F12A7EF6B900DEDED2 /* hatopen.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406E12A7EF6B900DEDED2 /* hatopen.wav */; };
+		EE82F9A62A7FBC4B00B873E7 /* PreferencesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE82F9A52A7FBC4B00B873E7 /* PreferencesViewModel.swift */; };
+		EE82F9A82A7FBD7000B873E7 /* UserDefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */; };
+		EE82F9AA2A7FBFE100B873E7 /* FlashlightService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE82F9A92A7FBFE100B873E7 /* FlashlightService.swift */; };
+		EE82F9AC2A7FC98200B873E7 /* VibrationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE82F9AB2A7FC98200B873E7 /* VibrationService.swift */; };
 		EE84F2F52A7C7A21009E2F23 /* beatclikrApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F2F42A7C7A21009E2F23 /* beatclikrApp.swift */; };
 		EE84F2F72A7C7A21009E2F23 /* LibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F2F62A7C7A21009E2F23 /* LibraryView.swift */; };
 		EE84F2F92A7C7A21009E2F23 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F2F82A7C7A21009E2F23 /* Song.swift */; };
@@ -72,7 +76,7 @@
 		EE07558E2A7E84D400E34D29 /* FormatterHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterHelper.swift; sourceTree = "<group>"; };
 		EE0939E62A7EA838005491BB /* RectangleText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectangleText.swift; sourceTree = "<group>"; };
 		EE34F0752A7C7D8300CA5BD0 /* InstantMetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantMetronomeView.swift; sourceTree = "<group>"; };
-		EE6406A52A7EE9E300DEDED2 /* MetronomeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MetronomeService.swift; path = beatclikr/Service/MetronomeService.swift; sourceTree = SOURCE_ROOT; };
+		EE6406A52A7EE9E300DEDED2 /* MetronomeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MetronomeService.swift; path = beatclikr/Services/MetronomeService.swift; sourceTree = SOURCE_ROOT; };
 		EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlayerView.swift; sourceTree = "<group>"; };
 		EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlaybackViewModel.swift; sourceTree = "<group>"; };
 		EE6406C42A7EF5B400DEDED2 /* fa-duotone-900.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fa-duotone-900.ttf"; sourceTree = "<group>"; };
@@ -98,6 +102,10 @@
 		EE6406DF2A7EF6B900DEDED2 /* clicklo.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = clicklo.wav; sourceTree = "<group>"; };
 		EE6406E02A7EF6B900DEDED2 /* ride.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ride.wav; sourceTree = "<group>"; };
 		EE6406E12A7EF6B900DEDED2 /* hatopen.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hatopen.wav; sourceTree = "<group>"; };
+		EE82F9A52A7FBC4B00B873E7 /* PreferencesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesViewModel.swift; sourceTree = "<group>"; };
+		EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsService.swift; sourceTree = "<group>"; };
+		EE82F9A92A7FBFE100B873E7 /* FlashlightService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashlightService.swift; sourceTree = "<group>"; };
+		EE82F9AB2A7FC98200B873E7 /* VibrationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibrationService.swift; sourceTree = "<group>"; };
 		EE84F2F12A7C7A21009E2F23 /* beatclikr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = beatclikr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE84F2F42A7C7A21009E2F23 /* beatclikrApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beatclikrApp.swift; sourceTree = "<group>"; };
 		EE84F2F62A7C7A21009E2F23 /* LibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LibraryView.swift; sourceTree = "<group>"; };
@@ -196,7 +204,7 @@
 				EE84F3222A7C7A45009E2F23 /* Model */,
 				EE84F3242A7C7A50009E2F23 /* ViewModel */,
 				EE84F3232A7C7A4D009E2F23 /* View */,
-				EE84F3252A7C7A55009E2F23 /* Service */,
+				EE84F3252A7C7A55009E2F23 /* Services */,
 				EE84F2F42A7C7A21009E2F23 /* beatclikrApp.swift */,
 				EE84F2FA2A7C7A23009E2F23 /* Assets.xcassets */,
 				EE84F2FF2A7C7A23009E2F23 /* beatclikr.entitlements */,
@@ -254,16 +262,20 @@
 			children = (
 				EE97D59B2A7E7C3200FA11A0 /* SongLibraryViewModel.swift */,
 				EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */,
+				EE82F9A52A7FBC4B00B873E7 /* PreferencesViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
 		};
-		EE84F3252A7C7A55009E2F23 /* Service */ = {
+		EE84F3252A7C7A55009E2F23 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				EE82F9A92A7FBFE100B873E7 /* FlashlightService.swift */,
 				EE6406A52A7EE9E300DEDED2 /* MetronomeService.swift */,
+				EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */,
+				EE82F9AB2A7FC98200B873E7 /* VibrationService.swift */,
 			);
-			path = Service;
+			path = Services;
 			sourceTree = "<group>";
 		};
 		EE97D59F2A7E7C8900FA11A0 /* Helpers */ = {
@@ -477,14 +489,18 @@
 				EE97D5A12A7E7EB900FA11A0 /* SongDetailsView.swift in Sources */,
 				EE84F2F72A7C7A21009E2F23 /* LibraryView.swift in Sources */,
 				EE6406A62A7EE9E300DEDED2 /* MetronomeService.swift in Sources */,
+				EE82F9A62A7FBC4B00B873E7 /* PreferencesViewModel.swift in Sources */,
+				EE82F9AC2A7FC98200B873E7 /* VibrationService.swift in Sources */,
 				EEE911552A7EDEDC008DFDED /* PreferenceKeys.swift in Sources */,
 				EE97D59C2A7E7C3200FA11A0 /* SongLibraryViewModel.swift in Sources */,
 				EEE911532A7EDE07008DFDED /* FileConstants.swift in Sources */,
+				EE82F9AA2A7FBFE100B873E7 /* FlashlightService.swift in Sources */,
 				EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */,
 				EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */,
 				EE0939E72A7EA838005491BB /* RectangleText.swift in Sources */,
 				EE84F2F92A7C7A21009E2F23 /* Song.swift in Sources */,
 				EE84F2F52A7C7A21009E2F23 /* beatclikrApp.swift in Sources */,
+				EE82F9A82A7FBD7000B873E7 /* UserDefaultsService.swift in Sources */,
 				EE34F0762A7C7D8300CA5BD0 /* InstantMetronomeView.swift in Sources */,
 				EE6406BC2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift in Sources */,
 			);

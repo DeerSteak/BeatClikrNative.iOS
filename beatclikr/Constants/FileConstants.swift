@@ -25,4 +25,13 @@ struct FileConstants {
     static let TomHi: String = "tomhi"
     static let TomLo: String = "tomlow"
     static let TomMid: String = "tommid"
+    
+    static func isValid(val: String) -> Bool {
+        return val == ClickHi || val == ClickLo || val == Cowbell
+        || val == CrashL || val == CrashR || val == HatClosed
+        || val == HatOpen || val == Kick || val == RideEdge
+        || val == RideBell || val == Silence || val == Snare
+        || val == Tamb || val == TomHi || val == TomLo
+        || val == TomMid
+    }
 }
