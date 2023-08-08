@@ -37,6 +37,8 @@
 		EE6406EF2A7EF6B900DEDED2 /* clicklo.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406DF2A7EF6B900DEDED2 /* clicklo.wav */; };
 		EE6406F02A7EF6B900DEDED2 /* ride.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406E02A7EF6B900DEDED2 /* ride.wav */; };
 		EE6406F12A7EF6B900DEDED2 /* hatopen.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406E12A7EF6B900DEDED2 /* hatopen.wav */; };
+		EE8201832A81B1E900675A1C /* PlaylistModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8201822A81B1E900675A1C /* PlaylistModeView.swift */; };
+		EE8201852A81B20F00675A1C /* SongListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8201842A81B20F00675A1C /* SongListItemView.swift */; };
 		EE82F9A62A7FBC4B00B873E7 /* PreferencesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE82F9A52A7FBC4B00B873E7 /* PreferencesViewModel.swift */; };
 		EE82F9A82A7FBD7000B873E7 /* UserDefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */; };
 		EE82F9AA2A7FBFE100B873E7 /* FlashlightService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE82F9A92A7FBFE100B873E7 /* FlashlightService.swift */; };
@@ -102,6 +104,8 @@
 		EE6406DF2A7EF6B900DEDED2 /* clicklo.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = clicklo.wav; sourceTree = "<group>"; };
 		EE6406E02A7EF6B900DEDED2 /* ride.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ride.wav; sourceTree = "<group>"; };
 		EE6406E12A7EF6B900DEDED2 /* hatopen.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hatopen.wav; sourceTree = "<group>"; };
+		EE8201822A81B1E900675A1C /* PlaylistModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistModeView.swift; sourceTree = "<group>"; };
+		EE8201842A81B20F00675A1C /* SongListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongListItemView.swift; sourceTree = "<group>"; };
 		EE82F9A52A7FBC4B00B873E7 /* PreferencesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesViewModel.swift; sourceTree = "<group>"; };
 		EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsService.swift; sourceTree = "<group>"; };
 		EE82F9A92A7FBFE100B873E7 /* FlashlightService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashlightService.swift; sourceTree = "<group>"; };
@@ -156,6 +160,7 @@
 			children = (
 				EE0939E62A7EA838005491BB /* RectangleText.swift */,
 				EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */,
+				EE8201842A81B20F00675A1C /* SongListItemView.swift */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";
@@ -253,6 +258,7 @@
 				EE84F2F62A7C7A21009E2F23 /* LibraryView.swift */,
 				EE34F0752A7C7D8300CA5BD0 /* InstantMetronomeView.swift */,
 				EE97D5A02A7E7EB900FA11A0 /* SongDetailsView.swift */,
+				EE8201822A81B1E900675A1C /* PlaylistModeView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -493,6 +499,7 @@
 				EE82F9AC2A7FC98200B873E7 /* VibrationService.swift in Sources */,
 				EEE911552A7EDEDC008DFDED /* PreferenceKeys.swift in Sources */,
 				EE97D59C2A7E7C3200FA11A0 /* SongLibraryViewModel.swift in Sources */,
+				EE8201852A81B20F00675A1C /* SongListItemView.swift in Sources */,
 				EEE911532A7EDE07008DFDED /* FileConstants.swift in Sources */,
 				EE82F9AA2A7FBFE100B873E7 /* FlashlightService.swift in Sources */,
 				EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */,
@@ -503,6 +510,7 @@
 				EE82F9A82A7FBD7000B873E7 /* UserDefaultsService.swift in Sources */,
 				EE34F0762A7C7D8300CA5BD0 /* InstantMetronomeView.swift in Sources */,
 				EE6406BC2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift in Sources */,
+				EE8201832A81B1E900675A1C /* PlaylistModeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

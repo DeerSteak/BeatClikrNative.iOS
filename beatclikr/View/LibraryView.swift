@@ -15,11 +15,12 @@ struct LibraryView: View {
     @State var beatsPerMinute: String = ""
     @State var beatsPerMeasure: String = ""
     @State var isPlayback: Bool = true
+    @State var tada: Bool = false
     
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: SongLibraryViewModel
     
-    @Query private var items: [Song]
+    @Query(sort: [SortDescriptor(\Song.title), SortDescriptor(\Song.artist)]) private var items: [Song]
 
     var body: some View {
         NavigationSplitView {
@@ -31,19 +32,24 @@ struct LibraryView: View {
                     ForEach(items.sorted(by: { a, b in
                         a.title < b.title 
                     })) { item in
-                        NavigationLink {
-                            SongDetailsView(song: item)
-                            
-                        } label: {
-                            VStack (alignment: .leading) {
-                                Text(item.title)
-                                    .bold()
-                                    .font(.title3)
-                                    .truncationMode(.tail)
-                                    .lineLimit(1)
-                                Text("\(item.artist) /  \(FormatterHelper.formatDouble(item.beatsPerMinute)) BPM")
-                            }                        
+                        if (isPlayback) {
+                            SongListItemView(song: item)
+                                .onTapGesture(perform: {
+                                    tada = true
+                                })
+                                .alert("Thingy", isPresented: $tada) {
+                                    Button("Thanks!") {
+                                        tada = false
+                                    }
+                                }
+                        } else {
+                            NavigationLink {
+                                SongDetailsView(song: item)
+                            } label: {
+                                SongListItemView(song: item)
+                            }
                         }
+
                     }
                     .onDelete(perform: deleteItems)
                 }
@@ -52,12 +58,8 @@ struct LibraryView: View {
                         VStack {
                             Text("Press the + button to add a song")
                                 .padding(.top, 40)
-                                
-                                
-                                
                             Spacer()
                         }
-                        
                     }
                 })
                 .toolbar {

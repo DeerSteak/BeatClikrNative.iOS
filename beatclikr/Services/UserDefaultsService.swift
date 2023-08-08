@@ -111,8 +111,7 @@ class UserDefaultsService {
     }
     
     func getReminderTime() -> Date {
-        var obj = defaults.object(forKey: PreferenceKeys.ReminderTime)
-        guard let date = obj as? Date else {
+        guard let date = defaults.object(forKey: PreferenceKeys.ReminderTime) as? Date else {
             return Date.now
         }
         return date
