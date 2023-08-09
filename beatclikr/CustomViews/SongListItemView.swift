@@ -23,5 +23,5 @@ struct SongListItemView: View {
 }
 
 #Preview {
-    SongListItemView(song: Song(title: "Jump", artist: "Van Halen", beatsPerMinute: 129, beatsPerMeasure: 4))
+    SongListItemView(song: Song(title: "Jump", artist: "Van Halen", beatsPerMinute: 129, beatsPerMeasure: 4, groove: .eighth))
 }

@@ -83,10 +83,10 @@ class UserDefaultsService {
     
     //MARK: Vibration preferences
     func getUseVibration() -> Bool {
-        if (defaults.object(forKey: PreferenceKeys.UseHaptic) != nil) {
-            return defaults.bool(forKey: PreferenceKeys.UseHaptic)
+        guard let useVibration = defaults.object(forKey: PreferenceKeys.UseHaptic) as? Bool else {
+            return true
         }
-        return true
+        return useVibration
     }
     
     func setUseVibration(val: Bool) {

@@ -16,6 +16,7 @@ struct SongDetailsView: View {
     @State var artist: String
     @State var beatsPerMinute: Double
     @State var beatsPerMeasure: Int
+    @State var selectedGroove: Groove
     
     @State var showAlert: Bool
     
@@ -28,7 +29,7 @@ struct SongDetailsView: View {
         _beatsPerMinute = State(initialValue: self.song.beatsPerMinute)
         _beatsPerMeasure = State(initialValue: self.song.beatsPerMeasure)
         _showAlert = State(initialValue: false)
-        
+        _selectedGroove = State(initialValue: .eighth)
     }
     
     init (song: Song) {
@@ -38,6 +39,7 @@ struct SongDetailsView: View {
         _beatsPerMinute = State(initialValue: song.beatsPerMinute)
         _beatsPerMeasure = State(initialValue: song.beatsPerMeasure)
         _showAlert = State(initialValue: false)
+        _selectedGroove = State(initialValue: song.groove )
     }
     
     var body: some View {
@@ -65,6 +67,16 @@ struct SongDetailsView: View {
                     TextField("Beats per Measure", value: $beatsPerMeasure, formatter: FormatterHelper.numberFormatter)
                         .textFieldStyle(.roundedBorder)
                         .keyboardType(.numberPad)
+                }
+                GridRow {
+                    Text("Groove")
+                    Picker("Select Groove", selection: $selectedGroove) {
+                        ForEach(Groove.allCases) {
+                            option in
+                            Text(String(describing: option))
+                    }
+                    }
+                    .pickerStyle(.menu)
                 }
             }
             .contentMargins(10)

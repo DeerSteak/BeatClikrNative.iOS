@@ -17,6 +17,7 @@ final class Song : Identifiable {
     var beatsPerMeasure: Int
     var liveSequence: Int?
     var rehearsalSequence: Int?
+    var groove: Groove
     
     init() {
         self.id = UUID().uuidString
@@ -24,13 +25,15 @@ final class Song : Identifiable {
         self.artist = ""
         self.beatsPerMinute = 60
         self.beatsPerMeasure = 4
+        self.groove = .eighth
     }
         
-    init(title: String, artist: String, beatsPerMinute: Double, beatsPerMeasure: Int) {
+    init(title: String, artist: String, beatsPerMinute: Double, beatsPerMeasure: Int, groove: Groove) {
         self.id = UUID().uuidString
         self.title = title
         self.artist = artist
         self.beatsPerMinute = beatsPerMinute
         self.beatsPerMeasure = beatsPerMeasure
+        self.groove = groove
     }
 }
