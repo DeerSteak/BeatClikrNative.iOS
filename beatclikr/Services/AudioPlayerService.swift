@@ -14,28 +14,28 @@ class AudioPlayerService {
     private var starling = Starling.instance
     private var beatName: String {
         didSet {
-            starling.load(resource: beatName, type: FileConstants.FileExt, for: .beat)
+            starling.load(resource: beatName, type: FileConstants.FileExt.rawValue, for: .beat)
         }
     }
     private var rhythmName: String {
         didSet {
-            starling.load(resource: rhythmName, type: FileConstants.FileExt, for: .rhythm)
+            starling.load(resource: rhythmName, type: FileConstants.FileExt.rawValue, for: .rhythm)
         }
     }
         
     init() {
-        beatName = FileConstants.ClickHi
-        rhythmName = FileConstants.ClickLo
+        beatName = FileConstants.ClickHi.rawValue
+        rhythmName = FileConstants.ClickLo.rawValue
     }
     
     //MARK: Public functions
     
     func playBeat() {
-        starling.play(.beat, allowOverlap: false)
+        starling.play(.beat)
     }
     
     func playRhythm() {
-        starling.play(.rhythm, allowOverlap: false)
+        starling.play(.rhythm)
     }
     
     func setupAudioPlayer(beatName: String, rhythmName: String) {

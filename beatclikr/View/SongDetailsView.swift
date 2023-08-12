@@ -86,7 +86,7 @@ struct SongDetailsView: View {
                     dismiss()
                 }
             }, label: {
-                RectangleText("Save", color: songIsValid() ? .blue : .gray)
+                RectangleText("Save", backgroundColor: .clear, foregroundColor: songIsValid() ? .blue : .gray)
             })
             .alert(isPresented: $showAlert, content: {
                 Alert(title: Text("Error saving"))
@@ -95,7 +95,7 @@ struct SongDetailsView: View {
             Button(action: {
                 dismiss()
             }, label: {
-                RectangleText("Cancel", color: .red)
+                RectangleText("Cancel", backgroundColor: .red, foregroundColor: .white)
             })
             Spacer()
                 .navigationBarTitleDisplayMode(.automatic)

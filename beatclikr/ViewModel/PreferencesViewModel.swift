@@ -9,10 +9,10 @@ import Foundation
 class PreferencesViewModel: ObservableObject {
     @Published var useFlashlight: Bool
     @Published var muteMetronome: Bool
-    @Published var instantBeatName: String
-    @Published var instantRhythmName: String
-    @Published var playlistBeatName: String
-    @Published var playlistRhythmName: String
+    @Published var instantBeatName: FileConstants
+    @Published var instantRhythmName: FileConstants
+    @Published var playlistBeatName: FileConstants
+    @Published var playlistRhythmName: FileConstants
     @Published var useVibration: Bool
     @Published var sendReminders: Bool
     @Published var reminderTime: Date

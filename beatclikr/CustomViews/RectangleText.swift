@@ -9,25 +9,28 @@ import SwiftUI
 
 struct RectangleText: View {
     var text: String
-    var color: Color = .blue
+    var backgroundColor: Color = .blue
+    var foregroundColor: Color = .white
     
     init (_ text: String) {
         self.text = text
     }
     
-    init (_ text: String, color: Color) {
+    init (_ text: String, backgroundColor: Color, foregroundColor: Color) {
         self.text = text
-        self.color = color
+        self.backgroundColor = backgroundColor
+        self.foregroundColor = foregroundColor
     }
     
     var body: some View {
         ZStack {
-            Rectangle()
-                .fill(self.color)
+            RoundedRectangle(cornerSize: CGSize(width: 5, height: 5))
+                .fill(self.backgroundColor)
                 .frame(height: 40)
-                .cornerRadius(5)
+                .shadow(radius: 2)
+            
             Text(self.text)
-                .foregroundColor(.white)
+                .foregroundColor(self.foregroundColor)
                 .bold()
         }
     }

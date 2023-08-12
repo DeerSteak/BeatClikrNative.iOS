@@ -16,13 +16,13 @@ enum Groove: Int, CaseIterable, Identifiable, CustomStringConvertible, Codable {
     var description: String {
         switch self {
         case .quarter:
-            return "Quarter"
+            return "1"
         case .eighth:
-            return "Eighth"
+            return "2"
         case .triplet:
-            return "Triplet Eighth"
+            return "3"
         case .sixteenth:
-            return "Sixteenth"
+            return "4"
         }
     }
 }

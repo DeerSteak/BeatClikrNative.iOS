@@ -41,7 +41,7 @@ class MetronomeTimer {
     private var previousSubdivisionTime: CFAbsoluteTime
     
     private var subdivisionCheckInterval: Double {
-        return getSubdivisionDuration() / 100 //check time many times per subdivision, higher the number the more accurate, but this should be plenty accurate.
+        return getSubdivisionDuration() / 50 //check time many times per subdivision, higher the number the more accurate, but this should be plenty accurate.
     }
     
     private var elapsedTime: Double {

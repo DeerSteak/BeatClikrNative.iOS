@@ -15,6 +15,7 @@
 		EE5772612A87FFD0002AAC3A /* Starling.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5772602A87FFD0002AAC3A /* Starling.swift */; };
 		EE5772642A880031002AAC3A /* ExceptionCatcher in Frameworks */ = {isa = PBXBuildFile; productRef = EE5772632A880031002AAC3A /* ExceptionCatcher */; };
 		EE5772662A88009F002AAC3A /* SoundIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5772652A88009F002AAC3A /* SoundIdentifier.swift */; };
+		EE5772682A880BB6002AAC3A /* InstrumentLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5772672A880BB6002AAC3A /* InstrumentLists.swift */; };
 		EE6406A62A7EE9E300DEDED2 /* MetronomeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406A52A7EE9E300DEDED2 /* MetronomeService.swift */; };
 		EE6406A92A7EEB1F00DEDED2 /* Awesome in Frameworks */ = {isa = PBXBuildFile; productRef = EE6406A82A7EEB1F00DEDED2 /* Awesome */; };
 		EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */; };
@@ -88,6 +89,7 @@
 		EE478E8A2A879C51008337DB /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
 		EE5772602A87FFD0002AAC3A /* Starling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Starling.swift; sourceTree = "<group>"; };
 		EE5772652A88009F002AAC3A /* SoundIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundIdentifier.swift; sourceTree = "<group>"; };
+		EE5772672A880BB6002AAC3A /* InstrumentLists.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstrumentLists.swift; sourceTree = "<group>"; };
 		EE6406A52A7EE9E300DEDED2 /* MetronomeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MetronomeService.swift; path = beatclikr/Services/MetronomeService.swift; sourceTree = SOURCE_ROOT; };
 		EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlayerView.swift; sourceTree = "<group>"; };
 		EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlaybackViewModel.swift; sourceTree = "<group>"; };
@@ -346,6 +348,7 @@
 				EEE911522A7EDE07008DFDED /* FileConstants.swift */,
 				EEE911542A7EDEDC008DFDED /* PreferenceKeys.swift */,
 				EE5772652A88009F002AAC3A /* SoundIdentifier.swift */,
+				EE5772672A880BB6002AAC3A /* InstrumentLists.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -529,6 +532,7 @@
 				EE0939E72A7EA838005491BB /* RectangleText.swift in Sources */,
 				EE3BEF3C2A83B476004B0C97 /* Groove.swift in Sources */,
 				EE84F2F92A7C7A21009E2F23 /* Song.swift in Sources */,
+				EE5772682A880BB6002AAC3A /* InstrumentLists.swift in Sources */,
 				EE84F2F52A7C7A21009E2F23 /* beatclikrApp.swift in Sources */,
 				EE82F9A82A7FBD7000B873E7 /* UserDefaultsService.swift in Sources */,
 				EE34F0762A7C7D8300CA5BD0 /* InstantMetronomeView.swift in Sources */,
@@ -703,16 +707,20 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = beatclikr/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = BeatClikr;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bfunkstudios.beatclikr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -734,16 +742,20 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = beatclikr/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = BeatClikr;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UIRequiresFullScreen = NO;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 3.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bfunkstudios.beatclikr;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

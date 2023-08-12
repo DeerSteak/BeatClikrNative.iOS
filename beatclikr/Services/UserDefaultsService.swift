@@ -41,52 +41,66 @@ class UserDefaultsService {
         defaults.setValue(val, forKey: PreferenceKeys.MuteMetronome)
     }
     
-    func getInstantRhythm() -> String {
-        return defaults.string(forKey: PreferenceKeys.InstantRhythm) ?? FileConstants.ClickLo
+    func getInstantRhythm() -> FileConstants {
+        let val = defaults.string(forKey: PreferenceKeys.InstantRhythm) ?? FileConstants.ClickLo.rawValue
+        return FileConstants(rawValue: val) ?? FileConstants.ClickLo
     }
     
-    func setInstantRhythm(val: String) {
-        if (FileConstants.isValid(val: val)) {
-            defaults.setValue(val, forKey: PreferenceKeys.InstantRhythm)
+    func setInstantRhythm(val: FileConstants) {
+        defaults.setValue(val.rawValue, forKey: PreferenceKeys.InstantRhythm)
+    }
+    
+    func getInstantBeat() -> FileConstants {
+        let val = defaults.string(forKey: PreferenceKeys.InstantBeat) ?? FileConstants.ClickLo.rawValue
+        return FileConstants(rawValue: val) ?? FileConstants.ClickLo
+    }
+    
+    func setInstantBeat(val: FileConstants) {
+        defaults.setValue(val.rawValue, forKey: PreferenceKeys.InstantBeat)
+    }    
+    
+    func getInstantGroove() -> Groove {
+        let val = defaults.integer(forKey: PreferenceKeys.InstantSelectedSubdivisionIndex)
+        return Groove(rawValue: val) ?? Groove.eighth
+    }
+    
+    func setInstantGroove(val: Groove) {
+        defaults.setValue(val.rawValue, forKey: PreferenceKeys.InstantSelectedSubdivisionIndex)
+    }
+    
+    func getInstantBpm() -> Double {
+        let val = defaults.double(forKey: PreferenceKeys.InstantBpm)
+        if val >= 30 && val <= 240 {
+            return val
         }
+        return 60
     }
     
-    func getInstantBeat() -> String {
-        return defaults.string(forKey: PreferenceKeys.InstantBeat) ?? FileConstants.ClickHi
+    func setInstantBpm(val: Double) {
+        defaults.setValue(val, forKey: PreferenceKeys.InstantBpm)
+    }
+
+    func getPlaylistRhythm() -> FileConstants {
+        let val = defaults.string(forKey: PreferenceKeys.PlaylistRhythm) ?? FileConstants.ClickLo.rawValue
+        return FileConstants(rawValue: val) ?? FileConstants.ClickLo
     }
     
-    func setInstantBeat(val: String) {
-        if (FileConstants.isValid(val: val)) {
-            defaults.setValue(val, forKey: PreferenceKeys.InstantBeat)
-        }
+    func setPlaylistRhythm(val: FileConstants) {
+        defaults.setValue(val.rawValue, forKey: PreferenceKeys.PlaylistRhythm)
     }
     
-    func getPlaylistRhythm() -> String {
-        return defaults.string(forKey: PreferenceKeys.PlaylistRhythm) ?? FileConstants.ClickLo
+    func getPlaylistBeat() -> FileConstants {
+        let val = defaults.string(forKey: PreferenceKeys.PlaylistBeat) ?? FileConstants.ClickLo.rawValue
+        return FileConstants(rawValue: val) ?? FileConstants.ClickLo
     }
     
-    func setPlaylistRhythm(val: String) {
-        if (FileConstants.isValid(val: val)) {
-            defaults.setValue(val, forKey: PreferenceKeys.PlaylistRhythm)
-        }
-    }
-    
-    func getPlaylistBeat() -> String {
-        return defaults.string(forKey: PreferenceKeys.PlaylistBeat) ?? FileConstants.ClickHi
-    }
-    
-    func setPlaylistBeat(val: String) {
-        if (FileConstants.isValid(val: val)) {
-            defaults.setValue(val, forKey: PreferenceKeys.PlaylistBeat)
-        }
+    func setPlaylistBeat(val: FileConstants) {
+        defaults.setValue(val.rawValue, forKey: PreferenceKeys.PlaylistBeat)
     }
     
     //MARK: Vibration preferences
     func getUseVibration() -> Bool {
-        guard let useVibration = defaults.object(forKey: PreferenceKeys.UseHaptic) as? Bool else {
-            return true
-        }
-        return useVibration
+        return defaults.object(forKey: PreferenceKeys.UseHaptic) as? Bool ?? true
     }
     
     func setUseVibration(val: Bool) {
@@ -111,10 +125,7 @@ class UserDefaultsService {
     }
     
     func getReminderTime() -> Date {
-        guard let date = defaults.object(forKey: PreferenceKeys.ReminderTime) as? Date else {
-            return Date.now
-        }
-        return date
+        return defaults.object(forKey: PreferenceKeys.ReminderTime) as? Date ?? Date.now
     }
     
     func setReminderTime(val: Date) {

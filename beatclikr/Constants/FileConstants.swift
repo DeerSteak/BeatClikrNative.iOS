@@ -6,35 +6,64 @@
 //
 
 import Foundation
-struct FileConstants {
-    static let FileExt: String = "wav"
+enum FileConstants: String, CaseIterable, Identifiable, CustomStringConvertible, Codable {
+    case FileExt = "wav"
     
-    static let ClickHi: String = "clickhi"
-    static let ClickLo: String = "clicklo"
-    static let Cowbell: String = "cowbell"
-    static let CrashL: String = "crashl"
-    static let CrashR: String = "crashr"
-    static let HatClosed: String = "hatclosed"
-    static let HatOpen: String = "hatopen"
-    static let Kick: String = "kick"
-    static let RideEdge: String = "ride"
-    static let RideBell: String = "ridebell"
-    static let Silence: String = "silence"
-    static let Snare: String = "snare"
-    static let Tamb: String = "tamb"
-    static let TomHi: String = "tomhi"
-    static let TomLo: String = "tomlow"
-    static let TomMid: String = "tommid"
+    case ClickHi = "clickhi"
+    case ClickLo = "clicklo"
+    case Cowbell = "cowbell"
+    case CrashL = "crashl"
+    case CrashR = "crashr"
+    case HatClosed = "hatclosed"
+    case HatOpen = "hatopen"
+    case Kick = "kick"
+    case RideEdge = "ride"
+    case RideBell = "ridebell"
+    case Silence = "silence"
+    case Snare = "snare"
+    case Tamb = "tamb"
+    case TomHi = "tomhi"
+    case TomLo = "tomlow"
+    case TomMid = "tommid"
+
+    var id: Self {self}
     
-    static func isValid(val: String) -> Bool {
-        return val == ClickHi || val == ClickLo || val == Cowbell
-        || val == CrashL || val == CrashR || val == HatClosed
-        || val == HatOpen || val == Kick || val == RideEdge
-        || val == RideBell || val == Silence || val == Snare
-        || val == Tamb || val == TomHi || val == TomLo
-        || val == TomMid
+    var description: String {
+        switch self {
+        case .ClickHi:
+            return "Click Hi"
+        case .ClickLo:
+            return "Click Lo"
+        case .Cowbell:
+            return "Cowbell"
+        case .CrashL:
+            return "Crash (Left)"
+        case .FileExt:
+            return ".wav"
+        case .CrashR:
+            return "Crash (Right)"
+        case .HatClosed:
+            return "Hi-Hat (Closed)"
+        case .HatOpen:
+            return "Hi-Hat (Open)"
+        case .Kick:
+            return "Kick"
+        case .RideEdge:
+            return "Ride (Edge)"
+        case .RideBell:
+            return "Ride (Bell)"
+        case .Silence:
+            return "Silence"
+        case .Snare:
+            return "Snare"
+        case .Tamb:
+            return "Tamourine"
+        case .TomHi:
+            return "Tom (High)"
+        case .TomLo:
+            return "Tom (Low)"
+        case .TomMid:
+            return "Tom (Mid)"
+        }
     }
-    
-    static let rhythmInstruments: [String] = [ClickHi, ClickLo, Cowbell, HatClosed, HatOpen, Kick, RideEdge, RideBell, Snare, Tamb, TomHi, TomMid, TomLo]
-    static let beatInstruments: [String] = [ClickHi, ClickLo, Cowbell, CrashL, CrashR, HatClosed, HatOpen, Kick, RideEdge, RideBell, Snare, Tamb, TomHi, TomMid, TomLo]
 }

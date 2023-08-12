@@ -36,5 +36,69 @@
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "E581ADCC-DBAA-4CC8-95BA-DD44AFEB495D"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "beatclikr/Services/UserDefaultsService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "50"
+            endingLineNumber = "50"
+            landmarkName = "setInstantRhythm(val:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "9743F7AE-FA7E-4D19-9702-CF33DAB76374"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "beatclikr/Services/UserDefaultsService.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "58"
+            endingLineNumber = "58"
+            landmarkName = "setInstantBeat(val:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "9743F7AE-FA7E-4D19-9702-CF33DAB76374 - 1302cd1a933bdbfd"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "beatclikr.UserDefaultsService.setInstantBeat(val: beatclikr.FileConstants) -&gt; ()"
+                  moduleName = "beatclikr"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/benfunk/Projects/beatclikr/beatclikr/Services/UserDefaultsService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "79"
+                  endingLineNumber = "79"
+                  offsetFromSymbolStart = "40">
+               </Location>
+               <Location
+                  uuid = "9743F7AE-FA7E-4D19-9702-CF33DAB76374 - 1302cd1a933bd930"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "beatclikr.UserDefaultsService.setInstantBeat(val: beatclikr.FileConstants) -&gt; ()"
+                  moduleName = "beatclikr"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/benfunk/Projects/beatclikr/beatclikr/Services/UserDefaultsService.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "58"
+                  endingLineNumber = "58"
+                  offsetFromSymbolStart = "40">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
    </Breakpoints>
 </Bucket>

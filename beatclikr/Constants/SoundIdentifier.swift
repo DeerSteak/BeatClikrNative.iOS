@@ -8,6 +8,6 @@
 import Foundation
 
 extension SoundIdentifier {
-    static var beat = SoundIdentifier(FileConstants.ClickHi)
-    static var rhythm = SoundIdentifier(FileConstants.ClickLo)
+    static var beat = SoundIdentifier(FileConstants.ClickHi.rawValue)
+    static var rhythm = SoundIdentifier(FileConstants.ClickLo.rawValue)
 }
