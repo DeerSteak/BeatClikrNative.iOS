@@ -11,6 +11,7 @@
 		EE0939E72A7EA838005491BB /* RectangleText.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0939E62A7EA838005491BB /* RectangleText.swift */; };
 		EE34F0762A7C7D8300CA5BD0 /* InstantMetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE34F0752A7C7D8300CA5BD0 /* InstantMetronomeView.swift */; };
 		EE3BEF3C2A83B476004B0C97 /* Groove.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3BEF3B2A83B476004B0C97 /* Groove.swift */; };
+		EE478E8B2A879C51008337DB /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE478E8A2A879C51008337DB /* AudioPlayerService.swift */; };
 		EE6406A62A7EE9E300DEDED2 /* MetronomeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406A52A7EE9E300DEDED2 /* MetronomeService.swift */; };
 		EE6406A92A7EEB1F00DEDED2 /* Awesome in Frameworks */ = {isa = PBXBuildFile; productRef = EE6406A82A7EEB1F00DEDED2 /* Awesome */; };
 		EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */; };
@@ -38,6 +39,7 @@
 		EE6406EF2A7EF6B900DEDED2 /* clicklo.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406DF2A7EF6B900DEDED2 /* clicklo.wav */; };
 		EE6406F02A7EF6B900DEDED2 /* ride.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406E02A7EF6B900DEDED2 /* ride.wav */; };
 		EE6406F12A7EF6B900DEDED2 /* hatopen.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406E12A7EF6B900DEDED2 /* hatopen.wav */; };
+		EE6CD1352A87C014003F66C0 /* MetronomeTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6CD1342A87C014003F66C0 /* MetronomeTimer.swift */; };
 		EE8201832A81B1E900675A1C /* PlaylistModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8201822A81B1E900675A1C /* PlaylistModeView.swift */; };
 		EE8201852A81B20F00675A1C /* SongListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8201842A81B20F00675A1C /* SongListItemView.swift */; };
 		EE82F9A62A7FBC4B00B873E7 /* PreferencesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE82F9A52A7FBC4B00B873E7 /* PreferencesViewModel.swift */; };
@@ -80,6 +82,7 @@
 		EE0939E62A7EA838005491BB /* RectangleText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectangleText.swift; sourceTree = "<group>"; };
 		EE34F0752A7C7D8300CA5BD0 /* InstantMetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantMetronomeView.swift; sourceTree = "<group>"; };
 		EE3BEF3B2A83B476004B0C97 /* Groove.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Groove.swift; sourceTree = "<group>"; };
+		EE478E8A2A879C51008337DB /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
 		EE6406A52A7EE9E300DEDED2 /* MetronomeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MetronomeService.swift; path = beatclikr/Services/MetronomeService.swift; sourceTree = SOURCE_ROOT; };
 		EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlayerView.swift; sourceTree = "<group>"; };
 		EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlaybackViewModel.swift; sourceTree = "<group>"; };
@@ -106,6 +109,7 @@
 		EE6406DF2A7EF6B900DEDED2 /* clicklo.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = clicklo.wav; sourceTree = "<group>"; };
 		EE6406E02A7EF6B900DEDED2 /* ride.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ride.wav; sourceTree = "<group>"; };
 		EE6406E12A7EF6B900DEDED2 /* hatopen.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = hatopen.wav; sourceTree = "<group>"; };
+		EE6CD1342A87C014003F66C0 /* MetronomeTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeTimer.swift; sourceTree = "<group>"; };
 		EE8201822A81B1E900675A1C /* PlaylistModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistModeView.swift; sourceTree = "<group>"; };
 		EE8201842A81B20F00675A1C /* SongListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongListItemView.swift; sourceTree = "<group>"; };
 		EE82F9A52A7FBC4B00B873E7 /* PreferencesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesViewModel.swift; sourceTree = "<group>"; };
@@ -279,10 +283,12 @@
 		EE84F3252A7C7A55009E2F23 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				EE6CD1342A87C014003F66C0 /* MetronomeTimer.swift */,
 				EE82F9A92A7FBFE100B873E7 /* FlashlightService.swift */,
 				EE6406A52A7EE9E300DEDED2 /* MetronomeService.swift */,
 				EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */,
 				EE82F9AB2A7FC98200B873E7 /* VibrationService.swift */,
+				EE478E8A2A879C51008337DB /* AudioPlayerService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -506,6 +512,7 @@
 				EEE911532A7EDE07008DFDED /* FileConstants.swift in Sources */,
 				EE82F9AA2A7FBFE100B873E7 /* FlashlightService.swift in Sources */,
 				EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */,
+				EE478E8B2A879C51008337DB /* AudioPlayerService.swift in Sources */,
 				EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */,
 				EE0939E72A7EA838005491BB /* RectangleText.swift in Sources */,
 				EE3BEF3C2A83B476004B0C97 /* Groove.swift in Sources */,
@@ -514,6 +521,7 @@
 				EE82F9A82A7FBD7000B873E7 /* UserDefaultsService.swift in Sources */,
 				EE34F0762A7C7D8300CA5BD0 /* InstantMetronomeView.swift in Sources */,
 				EE6406BC2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift in Sources */,
+				EE6CD1352A87C014003F66C0 /* MetronomeTimer.swift in Sources */,
 				EE8201832A81B1E900675A1C /* PlaylistModeView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

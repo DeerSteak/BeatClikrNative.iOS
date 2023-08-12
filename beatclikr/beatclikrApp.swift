@@ -18,7 +18,7 @@ struct beatclikrApp: App {
 
     var body: some Scene {
         WindowGroup {
-            LibraryView()
+            InstantMetronomeView()
                 .environmentObject(SongLibraryViewModel())
                 .environmentObject(MetronomePlaybackViewModel())
         }

@@ -11,46 +11,41 @@ import AVKit
 class FlashlightService {
     static var instance = FlashlightService()
     
-    func checkFlashlight() -> Bool {
-        guard let device = AVCaptureDevice.default(for: .video) else {
-            return false
-        }
-        return device.hasTorch
+    private var hasFlashlight: Bool
+    
+    init() {
+        //let device = AVCaptureDevice.default(for: .video)
+        //hasFlashlight = device?.hasTorch ?? false
+        //TODO: check that the device has a flashlight
+        hasFlashlight = false
     }
     
-    func toggleFlashlight() {
-        if (checkFlashlight()) {
+    func turnFlashlightOn() {
+        if hasFlashlight {
             guard let device = AVCaptureDevice.default(for: .video) else { return }
+            if device.torchMode == AVCaptureDevice.TorchMode.on { return }
+            do {
+                try device.lockForConfiguration()
+                try device.setTorchModeOn(level: 1.0)
+            } catch {
+                print(error)
+            }
+            device.unlockForConfiguration()
+        }
+        
+    }
+    
+    func turnFlashlightOff() {
+        if hasFlashlight {
+            guard let device = AVCaptureDevice.default(for: .video) else { return }
+            if device.torchMode == AVCaptureDevice.TorchMode.off { return }
             do {
                 try device.lockForConfiguration()
             } catch {
                 print(error)
             }
-            if (device.torchMode == AVCaptureDevice.TorchMode.on) {
-                device.torchMode = AVCaptureDevice.TorchMode.off
-            } else {
-                do {
-                    try device.setTorchModeOn(level: 1.0)
-                } catch {
-                    print(error)
-                }
-            }
+            device.torchMode = AVCaptureDevice.TorchMode.off
             device.unlockForConfiguration()
-        }
-    }
-    
-    func turnFlashlightOff() {
-        if (checkFlashlight()) {
-            guard let device = AVCaptureDevice.default(for: .video) else { return }
-            if (device.torchMode == AVCaptureDevice.TorchMode.on) {
-                do {
-                    try device.lockForConfiguration()
-                } catch {
-                    print(error)
-                }
-                device.torchMode = AVCaptureDevice.TorchMode.off
-                device.unlockForConfiguration()
-            }
         }
     }
 }
