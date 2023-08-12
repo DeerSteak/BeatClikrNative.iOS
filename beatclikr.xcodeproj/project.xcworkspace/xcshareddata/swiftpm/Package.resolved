@@ -8,6 +8,15 @@
         "revision" : "40c68d0ca2b143c1118e636518706a4b8332777b",
         "version" : "2.4.0"
       }
+    },
+    {
+      "identity" : "exceptioncatcher",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sindresorhus/ExceptionCatcher",
+      "state" : {
+        "branch" : "main",
+        "revision" : "81cf83b117ec368e2ebb7fbcd9f7a3deb115ab07"
+      }
     }
   ],
   "version" : 2

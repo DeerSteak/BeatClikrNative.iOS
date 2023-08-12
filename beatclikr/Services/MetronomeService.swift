@@ -18,7 +18,6 @@ class MetronomeService : MetronomeTimerDelegate {
     private var audio = AudioPlayerService.instance
     private var defaults = UserDefaultsService.instance
         
-    private var bpm: Double = 60.0
     private var subdivisions: Int = 1
     private var subdivisionMilliseconds: Double = 0
     
@@ -32,7 +31,6 @@ class MetronomeService : MetronomeTimerDelegate {
     
     //MARK: Delegate handler
     func metronomeTimerFired() {
-        print("\(timerEventCounter)")
         if timerEventCounter == 1 {
             playBeat()
         }
@@ -57,17 +55,15 @@ class MetronomeService : MetronomeTimerDelegate {
         else if song.beatsPerMinute > 240 {
             song.beatsPerMinute = 240
         }
-        bpm = song.beatsPerMinute
+        timer.beatsPerMinute = song.beatsPerMinute
         subdivisions = song.groove.rawValue
-        subdivisionMilliseconds = setSubdivisionInMilliseconds()
-        audio.setupAudioPlayer(beatName: beatName, rhythmName: rhythmName, milliseconds: subdivisionMilliseconds)
+        audio.setupAudioPlayer(beatName: beatName, rhythmName: rhythmName)
     }
     
     func start() {
         timerEventCounter = 1
         beatsPlayed = 0
         timer.delegate = self
-        timer.beatsPerMinute = bpm
         timer.subdivisions = subdivisions
         timer.start()
     }
@@ -78,12 +74,6 @@ class MetronomeService : MetronomeTimerDelegate {
     }
     
     //MARK: Private helpers
-    private func setSubdivisionInMilliseconds() -> Double {
-        let ms = (60.0 / (bpm * Double(subdivisions))) * 1000.0
-        audio.setSubdivisionLengthInSamples(ms)
-        return ms
-    }
-    
     private func playBeat() {
         if !isMuted && !liveModeStarted {
             audio.playBeat()

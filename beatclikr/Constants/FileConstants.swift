@@ -34,4 +34,7 @@ struct FileConstants {
         || val == Tamb || val == TomHi || val == TomLo
         || val == TomMid
     }
+    
+    static let rhythmInstruments: [String] = [ClickHi, ClickLo, Cowbell, HatClosed, HatOpen, Kick, RideEdge, RideBell, Snare, Tamb, TomHi, TomMid, TomLo]
+    static let beatInstruments: [String] = [ClickHi, ClickLo, Cowbell, CrashL, CrashR, HatClosed, HatOpen, Kick, RideEdge, RideBell, Snare, Tamb, TomHi, TomMid, TomLo]
 }

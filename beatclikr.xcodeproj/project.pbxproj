@@ -12,6 +12,9 @@
 		EE34F0762A7C7D8300CA5BD0 /* InstantMetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE34F0752A7C7D8300CA5BD0 /* InstantMetronomeView.swift */; };
 		EE3BEF3C2A83B476004B0C97 /* Groove.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3BEF3B2A83B476004B0C97 /* Groove.swift */; };
 		EE478E8B2A879C51008337DB /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE478E8A2A879C51008337DB /* AudioPlayerService.swift */; };
+		EE5772612A87FFD0002AAC3A /* Starling.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5772602A87FFD0002AAC3A /* Starling.swift */; };
+		EE5772642A880031002AAC3A /* ExceptionCatcher in Frameworks */ = {isa = PBXBuildFile; productRef = EE5772632A880031002AAC3A /* ExceptionCatcher */; };
+		EE5772662A88009F002AAC3A /* SoundIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5772652A88009F002AAC3A /* SoundIdentifier.swift */; };
 		EE6406A62A7EE9E300DEDED2 /* MetronomeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406A52A7EE9E300DEDED2 /* MetronomeService.swift */; };
 		EE6406A92A7EEB1F00DEDED2 /* Awesome in Frameworks */ = {isa = PBXBuildFile; productRef = EE6406A82A7EEB1F00DEDED2 /* Awesome */; };
 		EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */; };
@@ -83,6 +86,8 @@
 		EE34F0752A7C7D8300CA5BD0 /* InstantMetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstantMetronomeView.swift; sourceTree = "<group>"; };
 		EE3BEF3B2A83B476004B0C97 /* Groove.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Groove.swift; sourceTree = "<group>"; };
 		EE478E8A2A879C51008337DB /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
+		EE5772602A87FFD0002AAC3A /* Starling.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Starling.swift; sourceTree = "<group>"; };
+		EE5772652A88009F002AAC3A /* SoundIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundIdentifier.swift; sourceTree = "<group>"; };
 		EE6406A52A7EE9E300DEDED2 /* MetronomeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MetronomeService.swift; path = beatclikr/Services/MetronomeService.swift; sourceTree = SOURCE_ROOT; };
 		EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlayerView.swift; sourceTree = "<group>"; };
 		EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlaybackViewModel.swift; sourceTree = "<group>"; };
@@ -141,6 +146,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				EE6406A92A7EEB1F00DEDED2 /* Awesome in Frameworks */,
+				EE5772642A880031002AAC3A /* ExceptionCatcher in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -297,6 +303,7 @@
 			isa = PBXGroup;
 			children = (
 				EE07558E2A7E84D400E34D29 /* FormatterHelper.swift */,
+				EE5772602A87FFD0002AAC3A /* Starling.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -338,6 +345,7 @@
 			children = (
 				EEE911522A7EDE07008DFDED /* FileConstants.swift */,
 				EEE911542A7EDEDC008DFDED /* PreferenceKeys.swift */,
+				EE5772652A88009F002AAC3A /* SoundIdentifier.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -360,6 +368,7 @@
 			name = beatclikr;
 			packageProductDependencies = (
 				EE6406A82A7EEB1F00DEDED2 /* Awesome */,
+				EE5772632A880031002AAC3A /* ExceptionCatcher */,
 			);
 			productName = beatclikr;
 			productReference = EE84F2F12A7C7A21009E2F23 /* beatclikr.app */;
@@ -435,6 +444,7 @@
 			mainGroup = EE84F2E82A7C7A21009E2F23;
 			packageReferences = (
 				EE6406A72A7EEB1F00DEDED2 /* XCRemoteSwiftPackageReference "Awesome" */,
+				EE5772622A880031002AAC3A /* XCRemoteSwiftPackageReference "ExceptionCatcher" */,
 			);
 			productRefGroup = EE84F2F22A7C7A21009E2F23 /* Products */;
 			projectDirPath = "";
@@ -508,10 +518,12 @@
 				EE82F9AC2A7FC98200B873E7 /* VibrationService.swift in Sources */,
 				EEE911552A7EDEDC008DFDED /* PreferenceKeys.swift in Sources */,
 				EE97D59C2A7E7C3200FA11A0 /* SongLibraryViewModel.swift in Sources */,
+				EE5772612A87FFD0002AAC3A /* Starling.swift in Sources */,
 				EE8201852A81B20F00675A1C /* SongListItemView.swift in Sources */,
 				EEE911532A7EDE07008DFDED /* FileConstants.swift in Sources */,
 				EE82F9AA2A7FBFE100B873E7 /* FlashlightService.swift in Sources */,
 				EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */,
+				EE5772662A88009F002AAC3A /* SoundIdentifier.swift in Sources */,
 				EE478E8B2A879C51008337DB /* AudioPlayerService.swift in Sources */,
 				EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */,
 				EE0939E72A7EA838005491BB /* RectangleText.swift in Sources */,
@@ -858,6 +870,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		EE5772622A880031002AAC3A /* XCRemoteSwiftPackageReference "ExceptionCatcher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/ExceptionCatcher";
+			requirement = {
+				branch = main;
+				kind = branch;
+			};
+		};
 		EE6406A72A7EEB1F00DEDED2 /* XCRemoteSwiftPackageReference "Awesome" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/LiveUI/Awesome.git";
@@ -869,6 +889,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		EE5772632A880031002AAC3A /* ExceptionCatcher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = EE5772622A880031002AAC3A /* XCRemoteSwiftPackageReference "ExceptionCatcher" */;
+			productName = ExceptionCatcher;
+		};
 		EE6406A82A7EEB1F00DEDED2 /* Awesome */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = EE6406A72A7EEB1F00DEDED2 /* XCRemoteSwiftPackageReference "Awesome" */;
