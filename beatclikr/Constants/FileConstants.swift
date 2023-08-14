@@ -8,23 +8,22 @@
 import Foundation
 enum FileConstants: String, CaseIterable, Identifiable, CustomStringConvertible, Codable {
     case FileExt = "wav"
-    
-    case ClickHi = "clickhi"
-    case ClickLo = "clicklo"
-    case Cowbell = "cowbell"
-    case CrashL = "crashl"
-    case CrashR = "crashr"
-    case HatClosed = "hatclosed"
-    case HatOpen = "hatopen"
-    case Kick = "kick"
-    case RideEdge = "ride"
-    case RideBell = "ridebell"
-    case Silence = "silence"
-    case Snare = "snare"
-    case Tamb = "tamb"
-    case TomHi = "tomhi"
-    case TomLo = "tomlow"
-    case TomMid = "tommid"
+    case ClickHi = "clickhi_E5"
+    case ClickLo = "clicklo_F5"
+    case Cowbell = "cowbell_G#3"
+    case CrashL = "crashl_C#3"
+    case CrashR = "crashr_A3"
+    case HatClosed = "hatclosed_F#2"
+    case HatOpen = "hatopen_A#2"
+    case Kick = "kick_C2"
+    case RideEdge = "rideedge_D#3"
+    case RideBell = "ridebell_F3"
+    case Silence = "silence_D7"
+    case Snare = "snare_D2"
+    case Tamb = "tamb_F#3"
+    case TomHi = "tomhi_D3"
+    case TomLo = "tomlow_A2"
+    case TomMid = "tommid_B2"
 
     var id: Self {self}
     
@@ -64,6 +63,46 @@ enum FileConstants: String, CaseIterable, Identifiable, CustomStringConvertible,
             return "Tom (Low)"
         case .TomMid:
             return "Tom (Mid)"
+        }
+    }
+    
+    func getNoteNumber() -> Int {
+        switch self {
+            
+        case .FileExt:
+            return 99
+        case .ClickHi:
+            return 76 //E5
+        case .ClickLo:
+            return 77 //F5
+        case .Cowbell:
+            return 56 //G#3
+        case .CrashL:
+            return 49 //C#3
+        case .CrashR:
+            return 57 //A3
+        case .HatClosed:
+            return 42 //F#2
+        case .HatOpen:
+            return 46 //A#2
+        case .Kick:
+            return 36 //C2
+        case .RideEdge:
+            return 51 //D#3
+        case .RideBell:
+            return 53 //F3
+        case .Silence:
+            return 98 //D7
+        case .Snare:
+            return 38 //D2
+        case .Tamb:
+            return 54 //F#3
+        case .TomHi:
+            return 50 //D3
+        case .TomLo:
+            return 45 //A2
+        case .TomMid:
+            return 47 //B2
         }
     }
 }

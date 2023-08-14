@@ -1,21 +1,21 @@
 {
   "pins" : [
     {
+      "identity" : "audiokit",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/AudioKit/AudioKit.git",
+      "state" : {
+        "revision" : "c30a151fea40696ad0a45c60c2bba29112bb4279",
+        "version" : "5.6.1"
+      }
+    },
+    {
       "identity" : "awesome",
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/LiveUI/Awesome.git",
       "state" : {
         "revision" : "40c68d0ca2b143c1118e636518706a4b8332777b",
         "version" : "2.4.0"
-      }
-    },
-    {
-      "identity" : "exceptioncatcher",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/sindresorhus/ExceptionCatcher",
-      "state" : {
-        "branch" : "main",
-        "revision" : "81cf83b117ec368e2ebb7fbcd9f7a3deb115ab07"
       }
     }
   ],

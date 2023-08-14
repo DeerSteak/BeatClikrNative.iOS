@@ -67,7 +67,7 @@ struct InstantMetronomeView: View {
                         .pickerStyle(.inline)
                         .labelsHidden()
                     }, label: {
-                        RectangleText("\(beat.description)", backgroundColor: .clear, foregroundColor: .blue)
+                        RectangleText("\(beat.description)", backgroundColor: .clear, foregroundColor: .appPrimary)
                     })
                 }
                 GridRow {
@@ -83,7 +83,7 @@ struct InstantMetronomeView: View {
                         .pickerStyle(.inline)
                         .labelsHidden()
                     }, label: {
-                        RectangleText("\(rhythm.description)", backgroundColor: .clear, foregroundColor: .blue)
+                        RectangleText("\(rhythm.description)", backgroundColor: .clear, foregroundColor: .appPrimary)
                     })
                     
                 }

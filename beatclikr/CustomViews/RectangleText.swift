@@ -9,7 +9,7 @@ import SwiftUI
 
 struct RectangleText: View {
     var text: String
-    var backgroundColor: Color = .blue
+    var backgroundColor: Color = Color.appPrimary
     var foregroundColor: Color = .white
     
     init (_ text: String) {

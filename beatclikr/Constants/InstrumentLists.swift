@@ -16,6 +16,8 @@ struct InstrumentLists {
         .HatClosed,
         .HatOpen,
         .Kick,
+        .RideBell,
+        .RideEdge,
         .Snare,
         .Tamb
     ]
@@ -25,10 +27,15 @@ struct InstrumentLists {
         .ClickHi,
         .ClickLo,
         .Cowbell,
+        .CrashL,
+        .CrashR,
         .HatClosed,
         .HatOpen,
         .Kick,
         .Snare,
-        .Tamb
+        .Tamb,
+        .TomHi,
+        .TomMid,
+        .TomLo
     ]
 }
