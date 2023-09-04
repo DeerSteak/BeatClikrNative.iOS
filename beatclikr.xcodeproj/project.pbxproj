@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		EE0473192AA388EB004E958A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0473182AA388EB004E958A /* HomeView.swift */; };
+		EE04731B2AA39267004E958A /* ClickerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE04731A2AA39267004E958A /* ClickerType.swift */; };
 		EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07558E2A7E84D400E34D29 /* FormatterHelper.swift */; };
 		EE0939E72A7EA838005491BB /* RectangleText.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0939E62A7EA838005491BB /* RectangleText.swift */; };
 		EE207A3D2A89723F00D8E267 /* AudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = EE207A3C2A89723F00D8E267 /* AudioKit */; };
@@ -16,7 +18,6 @@
 		EE478E8B2A879C51008337DB /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE478E8A2A879C51008337DB /* AudioPlayerService.swift */; };
 		EE5772682A880BB6002AAC3A /* InstrumentLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5772672A880BB6002AAC3A /* InstrumentLists.swift */; };
 		EE6406A62A7EE9E300DEDED2 /* MetronomeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406A52A7EE9E300DEDED2 /* MetronomeService.swift */; };
-		EE6406A92A7EEB1F00DEDED2 /* Awesome in Frameworks */ = {isa = PBXBuildFile; productRef = EE6406A82A7EEB1F00DEDED2 /* Awesome */; };
 		EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */; };
 		EE6406BC2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */; };
 		EE6406CB2A7EF5B400DEDED2 /* fa-duotone-900.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE6406C42A7EF5B400DEDED2 /* fa-duotone-900.ttf */; };
@@ -45,7 +46,6 @@
 		EE6CD1352A87C014003F66C0 /* MetronomeTimer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6CD1342A87C014003F66C0 /* MetronomeTimer.swift */; };
 		EE8201832A81B1E900675A1C /* PlaylistModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8201822A81B1E900675A1C /* PlaylistModeView.swift */; };
 		EE8201852A81B20F00675A1C /* SongListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8201842A81B20F00675A1C /* SongListItemView.swift */; };
-		EE82F9A62A7FBC4B00B873E7 /* PreferencesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE82F9A52A7FBC4B00B873E7 /* PreferencesViewModel.swift */; };
 		EE82F9A82A7FBD7000B873E7 /* UserDefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */; };
 		EE82F9AA2A7FBFE100B873E7 /* FlashlightService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE82F9A92A7FBFE100B873E7 /* FlashlightService.swift */; };
 		EE82F9AC2A7FC98200B873E7 /* VibrationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE82F9AB2A7FC98200B873E7 /* VibrationService.swift */; };
@@ -59,6 +59,7 @@
 		EE84F3162A7C7A24009E2F23 /* beatclikrUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F3152A7C7A24009E2F23 /* beatclikrUITestsLaunchTests.swift */; };
 		EE97D59C2A7E7C3200FA11A0 /* SongLibraryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE97D59B2A7E7C3200FA11A0 /* SongLibraryViewModel.swift */; };
 		EE97D5A12A7E7EB900FA11A0 /* SongDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE97D5A02A7E7EB900FA11A0 /* SongDetailsView.swift */; };
+		EEC392172AA5FA3000F4AAB4 /* ImageConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC392162AA5FA3000F4AAB4 /* ImageConstants.swift */; };
 		EEE911532A7EDE07008DFDED /* FileConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE911522A7EDE07008DFDED /* FileConstants.swift */; };
 		EEE911552A7EDEDC008DFDED /* PreferenceKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE911542A7EDEDC008DFDED /* PreferenceKeys.swift */; };
 /* End PBXBuildFile section */
@@ -81,6 +82,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		EE0473182AA388EB004E958A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
+		EE04731A2AA39267004E958A /* ClickerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickerType.swift; sourceTree = "<group>"; };
 		EE07558E2A7E84D400E34D29 /* FormatterHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterHelper.swift; sourceTree = "<group>"; };
 		EE0939E62A7EA838005491BB /* RectangleText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectangleText.swift; sourceTree = "<group>"; };
 		EE207A3E2A89734F00D8E267 /* SoundFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundFile.swift; sourceTree = "<group>"; };
@@ -117,7 +120,6 @@
 		EE6CD1342A87C014003F66C0 /* MetronomeTimer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeTimer.swift; sourceTree = "<group>"; };
 		EE8201822A81B1E900675A1C /* PlaylistModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistModeView.swift; sourceTree = "<group>"; };
 		EE8201842A81B20F00675A1C /* SongListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongListItemView.swift; sourceTree = "<group>"; };
-		EE82F9A52A7FBC4B00B873E7 /* PreferencesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferencesViewModel.swift; sourceTree = "<group>"; };
 		EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsService.swift; sourceTree = "<group>"; };
 		EE82F9A92A7FBFE100B873E7 /* FlashlightService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashlightService.swift; sourceTree = "<group>"; };
 		EE82F9AB2A7FC98200B873E7 /* VibrationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibrationService.swift; sourceTree = "<group>"; };
@@ -136,6 +138,7 @@
 		EE84F3152A7C7A24009E2F23 /* beatclikrUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beatclikrUITestsLaunchTests.swift; sourceTree = "<group>"; };
 		EE97D59B2A7E7C3200FA11A0 /* SongLibraryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongLibraryViewModel.swift; sourceTree = "<group>"; };
 		EE97D5A02A7E7EB900FA11A0 /* SongDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongDetailsView.swift; sourceTree = "<group>"; };
+		EEC392162AA5FA3000F4AAB4 /* ImageConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConstants.swift; sourceTree = "<group>"; };
 		EEE911522A7EDE07008DFDED /* FileConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileConstants.swift; sourceTree = "<group>"; };
 		EEE911542A7EDEDC008DFDED /* PreferenceKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceKeys.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -146,7 +149,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				EE207A3D2A89723F00D8E267 /* AudioKit in Frameworks */,
-				EE6406A92A7EEB1F00DEDED2 /* Awesome in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -262,6 +264,7 @@
 				EE84F2F82A7C7A21009E2F23 /* Song.swift */,
 				EE3BEF3B2A83B476004B0C97 /* Groove.swift */,
 				EE207A3E2A89734F00D8E267 /* SoundFile.swift */,
+				EE04731A2AA39267004E958A /* ClickerType.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -273,6 +276,7 @@
 				EE34F0752A7C7D8300CA5BD0 /* InstantMetronomeView.swift */,
 				EE97D5A02A7E7EB900FA11A0 /* SongDetailsView.swift */,
 				EE8201822A81B1E900675A1C /* PlaylistModeView.swift */,
+				EE0473182AA388EB004E958A /* HomeView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -282,7 +286,6 @@
 			children = (
 				EE97D59B2A7E7C3200FA11A0 /* SongLibraryViewModel.swift */,
 				EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */,
-				EE82F9A52A7FBC4B00B873E7 /* PreferencesViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -346,6 +349,7 @@
 				EEE911522A7EDE07008DFDED /* FileConstants.swift */,
 				EEE911542A7EDEDC008DFDED /* PreferenceKeys.swift */,
 				EE5772672A880BB6002AAC3A /* InstrumentLists.swift */,
+				EEC392162AA5FA3000F4AAB4 /* ImageConstants.swift */,
 			);
 			path = Constants;
 			sourceTree = "<group>";
@@ -367,7 +371,6 @@
 			);
 			name = beatclikr;
 			packageProductDependencies = (
-				EE6406A82A7EEB1F00DEDED2 /* Awesome */,
 				EE207A3C2A89723F00D8E267 /* AudioKit */,
 			);
 			productName = beatclikr;
@@ -443,7 +446,6 @@
 			);
 			mainGroup = EE84F2E82A7C7A21009E2F23;
 			packageReferences = (
-				EE6406A72A7EEB1F00DEDED2 /* XCRemoteSwiftPackageReference "Awesome" */,
 				EE207A3B2A89723F00D8E267 /* XCRemoteSwiftPackageReference "AudioKit" */,
 			);
 			productRefGroup = EE84F2F22A7C7A21009E2F23 /* Products */;
@@ -512,11 +514,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				EE97D5A12A7E7EB900FA11A0 /* SongDetailsView.swift in Sources */,
+				EE04731B2AA39267004E958A /* ClickerType.swift in Sources */,
 				EE84F2F72A7C7A21009E2F23 /* LibraryView.swift in Sources */,
 				EE6406A62A7EE9E300DEDED2 /* MetronomeService.swift in Sources */,
-				EE82F9A62A7FBC4B00B873E7 /* PreferencesViewModel.swift in Sources */,
+				EE0473192AA388EB004E958A /* HomeView.swift in Sources */,
 				EE82F9AC2A7FC98200B873E7 /* VibrationService.swift in Sources */,
 				EEE911552A7EDEDC008DFDED /* PreferenceKeys.swift in Sources */,
+				EEC392172AA5FA3000F4AAB4 /* ImageConstants.swift in Sources */,
 				EE97D59C2A7E7C3200FA11A0 /* SongLibraryViewModel.swift in Sources */,
 				EE207A3F2A89734F00D8E267 /* SoundFile.swift in Sources */,
 				EE8201852A81B20F00675A1C /* SongListItemView.swift in Sources */,
@@ -886,14 +890,6 @@
 				minimumVersion = 5.6.1;
 			};
 		};
-		EE6406A72A7EEB1F00DEDED2 /* XCRemoteSwiftPackageReference "Awesome" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/LiveUI/Awesome.git";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 2.4.0;
-			};
-		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -901,11 +897,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = EE207A3B2A89723F00D8E267 /* XCRemoteSwiftPackageReference "AudioKit" */;
 			productName = AudioKit;
-		};
-		EE6406A82A7EEB1F00DEDED2 /* Awesome */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = EE6406A72A7EEB1F00DEDED2 /* XCRemoteSwiftPackageReference "Awesome" */;
-			productName = Awesome;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

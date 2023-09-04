@@ -39,65 +39,129 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "E581ADCC-DBAA-4CC8-95BA-DD44AFEB495D"
+            uuid = "DE391967-7DDB-4AF3-9EC0-4E07DE48182C"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "beatclikr/Services/UserDefaultsService.swift"
+            filePath = "beatclikr/ViewModel/MetronomePlaybackViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "50"
-            endingLineNumber = "50"
-            landmarkName = "setInstantRhythm(val:)"
+            startingLineNumber = "39"
+            endingLineNumber = "39"
+            landmarkName = "beat"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "AFCF953B-ADEB-46F6-B1E5-E671898FA853"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "beatclikr/ViewModel/MetronomePlaybackViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "49"
+            endingLineNumber = "49"
+            landmarkName = "rhythm"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EC3F6890-93AD-4184-966F-BCEA72681B8A"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "beatclikr/ViewModel/MetronomePlaybackViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "30"
+            endingLineNumber = "30"
+            landmarkName = "selectedGroove"
+            landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "EC3F6890-93AD-4184-966F-BCEA72681B8A - 11f1a1c9d0bafca5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "beatclikr.MetronomePlaybackViewModel.selectedGroove.didset : beatclikr.Groove"
+                  moduleName = "beatclikr"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/benfunk/Projects/beatclikr/beatclikr/ViewModel/MetronomePlaybackViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "22"
+                  endingLineNumber = "22"
+                  offsetFromSymbolStart = "60">
+               </Location>
+               <Location
+                  uuid = "EC3F6890-93AD-4184-966F-BCEA72681B8A - 11f1a1c9d0bafd42"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "beatclikr.MetronomePlaybackViewModel.selectedGroove.didset : beatclikr.Groove"
+                  moduleName = "beatclikr"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/benfunk/Projects/beatclikr/beatclikr/ViewModel/MetronomePlaybackViewModel.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "23"
+                  endingLineNumber = "23"
+                  offsetFromSymbolStart = "60">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "A0554098-E3ED-416D-95FB-4D851D61A3B8"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "beatclikr/ViewModel/MetronomePlaybackViewModel.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "21"
+            endingLineNumber = "21"
+            landmarkName = "beatsPerMinute"
+            landmarkType = "24">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "5F3FB883-EE25-4C66-8E35-BEDB5D7F9BE4"
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "beatclikr/View/InstantMetronomeView.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "94"
+            endingLineNumber = "94"
+            landmarkName = "togglePlayPause()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "9743F7AE-FA7E-4D19-9702-CF33DAB76374"
+            uuid = "8A1875F9-186F-4739-9AD0-0C3C937B95B5"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "beatclikr/Services/UserDefaultsService.swift"
+            filePath = "beatclikr/ViewModel/MetronomePlaybackViewModel.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "58"
-            endingLineNumber = "58"
-            landmarkName = "setInstantBeat(val:)"
+            startingLineNumber = "75"
+            endingLineNumber = "75"
+            landmarkName = "togglePlayPause()"
             landmarkType = "7">
-            <Locations>
-               <Location
-                  uuid = "9743F7AE-FA7E-4D19-9702-CF33DAB76374 - 1302cd1a933bdbfd"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "beatclikr.UserDefaultsService.setInstantBeat(val: beatclikr.FileConstants) -&gt; ()"
-                  moduleName = "beatclikr"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/benfunk/Projects/beatclikr/beatclikr/Services/UserDefaultsService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "79"
-                  endingLineNumber = "79"
-                  offsetFromSymbolStart = "40">
-               </Location>
-               <Location
-                  uuid = "9743F7AE-FA7E-4D19-9702-CF33DAB76374 - 1302cd1a933bd930"
-                  shouldBeEnabled = "Yes"
-                  ignoreCount = "0"
-                  continueAfterRunningActions = "No"
-                  symbolName = "beatclikr.UserDefaultsService.setInstantBeat(val: beatclikr.FileConstants) -&gt; ()"
-                  moduleName = "beatclikr"
-                  usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/benfunk/Projects/beatclikr/beatclikr/Services/UserDefaultsService.swift"
-                  startingColumnNumber = "9223372036854775807"
-                  endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "58"
-                  endingLineNumber = "58"
-                  offsetFromSymbolStart = "40">
-               </Location>
-            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

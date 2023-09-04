@@ -7,27 +7,29 @@
 
 import Foundation
 
-class MetronomeService : MetronomeTimerDelegate {
-   
-    static var instance = MetronomeService()
+class MetronomeService : MetronomeTimerDelegate, ObservableObject {
     
-    private var timer = MetronomeTimer.instance
+    static var instance: MetronomeService = MetronomeService()
     
-    private var vibration = VibrationService.instance
-    private var flashlight = FlashlightService.instance
-    private var audio = AudioPlayerService.instance
-    private var defaults = UserDefaultsService.instance
-        
+    private var timer: MetronomeTimer = MetronomeTimer.instance
+    
+    private var vibration: VibrationService = VibrationService.instance
+    private var flashlight: FlashlightService = FlashlightService.instance
+    private var audio: AudioPlayerService = AudioPlayerService.instance
+    private var defaults: UserDefaultsService = UserDefaultsService.instance
+    
     private var subdivisions: Int = 1
     private var subdivisionMilliseconds: Double = 0
     
-    private var timerEventCounter = 1
-    private var beatsPlayed = 0
-    private var isLiveMode = false
-    private var liveModeStarted = false
-    private var isMuted = false
-    private var useFlashlight = false
-    private var useVibration = false
+    private var timerEventCounter: Int = 1
+    private var beatsPlayed: Int = 0
+    private var isLiveMode: Bool = false
+    private var liveModeStarted: Bool = false
+    private var isMuted: Bool = false
+    private var useFlashlight: Bool = false
+    private var useVibration: Bool = false
+    
+    @Published var isBeat: Bool = false
     
     //MARK: Delegate handler
     func metronomeTimerFired() {
@@ -45,9 +47,9 @@ class MetronomeService : MetronomeTimerDelegate {
     
     //MARK: Public functions
     func setup(beatName: String, rhythmName: String, song: Song) {
-        isMuted = defaults.getMuteMetronome()
-        useFlashlight = defaults.getUseFlashlight()
-        useVibration = defaults.getUseVibration()
+        isMuted = defaults.muteMetronome
+        useFlashlight = defaults.useFlashlight
+        useVibration = defaults.useVibration
         
         if song.beatsPerMinute < 30 {
             song.beatsPerMinute = 30
@@ -75,6 +77,7 @@ class MetronomeService : MetronomeTimerDelegate {
     
     //MARK: Private helpers
     private func playBeat() {
+        isBeat = true
         if !isMuted && !liveModeStarted {
             audio.playBeat()
         }
@@ -87,6 +90,7 @@ class MetronomeService : MetronomeTimerDelegate {
     }
     
     private func playRhythm() {
+        isBeat = false
         if !isMuted && !liveModeStarted {
             audio.playRhythm()
         }

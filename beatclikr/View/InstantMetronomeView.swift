@@ -6,136 +6,103 @@
 //
 
 import SwiftUI
-import Awesome
 
 struct InstantMetronomeView: View {
-    @State var isBeat: Bool = false
+    
     @State var showAlert: Bool
-    @State var isPlaying: Bool
-    
-    @State var beatsPerMinute: Double
-    @State var selectedGroove: Groove
-    @State var beat: FileConstants
-    @State var rhythm: FileConstants
-    
-    let metronome = MetronomeService.instance
-    let defaults = UserDefaultsService.instance
+    @EnvironmentObject var model: MetronomePlaybackViewModel
     
     init () {
-        _beatsPerMinute = State(initialValue: defaults.getInstantBpm())
         _showAlert = State(initialValue: false)
-        _selectedGroove = State(initialValue: defaults.getInstantGroove())
-        _isPlaying = State(initialValue: false)
-        _beat = State(initialValue: defaults.getInstantBeat())
-        _rhythm = State(initialValue: defaults.getInstantRhythm())
     }
     
     var body: some View {
-        VStack() {
-            MetronomePlayerView()
-            Text("Tempo (BPM): \(FormatterHelper.formatDouble(beatsPerMinute))")
-            Slider(value: $beatsPerMinute, in: 60...180, step: 1) {
-                Text("Tempo")
-            } minimumValueLabel: {
-                Text("60")
-            } maximumValueLabel: {
-                Text("180")
+        Grid(alignment: .trailing, verticalSpacing: 16) {
+            HStack{
+                Spacer()
+                MetronomePlayerView()
+                    .padding(.all, 12)
+                Spacer()
             }
-            .onChange(of: beatsPerMinute) { saveInstantBpm() }
-            Grid(alignment: .trailing) {
-                GridRow {
-                    Text("Subdivisions")
-                    Picker("Select Groove", selection: $selectedGroove) {
-                        ForEach(Groove.allCases) {
+            VStack {
+                Text("Tempo (BPM): \(FormatterHelper.formatDouble(model.beatsPerMinute))")
+                Slider(value: $model.beatsPerMinute, in: 60...180, step: 1) {
+                    Text("Tempo")
+                } minimumValueLabel: {
+                    Text("60")
+                } maximumValueLabel: {
+                    Text("180")
+                }
+                .onChange(of: model.beatsPerMinute) { resetMetronome() }
+            }
+            GridRow {
+                Text("Subdivisions")
+                Picker("Select Groove", selection: $model.selectedGroove) {
+                    ForEach(Groove.allCases) {
+                        option in
+                        Text(String(describing: option))
+                    }
+                }
+                .onChange(of: model.selectedGroove) { resetMetronome() }
+                .pickerStyle(.segmented)
+            }
+            GridRow {
+                Text("Beat")
+                Menu(content: {
+                    Picker("Beat", selection: $model.beat) {
+                        ForEach(InstrumentLists.beat) {
                             option in
                             Text(String(describing: option))
                         }
                     }
-                    .onChange(of: selectedGroove) { saveInstantGroove() }
-                    .pickerStyle(.segmented)
-                }
-                GridRow {
-                    Text("Beat")
-                    Menu(content: {
-                        Picker("Beat", selection: $beat) {
-                            ForEach(InstrumentLists.beat) {
-                                option in
-                                Text(String(describing: option))
-                            }
-                        }
-                        .onChange(of: beat) { saveInstantBeat() }
-                        .pickerStyle(.inline)
-                        .labelsHidden()
-                    }, label: {
-                        RectangleText("\(beat.description)", backgroundColor: .clear, foregroundColor: .appPrimary)
-                    })
-                }
-                GridRow {
-                    Text("Rhythm")
-                    Menu(content: {
-                        Picker("Rhythm", selection: $rhythm) {
-                            ForEach(InstrumentLists.rhythm) {
-                                option in
-                                Text(String(describing: option))
-                            }
-                        }
-                        .onChange(of: rhythm) { saveInstantRhythm() }
-                        .pickerStyle(.inline)
-                        .labelsHidden()
-                    }, label: {
-                        RectangleText("\(rhythm.description)", backgroundColor: .clear, foregroundColor: .appPrimary)
-                    })
-                    
-                }
+                    .onChange(of: model.beat) { resetMetronome() }
+                    .pickerStyle(.inline)
+                    .labelsHidden()
+                }, label: {
+                    RectangleText("\(model.beat.description)", backgroundColor: .clear, foregroundColor: .appPrimary)
+                })
             }
-            Button(action: {
-                isPlaying = !isPlaying
-                isPlaying ? play() : pause()
-            }, label: {
-                RectangleText(isPlaying ? "Pause" : "Play")
+            GridRow {
+                Text("Rhythm")
+                Menu(content: {
+                    Picker("Rhythm", selection: $model.rhythm) {
+                        ForEach(InstrumentLists.rhythm) {
+                            option in
+                            Text(String(describing: option))
+                        }
+                    }
+                    .onChange(of: model.rhythm) { resetMetronome() }
+                    .pickerStyle(.inline)
+                    .labelsHidden()
+                }, label: {
+                    RectangleText("\(model.rhythm.description)", backgroundColor: .clear, foregroundColor: .appPrimary)
+                })
+                
+            }
+            Button(action: togglePlayPause, label: {
+                RectangleText(model.isPlaying ? "Pause" : "Play")
             })
+            
             Spacer()
+            
         }
-        .onDisappear(perform: pause)
-        .padding(.horizontal, 12)
+        .onDisappear(perform: model.stop)
+        .padding(.all, 12)
     }
     
-    private func play() {
-        isPlaying = true
-        let song = Song(title: "Instant", artist: "You!", beatsPerMinute: beatsPerMinute, beatsPerMeasure: 4, groove: selectedGroove)
-        metronome.setup(beatName: beat.rawValue, rhythmName: rhythm.rawValue, song: song)
-        metronome.start()
-    }
-    
-    private func pause() {
-        isPlaying = false
-        metronome.stop()
-    }
-    
-    private func saveInstantBpm() {
-        defaults.setInstantBpm(val: beatsPerMinute)
+    private func togglePlayPause() {
         resetMetronome()
-    }
-    
-    private func saveInstantGroove() {
-        defaults.setInstantGroove(val: selectedGroove)
-        resetMetronome()
-    }
-    
-    private func saveInstantBeat() {
-        defaults.setInstantBeat(val: beat)
-        resetMetronome()
-    }
-    
-    private func saveInstantRhythm() {
-        defaults.setInstantRhythm(val: rhythm)
-        resetMetronome()
+        model.togglePlayPause()
     }
     
     private func resetMetronome() {
-        if isPlaying {
-            pause()
-            play()
+        model.clickerType = .instant
+        let wasPlaying = model.isPlaying
+        model.stop()
+        //TODO: set stuff and restart
+        model.resetMetronome()
+        if wasPlaying {
+            model.togglePlayPause()
         }
     }
 }

@@ -7,7 +7,6 @@
 
 import SwiftUI
 import SwiftData
-import Awesome
 
 struct LibraryView: View {
     @State var title: String = ""
@@ -68,21 +67,14 @@ struct LibraryView: View {
                     }
                     ToolbarItem {
                         NavigationLink(destination: SongDetailsView()) {
-                            AwesomePro.Regular.plus.image
-                                .foregroundColor(.systemBlue)
+                            Image(systemName: "plus")
                         }
                     }
                     ToolbarItem() {
                         Button(action: {
                             isPlayback = !isPlayback
                         }, label: {
-                            if (isPlayback) {
-                                AwesomePro.Regular.edit.image
-                                    .foregroundColor(.systemBlue)
-                            } else {
-                                AwesomePro.Regular.play.image
-                                    .foregroundColor(.systemBlue)
-                            }
+                            Image(systemName: isPlayback ? "play" : "square.and.pencil")
                         })
                     }
                 }

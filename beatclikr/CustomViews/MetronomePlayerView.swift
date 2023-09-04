@@ -6,22 +6,16 @@
 //
 
 import SwiftUI
-import Awesome
 
 
 struct MetronomePlayerView: View {
     @EnvironmentObject var model: MetronomePlaybackViewModel
     
     var body: some View {
-        if (model.isBeat) {
-            AwesomePro.Solid.lightbulbOn.image
-                .size(80)
-                .foregroundColor(.orange)
-        } else {
-            AwesomePro.Regular.lightbulb.image
-                .size(80)
-                .foregroundColor(.black)
-        }            
+        Image(systemName: model.imageName)
+            .resizable()
+            .frame(width: 100, height: 100)
+            .aspectRatio(contentMode: .fit)
     }
 }
 

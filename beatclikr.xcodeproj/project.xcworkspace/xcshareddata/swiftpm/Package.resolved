@@ -8,15 +8,6 @@
         "revision" : "c30a151fea40696ad0a45c60c2bba29112bb4279",
         "version" : "5.6.1"
       }
-    },
-    {
-      "identity" : "awesome",
-      "kind" : "remoteSourceControl",
-      "location" : "https://github.com/LiveUI/Awesome.git",
-      "state" : {
-        "revision" : "40c68d0ca2b143c1118e636518706a4b8332777b",
-        "version" : "2.4.0"
-      }
     }
   ],
   "version" : 2

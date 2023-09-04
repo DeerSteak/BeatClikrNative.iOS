@@ -19,13 +19,15 @@ final class Song : Identifiable {
     var rehearsalSequence: Int?
     var groove: Groove
     
+    static let instantSong: Song = Song()
+    
     init() {
         self.id = UUID().uuidString
-        self.title = ""
-        self.artist = ""
+        self.title = "Instant"
+        self.artist = "Song"
         self.beatsPerMinute = 60
         self.beatsPerMeasure = 4
-        self.groove = .eighth
+        self.groove = .quarter
     }
         
     init(title: String, artist: String, beatsPerMinute: Double, beatsPerMeasure: Int, groove: Groove) {
