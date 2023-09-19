@@ -15,32 +15,30 @@ struct LibraryView: View {
     @State var beatsPerMeasure: String = ""
     @State var isPlayback: Bool = true
     @State var tada: Bool = false
+    @State var isPlaying: Bool = false
     
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: SongLibraryViewModel
     
     @Query(sort: [SortDescriptor(\Song.title), SortDescriptor(\Song.artist)]) private var items: [Song]
-
+    
     var body: some View {
         NavigationSplitView {
             VStack {
                 if (items.count > 0) {
                     MetronomePlayerView()
-                }                
+                }
                 List {
                     ForEach(items.sorted(by: { a, b in
-                        a.title < b.title 
+                        a.title < b.title
                     })) { item in
                         if (isPlayback) {
                             SongListItemView(song: item)
                                 .onTapGesture(perform: {
-                                    tada = true
-                                })
-                                .alert("Thingy", isPresented: $tada) {
-                                    Button("Thanks!") {
-                                        tada = false
+                                    if isPlayback {
+                                        playSong(item)
                                     }
-                                }
+                                })
                         } else {
                             NavigationLink {
                                 SongDetailsView(song: item)
@@ -48,7 +46,7 @@ struct LibraryView: View {
                                 SongListItemView(song: item)
                             }
                         }
-
+                        
                     }
                     .onDelete(perform: deleteItems)
                 }
@@ -72,9 +70,13 @@ struct LibraryView: View {
                     }
                     ToolbarItem() {
                         Button(action: {
-                            isPlayback = !isPlayback
+                            if isPlaying {
+                                stop()
+                            } else {
+                                isPlayback = !isPlayback
+                            }
                         }, label: {
-                            Image(systemName: isPlayback ? "play" : "square.and.pencil")
+                            Image(systemName: isPlayback ? (isPlaying ? "pause" : "play") : "square.and.pencil")
                         })
                     }
                 }
@@ -83,9 +85,10 @@ struct LibraryView: View {
             }
         } detail: {
             Text("Select an item")
-        }      
+        }
+        .onDisappear(perform: model.stopMetronome)
     }
-
+    
     private func deleteItems(offsets: IndexSet) {
         withAnimation {
             for index in offsets {
@@ -93,6 +96,17 @@ struct LibraryView: View {
                 try! modelContext.save()
             }
         }
+    }
+    
+    private func stop() {
+        model.stopMetronome()
+        isPlaying = false
+    }
+    
+    private func playSong(_ song: Song) {
+        model.switchSong(song)
+        model.startMetronome()
+        isPlaying = true
     }
 }
 

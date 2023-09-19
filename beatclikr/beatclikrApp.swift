@@ -11,13 +11,13 @@ import SwiftData
 @main
 struct beatclikrApp: App {
 
-
     var body: some Scene {
         WindowGroup {
             HomeView()
                 .environmentObject(SongLibraryViewModel())
-                .environmentObject(MetronomePlaybackViewModel())
+                .environmentObject(MetronomePlaybackViewModel())                
         }
         .modelContainer(for: Song.self)
     }
+
 }

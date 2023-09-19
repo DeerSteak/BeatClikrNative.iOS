@@ -8,8 +8,7 @@
 import Foundation
 import SwiftUI
 
-class MetronomePlaybackViewModel: ObservableObject, MetronomeTimerDelegate {
-    
+class MetronomePlaybackViewModel: ObservableObject, MetronomeTimerDelegate {    
     //MARK: Private variables
     private var timer: MetronomeTimer = MetronomeTimer.instance
     private let vibration: VibrationService = VibrationService.instance
@@ -109,7 +108,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeTimerDelegate {
     }
     
     //MARK: Public functions
-    func switchSong(song: Song) {
+    func switchSong(_ song: Song) {
         self.song = song
         setupMetronome()
     }

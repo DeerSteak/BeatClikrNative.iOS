@@ -23,7 +23,7 @@ struct SongDetailsView: View {
     var song: Song
     
     init () {
-        self.song = Song()
+        self.song = Song(title: "", artist: "", beatsPerMinute: 60, beatsPerMeasure: 4, groove: .eighth)
         _title = State(initialValue: self.song.title)
         _artist = State(initialValue: self.song.artist)
         _beatsPerMinute = State(initialValue: self.song.beatsPerMinute)
