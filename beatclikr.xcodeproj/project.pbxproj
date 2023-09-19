@@ -17,7 +17,6 @@
 		EE3BEF3C2A83B476004B0C97 /* Groove.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3BEF3B2A83B476004B0C97 /* Groove.swift */; };
 		EE478E8B2A879C51008337DB /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE478E8A2A879C51008337DB /* AudioPlayerService.swift */; };
 		EE5772682A880BB6002AAC3A /* InstrumentLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5772672A880BB6002AAC3A /* InstrumentLists.swift */; };
-		EE6406A62A7EE9E300DEDED2 /* MetronomeService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406A52A7EE9E300DEDED2 /* MetronomeService.swift */; };
 		EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */; };
 		EE6406BC2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */; };
 		EE6406CB2A7EF5B400DEDED2 /* fa-duotone-900.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE6406C42A7EF5B400DEDED2 /* fa-duotone-900.ttf */; };
@@ -91,7 +90,6 @@
 		EE3BEF3B2A83B476004B0C97 /* Groove.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Groove.swift; sourceTree = "<group>"; };
 		EE478E8A2A879C51008337DB /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
 		EE5772672A880BB6002AAC3A /* InstrumentLists.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstrumentLists.swift; sourceTree = "<group>"; };
-		EE6406A52A7EE9E300DEDED2 /* MetronomeService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MetronomeService.swift; path = beatclikr/Services/MetronomeService.swift; sourceTree = SOURCE_ROOT; };
 		EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlayerView.swift; sourceTree = "<group>"; };
 		EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlaybackViewModel.swift; sourceTree = "<group>"; };
 		EE6406C42A7EF5B400DEDED2 /* fa-duotone-900.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fa-duotone-900.ttf"; sourceTree = "<group>"; };
@@ -295,7 +293,6 @@
 			children = (
 				EE6CD1342A87C014003F66C0 /* MetronomeTimer.swift */,
 				EE82F9A92A7FBFE100B873E7 /* FlashlightService.swift */,
-				EE6406A52A7EE9E300DEDED2 /* MetronomeService.swift */,
 				EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */,
 				EE82F9AB2A7FC98200B873E7 /* VibrationService.swift */,
 				EE478E8A2A879C51008337DB /* AudioPlayerService.swift */,
@@ -516,7 +513,6 @@
 				EE97D5A12A7E7EB900FA11A0 /* SongDetailsView.swift in Sources */,
 				EE04731B2AA39267004E958A /* ClickerType.swift in Sources */,
 				EE84F2F72A7C7A21009E2F23 /* LibraryView.swift in Sources */,
-				EE6406A62A7EE9E300DEDED2 /* MetronomeService.swift in Sources */,
 				EE0473192AA388EB004E958A /* HomeView.swift in Sources */,
 				EE82F9AC2A7FC98200B873E7 /* VibrationService.swift in Sources */,
 				EEE911552A7EDEDC008DFDED /* PreferenceKeys.swift in Sources */,

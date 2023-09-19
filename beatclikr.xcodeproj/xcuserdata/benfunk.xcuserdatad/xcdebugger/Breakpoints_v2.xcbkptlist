@@ -7,111 +7,47 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A9836BA6-E935-4727-A21F-D8871ADBC4C0"
-            shouldBeEnabled = "No"
+            uuid = "CACDD9F3-7EDF-47DF-B479-136A0A1A98F5"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "beatclikr/Services/MetronomeTimer.swift"
+            filePath = "beatclikr/View/InstantMetronomeView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "68"
-            endingLineNumber = "68"
-            landmarkName = "start()"
+            startingLineNumber = "108"
+            endingLineNumber = "108"
+            landmarkName = "resetMetronome()"
             landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "9B051A88-F219-4F42-AC4D-31D7DB32291F"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "beatclikr/Services/MetronomeTimer.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "143"
-            endingLineNumber = "143"
-            landmarkName = "timerElapsed()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "DE391967-7DDB-4AF3-9EC0-4E07DE48182C"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "beatclikr/ViewModel/MetronomePlaybackViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "39"
-            endingLineNumber = "39"
-            landmarkName = "beat"
-            landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "AFCF953B-ADEB-46F6-B1E5-E671898FA853"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "beatclikr/ViewModel/MetronomePlaybackViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "49"
-            endingLineNumber = "49"
-            landmarkName = "rhythm"
-            landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "EC3F6890-93AD-4184-966F-BCEA72681B8A"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "beatclikr/ViewModel/MetronomePlaybackViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "30"
-            endingLineNumber = "30"
-            landmarkName = "selectedGroove"
-            landmarkType = "24">
             <Locations>
                <Location
-                  uuid = "EC3F6890-93AD-4184-966F-BCEA72681B8A - 11f1a1c9d0bafca5"
+                  uuid = "CACDD9F3-7EDF-47DF-B479-136A0A1A98F5 - 6488896a22a210ec"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "beatclikr.MetronomePlaybackViewModel.selectedGroove.didset : beatclikr.Groove"
+                  symbolName = "beatclikr.InstantMetronomeView.resetMetronome() -&gt; ()"
                   moduleName = "beatclikr"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/benfunk/Projects/beatclikr/beatclikr/ViewModel/MetronomePlaybackViewModel.swift"
+                  urlString = "file:///Users/benfunk/Projects/beatclikr/beatclikr/View/InstantMetronomeView.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "22"
-                  endingLineNumber = "22"
-                  offsetFromSymbolStart = "60">
+                  startingLineNumber = "106"
+                  endingLineNumber = "106"
+                  offsetFromSymbolStart = "252">
                </Location>
                <Location
-                  uuid = "EC3F6890-93AD-4184-966F-BCEA72681B8A - 11f1a1c9d0bafd42"
+                  uuid = "CACDD9F3-7EDF-47DF-B479-136A0A1A98F5 - 6488896a22a21f2e"
                   shouldBeEnabled = "Yes"
                   ignoreCount = "0"
                   continueAfterRunningActions = "No"
-                  symbolName = "beatclikr.MetronomePlaybackViewModel.selectedGroove.didset : beatclikr.Groove"
+                  symbolName = "beatclikr.InstantMetronomeView.resetMetronome() -&gt; ()"
                   moduleName = "beatclikr"
                   usesParentBreakpointCondition = "Yes"
-                  urlString = "file:///Users/benfunk/Projects/beatclikr/beatclikr/ViewModel/MetronomePlaybackViewModel.swift"
+                  urlString = "file:///Users/benfunk/Projects/beatclikr/beatclikr/View/InstantMetronomeView.swift"
                   startingColumnNumber = "9223372036854775807"
                   endingColumnNumber = "9223372036854775807"
-                  startingLineNumber = "23"
-                  endingLineNumber = "23"
-                  offsetFromSymbolStart = "60">
+                  startingLineNumber = "108"
+                  endingLineNumber = "108"
+                  offsetFromSymbolStart = "252">
                </Location>
             </Locations>
          </BreakpointContent>
@@ -119,49 +55,17 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "A0554098-E3ED-416D-95FB-4D851D61A3B8"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "beatclikr/ViewModel/MetronomePlaybackViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "21"
-            endingLineNumber = "21"
-            landmarkName = "beatsPerMinute"
-            landmarkType = "24">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "5F3FB883-EE25-4C66-8E35-BEDB5D7F9BE4"
+            uuid = "5733FCB3-F981-4C0E-BD3F-430C52316D00"
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "beatclikr/View/InstantMetronomeView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "94"
-            endingLineNumber = "94"
-            landmarkName = "togglePlayPause()"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "8A1875F9-186F-4739-9AD0-0C3C937B95B5"
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "beatclikr/ViewModel/MetronomePlaybackViewModel.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "75"
-            endingLineNumber = "75"
-            landmarkName = "togglePlayPause()"
-            landmarkType = "7">
+            startingLineNumber = "37"
+            endingLineNumber = "37"
+            landmarkName = "body"
+            landmarkType = "24">
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

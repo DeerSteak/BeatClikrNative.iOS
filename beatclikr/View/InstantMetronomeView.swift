@@ -33,7 +33,9 @@ struct InstantMetronomeView: View {
                 } maximumValueLabel: {
                     Text("180")
                 }
-                .onChange(of: model.beatsPerMinute) { resetMetronome() }
+                .onChange(of: model.beatsPerMinute) {
+                    resetMetronome()
+                }
             }
             GridRow {
                 Text("Subdivisions")
@@ -87,22 +89,23 @@ struct InstantMetronomeView: View {
             
         }
         .onDisappear(perform: model.stop)
+        .onAppear(perform: { model.clickerType = .instant })
         .padding(.all, 12)
     }
     
     private func togglePlayPause() {
-        resetMetronome()
-        model.togglePlayPause()
+        if model.isPlaying {
+            model.stop()
+        } else {
+            model.start()
+        }
     }
     
     private func resetMetronome() {
-        model.clickerType = .instant
         let wasPlaying = model.isPlaying
-        model.stop()
-        //TODO: set stuff and restart
         model.resetMetronome()
         if wasPlaying {
-            model.togglePlayPause()
+            model.start()
         }
     }
 }
