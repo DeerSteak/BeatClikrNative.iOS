@@ -19,13 +19,6 @@
 		EE5772682A880BB6002AAC3A /* InstrumentLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5772672A880BB6002AAC3A /* InstrumentLists.swift */; };
 		EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */; };
 		EE6406BC2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */; };
-		EE6406CB2A7EF5B400DEDED2 /* fa-duotone-900.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE6406C42A7EF5B400DEDED2 /* fa-duotone-900.ttf */; };
-		EE6406CC2A7EF5B400DEDED2 /* fa-v4compatibility.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE6406C52A7EF5B400DEDED2 /* fa-v4compatibility.ttf */; };
-		EE6406CD2A7EF5B400DEDED2 /* fa-light-300.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE6406C62A7EF5B400DEDED2 /* fa-light-300.ttf */; };
-		EE6406CE2A7EF5B400DEDED2 /* fa-thin-100.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE6406C72A7EF5B400DEDED2 /* fa-thin-100.ttf */; };
-		EE6406CF2A7EF5B400DEDED2 /* fa-regular-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE6406C82A7EF5B400DEDED2 /* fa-regular-400.ttf */; };
-		EE6406D02A7EF5B400DEDED2 /* fa-solid-900.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE6406C92A7EF5B400DEDED2 /* fa-solid-900.ttf */; };
-		EE6406D12A7EF5B400DEDED2 /* fa-brands-400.ttf in Resources */ = {isa = PBXBuildFile; fileRef = EE6406CA2A7EF5B400DEDED2 /* fa-brands-400.ttf */; };
 		EE6406E22A7EF6B900DEDED2 /* crashr_A3.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406D22A7EF6B800DEDED2 /* crashr_A3.wav */; };
 		EE6406E32A7EF6B900DEDED2 /* tamb_F#3.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406D32A7EF6B800DEDED2 /* tamb_F#3.wav */; };
 		EE6406E42A7EF6B900DEDED2 /* hatclosed_F#2.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406D42A7EF6B900DEDED2 /* hatclosed_F#2.wav */; };
@@ -92,13 +85,6 @@
 		EE5772672A880BB6002AAC3A /* InstrumentLists.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstrumentLists.swift; sourceTree = "<group>"; };
 		EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlayerView.swift; sourceTree = "<group>"; };
 		EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlaybackViewModel.swift; sourceTree = "<group>"; };
-		EE6406C42A7EF5B400DEDED2 /* fa-duotone-900.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fa-duotone-900.ttf"; sourceTree = "<group>"; };
-		EE6406C52A7EF5B400DEDED2 /* fa-v4compatibility.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fa-v4compatibility.ttf"; sourceTree = "<group>"; };
-		EE6406C62A7EF5B400DEDED2 /* fa-light-300.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fa-light-300.ttf"; sourceTree = "<group>"; };
-		EE6406C72A7EF5B400DEDED2 /* fa-thin-100.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fa-thin-100.ttf"; sourceTree = "<group>"; };
-		EE6406C82A7EF5B400DEDED2 /* fa-regular-400.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fa-regular-400.ttf"; sourceTree = "<group>"; };
-		EE6406C92A7EF5B400DEDED2 /* fa-solid-900.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fa-solid-900.ttf"; sourceTree = "<group>"; };
-		EE6406CA2A7EF5B400DEDED2 /* fa-brands-400.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "fa-brands-400.ttf"; sourceTree = "<group>"; };
 		EE6406D22A7EF6B800DEDED2 /* crashr_A3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = crashr_A3.wav; sourceTree = "<group>"; };
 		EE6406D32A7EF6B800DEDED2 /* tamb_F#3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "tamb_F#3.wav"; sourceTree = "<group>"; };
 		EE6406D42A7EF6B900DEDED2 /* hatclosed_F#2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "hatclosed_F#2.wav"; sourceTree = "<group>"; };
@@ -175,20 +161,6 @@
 				EE8201842A81B20F00675A1C /* SongListItemView.swift */,
 			);
 			path = CustomViews;
-			sourceTree = "<group>";
-		};
-		EE6406AA2A7EED1000DEDED2 /* Fonts */ = {
-			isa = PBXGroup;
-			children = (
-				EE6406CA2A7EF5B400DEDED2 /* fa-brands-400.ttf */,
-				EE6406C42A7EF5B400DEDED2 /* fa-duotone-900.ttf */,
-				EE6406C62A7EF5B400DEDED2 /* fa-light-300.ttf */,
-				EE6406C82A7EF5B400DEDED2 /* fa-regular-400.ttf */,
-				EE6406C92A7EF5B400DEDED2 /* fa-solid-900.ttf */,
-				EE6406C72A7EF5B400DEDED2 /* fa-thin-100.ttf */,
-				EE6406C52A7EF5B400DEDED2 /* fa-v4compatibility.ttf */,
-			);
-			path = Fonts;
 			sourceTree = "<group>";
 		};
 		EE84F2E82A7C7A21009E2F23 = {
@@ -311,7 +283,6 @@
 		EEE9112F2A7EDC89008DFDED /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				EE6406AA2A7EED1000DEDED2 /* Fonts */,
 				EEE911302A7EDC94008DFDED /* Sounds */,
 			);
 			path = Resources;
@@ -466,25 +437,18 @@
 				EE6406E72A7EF6B900DEDED2 /* tomlow_A2.wav in Resources */,
 				EE6406EC2A7EF6B900DEDED2 /* tomhi_D3.wav in Resources */,
 				EE6406E42A7EF6B900DEDED2 /* hatclosed_F#2.wav in Resources */,
-				EE6406CF2A7EF5B400DEDED2 /* fa-regular-400.ttf in Resources */,
 				EE6406E22A7EF6B900DEDED2 /* crashr_A3.wav in Resources */,
 				EE6406E62A7EF6B900DEDED2 /* crashl_C#3.wav in Resources */,
 				EE6406F12A7EF6B900DEDED2 /* hatopen_A#2.wav in Resources */,
-				EE6406CD2A7EF5B400DEDED2 /* fa-light-300.ttf in Resources */,
 				EE6406EE2A7EF6B900DEDED2 /* snare_D2.wav in Resources */,
-				EE6406CE2A7EF5B400DEDED2 /* fa-thin-100.ttf in Resources */,
 				EE6406E52A7EF6B900DEDED2 /* clickhi_E5.wav in Resources */,
-				EE6406D02A7EF5B400DEDED2 /* fa-solid-900.ttf in Resources */,
-				EE6406D12A7EF5B400DEDED2 /* fa-brands-400.ttf in Resources */,
 				EE6406EF2A7EF6B900DEDED2 /* clicklo_F5.wav in Resources */,
 				EE6406EA2A7EF6B900DEDED2 /* cowbell_G#3.wav in Resources */,
 				EE6406E92A7EF6B900DEDED2 /* kick_C2.wav in Resources */,
-				EE6406CC2A7EF5B400DEDED2 /* fa-v4compatibility.ttf in Resources */,
 				EE6406ED2A7EF6B900DEDED2 /* silence_D7.wav in Resources */,
 				EE6406EB2A7EF6B900DEDED2 /* ridebell_F3.wav in Resources */,
 				EE84F2FE2A7C7A23009E2F23 /* Preview Assets.xcassets in Resources */,
 				EE6406E32A7EF6B900DEDED2 /* tamb_F#3.wav in Resources */,
-				EE6406CB2A7EF5B400DEDED2 /* fa-duotone-900.ttf in Resources */,
 				EE84F2FB2A7C7A23009E2F23 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
