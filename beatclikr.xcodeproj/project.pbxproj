@@ -17,6 +17,7 @@
 		EE3BEF3C2A83B476004B0C97 /* Groove.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3BEF3B2A83B476004B0C97 /* Groove.swift */; };
 		EE478E8B2A879C51008337DB /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE478E8A2A879C51008337DB /* AudioPlayerService.swift */; };
 		EE5772682A880BB6002AAC3A /* InstrumentLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5772672A880BB6002AAC3A /* InstrumentLists.swift */; };
+		EE5DFD722AD81FA900756566 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = EE5DFD712AD81FA900756566 /* README.md */; };
 		EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */; };
 		EE6406BC2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */; };
 		EE6406E22A7EF6B900DEDED2 /* crashr_A3.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406D22A7EF6B800DEDED2 /* crashr_A3.wav */; };
@@ -83,6 +84,7 @@
 		EE3BEF3B2A83B476004B0C97 /* Groove.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Groove.swift; sourceTree = "<group>"; };
 		EE478E8A2A879C51008337DB /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
 		EE5772672A880BB6002AAC3A /* InstrumentLists.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstrumentLists.swift; sourceTree = "<group>"; };
+		EE5DFD712AD81FA900756566 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlayerView.swift; sourceTree = "<group>"; };
 		EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlaybackViewModel.swift; sourceTree = "<group>"; };
 		EE6406D22A7EF6B800DEDED2 /* crashr_A3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = crashr_A3.wav; sourceTree = "<group>"; };
@@ -166,6 +168,7 @@
 		EE84F2E82A7C7A21009E2F23 = {
 			isa = PBXGroup;
 			children = (
+				EE5DFD712AD81FA900756566 /* README.md */,
 				EE84F2F32A7C7A21009E2F23 /* beatclikr */,
 				EE84F3082A7C7A23009E2F23 /* beatclikrTests */,
 				EE84F3122A7C7A24009E2F23 /* beatclikrUITests */,
@@ -445,6 +448,7 @@
 				EE6406EF2A7EF6B900DEDED2 /* clicklo_F5.wav in Resources */,
 				EE6406EA2A7EF6B900DEDED2 /* cowbell_G#3.wav in Resources */,
 				EE6406E92A7EF6B900DEDED2 /* kick_C2.wav in Resources */,
+				EE5DFD722AD81FA900756566 /* README.md in Resources */,
 				EE6406ED2A7EF6B900DEDED2 /* silence_D7.wav in Resources */,
 				EE6406EB2A7EF6B900DEDED2 /* ridebell_F3.wav in Resources */,
 				EE84F2FE2A7C7A23009E2F23 /* Preview Assets.xcassets in Resources */,
