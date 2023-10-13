@@ -14,8 +14,8 @@
             filePath = "beatclikr/View/InstantMetronomeView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "108"
-            endingLineNumber = "108"
+            startingLineNumber = "109"
+            endingLineNumber = "109"
             landmarkName = "resetMetronome()"
             landmarkType = "7">
             <Locations>
@@ -49,6 +49,21 @@
                   endingLineNumber = "108"
                   offsetFromSymbolStart = "252">
                </Location>
+               <Location
+                  uuid = "CACDD9F3-7EDF-47DF-B479-136A0A1A98F5 - 362628356578e439"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "beatclikr.InstantMetronomeView.resetMetronome() -&gt; ()"
+                  moduleName = "beatclikr"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/benfunk/Projects/BeatClikrNative.iOS/beatclikr/View/InstantMetronomeView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "109"
+                  endingLineNumber = "109"
+                  offsetFromSymbolStart = "252">
+               </Location>
             </Locations>
          </BreakpointContent>
       </BreakpointProxy>
@@ -62,8 +77,8 @@
             filePath = "beatclikr/View/InstantMetronomeView.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "37"
-            endingLineNumber = "37"
+            startingLineNumber = "38"
+            endingLineNumber = "38"
             landmarkName = "body"
             landmarkType = "24">
          </BreakpointContent>

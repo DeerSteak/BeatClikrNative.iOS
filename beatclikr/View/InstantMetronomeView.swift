@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct InstantMetronomeView: View {
     
@@ -61,7 +62,7 @@ struct InstantMetronomeView: View {
                     .pickerStyle(.inline)
                     .labelsHidden()
                 }, label: {
-                    RectangleText("\(model.beat.description)", backgroundColor: .clear, foregroundColor: .appPrimary)
+                    RectangleText("\(model.beat.description)", backgroundColor: Color(UIColor.systemBackground), foregroundColor: .appPrimary)
                 })
             }
             GridRow {
@@ -77,7 +78,7 @@ struct InstantMetronomeView: View {
                     .pickerStyle(.inline)
                     .labelsHidden()
                 }, label: {
-                    RectangleText("\(model.rhythm.description)", backgroundColor: .clear, foregroundColor: .appPrimary)
+                    RectangleText("\(model.rhythm.description)", backgroundColor: Color(UIColor.systemBackground), foregroundColor: .appPrimary)
                 })
                 
             }
@@ -111,5 +112,9 @@ struct InstantMetronomeView: View {
 }
 
 #Preview {
-    InstantMetronomeView()
+    let previewContainer = PreviewDataContainer([Song.self])
+    return InstantMetronomeView()
+        .modelContainer(previewContainer.container)
+        .environmentObject(MetronomePlaybackViewModel())
+        
 }

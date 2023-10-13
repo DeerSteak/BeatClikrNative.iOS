@@ -22,10 +22,19 @@ struct HomeView: View {
                 .tabItem {
                     Label("Playlist", systemImage: "music.note.list")
                 }
+            SettingsView()
+                .tabItem {
+                    Label("Settings", systemImage: "gear")
+                }
         }
     }
 }
 
 #Preview {
-    HomeView()
+    let previewContainer = PreviewDataContainer([Song.self])
+    return HomeView()
+        .environmentObject(MetronomePlaybackViewModel())
+        .environmentObject(SettingsViewModel())
+        .environmentObject(SongLibraryViewModel(container: previewContainer.container))
+        
 }

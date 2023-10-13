@@ -1,0 +1,233 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "%@ /  %@ BPM" : {
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "new",
+            "value" : "%1$@ /  %2$@ BPM"
+          }
+        }
+      }
+    },
+    "60" : {
+
+    },
+    "180" : {
+
+    },
+    "Artist" : {
+
+    },
+    "Beat" : {
+
+    },
+    "Beats / Bar" : {
+
+    },
+    "Beats per Measure" : {
+
+    },
+    "Beats per Minute" : {
+
+    },
+    "Error saving" : {
+
+    },
+    "Groove" : {
+
+    },
+    "Instant" : {
+
+    },
+    "Library" : {
+
+    },
+    "MetronomePlaybackAlwaysMute" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Always mute metronome"
+          }
+        }
+      }
+    },
+    "MetronomePlaybackDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BeatClikr will always animate the bulb icon, and it plays audio by default. Choose other playback settings below."
+          }
+        }
+      }
+    },
+    "MetronomePlaybackFlashlight" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use Flashlight"
+          }
+        }
+      }
+    },
+    "MetronomePlaybackTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Metronome Playback"
+          }
+        }
+      }
+    },
+    "MetronomePlaybackVibration" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Use Vibration"
+          }
+        }
+      }
+    },
+    "PlaybackInstrumentsBeat" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Beat"
+          }
+        }
+      }
+    },
+    "PlaybackInstrumentsDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "In each area, select the main sound played on each beat and rhythm/groove sound that plays on subdivisions."
+          }
+        }
+      }
+    },
+    "PlaybackInstrumentsInstantTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Instant & Library Metronome"
+          }
+        }
+      }
+    },
+    "PlaybackInstrumentsPlaylistTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playlist (Live/Rehearsal) Mode"
+          }
+        }
+      }
+    },
+    "PlaybackInstrumentsRhythm" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Rhythm"
+          }
+        }
+      }
+    },
+    "PlaybackInstrumentsTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Playback Instruments"
+          }
+        }
+      }
+    },
+    "PracticeRemindersDescription" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "BeatClikr can send you daily reminders to pick up your instrument and play."
+          }
+        }
+      }
+    },
+    "PracticeRemindersLabel" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Send practice reminders (starting tomorrow)"
+          }
+        }
+      }
+    },
+    "PracticeRemindersTitle" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Practice Reminders"
+          }
+        }
+      }
+    },
+    "Press the + button to add a song" : {
+
+    },
+    "Rhythm" : {
+
+    },
+    "Select an item" : {
+
+    },
+    "Select Groove" : {
+
+    },
+    "Song Library" : {
+
+    },
+    "Subdivisions" : {
+
+    },
+    "Tempo" : {
+
+    },
+    "Tempo (BPM)" : {
+
+    },
+    "Tempo (BPM): %@" : {
+
+    },
+    "Title" : {
+
+    }
+  },
+  "version" : "1.0"
+}

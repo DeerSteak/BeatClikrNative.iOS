@@ -9,14 +9,6 @@ import SwiftUI
 import SwiftData
 
 struct LibraryView: View {
-    @State var title: String = ""
-    @State var artist: String = ""
-    @State var beatsPerMinute: String = ""
-    @State var beatsPerMeasure: String = ""
-    @State var isPlayback: Bool = true
-    @State var tada: Bool = false
-    @State var isPlaying: Bool = false
-    
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: SongLibraryViewModel
     
@@ -32,10 +24,10 @@ struct LibraryView: View {
                     ForEach(items.sorted(by: { a, b in
                         a.title < b.title
                     })) { item in
-                        if (isPlayback) {
+                        if (model.isPlayback) {
                             SongListItemView(song: item)
                                 .onTapGesture(perform: {
-                                    if isPlayback {
+                                    if model.isPlayback {
                                         playSong(item)
                                     }
                                 })
@@ -70,13 +62,13 @@ struct LibraryView: View {
                     }
                     ToolbarItem() {
                         Button(action: {
-                            if isPlaying {
+                            if model.isPlaying {
                                 stop()
                             } else {
-                                isPlayback = !isPlayback
+                                model.isPlayback = !model.isPlayback
                             }
                         }, label: {
-                            Image(systemName: isPlayback ? (isPlaying ? "pause" : "play") : "square.and.pencil")
+                            Image(systemName: model.isPlayback ? (model.isPlaying ? "pause" : "play") : "square.and.pencil")
                         })
                     }
                 }
@@ -100,18 +92,19 @@ struct LibraryView: View {
     
     private func stop() {
         model.stopMetronome()
-        isPlaying = false
+        model.isPlaying = false
     }
     
     private func playSong(_ song: Song) {
         model.switchSong(song)
         model.startMetronome()
-        isPlaying = true
+        model.isPlaying = true
     }
 }
 
 #Preview {
-    LibraryView()
-        .modelContainer(for: Song.self, inMemory: true)
-        .environmentObject(MetronomePlaybackViewModel())
+    let previewContainer = PreviewDataContainer([Song.self])
+    let vm = SongLibraryViewModel(container: previewContainer.container)
+    return LibraryView()
+        .environmentObject(vm)
 }

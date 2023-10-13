@@ -15,7 +15,8 @@ struct beatclikrApp: App {
         WindowGroup {
             HomeView()
                 .environmentObject(SongLibraryViewModel())
-                .environmentObject(MetronomePlaybackViewModel())                
+                .environmentObject(MetronomePlaybackViewModel())      
+                .environmentObject(SettingsViewModel())
         }
         .modelContainer(for: Song.self)
     }

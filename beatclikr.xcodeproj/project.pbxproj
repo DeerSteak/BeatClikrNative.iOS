@@ -18,6 +18,10 @@
 		EE478E8B2A879C51008337DB /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE478E8A2A879C51008337DB /* AudioPlayerService.swift */; };
 		EE5772682A880BB6002AAC3A /* InstrumentLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5772672A880BB6002AAC3A /* InstrumentLists.swift */; };
 		EE5DFD722AD81FA900756566 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = EE5DFD712AD81FA900756566 /* README.md */; };
+		EE5DFD742AD8201C00756566 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5DFD732AD8201C00756566 /* SettingsView.swift */; };
+		EE5DFD762AD8253300756566 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = EE5DFD752AD8253300756566 /* Localizable.xcstrings */; };
+		EE5DFD782AD82B5A00756566 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5DFD772AD82B5A00756566 /* SettingsViewModel.swift */; };
+		EE5DFD7B2AD82CA600756566 /* PreviewDataContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5DFD7A2AD82CA500756566 /* PreviewDataContainer.swift */; };
 		EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */; };
 		EE6406BC2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */; };
 		EE6406E22A7EF6B900DEDED2 /* crashr_A3.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406D22A7EF6B800DEDED2 /* crashr_A3.wav */; };
@@ -85,6 +89,10 @@
 		EE478E8A2A879C51008337DB /* AudioPlayerService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioPlayerService.swift; sourceTree = "<group>"; };
 		EE5772672A880BB6002AAC3A /* InstrumentLists.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstrumentLists.swift; sourceTree = "<group>"; };
 		EE5DFD712AD81FA900756566 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		EE5DFD732AD8201C00756566 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		EE5DFD752AD8253300756566 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
+		EE5DFD772AD82B5A00756566 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
+		EE5DFD7A2AD82CA500756566 /* PreviewDataContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewDataContainer.swift; sourceTree = "<group>"; };
 		EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlayerView.swift; sourceTree = "<group>"; };
 		EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlaybackViewModel.swift; sourceTree = "<group>"; };
 		EE6406D22A7EF6B800DEDED2 /* crashr_A3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = crashr_A3.wav; sourceTree = "<group>"; };
@@ -165,9 +173,18 @@
 			path = CustomViews;
 			sourceTree = "<group>";
 		};
+		EE5DFD792AD82C9600756566 /* PreviewHelpers */ = {
+			isa = PBXGroup;
+			children = (
+				EE5DFD7A2AD82CA500756566 /* PreviewDataContainer.swift */,
+			);
+			path = PreviewHelpers;
+			sourceTree = "<group>";
+		};
 		EE84F2E82A7C7A21009E2F23 = {
 			isa = PBXGroup;
 			children = (
+				EE5DFD752AD8253300756566 /* Localizable.xcstrings */,
 				EE5DFD712AD81FA900756566 /* README.md */,
 				EE84F2F32A7C7A21009E2F23 /* beatclikr */,
 				EE84F3082A7C7A23009E2F23 /* beatclikrTests */,
@@ -189,6 +206,7 @@
 		EE84F2F32A7C7A21009E2F23 /* beatclikr */ = {
 			isa = PBXGroup;
 			children = (
+				EE5DFD792AD82C9600756566 /* PreviewHelpers */,
 				EEE911512A7EDDF5008DFDED /* Constants */,
 				EEE9112F2A7EDC89008DFDED /* Resources */,
 				EE0939E52A7EA825005491BB /* CustomViews */,
@@ -250,6 +268,7 @@
 				EE97D5A02A7E7EB900FA11A0 /* SongDetailsView.swift */,
 				EE8201822A81B1E900675A1C /* PlaylistModeView.swift */,
 				EE0473182AA388EB004E958A /* HomeView.swift */,
+				EE5DFD732AD8201C00756566 /* SettingsView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -259,6 +278,7 @@
 			children = (
 				EE97D59B2A7E7C3200FA11A0 /* SongLibraryViewModel.swift */,
 				EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */,
+				EE5DFD772AD82B5A00756566 /* SettingsViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -441,6 +461,7 @@
 				EE6406EC2A7EF6B900DEDED2 /* tomhi_D3.wav in Resources */,
 				EE6406E42A7EF6B900DEDED2 /* hatclosed_F#2.wav in Resources */,
 				EE6406E22A7EF6B900DEDED2 /* crashr_A3.wav in Resources */,
+				EE5DFD762AD8253300756566 /* Localizable.xcstrings in Resources */,
 				EE6406E62A7EF6B900DEDED2 /* crashl_C#3.wav in Resources */,
 				EE6406F12A7EF6B900DEDED2 /* hatopen_A#2.wav in Resources */,
 				EE6406EE2A7EF6B900DEDED2 /* snare_D2.wav in Resources */,
@@ -490,6 +511,7 @@
 				EE8201852A81B20F00675A1C /* SongListItemView.swift in Sources */,
 				EEE911532A7EDE07008DFDED /* FileConstants.swift in Sources */,
 				EE82F9AA2A7FBFE100B873E7 /* FlashlightService.swift in Sources */,
+				EE5DFD7B2AD82CA600756566 /* PreviewDataContainer.swift in Sources */,
 				EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */,
 				EE478E8B2A879C51008337DB /* AudioPlayerService.swift in Sources */,
 				EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */,
@@ -503,6 +525,8 @@
 				EE6406BC2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift in Sources */,
 				EE6CD1352A87C014003F66C0 /* MetronomeTimer.swift in Sources */,
 				EE8201832A81B1E900675A1C /* PlaylistModeView.swift in Sources */,
+				EE5DFD742AD8201C00756566 /* SettingsView.swift in Sources */,
+				EE5DFD782AD82B5A00756566 /* SettingsViewModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
