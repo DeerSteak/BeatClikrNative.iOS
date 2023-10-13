@@ -112,7 +112,7 @@ struct InstantMetronomeView: View {
 }
 
 #Preview {
-    let previewContainer = PreviewDataContainer([Song.self])
+    let previewContainer = PreviewContainer([Song.self])
     return InstantMetronomeView()
         .modelContainer(previewContainer.container)
         .environmentObject(MetronomePlaybackViewModel())

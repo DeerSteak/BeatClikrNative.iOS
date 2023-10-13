@@ -31,7 +31,7 @@ struct HomeView: View {
 }
 
 #Preview {
-    let previewContainer = PreviewDataContainer([Song.self])
+    let previewContainer = PreviewContainer([Song.self])
     return HomeView()
         .environmentObject(MetronomePlaybackViewModel())
         .environmentObject(SettingsViewModel())

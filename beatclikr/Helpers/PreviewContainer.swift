@@ -8,7 +8,7 @@
 import Foundation
 import SwiftData
 
-struct PreviewDataContainer {
+struct PreviewContainer {
     let container: ModelContainer!
     
     init(_ types: [any PersistentModel.Type], isStoredInMemoryOnly: Bool = true) {

@@ -103,7 +103,7 @@ struct LibraryView: View {
 }
 
 #Preview {
-    let previewContainer = PreviewDataContainer([Song.self])
+    let previewContainer = PreviewContainer([Song.self])
     let vm = SongLibraryViewModel(container: previewContainer.container)
     return LibraryView()
         .environmentObject(vm)
