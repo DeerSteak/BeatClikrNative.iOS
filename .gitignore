@@ -13,7 +13,6 @@ xcuserdata/
 *.wav
 
 ## get rid of .DS_Store
-**/.DS_Store
 .DS_Store
 
 ## compatibility with Xcode 3 and earlier (ignoring not required starting Xcode 4)
