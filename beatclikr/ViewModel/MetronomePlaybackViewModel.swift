@@ -127,6 +127,16 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     //MARK: Public functions
     func switchSong(_ song: Song) {
         self.song = song
+
+        // Reload beat/rhythm from defaults in case they changed in settings
+        if clickerType == .instant {
+            beat = defaults.instantBeat
+            rhythm = defaults.instantRhythm
+        } else {
+            beat = defaults.playlistBeat
+            rhythm = defaults.playlistRhythm
+        }
+
         setupMetronome()
     }
 
