@@ -9,52 +9,56 @@ import Foundation
 import SwiftUI
 
 @MainActor
-class MetronomePlaybackViewModel: ObservableObject, MetronomeTimerDelegate {    
+class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate {
     //MARK: Private variables
-    private var timer: MetronomeTimer = MetronomeTimer.instance
-    private let vibration: VibrationService = VibrationService.instance
-    private let flashlight: FlashlightService = FlashlightService.instance
-    private let audio: AudioPlayerService = AudioPlayerService.instance
-    private let defaults: UserDefaultsService = UserDefaultsService.instance
-    private var subdivisions: Int = 1
-    private var subdivisionMilliseconds: Double = 0
-    private var timerEventCounter: Int = 1
-    private var beatsPlayed: Int = 0
+    private let vibration: VibrationService
+    private let flashlight: FlashlightService
+    private let audio: AudioPlayerService
+    private let defaults: UserDefaultsService
+
     private var isLiveMode: Bool = false
     private var liveModeStarted: Bool = false
     private var isMuted: Bool = false
     private var useFlashlight: Bool = false
     private var useVibration: Bool = false
     private var song: Song
-    
+
     private var isBeat: Bool = false {
         didSet {
             imageName = isBeat ? ImageConstants.beat : ImageConstants.rhythm
         }
     }
-    
+
     //MARK: Published properties
     @Published var imageName: String = ImageConstants.rhythm
     @Published var isPlaying: Bool = false
-    
+
     @Published var beatsPerMinute: Double = UserDefaultsService.instance.instantBpm {
         didSet {
             if clickerType == .instant {
                 Song.instantSong.beatsPerMinute = beatsPerMinute
                 defaults.instantBpm = beatsPerMinute
             }
+            // Update tempo in real-time if playing
+            if isPlaying {
+                audio.updateTempo(bpm: beatsPerMinute, subdivisions: song.groove.rawValue)
+            }
         }
     }
-    
+
     @Published var selectedGroove: Groove = UserDefaultsService.instance.instantGroove {
         didSet {
             if clickerType == .instant {
                 Song.instantSong.groove = selectedGroove
                 defaults.instantGroove = selectedGroove
             }
+            // Update subdivisions in real-time if playing
+            if isPlaying {
+                audio.updateTempo(bpm: beatsPerMinute, subdivisions: selectedGroove.rawValue)
+            }
         }
     }
-    
+
     @Published var beat: FileConstants = UserDefaultsService.instance.instantBeat {
         didSet {
             if clickerType == .instant {
@@ -62,9 +66,10 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeTimerDelegate {
             } else {
                 defaults.playlistBeat = beat
             }
+            audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         }
     }
-    
+
     @Published var rhythm: FileConstants = UserDefaultsService.instance.instantRhythm {
         didSet {
             if clickerType == .instant {
@@ -72,9 +77,10 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeTimerDelegate {
             } else {
                 defaults.playlistRhythm = rhythm
             }
+            audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         }
     }
-    
+
     @Published var clickerType: ClickerType = .instant {
         didSet {
             if !isPlaying {
@@ -84,7 +90,17 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeTimerDelegate {
     }
 
     //MARK: Initializer
-    init() {
+    init(
+        vibration: VibrationService = .instance,
+        flashlight: FlashlightService = .instance,
+        audio: AudioPlayerService = .instance,
+        defaults: UserDefaultsService = .instance
+    ) {
+        self.vibration = vibration
+        self.flashlight = flashlight
+        self.audio = audio
+        self.defaults = defaults
+
         song = Song.instantSong
         song.groove = defaults.instantGroove
         song.beatsPerMinute = defaults.instantBpm
@@ -92,44 +108,43 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeTimerDelegate {
         rhythm = defaults.instantRhythm
         clickerType = .instant
         isBeat = false
+
+        // Set self as delegate for audio callbacks
+        audio.delegate = self
     }
-    
-    //MARK: Delegate handler
-    func metronomeTimerFired() {
-        if timerEventCounter == 1 {
-            playBeat()
-        }
-        else {
-            playRhythm()
-        }
-        timerEventCounter += 1
-        if timerEventCounter > subdivisions {
-            timerEventCounter = 1
+
+    //MARK: MetronomeAudioEngineDelegate
+    func metronomeBeatFired(isBeat: Bool) {
+        self.isBeat = isBeat
+
+        if isBeat {
+            handleBeat()
+        } else {
+            handleRhythm()
         }
     }
-    
+
     //MARK: Public functions
     func switchSong(_ song: Song) {
         self.song = song
         setupMetronome()
     }
-    
+
     func setupMetronome() {
         isMuted = defaults.muteMetronome
         useFlashlight = defaults.useFlashlight
         useVibration = defaults.useVibration
-        
+
         if song.beatsPerMinute < 30 {
             song.beatsPerMinute = 30
         }
         else if song.beatsPerMinute > 240 {
             song.beatsPerMinute = 240
         }
-        timer.beatsPerMinute = song.beatsPerMinute
-        subdivisions = song.groove.rawValue
+
         audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
     }
-    
+
     func togglePlayPause() {
         isPlaying.toggle()
         if isPlaying {
@@ -138,27 +153,23 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeTimerDelegate {
             stop()
         }
     }
-    
+
     func start() {
-        timer.stop()
-        timerEventCounter = 1
-        beatsPlayed = 0
-        timer.delegate = self
-        timer.subdivisions = subdivisions
-        timer.start()
+        setupMetronome()
+        audio.startMetronome(bpm: song.beatsPerMinute, subdivisions: song.groove.rawValue)
         isPlaying = true
     }
-    
+
     func stop() {
-        timer.stop()
+        audio.stopMetronome()
         flashlight.turnFlashlightOff()
         isPlaying = false
     }
-        
+
     func resetMetronome() {
         let wasPlaying = isPlaying
         stop()
-        
+
         if clickerType == .instant {
             beat = defaults.instantBeat
             rhythm = defaults.instantRhythm
@@ -171,12 +182,11 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeTimerDelegate {
             start()
         }
     }
-    
+
     //MARK: Private helpers
-    private func playBeat() {
-        isBeat = true
+    private func handleBeat() {
         if !isMuted && !liveModeStarted {
-            audio.playBeat()
+            // Audio is handled by the sequencer
         }
         if useVibration {
             vibration.vibrateBeat()
@@ -185,11 +195,10 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeTimerDelegate {
             flashlight.turnFlashlightOn()
         }
     }
-    
-    private func playRhythm() {
-        isBeat = false
+
+    private func handleRhythm() {
         if !isMuted && !liveModeStarted {
-            audio.playRhythm()
+            // Audio is handled by the sequencer
         }
         if useVibration {
             vibration.vibrateRhythm()

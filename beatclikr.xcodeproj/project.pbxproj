@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		30DEB7A2263835E813BCF3F4 /* MetronomeAudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */; };
+		DFB72E0FB4B1DD3A4397382B /* AudioKitMetronomeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAB43FBDA8DD0BBF30036A0 /* AudioKitMetronomeEngine.swift */; };
 		EE0473192AA388EB004E958A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0473182AA388EB004E958A /* HomeView.swift */; };
 		EE04731B2AA39267004E958A /* ClickerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE04731A2AA39267004E958A /* ClickerType.swift */; };
 		EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07558E2A7E84D400E34D29 /* FormatterHelper.swift */; };
@@ -79,6 +81,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		1AAB43FBDA8DD0BBF30036A0 /* AudioKitMetronomeEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AudioKitMetronomeEngine.swift; sourceTree = "<group>"; };
+		CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MetronomeAudioEngine.swift; sourceTree = "<group>"; };
 		EE0473182AA388EB004E958A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		EE04731A2AA39267004E958A /* ClickerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickerType.swift; sourceTree = "<group>"; };
 		EE07558E2A7E84D400E34D29 /* FormatterHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterHelper.swift; sourceTree = "<group>"; };
@@ -282,6 +286,8 @@
 				EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */,
 				EE82F9AB2A7FC98200B873E7 /* VibrationService.swift */,
 				EE478E8A2A879C51008337DB /* AudioPlayerService.swift */,
+				CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */,
+				1AAB43FBDA8DD0BBF30036A0 /* AudioKitMetronomeEngine.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -519,6 +525,8 @@
 				EE8201832A81B1E900675A1C /* PlaylistModeView.swift in Sources */,
 				EE5DFD742AD8201C00756566 /* SettingsView.swift in Sources */,
 				EE5DFD782AD82B5A00756566 /* SettingsViewModel.swift in Sources */,
+				30DEB7A2263835E813BCF3F4 /* MetronomeAudioEngine.swift in Sources */,
+				DFB72E0FB4B1DD3A4397382B /* AudioKitMetronomeEngine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
