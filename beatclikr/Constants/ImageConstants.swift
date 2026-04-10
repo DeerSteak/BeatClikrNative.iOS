@@ -8,6 +8,6 @@
 import Foundation
 
 struct ImageConstants {
-    static let beat = "sun.max"
-    static let rhythm = "sun.min"
+    static let beat = "diamond.fill"
+    static let rhythm = "circle.fill"
 }

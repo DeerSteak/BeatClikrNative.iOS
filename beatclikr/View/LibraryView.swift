@@ -17,9 +17,6 @@ struct LibraryView: View {
     var body: some View {
         NavigationSplitView {
             VStack {
-                if (items.count > 0) {
-                    MetronomePlayerView()
-                }
                 List {
                     ForEach(items.sorted(by: { a, b in
                         a.title < b.title
@@ -52,6 +49,11 @@ struct LibraryView: View {
                     }
                 })
                 .toolbar {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        if (items.count > 0) {
+                            MetronomePlayerView(size: 30)
+                        }
+                    }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         EditButton()
                     }
