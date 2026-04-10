@@ -29,9 +29,9 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
     private var nextBeatTime: CFAbsoluteTime = 0
     private var subdivisionCounter: Int = 0
 
-    private let checkInterval: TimeInterval = 0.001
-    private let firstBeatDelay: TimeInterval = 0.067 
-    private let lookaheadTolerance: TimeInterval = 0.002
+    private let checkInterval: TimeInterval = MetronomeConstants.timerCheckInterval
+    private let firstBeatDelay: TimeInterval = MetronomeConstants.firstBeatDelay
+    private let lookaheadTolerance: TimeInterval = MetronomeConstants.lookaheadTolerance
 
     init(engine: AudioEngine) {
         self.engine = engine

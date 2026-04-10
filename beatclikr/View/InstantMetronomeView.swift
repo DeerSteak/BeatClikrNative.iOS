@@ -24,7 +24,7 @@ struct InstantMetronomeView: View {
                 ZStack {
                     // Invisible spacer to maintain fixed height at 100% scale
                     Color.clear
-                        .frame(width: 100, height: 100)
+                        .frame(width: MetronomeConstants.playerViewDefaultSize, height: MetronomeConstants.playerViewDefaultSize)
 
                     MetronomePlayerView()
                 }
@@ -33,12 +33,12 @@ struct InstantMetronomeView: View {
             }
             VStack {
                 Text("Tempo (BPM): \(FormatterHelper.formatDouble(model.beatsPerMinute))")
-                Slider(value: $model.beatsPerMinute, in: 60...180, step: 1) {
+                Slider(value: $model.beatsPerMinute, in: MetronomeConstants.defaultMinSliderBPM...MetronomeConstants.defaultMaxSliderBPM, step: 1) {
                     Text("Tempo")
                 } minimumValueLabel: {
-                    Text("60")
+                    Text("\(Int(MetronomeConstants.defaultMinSliderBPM))")
                 } maximumValueLabel: {
-                    Text("180")
+                    Text("\(Int(MetronomeConstants.defaultMaxSliderBPM))")
                 }
                 .onChange(of: model.beatsPerMinute) {
                     resetMetronome()

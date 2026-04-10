@@ -26,7 +26,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     private var isBeat: Bool = false
 
     //MARK: Published properties
-    @Published var iconScale: CGFloat = 0.5
+    @Published var iconScale: CGFloat = MetronomeConstants.iconScaleMin
     @Published var isPlaying: Bool = false
 
     @Published var beatsPerMinute: Double = UserDefaultsService.instance.instantBpm {
@@ -114,15 +114,15 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         self.isBeat = isBeat
 
         if isBeat {
-            // Reset scale to 100% instantly on beat
-            iconScale = 1.0
+            // Reset scale to max instantly on beat
+            iconScale = MetronomeConstants.iconScaleMax
 
             // Calculate duration for one full beat (in seconds)
             let beatDuration = 60.0 / song.beatsPerMinute
 
-            // Animate linearly to 50% over the beat duration
+            // Animate linearly to min over the beat duration
             withAnimation(.linear(duration: beatDuration)) {
-                iconScale = 0.5
+                iconScale = MetronomeConstants.iconScaleMin
             }
 
             handleBeat()
@@ -152,11 +152,11 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         useFlashlight = defaults.useFlashlight
         useVibration = defaults.useVibration
 
-        if song.beatsPerMinute < 30 {
-            song.beatsPerMinute = 30
+        if song.beatsPerMinute < MetronomeConstants.minBPM {
+            song.beatsPerMinute = MetronomeConstants.minBPM
         }
-        else if song.beatsPerMinute > 240 {
-            song.beatsPerMinute = 240
+        else if song.beatsPerMinute > MetronomeConstants.maxBPM {
+            song.beatsPerMinute = MetronomeConstants.maxBPM
         }
 
         audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)

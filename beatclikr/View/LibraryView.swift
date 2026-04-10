@@ -51,7 +51,7 @@ struct LibraryView: View {
                 .toolbar {
                     ToolbarItem(placement: .navigationBarLeading) {
                         if (items.count > 0) {
-                            MetronomePlayerView(size: 30)
+                            MetronomePlayerView(size: MetronomeConstants.playerViewToolbarSize)
                         }
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
