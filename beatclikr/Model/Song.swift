@@ -15,8 +15,6 @@ final class Song : Identifiable {
     var artist: String
     var beatsPerMinute: Double
     var beatsPerMeasure: Int
-    var liveSequence: Int?
-    var rehearsalSequence: Int?
     var groove: Groove
 
     @MainActor static let instantSong: Song = Song()

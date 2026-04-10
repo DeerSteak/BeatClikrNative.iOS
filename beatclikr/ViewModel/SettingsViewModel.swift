@@ -84,7 +84,7 @@ class SettingsViewModel: ObservableObject {
 
     // MARK: - Backup Methods
 
-    func backupToiCloud(songs: [Song]) {
+    func backupToiCloud(songs: [Song], playlistEntries: [PlaylistEntry]) {
         guard !isBackingUp else { return }
 
         isBackingUp = true
@@ -93,7 +93,9 @@ class SettingsViewModel: ObservableObject {
 
         Task {
             do {
-                try await backupService.backupToiCloud(settings: defaults, songs: songs)
+                try await backupService.backupSettings(defaults)
+                try await backupService.backupSongs(songs)
+                try await backupService.backupPlaylistEntries(playlistEntries)
                 lastBackupDate = Date()
                 backupSuccess = "Backup successful!"
             } catch {

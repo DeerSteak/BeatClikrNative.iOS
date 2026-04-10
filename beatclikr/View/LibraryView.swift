@@ -87,7 +87,7 @@ struct LibraryView: View {
         .onChange(of: items.count) { _, _ in
             // Auto-backup to iCloud when songs change
             Task {
-                try? await backupService.backupToiCloud(settings: settings, songs: items)
+                try? await backupService.backupSongs(items)
             }
         }
     }

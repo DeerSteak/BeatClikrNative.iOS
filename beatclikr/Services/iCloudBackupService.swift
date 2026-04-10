@@ -18,10 +18,11 @@ class iCloudBackupService {
     // MARK: - Backup Data Structure
 
     struct BackupData: Codable {
-        let version: Int
-        let timestamp: Date
-        let settings: SettingsBackup
-        let songs: [SongBackup]
+        var version: Int
+        var timestamp: Date
+        var settings: SettingsBackup?
+        var songs: [SongBackup]?
+        var playlistEntries: [PlaylistEntryBackup]?
 
         struct SettingsBackup: Codable {
             let useFlashlight: Bool
@@ -43,9 +44,13 @@ class iCloudBackupService {
             let artist: String
             let beatsPerMinute: Double
             let beatsPerMeasure: Int
-            let liveSequence: Int?
-            let rehearsalSequence: Int?
             let groove: Int
+        }
+
+        struct PlaylistEntryBackup: Codable {
+            let id: String
+            let songId: String
+            let sequence: Int
         }
     }
 
@@ -56,92 +61,118 @@ class iCloudBackupService {
             .appendingPathComponent("Documents")
     }
 
-    // MARK: - Backup Methods
+    // MARK: - Read/Write Helpers
 
-    func backupToiCloud(settings: UserDefaultsService, songs: [Song]) async throws {
+    private func readBackup() throws -> BackupData? {
+        guard let iCloudURL = iCloudURL else { return nil }
+        let backupURL = iCloudURL.appendingPathComponent(backupFileName)
+        guard fileManager.fileExists(atPath: backupURL.path) else { return nil }
+
+        let data = try Data(contentsOf: backupURL)
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return try decoder.decode(BackupData.self, from: data)
+    }
+
+    private func writeBackup(_ backup: BackupData) throws {
         guard let iCloudURL = iCloudURL else {
             throw BackupError.iCloudNotAvailable
         }
 
-        // Create backup data
-        let backup = BackupData(
-            version: 1,
-            timestamp: Date(),
-            settings: BackupData.SettingsBackup(
-                useFlashlight: settings.useFlashlight,
-                useVibration: settings.useVibration,
-                muteMetronome: settings.muteMetronome,
-                instantBeat: settings.instantBeat.rawValue,
-                instantBpm: settings.instantBpm,
-                instantGroove: settings.instantGroove.rawValue,
-                instantRhythm: settings.instantRhythm.rawValue,
-                playlistBeat: settings.playlistBeat.rawValue,
-                playlistRhythm: settings.playlistRhythm.rawValue,
-                sendReminders: settings.sendReminders,
-                reminderTime: settings.reminderTime
-            ),
-            songs: songs.map { song in
-                BackupData.SongBackup(
-                    id: song.id,
-                    title: song.title,
-                    artist: song.artist,
-                    beatsPerMinute: song.beatsPerMinute,
-                    beatsPerMeasure: song.beatsPerMeasure,
-                    liveSequence: song.liveSequence,
-                    rehearsalSequence: song.rehearsalSequence,
-                    groove: song.groove.rawValue
-                )
-            }
-        )
-
-        // Encode to JSON
         let encoder = JSONEncoder()
         encoder.dateEncodingStrategy = .iso8601
         encoder.outputFormatting = .prettyPrinted
         let data = try encoder.encode(backup)
 
-        // Ensure iCloud directory exists
         if !fileManager.fileExists(atPath: iCloudURL.path) {
             try fileManager.createDirectory(at: iCloudURL, withIntermediateDirectories: true)
         }
 
-        // Write to iCloud
         let backupURL = iCloudURL.appendingPathComponent(backupFileName)
         try data.write(to: backupURL)
     }
 
-    func restoreFromiCloud(settings: UserDefaultsService, modelContext: ModelContext) async throws {
-        guard let iCloudURL = iCloudURL else {
-            throw BackupError.iCloudNotAvailable
+    // MARK: - Individual Backup Methods
+
+    func backupSettings(_ settings: UserDefaultsService) async throws {
+        var backup = (try? readBackup()) ?? BackupData(version: 1, timestamp: Date())
+        backup.timestamp = Date()
+        backup.settings = BackupData.SettingsBackup(
+            useFlashlight: settings.useFlashlight,
+            useVibration: settings.useVibration,
+            muteMetronome: settings.muteMetronome,
+            instantBeat: settings.instantBeat.rawValue,
+            instantBpm: settings.instantBpm,
+            instantGroove: settings.instantGroove.rawValue,
+            instantRhythm: settings.instantRhythm.rawValue,
+            playlistBeat: settings.playlistBeat.rawValue,
+            playlistRhythm: settings.playlistRhythm.rawValue,
+            sendReminders: settings.sendReminders,
+            reminderTime: settings.reminderTime
+        )
+        try writeBackup(backup)
+    }
+
+    func backupSongs(_ songs: [Song]) async throws {
+        var backup = (try? readBackup()) ?? BackupData(version: 1, timestamp: Date())
+        backup.timestamp = Date()
+        backup.songs = songs.map { song in
+            BackupData.SongBackup(
+                id: song.id,
+                title: song.title,
+                artist: song.artist,
+                beatsPerMinute: song.beatsPerMinute,
+                beatsPerMeasure: song.beatsPerMeasure,
+                groove: song.groove.rawValue
+            )
         }
+        try writeBackup(backup)
+    }
 
-        let backupURL = iCloudURL.appendingPathComponent(backupFileName)
+    func backupPlaylistEntries(_ entries: [PlaylistEntry]) async throws {
+        var backup = (try? readBackup()) ?? BackupData(version: 1, timestamp: Date())
+        backup.timestamp = Date()
+        backup.playlistEntries = entries.compactMap { entry in
+            guard let song = entry.song else { return nil }
+            return BackupData.PlaylistEntryBackup(
+                id: entry.id,
+                songId: song.id,
+                sequence: entry.sequence
+            )
+        }
+        try writeBackup(backup)
+    }
 
-        guard fileManager.fileExists(atPath: backupURL.path) else {
+    // MARK: - Restore
+
+    func restoreFromiCloud(settings: UserDefaultsService, modelContext: ModelContext) async throws {
+        guard let backup = try readBackup() else {
             throw BackupError.backupNotFound
         }
 
-        // Read and decode backup
-        let data = try Data(contentsOf: backupURL)
-        let decoder = JSONDecoder()
-        decoder.dateDecodingStrategy = .iso8601
-        let backup = try decoder.decode(BackupData.self, from: data)
-
         // Restore settings
-        settings.useFlashlight = backup.settings.useFlashlight
-        settings.useVibration = backup.settings.useVibration
-        settings.muteMetronome = backup.settings.muteMetronome
-        settings.instantBeat = FileConstants(rawValue: backup.settings.instantBeat) ?? .ClickHi
-        settings.instantBpm = backup.settings.instantBpm
-        settings.instantGroove = Groove(rawValue: backup.settings.instantGroove) ?? .quarter
-        settings.instantRhythm = FileConstants(rawValue: backup.settings.instantRhythm) ?? .ClickLo
-        settings.playlistBeat = FileConstants(rawValue: backup.settings.playlistBeat) ?? .ClickHi
-        settings.playlistRhythm = FileConstants(rawValue: backup.settings.playlistRhythm) ?? .ClickLo
-        settings.sendReminders = backup.settings.sendReminders
-        settings.reminderTime = backup.settings.reminderTime
+        if let settingsBackup = backup.settings {
+            settings.useFlashlight = settingsBackup.useFlashlight
+            settings.useVibration = settingsBackup.useVibration
+            settings.muteMetronome = settingsBackup.muteMetronome
+            settings.instantBeat = FileConstants(rawValue: settingsBackup.instantBeat) ?? .ClickHi
+            settings.instantBpm = settingsBackup.instantBpm
+            settings.instantGroove = Groove(rawValue: settingsBackup.instantGroove) ?? .quarter
+            settings.instantRhythm = FileConstants(rawValue: settingsBackup.instantRhythm) ?? .ClickLo
+            settings.playlistBeat = FileConstants(rawValue: settingsBackup.playlistBeat) ?? .ClickHi
+            settings.playlistRhythm = FileConstants(rawValue: settingsBackup.playlistRhythm) ?? .ClickLo
+            settings.sendReminders = settingsBackup.sendReminders
+            settings.reminderTime = settingsBackup.reminderTime
+        }
 
-        // Restore songs (replace existing)
-        // First, delete all existing songs
+        // Delete existing playlist entries first (they reference songs)
+        let entryDescriptor = FetchDescriptor<PlaylistEntry>()
+        let existingEntries = try modelContext.fetch(entryDescriptor)
+        for entry in existingEntries {
+            modelContext.delete(entry)
+        }
+
+        // Delete existing songs
         let descriptor = FetchDescriptor<Song>()
         let existingSongs = try modelContext.fetch(descriptor)
         for song in existingSongs {
@@ -149,22 +180,37 @@ class iCloudBackupService {
         }
 
         // Insert backed up songs
-        for songBackup in backup.songs {
-            let song = Song(
-                title: songBackup.title,
-                artist: songBackup.artist,
-                beatsPerMinute: songBackup.beatsPerMinute,
-                beatsPerMeasure: songBackup.beatsPerMeasure,
-                groove: Groove(rawValue: songBackup.groove) ?? .quarter
-            )
-            song.id = songBackup.id
-            song.liveSequence = songBackup.liveSequence
-            song.rehearsalSequence = songBackup.rehearsalSequence
-            modelContext.insert(song)
+        var songMap: [String: Song] = [:]
+        if let songBackups = backup.songs {
+            for songBackup in songBackups {
+                let song = Song(
+                    title: songBackup.title,
+                    artist: songBackup.artist,
+                    beatsPerMinute: songBackup.beatsPerMinute,
+                    beatsPerMeasure: songBackup.beatsPerMeasure,
+                    groove: Groove(rawValue: songBackup.groove) ?? .quarter
+                )
+                song.id = songBackup.id
+                modelContext.insert(song)
+                songMap[song.id] = song
+            }
+        }
+
+        // Insert backed up playlist entries
+        if let entryBackups = backup.playlistEntries {
+            for entryBackup in entryBackups {
+                if let song = songMap[entryBackup.songId] {
+                    let entry = PlaylistEntry(song: song, sequence: entryBackup.sequence)
+                    entry.id = entryBackup.id
+                    modelContext.insert(entry)
+                }
+            }
         }
 
         try modelContext.save()
     }
+
+    // MARK: - Utilities
 
     func checkiCloudAvailability() -> Bool {
         return iCloudURL != nil
