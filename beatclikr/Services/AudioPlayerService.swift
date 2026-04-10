@@ -7,48 +7,87 @@
 
 import Foundation
 import AudioKit
+import AVFoundation
 
+@MainActor
 class AudioPlayerService: HasAudioEngine {
-    static var instance = AudioPlayerService()
-    
-    internal let engine = AudioEngine()
+    static let instance = AudioPlayerService()
+
+    nonisolated(unsafe) internal let engine = AudioEngine()
+
+    #if targetEnvironment(simulator)
+    // Use AudioPlayer in simulator (has latency but doesn't crash)
+    private var beatPlayer: AudioPlayer?
+    private var rhythmPlayer: AudioPlayer?
+    private let mixer = Mixer()
+    #else
+    // Use AppleSampler on real devices (low latency, sample-accurate)
     private let sampler = AppleSampler()
-    
+    #endif
+
     var sounds: [SoundFile]
-    
-    //private var starling = Starling.instance
-    
-    private var beatSound: SoundFile?
+
+    private var beatSound: SoundFile? {
+        didSet {
+            #if targetEnvironment(simulator)
+            if let sound = beatSound, let file = sound.audioFile {
+                beatPlayer?.stop()
+                beatPlayer?.detach()
+                beatPlayer = AudioPlayer(file: file)
+                beatPlayer?.volume = 1.0
+                if let player = beatPlayer {
+                    mixer.addInput(player)
+                }
+            }
+            #endif
+        }
+    }
+
     private var beatName: String {
         didSet {
-            //starling.load(resource: beatName, type: FileConstants.FileExt.rawValue, for: .beat)
             beatSound = sounds.first(where: { sound in
                 sound.displayName == beatName
             })
         }
     }
-    
-    private var rhythmSound: SoundFile?
+
+    private var rhythmSound: SoundFile? {
+        didSet {
+            #if targetEnvironment(simulator)
+            if let sound = rhythmSound, let file = sound.audioFile {
+                rhythmPlayer?.stop()
+                rhythmPlayer?.detach()
+                rhythmPlayer = AudioPlayer(file: file)
+                rhythmPlayer?.volume = 1.0
+                if let player = rhythmPlayer {
+                    mixer.addInput(player)
+                }
+            }
+            #endif
+        }
+    }
+
     private var rhythmName: String {
         didSet {
-            //starling.load(resource: rhythmName, type: FileConstants.FileExt.rawValue, for: .rhythm)
             rhythmSound = sounds.first(where: { sound in
                 sound.displayName == rhythmName
             })
         }
     }
-        
+
     init() {
         beatName = FileConstants.ClickHi.rawValue
         rhythmName = FileConstants.ClickLo.rawValue
-        
-        engine.output = sampler
+
+        // Configure audio session
         do {
-            try engine.start()
+            let session = AVAudioSession.sharedInstance()
+            try session.setCategory(.playback, mode: .default, options: [])
+            try session.setActive(true)
         } catch {
-            print("Can't start engine: \(error)")
+            print("Failed to configure audio session: \(error)")
         }
-        
+
         sounds = [SoundFile]()
         for file in FileConstants.allCases {
             if file != FileConstants.Silence && file != FileConstants.FileExt {
@@ -56,42 +95,74 @@ class AudioPlayerService: HasAudioEngine {
                 sounds.append(sound)
             }
         }
-        
+
+        #if targetEnvironment(simulator)
+        // Simulator: Use AudioPlayer (testing only, has latency)
+        beatSound = sounds.first(where: { $0.displayName == beatName })
+        rhythmSound = sounds.first(where: { $0.displayName == rhythmName })
+        if beatSound?.audioFile == nil {
+            print("Warning: Beat sound file not loaded for \(beatName)")
+        }
+        if rhythmSound?.audioFile == nil {
+            print("Warning: Rhythm sound file not loaded for \(rhythmName)")
+        }
+        engine.output = mixer
+        #else
+        // Real Device: Use AppleSampler (low latency, accurate timing)
+        engine.output = sampler
         do {
-            let files = sounds.map { $0.audioFile! }
+            let files = sounds.compactMap { $0.audioFile }
+            if files.count != sounds.count {
+                print("Warning: Only loaded \(files.count) of \(sounds.count) sound files")
+            }
             try sampler.loadAudioFiles(files)
         } catch {
             print("couldn't load files: \(error)")
         }
+        #endif
+
+        do {
+            try engine.start()
+        } catch {
+            print("Can't start engine: \(error)")
+        }
     }
-    
+
     //MARK: Public functions
-    
+
     func playBeat() {
-        //starling.play(.beat)
-        if (beatSound != nil) {
-            sampler.play(noteNumber: MIDINoteNumber(beatSound!.midiNote))
+        #if targetEnvironment(simulator)
+        guard let player = beatPlayer else { return }
+        player.play()
+        #else
+        if let beatSound = beatSound {
+            sampler.play(noteNumber: MIDINoteNumber(beatSound.midiNote))
         }
+        #endif
     }
-    
+
     func playRhythm() {
-        //starling.play(.rhythm)
-        if (rhythmSound != nil) {
-            sampler.play(noteNumber: MIDINoteNumber(rhythmSound!.midiNote))
+        #if targetEnvironment(simulator)
+        guard let player = rhythmPlayer else { return }
+        player.play()
+        #else
+        if let rhythmSound = rhythmSound {
+            sampler.play(noteNumber: MIDINoteNumber(rhythmSound.midiNote))
         }
+        #endif
     }
-    
+
     func setupAudioPlayer(beatName: String, rhythmName: String) {
         loadBeatFile(beatName)
         loadRhythmFile(rhythmName)
     }
-    
+
     //MARK: Private helpers
-    
+
     private func loadBeatFile(_ filename: String) {
         beatName = filename
     }
-    
+
     private func loadRhythmFile(_ filename: String) {
         rhythmName = filename
     }

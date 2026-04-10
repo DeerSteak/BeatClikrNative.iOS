@@ -8,6 +8,7 @@
 import Foundation
 import AVFoundation
 
+@MainActor
 class UserDefaultsService: ObservableObject {
     @Published var useFlashlight: Bool {
         didSet {
@@ -24,7 +25,7 @@ class UserDefaultsService: ObservableObject {
             defaults.setValue(muteMetronome, forKey: PreferenceKeys.muteMetronome)
         }
     }
-    
+
     @Published var instantBeat: FileConstants {
         didSet {
             defaults.setValue(instantBeat.rawValue, forKey: PreferenceKeys.instantBeat)
@@ -45,7 +46,7 @@ class UserDefaultsService: ObservableObject {
             defaults.setValue(instantRhythm.rawValue, forKey: PreferenceKeys.instantRhythm)
         }
     }
-    
+
     @Published var playlistBeat: FileConstants {
         didSet {
             defaults.setValue(playlistBeat.rawValue, forKey: PreferenceKeys.playlistBeat)
@@ -56,7 +57,7 @@ class UserDefaultsService: ObservableObject {
             defaults.setValue(playlistRhythm.rawValue, forKey: PreferenceKeys.playlistRhythm)
         }
     }
-    
+
     @Published var sendReminders: Bool {
         didSet {
             defaults.setValue(sendReminders, forKey: PreferenceKeys.sendReminders)
@@ -69,8 +70,8 @@ class UserDefaultsService: ObservableObject {
     }
 
     private let defaults = UserDefaults.standard
-    
-    static var instance = UserDefaultsService()
+
+    static let instance = UserDefaultsService()
     
     init() {
         useFlashlight = defaults.bool(forKey: PreferenceKeys.useFlashlight)

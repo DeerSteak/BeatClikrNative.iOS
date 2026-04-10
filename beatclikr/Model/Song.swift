@@ -18,8 +18,8 @@ final class Song : Identifiable {
     var liveSequence: Int?
     var rehearsalSequence: Int?
     var groove: Groove
-    
-    static let instantSong: Song = Song()
+
+    @MainActor static let instantSong: Song = Song()
     
     init() {
         self.id = UUID().uuidString

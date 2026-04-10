@@ -8,8 +8,9 @@
 import Foundation
 import AVKit
 
+@MainActor
 class FlashlightService {
-    static var instance = FlashlightService()
+    static let instance = FlashlightService()
     
     private var hasFlashlight: Bool
     

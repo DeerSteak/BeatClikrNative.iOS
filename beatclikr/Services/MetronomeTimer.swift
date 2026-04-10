@@ -7,15 +7,17 @@
 
 import Foundation
 
-protocol MetronomeTimerDelegate {
+@MainActor
+protocol MetronomeTimerDelegate: AnyObject {
     func metronomeTimerFired()
 }
 
-class MetronomeTimer {    
-    static var instance = MetronomeTimer(bpm: 60, subdivisions: 2)
-    
+@MainActor
+class MetronomeTimer {
+    static let instance = MetronomeTimer(bpm: 60, subdivisions: 2)
+
     // MARK: Public properties
-    var delegate: MetronomeTimerDelegate?
+    weak var delegate: (any MetronomeTimerDelegate)?
     
     var beatsPerMinute: Double {
         didSet {
@@ -30,13 +32,8 @@ class MetronomeTimer {
     }
     
     // MARK: - Private Properties
-    
-    private var timer: DispatchSourceTimer!
-    
-    // Grand Central Dispatch runs the timer.
-    // Concept came from here: https://www.raywenderlich.com/5370-grand-central-dispatch-tutorial-for-swift-4-part-1-2
-    private lazy var timerQueue = DispatchQueue.global(qos: .userInteractive)
-    
+
+    private var timer: Timer?
     private var paused: Bool
     private var previousSubdivisionTime: CFAbsoluteTime
     
@@ -55,35 +52,27 @@ class MetronomeTimer {
         self.subdivisions = subdivisions
         self.paused = true
         self.previousSubdivisionTime = CFAbsoluteTimeGetCurrent()
-        self.timer = createNewTimer()
     }
-    
-    deinit {
-        cancelTimer()
-    }
-    
+
     // MARK: Public functions
     
     func start() {
         if paused {
             paused = false
-            previousSubdivisionTime = CFAbsoluteTimeGetCurrent() //reset time since last to now, so the resume works as expected
-            timer.resume()
+            previousSubdivisionTime = CFAbsoluteTimeGetCurrent()
+            startTimer()
         }
     }
-    
+
     func stop() {
         if !paused {
             paused = true
-            timer.suspend()
+            timer?.invalidate()
+            timer = nil
         }
     }
     
     // MARK: Private methods
-    private func getTimerTolerance() -> DispatchTimeInterval {
-        return DispatchTimeInterval.milliseconds(Int(subdivisionCheckInterval * 0.1 * 1000.0)) //10% tolerance per Apple's recommendation, expressed in milliseconds
-    }
-    
     //number of seconds per subdivision
     private func getSubdivisionDuration() -> Double {
         return 60 / (beatsPerMinute * Double(subdivisions))
@@ -98,36 +87,21 @@ class MetronomeTimer {
         }
     }
     
-    private func createNewTimer() -> DispatchSourceTimer {
-        let dst = DispatchSource.makeTimerSource(queue: timerQueue)
-        let deadline = DispatchTime.now() + subdivisionCheckInterval
-        
-        dst.setEventHandler {
-            self.checkTimeToPlay()
+    private func startTimer() {
+        timer?.invalidate()
+        timer = Timer.scheduledTimer(withTimeInterval: subdivisionCheckInterval, repeats: true) { [weak self] _ in
+            Task { @MainActor in
+                self?.checkTimeToPlay()
+            }
         }
-        
-        dst.schedule(deadline: deadline, repeating: subdivisionCheckInterval, leeway: getTimerTolerance())
-        dst.activate()
-        
-        //don't start if paused
-        if paused {
-            dst.suspend()
-        }
-        
-        return dst
+        // Use common run loop mode to ensure timer fires even during UI interactions
+        RunLoop.main.add(timer!, forMode: .common)
     }
-    
-    private func cancelTimer() {
-        timer.setEventHandler(handler: nil)
-        timer.cancel()
-        if paused {
-            timer.resume() // If the timer is suspended, calling cancel without resuming triggers a crash. See here for more info: https://forums.developer.apple.com/thread/15902
-        }
-    }
-    
+
     private func updateTempo() {
-        cancelTimer()
-        timer = createNewTimer()
+        if !paused {
+            startTimer()
+        }
     }
     
     private func checkTimeToPlay() {
@@ -139,8 +113,7 @@ class MetronomeTimer {
     
     private func timerElapsed() {
         previousSubdivisionTime = CFAbsoluteTimeGetCurrent()
-        DispatchQueue.main.sync {
-            delegate?.metronomeTimerFired() // Have the delegate respond accordingly
-        }
+        delegate?.metronomeTimerFired()
     }
 }
+

@@ -8,9 +8,10 @@
 import Foundation
 import UIKit
 
+@MainActor
 class VibrationService {
-    static var instance = VibrationService()
-    
+    static let instance = VibrationService()
+
     private var beatGenerator = UIImpactFeedbackGenerator(style: .heavy)
     private var rhythmGenerator = UIImpactFeedbackGenerator(style: .light)
     

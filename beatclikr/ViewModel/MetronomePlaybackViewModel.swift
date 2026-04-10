@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 
+@MainActor
 class MetronomePlaybackViewModel: ObservableObject, MetronomeTimerDelegate {    
     //MARK: Private variables
     private var timer: MetronomeTimer = MetronomeTimer.instance
