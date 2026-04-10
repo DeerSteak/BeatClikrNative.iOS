@@ -7,6 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		28363D542F8989430066C665 /* MetronomeConstantsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28363D532F8989430066C665 /* MetronomeConstantsTests.swift */; };
+		28363D582F898A110066C665 /* ImageConstantsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28363D552F898A110066C665 /* ImageConstantsTests.swift */; };
+		28363D592F898A110066C665 /* MetronomePlaybackViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28363D562F898A110066C665 /* MetronomePlaybackViewModelTests.swift */; };
+		28363D5A2F898A110066C665 /* MetronomeTimingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28363D572F898A110066C665 /* MetronomeTimingTests.swift */; };
 		283672342F8988AB0090EE63 /* MetronomeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283672332F8988AB0090EE63 /* MetronomeConstants.swift */; };
 		30DEB7A2263835E813BCF3F4 /* MetronomeAudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */; };
 		DFB72E0FB4B1DD3A4397382B /* AudioKitMetronomeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAB43FBDA8DD0BBF30036A0 /* AudioKitMetronomeEngine.swift */; };
@@ -83,6 +87,10 @@
 
 /* Begin PBXFileReference section */
 		1AAB43FBDA8DD0BBF30036A0 /* AudioKitMetronomeEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AudioKitMetronomeEngine.swift; sourceTree = "<group>"; };
+		28363D532F8989430066C665 /* MetronomeConstantsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeConstantsTests.swift; sourceTree = "<group>"; };
+		28363D552F898A110066C665 /* ImageConstantsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConstantsTests.swift; sourceTree = "<group>"; };
+		28363D562F898A110066C665 /* MetronomePlaybackViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlaybackViewModelTests.swift; sourceTree = "<group>"; };
+		28363D572F898A110066C665 /* MetronomeTimingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeTimingTests.swift; sourceTree = "<group>"; };
 		283672332F8988AB0090EE63 /* MetronomeConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeConstants.swift; sourceTree = "<group>"; };
 		CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MetronomeAudioEngine.swift; sourceTree = "<group>"; };
 		EE0473182AA388EB004E958A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -232,6 +240,10 @@
 		EE84F3082A7C7A23009E2F23 /* beatclikrTests */ = {
 			isa = PBXGroup;
 			children = (
+				28363D552F898A110066C665 /* ImageConstantsTests.swift */,
+				28363D562F898A110066C665 /* MetronomePlaybackViewModelTests.swift */,
+				28363D572F898A110066C665 /* MetronomeTimingTests.swift */,
+				28363D532F8989430066C665 /* MetronomeConstantsTests.swift */,
 				EE84F3092A7C7A23009E2F23 /* beatclikrTests.swift */,
 			);
 			path = beatclikrTests;
@@ -538,7 +550,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				28363D542F8989430066C665 /* MetronomeConstantsTests.swift in Sources */,
 				EE84F30A2A7C7A23009E2F23 /* beatclikrTests.swift in Sources */,
+				28363D582F898A110066C665 /* ImageConstantsTests.swift in Sources */,
+				28363D592F898A110066C665 /* MetronomePlaybackViewModelTests.swift in Sources */,
+				28363D5A2F898A110066C665 /* MetronomeTimingTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
