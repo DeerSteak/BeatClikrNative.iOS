@@ -13,7 +13,7 @@ class VibrationService {
     static let instance = VibrationService()
 
     private var beatGenerator = UIImpactFeedbackGenerator(style: .heavy)
-    private var rhythmGenerator = UIImpactFeedbackGenerator(style: .light)
+    private var rhythmGenerator = UIImpactFeedbackGenerator(style: .soft)
     
     func vibrateBeat() {
         beatGenerator.impactOccurred()

@@ -21,8 +21,14 @@ struct InstantMetronomeView: View {
         Grid(alignment: .trailing, verticalSpacing: 16) {
             HStack{
                 Spacer()
-                MetronomePlayerView()
-                    .padding(.all, 12)
+                ZStack {
+                    // Invisible spacer to maintain fixed height at 100% scale
+                    Color.clear
+                        .frame(width: 100, height: 100)
+
+                    MetronomePlayerView()
+                }
+                .padding(.all, 12)
                 Spacer()
             }
             VStack {

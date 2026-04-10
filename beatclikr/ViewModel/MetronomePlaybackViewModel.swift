@@ -23,14 +23,10 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     private var useVibration: Bool = false
     private var song: Song
 
-    private var isBeat: Bool = false {
-        didSet {
-            imageName = isBeat ? ImageConstants.beat : ImageConstants.rhythm
-        }
-    }
+    private var isBeat: Bool = false
 
     //MARK: Published properties
-    @Published var imageName: String = ImageConstants.rhythm
+    @Published var iconScale: CGFloat = 0.5
     @Published var isPlaying: Bool = false
 
     @Published var beatsPerMinute: Double = UserDefaultsService.instance.instantBpm {
@@ -118,6 +114,17 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         self.isBeat = isBeat
 
         if isBeat {
+            // Reset scale to 100% instantly on beat
+            iconScale = 1.0
+
+            // Calculate duration for one full beat (in seconds)
+            let beatDuration = 60.0 / song.beatsPerMinute
+
+            // Animate linearly to 50% over the beat duration
+            withAnimation(.linear(duration: beatDuration)) {
+                iconScale = 0.5
+            }
+
             handleBeat()
         } else {
             handleRhythm()
