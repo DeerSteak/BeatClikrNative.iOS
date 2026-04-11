@@ -172,6 +172,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     
     func start() {
         if clickerType == .instant {
+            song = Song.instantSong
             song.beatsPerMinute = beatsPerMinute
             song.groove = selectedGroove
         }
@@ -193,6 +194,9 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         stop()
         
         if clickerType == .instant {
+            song = Song.instantSong
+            song.groove = selectedGroove
+            song.beatsPerMinute = beatsPerMinute
             beat = defaults.instantBeat
             rhythm = defaults.instantRhythm
         } else {
