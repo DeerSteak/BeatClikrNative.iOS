@@ -14,6 +14,9 @@ struct SongLibraryView: View {
     
     @Query(sort: [SortDescriptor(\Song.title), SortDescriptor(\Song.artist)]) private var items: [Song]
     
+    @State private var tappedId: String?
+    @State private var isAddingSong = false
+    
     var body: some View {
         NavigationSplitView {
             VStack {
@@ -23,15 +26,22 @@ struct SongLibraryView: View {
                     })) { item in
                         if (model.isPlayback) {
                             SongListItemView(song: item)
+                                .listRowBackground(
+                                    RoundedRectangle(cornerRadius: 8)
+                                        .fill(tappedId == item.id ? Color.accentColor.opacity(0.25) : Color.clear)
+                                        .animation(.easeOut(duration: 0.5), value: tappedId)
+                                )
                                 .onTapGesture(perform: {
                                     if model.isPlayback {
+                                        tappedId = item.id
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                            tappedId = nil
+                                        }
                                         playSong(item)
                                     }
                                 })
                         } else {
-                            NavigationLink {
-                                SongDetailsView(song: item)
-                            } label: {
+                            NavigationLink(value: item) {
                                 SongListItemView(song: item)
                             }
                         }
@@ -58,7 +68,9 @@ struct SongLibraryView: View {
                         EditButton()
                     }
                     ToolbarItem {
-                        NavigationLink(destination: SongDetailsView()) {
+                        Button {
+                            isAddingSong = true
+                        } label: {
                             Image(systemName: "plus")
                         }
                     }
@@ -73,6 +85,12 @@ struct SongLibraryView: View {
                             Image(systemName: model.isPlayback ? (model.isPlaying ? "pause" : "play") : "square.and.pencil")
                         })
                     }
+                }
+                .navigationDestination(for: Song.self) { song in
+                    SongDetailsView(song: song)
+                }
+                .sheet(isPresented: $isAddingSong) {
+                    SongDetailsView()
                 }
                 .toolbarTitleDisplayMode(.automatic)
                 .navigationTitle("Song Library")

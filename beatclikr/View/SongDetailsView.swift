@@ -14,8 +14,8 @@ struct SongDetailsView: View {
     
     @State var title: String
     @State var artist: String
-    @State var beatsPerMinute: Double
-    @State var beatsPerMeasure: Int
+    @State var bpmText: String
+    @State var beatsText: String
     @State var selectedGroove: Groove
     
     @State var showAlert: Bool
@@ -26,8 +26,8 @@ struct SongDetailsView: View {
         self.song = Song(title: "", artist: "", beatsPerMinute: 60, beatsPerMeasure: 4, groove: .eighth)
         _title = State(initialValue: self.song.title!)
         _artist = State(initialValue: self.song.artist!)
-        _beatsPerMinute = State(initialValue: self.song.beatsPerMinute!)
-        _beatsPerMeasure = State(initialValue: self.song.beatsPerMeasure!)
+        _bpmText = State(initialValue: FormatterHelper.formatDouble(self.song.beatsPerMinute!))
+        _beatsText = State(initialValue: "\(self.song.beatsPerMeasure!)")
         _showAlert = State(initialValue: false)
         _selectedGroove = State(initialValue: .eighth)
     }
@@ -36,11 +36,14 @@ struct SongDetailsView: View {
         self.song = song
         _title = State(initialValue: song.title!)
         _artist = State(initialValue: song.artist!)
-        _beatsPerMinute = State(initialValue: song.beatsPerMinute!)
-        _beatsPerMeasure = State(initialValue: song.beatsPerMeasure!)
+        _bpmText = State(initialValue: FormatterHelper.formatDouble(song.beatsPerMinute!))
+        _beatsText = State(initialValue: "\(song.beatsPerMeasure!)")
         _showAlert = State(initialValue: false)
         _selectedGroove = State(initialValue: song.groove!)
     }
+    
+    private var parsedBPM: Double? { Double(bpmText) }
+    private var parsedBeats: Int? { Int(beatsText) }
     
     var body: some View {
         VStack (alignment: .leading, spacing: 10) {
@@ -58,13 +61,13 @@ struct SongDetailsView: View {
                 }
                 GridRow {
                     Text("Tempo (BPM)")
-                    TextField("Beats per Minute", value: $beatsPerMinute, formatter: FormatterHelper.numberFormatter)
+                    TextField("Beats per Minute", text: $bpmText)
                         .textFieldStyle(.roundedBorder)
                         .keyboardType(.numberPad)
                 }
                 GridRow {
                     Text("Beats / Bar")
-                    TextField("Beats per Measure", value: $beatsPerMeasure, formatter: FormatterHelper.numberFormatter)
+                    TextField("Beats per Measure", text: $beatsText)
                         .textFieldStyle(.roundedBorder)
                         .keyboardType(.numberPad)
                 }
@@ -91,7 +94,7 @@ struct SongDetailsView: View {
             .alert(isPresented: $showAlert, content: {
                 Alert(title: Text("Error saving"))
             })
-            .disabled(title == "" || artist == "" || beatsPerMinute < 30 || beatsPerMeasure <= 0)
+            .disabled(!songIsValid())
             Button(action: {
                 dismiss()
             }, label: {
@@ -105,12 +108,14 @@ struct SongDetailsView: View {
     }
     
     public func saveSong() -> Bool {
+        guard let bpm = parsedBPM, let beats = parsedBeats else { return false }
         song.title = title
         song.artist = artist
-        song.beatsPerMinute = beatsPerMinute
-        song.beatsPerMeasure = beatsPerMeasure
+        song.beatsPerMinute = bpm
+        song.beatsPerMeasure = beats
+        song.groove = selectedGroove
         
-        if (song.title?.isEmpty ?? true || song.artist?.isEmpty ?? true || song.beatsPerMinute! < 30 || song.beatsPerMeasure ?? 0 < 1) {
+        if (song.title?.isEmpty ?? true || song.artist?.isEmpty ?? true || bpm < 30 || beats < 1) {
             return false
         }
         modelContext.insert(song)
@@ -123,7 +128,8 @@ struct SongDetailsView: View {
     }
     
     public func songIsValid() -> Bool {
-        return title != "" && artist != "" && beatsPerMinute >= 30 && beatsPerMeasure > 0
+        guard let bpm = parsedBPM, let beats = parsedBeats else { return false }
+        return title != "" && artist != "" && bpm >= 30 && beats > 0
     }
     
     public func navTitle() -> String {
