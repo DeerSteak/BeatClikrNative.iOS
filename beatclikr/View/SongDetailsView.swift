@@ -14,11 +14,12 @@ struct SongDetailsView: View {
     
     @State var title: String
     @State var artist: String
-    @State var bpmText: String
-    @State var beatsText: String
+    @State var bpm: Double
+    @State var beats: Int
     @State var selectedGroove: Groove
     
     @State var showAlert: Bool
+    @FocusState private var bpmFocused: Bool
     
     var song: Song
     
@@ -26,8 +27,8 @@ struct SongDetailsView: View {
         self.song = Song(title: "", artist: "", beatsPerMinute: 60, beatsPerMeasure: 4, groove: .eighth)
         _title = State(initialValue: "")
         _artist = State(initialValue: "")
-        _bpmText = State(initialValue: FormatterHelper.formatDouble(60))
-        _beatsText = State(initialValue: "4")
+        _bpm = State(initialValue: 60)
+        _beats = State(initialValue: 4)
         _showAlert = State(initialValue: false)
         _selectedGroove = State(initialValue: .eighth)
     }
@@ -36,86 +37,78 @@ struct SongDetailsView: View {
         self.song = song
         _title = State(initialValue: song.title ?? "")
         _artist = State(initialValue: song.artist ?? "")
-        _bpmText = State(initialValue: FormatterHelper.formatDouble(song.beatsPerMinute ?? 60))
-        _beatsText = State(initialValue: "\(song.beatsPerMeasure ?? 4)")
+        _bpm = State(initialValue: song.beatsPerMinute ?? 60)
+        _beats = State(initialValue: song.beatsPerMeasure ?? 4)
         _showAlert = State(initialValue: false)
         _selectedGroove = State(initialValue: song.groove ?? .eighth)
     }
     
-    private var parsedBPM: Double? { Double(bpmText) }
-    private var parsedBeats: Int? { Int(beatsText) }
-    
     var body: some View {
-        VStack (alignment: .leading, spacing: 10) {
-            Grid {
-                GridRow {
-                    Text("Title")
-                        .gridColumnAlignment(.trailing)
-                    TextField("Title", text: $title)
-                        .textFieldStyle(.roundedBorder)
+        NavigationStack {
+            Form {
+                Section("Song Info") {
+                    LabeledContent("Title") {
+                        TextField("Required", text: $title)
+                            .multilineTextAlignment(.trailing)
+                    }
+                    LabeledContent("Artist") {
+                        TextField("Required", text: $artist)
+                            .multilineTextAlignment(.trailing)
+                    }
                 }
-                GridRow {
-                    Text("Artist")
-                    TextField("Artist", text: $artist)
-                        .textFieldStyle(.roundedBorder)
+                Section("Tempo") {
+                    LabeledContent("BPM") {
+                        TextField("BPM", value: $bpm, format: .number)
+                            .keyboardType(.decimalPad)
+                            .multilineTextAlignment(.trailing)
+                            .focused($bpmFocused)
+                            .onChange(of: bpmFocused) { _, focused in
+                                if focused {
+                                    DispatchQueue.main.async {
+                                        UIApplication.shared.sendAction(#selector(UIResponder.selectAll(_:)), to: nil, from: nil, for: nil)
+                                    }
+                                }
+                            }
+                    }
+                    Stepper("Beats per Bar: \(beats)", value: $beats, in: 1...16, step: 1)
                 }
-                GridRow {
-                    Text("Tempo (BPM)")
-                    TextField("Beats per Minute", text: $bpmText)
-                        .textFieldStyle(.roundedBorder)
-                        .keyboardType(.numberPad)
-                }
-                GridRow {
-                    Text("Beats / Bar")
-                    TextField("Beats per Measure", text: $beatsText)
-                        .textFieldStyle(.roundedBorder)
-                        .keyboardType(.numberPad)
-                }
-                GridRow {
-                    Text("Groove")
-                    Picker("Select Groove", selection: $selectedGroove) {
-                        ForEach(Groove.allCases) {
-                            option in
+                Section("Feel") {
+                    Picker("Groove", selection: $selectedGroove) {
+                        ForEach(Groove.allCases) { option in
                             Text(String(describing: option))
                         }
                     }
-                    .pickerStyle(.menu)
                 }
             }
-            .contentMargins(10)
-            
-            Button(action: {
-                if (saveSong()) {
-                    dismiss()
+            .navigationTitle(navTitle())
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        if saveSong() { dismiss() }
+                    }
+                    .disabled(!songIsValid())
                 }
-            }, label: {
-                RectangleText(String(localized: "Save"), backgroundColor: .clear, foregroundColor: songIsValid() ? .blue : .gray)
-            })
-            .alert(isPresented: $showAlert, content: {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel", role: .cancel) {
+                        dismiss()
+                    }
+                }
+            }
+            .alert(isPresented: $showAlert) {
                 Alert(title: Text("Error saving"))
-            })
-            .disabled(!songIsValid())
-            Button(action: {
-                dismiss()
-            }, label: {
-                RectangleText(String(localized: "Cancel"), backgroundColor: .red, foregroundColor: .white)
-            })
-            Spacer()
-                .navigationBarTitleDisplayMode(.automatic)
-                .navigationTitle(navTitle())
+            }
         }
-        .padding()
     }
     
     public func saveSong() -> Bool {
-        guard let bpm = parsedBPM, let beats = parsedBeats else { return false }
         song.title = title
         song.artist = artist
         song.beatsPerMinute = bpm
         song.beatsPerMeasure = beats
         song.groove = selectedGroove
         
-        if (song.title?.isEmpty ?? true || song.artist?.isEmpty ?? true || bpm < 30 || beats < 1) {
+        if (song.title?.isEmpty ?? true || song.artist?.isEmpty ?? true) {
             return false
         }
         modelContext.insert(song)
@@ -128,8 +121,7 @@ struct SongDetailsView: View {
     }
     
     public func songIsValid() -> Bool {
-        guard let bpm = parsedBPM, let beats = parsedBeats else { return false }
-        return title != "" && artist != "" && bpm >= 30 && beats > 0
+        return title != "" && artist != "" && bpm >= MetronomeConstants.minBPM && bpm <= MetronomeConstants.maxBPM
     }
     
     public func navTitle() -> String {

@@ -33,7 +33,7 @@ struct PlaylistModeView: View {
                                 Button {
                                     editingSong = song
                                 } label: {
-                                    Image(systemName: "pencil")
+                                    Image(systemName: "square.and.pencil")
                                         .foregroundStyle(.secondary)
                                 }
                                 .buttonStyle(.plain)

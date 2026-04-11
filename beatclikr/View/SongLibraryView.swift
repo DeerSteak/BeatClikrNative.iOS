@@ -30,7 +30,7 @@ struct SongLibraryView: View {
                                 Button {
                                     editingSong = item
                                 } label: {
-                                    Image(systemName: "pencil")
+                                    Image(systemName: "square.and.pencil")
                                         .foregroundStyle(.secondary)
                                 }
                                 .buttonStyle(.plain)
