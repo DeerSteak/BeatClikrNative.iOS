@@ -22,29 +22,28 @@ class FlashlightService {
     func turnFlashlightOn() {
         if hasFlashlight {
             guard let device = AVCaptureDevice.default(for: .video) else { return }
-            if device.torchMode == AVCaptureDevice.TorchMode.on { return }
+            if device.torchMode == .on { return }
             do {
                 try device.lockForConfiguration()
                 try device.setTorchModeOn(level: 1.0)
+                device.unlockForConfiguration()
             } catch {
                 print(error)
             }
-            device.unlockForConfiguration()
         }
-        
     }
     
     func turnFlashlightOff() {
         if hasFlashlight {
             guard let device = AVCaptureDevice.default(for: .video) else { return }
-            if device.torchMode == AVCaptureDevice.TorchMode.off { return }
+            if device.torchMode == .off { return }
             do {
                 try device.lockForConfiguration()
+                device.torchMode = .off
+                device.unlockForConfiguration()
             } catch {
                 print(error)
             }
-            device.torchMode = AVCaptureDevice.TorchMode.off
-            device.unlockForConfiguration()
         }
     }
 }
