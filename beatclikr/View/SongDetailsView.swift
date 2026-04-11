@@ -22,24 +22,24 @@ struct SongDetailsView: View {
     
     var song: Song
     
-    init () {
+    init() {
         self.song = Song(title: "", artist: "", beatsPerMinute: 60, beatsPerMeasure: 4, groove: .eighth)
-        _title = State(initialValue: self.song.title!)
-        _artist = State(initialValue: self.song.artist!)
-        _bpmText = State(initialValue: FormatterHelper.formatDouble(self.song.beatsPerMinute!))
-        _beatsText = State(initialValue: "\(self.song.beatsPerMeasure!)")
+        _title = State(initialValue: "")
+        _artist = State(initialValue: "")
+        _bpmText = State(initialValue: FormatterHelper.formatDouble(60))
+        _beatsText = State(initialValue: "4")
         _showAlert = State(initialValue: false)
         _selectedGroove = State(initialValue: .eighth)
     }
     
-    init (song: Song) {
+    init(song: Song) {
         self.song = song
-        _title = State(initialValue: song.title!)
-        _artist = State(initialValue: song.artist!)
-        _bpmText = State(initialValue: FormatterHelper.formatDouble(song.beatsPerMinute!))
-        _beatsText = State(initialValue: "\(song.beatsPerMeasure!)")
+        _title = State(initialValue: song.title ?? "")
+        _artist = State(initialValue: song.artist ?? "")
+        _bpmText = State(initialValue: FormatterHelper.formatDouble(song.beatsPerMinute ?? 60))
+        _beatsText = State(initialValue: "\(song.beatsPerMeasure ?? 4)")
         _showAlert = State(initialValue: false)
-        _selectedGroove = State(initialValue: song.groove!)
+        _selectedGroove = State(initialValue: song.groove ?? .eighth)
     }
     
     private var parsedBPM: Double? { Double(bpmText) }
