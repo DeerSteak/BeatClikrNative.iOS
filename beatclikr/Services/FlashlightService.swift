@@ -15,10 +15,8 @@ class FlashlightService {
     private var hasFlashlight: Bool
     
     init() {
-        //let device = AVCaptureDevice.default(for: .video)
-        //hasFlashlight = device?.hasTorch ?? false
-        //TODO: check that the device has a flashlight
-        hasFlashlight = false
+        let device = AVCaptureDevice.default(for: .video)
+        hasFlashlight = device?.hasTorch ?? false
     }
     
     func turnFlashlightOn() {
