@@ -318,13 +318,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Instant & Library Metronome"
+            "value" : "Instant Metronome"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Metrónomo Instantáneo y de Biblioteca"
+            "value" : "Metrónomo Instantáneo"
           }
         }
       }
@@ -335,13 +335,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Playlist (Live/Rehearsal) Mode"
+            "value" : "Library & Playlist Modes"
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Modo de lista de reproducción"
+            "value" : "Modo de lista de reproducción y biblioteca"
           }
         }
       }
