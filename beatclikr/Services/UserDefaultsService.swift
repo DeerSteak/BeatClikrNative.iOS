@@ -98,6 +98,14 @@ class UserDefaultsService: ObservableObject {
         }
     }
     
+    @Published var keepAwake: Bool {
+        didSet {
+            guard oldValue != keepAwake else { return }
+            defaults.set(keepAwake, forKey: PreferenceKeys.keepAwake)
+            cloud.set(keepAwake, forKey: PreferenceKeys.keepAwake)
+        }
+    }
+    
     private let defaults = UserDefaults.standard
     private let cloud = NSUbiquitousKeyValueStore.default
     
@@ -107,50 +115,64 @@ class UserDefaultsService: ObservableObject {
         useFlashlight = defaults.bool(forKey: PreferenceKeys.useFlashlight)
         useVibration = defaults.bool(forKey: PreferenceKeys.useHaptic)
         muteMetronome = defaults.bool(forKey: PreferenceKeys.muteMetronome)
+        keepAwake = defaults.bool(forKey: PreferenceKeys.keepAwake)
         
-        instantBeat = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.instantBeat) ?? "") ?? FileConstants.ClickHi
-        instantRhythm = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.instantRhythm) ?? "") ?? FileConstants.ClickLo
+        instantBeat = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.instantBeat) ?? "") ?? .ClickHi
+        instantRhythm = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.instantRhythm) ?? "") ?? .ClickLo
         let bpm = defaults.double(forKey: PreferenceKeys.instantBpm)
         instantBpm = bpm == 0 ? 60 : bpm
         instantGroove = Groove(rawValue: defaults.integer(forKey: PreferenceKeys.instantGroove)) ?? .quarter
         
-        playlistBeat = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.playlistBeat) ?? "") ?? FileConstants.ClickHi
-        playlistRhythm = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.playlistRhythm) ?? "") ?? FileConstants.ClickLo
+        playlistBeat = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.playlistBeat) ?? "") ?? .ClickHi
+        playlistRhythm = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.playlistRhythm) ?? "") ?? .ClickLo
         
         sendReminders = defaults.bool(forKey: PreferenceKeys.sendReminders)
         let storedInterval = defaults.double(forKey: PreferenceKeys.reminderTime)
         reminderTime = storedInterval == 0 ? Date.now : Date(timeIntervalSinceReferenceDate: storedInterval)
-        
+
         NotificationCenter.default.addObserver(
-            self,
-            selector: #selector(cloudStoreDidChange),
-            name: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
-            object: cloud
-        )
+            forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
+            object: cloud,
+            queue: .main
+        ) { [weak self] _ in
+            Swift.Task { @MainActor in
+                self?.syncWithCloud()
+            }
+        }
+
         cloud.synchronize()
     }
-    
-    @objc @MainActor
-    private func cloudStoreDidChange(_ notification: Notification) {
+
+    // Ensure this is a private Swift function (No @objc)
+    private func syncWithCloud() {
         cloud.synchronize()
         
+        // Explicit 'self' prevents namespace collisions with Swift types like 'Bool'
         self.useFlashlight = cloud.bool(forKey: PreferenceKeys.useFlashlight)
         self.useVibration = cloud.bool(forKey: PreferenceKeys.useHaptic)
         self.muteMetronome = cloud.bool(forKey: PreferenceKeys.muteMetronome)
+        self.keepAwake = cloud.bool(forKey: PreferenceKeys.keepAwake)
         
-        self.instantBeat = FileConstants(rawValue: cloud.string(forKey: PreferenceKeys.instantBeat) ?? "") ?? .ClickHi
-        self.instantRhythm = FileConstants(rawValue: cloud.string(forKey: PreferenceKeys.instantRhythm) ?? "") ?? .ClickLo
+        let beatStr = cloud.string(forKey: PreferenceKeys.instantBeat) ?? ""
+        self.instantBeat = FileConstants(rawValue: beatStr) ?? .ClickHi
         
-        let bpm = cloud.double(forKey: PreferenceKeys.instantBpm)
-        self.instantBpm = bpm == 0 ? 60 : bpm
+        let rhythmStr = cloud.string(forKey: PreferenceKeys.instantRhythm) ?? ""
+        self.instantRhythm = FileConstants(rawValue: rhythmStr) ?? .ClickLo
         
-        let grooveRaw = Int(cloud.longLong(forKey: PreferenceKeys.instantGroove))
-        self.instantGroove = Groove(rawValue: grooveRaw) ?? .quarter
+        let cloudBpm = cloud.double(forKey: PreferenceKeys.instantBpm)
+        self.instantBpm = cloudBpm == 0 ? 60 : cloudBpm
         
-        self.playlistBeat = FileConstants(rawValue: cloud.string(forKey: PreferenceKeys.playlistBeat) ?? "") ?? .ClickHi
-        self.playlistRhythm = FileConstants(rawValue: cloud.string(forKey: PreferenceKeys.playlistRhythm) ?? "") ?? .ClickLo
+        let grooveVal = Int(cloud.longLong(forKey: PreferenceKeys.instantGroove))
+        self.instantGroove = Groove(rawValue: grooveVal) ?? .quarter
+        
+        let pBeatStr = cloud.string(forKey: PreferenceKeys.playlistBeat) ?? ""
+        self.playlistBeat = FileConstants(rawValue: pBeatStr) ?? .ClickHi
+        
+        let pRhythmStr = cloud.string(forKey: PreferenceKeys.playlistRhythm) ?? ""
+        self.playlistRhythm = FileConstants(rawValue: pRhythmStr) ?? .ClickLo
         
         self.sendReminders = cloud.bool(forKey: PreferenceKeys.sendReminders)
+        
         let cloudInterval = cloud.double(forKey: PreferenceKeys.reminderTime)
         if cloudInterval != 0 {
             self.reminderTime = Date(timeIntervalSinceReferenceDate: cloudInterval)

@@ -156,6 +156,23 @@
         }
       }
     },
+    "KeepAwake" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Keep Screen On (Prevent Sleep)"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Mantener la pantalla encendida (Evitar el modo de suspensión)"
+          }
+        }
+      }
+    },
     "Library" : {
       "localizations" : {
         "es" : {

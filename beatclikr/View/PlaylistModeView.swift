@@ -123,6 +123,9 @@ struct PlaylistModeView: View {
             }
         }
         .onDisappear(perform: model.stop)
+        .onAppear {
+            UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
+        }
     }
 }
 

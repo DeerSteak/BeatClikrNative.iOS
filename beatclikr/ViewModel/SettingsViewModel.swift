@@ -76,6 +76,12 @@ class SettingsViewModel: ObservableObject {
         }
     }
     
+    @Published var keepAwake: Bool {
+        didSet {
+            defaults.keepAwake = keepAwake
+        }
+    }
+    
     init() {
         sendReminders = defaults.sendReminders
         reminderTime = defaults.reminderTime
@@ -86,6 +92,7 @@ class SettingsViewModel: ObservableObject {
         instantRhythm = defaults.instantRhythm
         playlistBeat = defaults.playlistBeat
         playlistRhythm = defaults.playlistRhythm
+        keepAwake = defaults.keepAwake
     }
     
     private func requestPermissionAndSchedule() {

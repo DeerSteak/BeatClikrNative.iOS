@@ -101,12 +101,15 @@ struct SongLibraryView: View {
                 .navigationTitle("Song Library")
         }
         .onDisappear(perform: model.stop)
+        .onAppear {
+            UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
+        }
     }
 }
 
 #Preview {
     let metronome = MetronomePlaybackViewModel()
-    return SongLibraryView()
+    SongLibraryView()
         .environmentObject(SongLibraryViewModel(metronome: metronome))
         .environmentObject(metronome)
 }

@@ -28,6 +28,7 @@ struct SettingsView: View {
                     Toggle(LocalizedStringKey("MetronomePlaybackFlashlight"), isOn: $model.useFlashlight)
                     Toggle(LocalizedStringKey("MetronomePlaybackVibration"), isOn: $model.useVibration)
                     Toggle(LocalizedStringKey("MetronomePlaybackAlwaysMute"), isOn: $model.muteMetronome)
+                    Toggle(LocalizedStringKey("KeepAwake"), isOn: $model.keepAwake)
                     Divider()
                     Text("PlaybackInstrumentsTitle")
                         .font(.title)

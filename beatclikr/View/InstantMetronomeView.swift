@@ -121,7 +121,10 @@ struct InstantMetronomeView: View {
                 
             }
             .onDisappear(perform: model.stop)
-            .onAppear(perform: { model.clickerType = .instant })
+            .onAppear {
+                model.clickerType = .instant
+                UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
+            }
             .padding(.all, 12)
             .navigationTitle("Instant Metronome")
         }
