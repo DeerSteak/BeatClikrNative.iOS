@@ -14,7 +14,7 @@ struct HomeView: View {
                 .tabItem {
                     Label("Instant", systemImage: "metronome")
                 }
-            LibraryView()
+            SongLibraryView()
                 .tabItem {
                     Label("Library", systemImage: "list.bullet.rectangle")
                 }

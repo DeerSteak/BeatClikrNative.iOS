@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftData
 
-struct LibraryView: View {
+struct SongLibraryView: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: SongLibraryViewModel
     
@@ -107,6 +107,6 @@ struct LibraryView: View {
 #Preview {
     let previewContainer = PreviewContainer([Song.self])
     let vm = SongLibraryViewModel(container: previewContainer.container)
-    return LibraryView()
+    return SongLibraryView()
         .environmentObject(vm)
 }
