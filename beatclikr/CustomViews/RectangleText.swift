@@ -26,7 +26,7 @@ struct RectangleText: View {
         ZStack {
             RoundedRectangle(cornerSize: CGSize(width: 5, height: 5))
                 .fill(self.backgroundColor)
-                .frame(height: 40)
+                .frame(height: 52)
                 .shadow(radius: 2)
             
             Text(self.text)

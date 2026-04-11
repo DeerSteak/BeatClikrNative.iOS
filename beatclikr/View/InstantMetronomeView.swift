@@ -35,9 +35,31 @@ struct InstantMetronomeView: View {
                 VStack {
                     Text("Tempo (BPM): \(FormatterHelper.formatDouble(model.beatsPerMinute))")
                     HStack {
-                        Text("\(Int(MetronomeConstants.defaultMinSliderBPM))")
+                        Button(action: {
+                            model.beatsPerMinute = max(MetronomeConstants.defaultMinSliderBPM, model.beatsPerMinute - 1)
+                            resetMetronome()
+                        }) {
+                            Image(systemName: "minus")
+                                .font(.title2.bold())
+                                .frame(width: 44, height: 44)
+                                .background(Color.appPrimary)
+                                .foregroundColor(.white)
+                                .cornerRadius(8)
+                        }
+                        .buttonStyle(.plain)
                         Slider(value: $model.beatsPerMinute, in: MetronomeConstants.defaultMinSliderBPM...MetronomeConstants.defaultMaxSliderBPM, step: 1)
-                        Text("\(Int(MetronomeConstants.defaultMaxSliderBPM))")
+                        Button(action: {
+                            model.beatsPerMinute = min(MetronomeConstants.defaultMaxSliderBPM, model.beatsPerMinute + 1)
+                            resetMetronome()
+                        }) {
+                            Image(systemName: "plus")
+                                .font(.title2.bold())
+                                .frame(width: 44, height: 44)
+                                .background(Color.appPrimary)
+                                .foregroundColor(.white)
+                                .cornerRadius(8)
+                        }
+                        .buttonStyle(.plain)
                     }
                     .onChange(of: model.beatsPerMinute) {
                         resetMetronome()
@@ -45,15 +67,24 @@ struct InstantMetronomeView: View {
                 }
                 Grid(alignment: .trailing, verticalSpacing: 16) {
                     GridRow {
-                        Text("Subdivisions")
-                        Picker("Select Groove", selection: $model.selectedGroove) {
-                            ForEach(Groove.allCases) {
-                                option in
-                                Text(String(describing: option))
+                        Text("Groove")
+                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
+                            ForEach(Groove.allCases) { option in
+                                Button(action: {
+                                    model.selectedGroove = option
+                                    resetMetronome()
+                                }) {
+                                    Text(String(describing: option))
+                                        .font(.caption)
+                                        .frame(maxWidth: .infinity)
+                                        .padding(.vertical, 12)
+                                        .background(model.selectedGroove == option ? Color.accentColor : Color(UIColor.systemGray5))
+                                        .foregroundColor(model.selectedGroove == option ? .white : .primary)
+                                        .cornerRadius(6)
+                                }
+                                .buttonStyle(.plain)
                             }
                         }
-                        .onChange(of: model.selectedGroove) { resetMetronome() }
-                        .pickerStyle(.segmented)
                     }
                     GridRow {
                         Text("Beat")

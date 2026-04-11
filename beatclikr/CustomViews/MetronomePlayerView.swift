@@ -17,6 +17,7 @@ struct MetronomePlayerView: View {
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(height: size * model.iconScale)
+            .foregroundColor(Color.appPrimary)
     }
 }
 
