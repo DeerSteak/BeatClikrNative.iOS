@@ -11,7 +11,6 @@ import SwiftUI
 
 @MainActor
 class SongLibraryViewModel : ObservableObject {
-    @Published var isPlayback: Bool = true
     @Published var isPlaying: Bool = false
     
     private var model: MetronomePlaybackViewModel
@@ -29,16 +28,24 @@ class SongLibraryViewModel : ObservableObject {
         model.clickerType = .playlist
     }
     
-    func switchSong(_ song: Song) {
+    func playSong(_ song: Song) {
         model.switchSong(song)
-    }
-    
-    func startMetronome() {
         model.setupMetronome()
         model.start()
+        isPlaying = true
     }
     
-    func stopMetronome() {
+    func stop() {
         model.stop()
+        isPlaying = false
+    }
+    
+    func deleteItems(offsets: IndexSet, items: [Song], context: ModelContext) {
+        withAnimation {
+            for index in offsets {
+                context.delete(items[index])
+            }
+            try! context.save()
+        }
     }
 }

@@ -11,11 +11,12 @@ import SwiftData
 struct SongLibraryView: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: SongLibraryViewModel
-    
     @Query(sort: [SortDescriptor(\Song.title), SortDescriptor(\Song.artist)]) private var items: [Song]
     
+    @State private var editMode: EditMode = .inactive
     @State private var tappedId: String?
     @State private var isAddingSong = false
+    @State private var editingSong: Song?
     
     var body: some View {
         NavigationSplitView {
@@ -24,31 +25,38 @@ struct SongLibraryView: View {
                     ForEach(items.sorted(by: { a, b in
                         a.title! < b.title!
                     })) { item in
-                        if (model.isPlayback) {
+                        HStack {
                             SongListItemView(song: item)
-                                .listRowBackground(
-                                    RoundedRectangle(cornerRadius: 8)
-                                        .fill(tappedId == item.id ? Color.accentColor.opacity(0.25) : Color.clear)
-                                        .animation(.easeOut(duration: 0.5), value: tappedId)
-                                )
-                                .onTapGesture(perform: {
-                                    if model.isPlayback {
-                                        tappedId = item.id
-                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                            tappedId = nil
-                                        }
-                                        playSong(item)
-                                    }
-                                })
-                        } else {
-                            NavigationLink(value: item) {
-                                SongListItemView(song: item)
+                            Spacer()
+                            if editMode.isEditing {
+                                Button {
+                                    editingSong = item
+                                } label: {
+                                    Image(systemName: "pencil")
+                                        .foregroundStyle(.secondary)
+                                }
+                                .buttonStyle(.plain)
                             }
+                        }
+                        .contentShape(Rectangle())
+                        .listRowBackground(
+                            RoundedRectangle(cornerRadius: 8)
+                                .fill(tappedId == item.id ? Color.accentColor.opacity(0.25) : Color.clear)
+                                .animation(.easeOut(duration: 0.5), value: tappedId)
+                        )
+                        .onTapGesture {
+                            guard !editMode.isEditing else { return }
+                            tappedId = item.id
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                tappedId = nil
+                            }
+                            model.playSong(item)
                         }
                         
                     }
-                    .onDelete(perform: deleteItems)
+                    .onDelete(perform: editMode.isEditing ? { offsets in model.deleteItems(offsets: offsets, items: items.sorted(by: { $0.title! < $1.title! }), context: modelContext) } : nil)
                 }
+                .environment(\.editMode, $editMode)
                 .overlay(content: {
                     if (items.isEmpty) {
                         VStack {
@@ -65,7 +73,9 @@ struct SongLibraryView: View {
                         }
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
-                        EditButton()
+                        Button(editMode.isEditing ? "Done" : "Edit") {
+                            editMode = editMode.isEditing ? .inactive : .active
+                        }
                     }
                     ToolbarItem {
                         Button {
@@ -74,23 +84,19 @@ struct SongLibraryView: View {
                             Image(systemName: "plus")
                         }
                     }
-                    ToolbarItem() {
-                        Button(action: {
-                            if model.isPlaying {
-                                stop()
-                            } else {
-                                model.isPlayback = !model.isPlayback
+                    if model.isPlaying {
+                        ToolbarItem {
+                            Button(action: model.stop) {
+                                Image(systemName: "pause")
                             }
-                        }, label: {
-                            Image(systemName: model.isPlayback ? (model.isPlaying ? "pause" : "play") : "square.and.pencil")
-                        })
+                        }
                     }
-                }
-                .navigationDestination(for: Song.self) { song in
-                    SongDetailsView(song: song)
                 }
                 .sheet(isPresented: $isAddingSong) {
                     SongDetailsView()
+                }
+                .sheet(item: $editingSong) { song in
+                    SongDetailsView(song: song)
                 }
                 .toolbarTitleDisplayMode(.automatic)
                 .navigationTitle("Song Library")
@@ -98,27 +104,7 @@ struct SongLibraryView: View {
         } detail: {
             Text("Select an item")
         }
-        .onDisappear(perform: model.stopMetronome)
-    }
-    
-    private func deleteItems(offsets: IndexSet) {
-        withAnimation {
-            for index in offsets {
-                modelContext.delete(items[index])
-                try! modelContext.save()
-            }
-        }
-    }
-    
-    private func stop() {
-        model.stopMetronome()
-        model.isPlaying = false
-    }
-    
-    private func playSong(_ song: Song) {
-        model.switchSong(song)
-        model.startMetronome()
-        model.isPlaying = true
+        .onDisappear(perform: model.stop)
     }
 }
 

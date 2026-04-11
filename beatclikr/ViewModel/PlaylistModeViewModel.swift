@@ -11,7 +11,6 @@ import SwiftData
 
 @MainActor
 class PlaylistModeViewModel : ObservableObject {
-    @Published var isPlayback: Bool = true
     @Published var isPlaying: Bool = false
     
     private var metronome: MetronomePlaybackViewModel
