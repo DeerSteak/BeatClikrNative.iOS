@@ -18,6 +18,7 @@ struct InstantMetronomeView: View {
     }
     
     var body: some View {
+        NavigationStack {
         Grid(alignment: .trailing, verticalSpacing: 16) {
             HStack{
                 Spacer()
@@ -98,6 +99,8 @@ struct InstantMetronomeView: View {
         .onDisappear(perform: model.stop)
         .onAppear(perform: { model.clickerType = .instant })
         .padding(.all, 12)
+        .navigationTitle("Instant Metronome")
+        }
     }
     
     private func togglePlayPause() {

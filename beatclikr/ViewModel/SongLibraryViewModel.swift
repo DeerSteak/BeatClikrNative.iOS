@@ -17,14 +17,14 @@ class SongLibraryViewModel : ObservableObject {
     private var model: MetronomePlaybackViewModel
     private var context: ModelContext
 
-    init() {
-        let container = try! ModelContainer(for: Song.self)
-        context = ModelContext(container)
-        model = MetronomePlaybackViewModel()
-    }
-
-    init(container: ModelContainer) {
-        context = ModelContext(container)
+    init(container: ModelContainer? = nil) {
+        if let container {
+            context = ModelContext(container)
+        } else {
+            let config = ModelConfiguration(cloudKitDatabase: .none)
+            let fallback = try! ModelContainer(for: Song.self, PlaylistEntry.self, configurations: config)
+            context = ModelContext(fallback)
+        }
         model = MetronomePlaybackViewModel()
     }
 

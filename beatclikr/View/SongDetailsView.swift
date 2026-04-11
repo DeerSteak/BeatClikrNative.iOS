@@ -24,22 +24,22 @@ struct SongDetailsView: View {
     
     init () {
         self.song = Song(title: "", artist: "", beatsPerMinute: 60, beatsPerMeasure: 4, groove: .eighth)
-        _title = State(initialValue: self.song.title)
-        _artist = State(initialValue: self.song.artist)
-        _beatsPerMinute = State(initialValue: self.song.beatsPerMinute)
-        _beatsPerMeasure = State(initialValue: self.song.beatsPerMeasure)
+        _title = State(initialValue: self.song.title!)
+        _artist = State(initialValue: self.song.artist!)
+        _beatsPerMinute = State(initialValue: self.song.beatsPerMinute!)
+        _beatsPerMeasure = State(initialValue: self.song.beatsPerMeasure!)
         _showAlert = State(initialValue: false)
         _selectedGroove = State(initialValue: .eighth)
     }
     
     init (song: Song) {
         self.song = song
-        _title = State(initialValue: song.title)
-        _artist = State(initialValue: song.artist)
-        _beatsPerMinute = State(initialValue: song.beatsPerMinute)
-        _beatsPerMeasure = State(initialValue: song.beatsPerMeasure)
+        _title = State(initialValue: song.title!)
+        _artist = State(initialValue: song.artist!)
+        _beatsPerMinute = State(initialValue: song.beatsPerMinute!)
+        _beatsPerMeasure = State(initialValue: song.beatsPerMeasure!)
         _showAlert = State(initialValue: false)
-        _selectedGroove = State(initialValue: song.groove )
+        _selectedGroove = State(initialValue: song.groove!)
     }
     
     var body: some View {
@@ -110,7 +110,7 @@ struct SongDetailsView: View {
         song.beatsPerMinute = beatsPerMinute
         song.beatsPerMeasure = beatsPerMeasure
         
-        if (song.title.isEmpty || song.artist.isEmpty || song.beatsPerMinute < 30 || song.beatsPerMeasure < 1) {
+        if (song.title?.isEmpty ?? true || song.artist?.isEmpty ?? true || song.beatsPerMinute! < 30 || song.beatsPerMeasure ?? 0 < 1) {
             return false
         }
         modelContext.insert(song)
@@ -127,7 +127,7 @@ struct SongDetailsView: View {
     }
     
     public func navTitle() -> String {
-        return song.title.isEmpty ? String(localized: "Add Song") : String(localized: "Song Details")
+        return (song.title ?? "").isEmpty ? String(localized: "Add Song") : String(localized: "Song Details")
     }
 }
 

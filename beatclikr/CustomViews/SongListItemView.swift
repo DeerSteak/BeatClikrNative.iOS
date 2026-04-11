@@ -12,12 +12,12 @@ struct SongListItemView: View {
     
     var body: some View {
         VStack (alignment: .leading) {
-            Text(song.title)
+            Text(song.title ?? String(localized: "Untitled"))
                 .bold()
                 .font(.title3)
                 .truncationMode(.tail)
                 .lineLimit(1)
-            Text("\(song.artist) /  \(FormatterHelper.formatDouble(song.beatsPerMinute)) BPM")
+            Text("\(song.artist ?? String(localized: "Unknown")) /  \(FormatterHelper.formatDouble(song.beatsPerMinute ?? 60)) BPM")
         }
     }
 }

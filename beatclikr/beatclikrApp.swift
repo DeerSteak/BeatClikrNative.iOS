@@ -7,18 +7,34 @@
 
 import SwiftUI
 import SwiftData
-
 @main
 struct beatclikrApp: App {
+
+    let container: ModelContainer
+
+    init() {
+        let config = ModelConfiguration(
+            cloudKitDatabase: .private("iCloud.com.bfunkstudios.beatclikr")
+        )
+
+        do {
+            container = try ModelContainer(
+                for: Song.self, PlaylistEntry.self,
+                configurations: config
+            )
+        } catch {
+            fatalError(error.localizedDescription)
+        }
+    }
 
     var body: some Scene {
         WindowGroup {
             HomeView()
                 .environmentObject(SongLibraryViewModel())
-                .environmentObject(MetronomePlaybackViewModel())      
+                .environmentObject(MetronomePlaybackViewModel())
                 .environmentObject(SettingsViewModel())
         }
-        .modelContainer(for: Song.self)
+        .modelContainer(container)
     }
 
 }
