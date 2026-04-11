@@ -12,6 +12,7 @@ struct PlaylistModeView: View {
     
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: PlaylistModeViewModel
+    @EnvironmentObject var metronomeViewModel: MetronomePlaybackViewModel
     @Query(sort: \PlaylistEntry.sequence) private var entries: [PlaylistEntry]
     @Query(sort: [SortDescriptor(\Song.title), SortDescriptor(\Song.artist)]) private var allSongs: [Song]
     
@@ -88,9 +89,9 @@ struct PlaylistModeView: View {
                         Image(systemName: "plus")
                     }
                 }
-                if model.isPlaying {
+                if metronomeViewModel.isPlaying {
                     ToolbarItem {
-                        Button(action: model.stop) {
+                        Button(action: metronomeViewModel.stop) {
                             Image(systemName: "pause")
                         }
                     }

@@ -11,6 +11,7 @@ import SwiftData
 struct SongLibraryView: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: SongLibraryViewModel
+    @EnvironmentObject var metronomeViewModel: MetronomePlaybackViewModel
     @Query(sort: [SortDescriptor(\Song.title), SortDescriptor(\Song.artist)]) private var items: [Song]
     
     @State private var editMode: EditMode = .inactive
@@ -82,9 +83,9 @@ struct SongLibraryView: View {
                             Image(systemName: "plus")
                         }
                     }
-                    if model.isPlaying {
+                    if metronomeViewModel.isPlaying {
                         ToolbarItem {
-                            Button(action: model.stop) {
+                            Button(action: metronomeViewModel.stop) {
                                 Image(systemName: "pause")
                             }
                         }
@@ -104,6 +105,8 @@ struct SongLibraryView: View {
 }
 
 #Preview {
+    let metronome = MetronomePlaybackViewModel()
     return SongLibraryView()
-        .environmentObject(SongLibraryViewModel())
+        .environmentObject(SongLibraryViewModel(metronome: metronome))
+        .environmentObject(metronome)
 }

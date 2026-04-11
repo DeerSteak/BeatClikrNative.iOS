@@ -11,8 +11,6 @@ import SwiftData
 
 @MainActor
 class PlaylistModeViewModel : ObservableObject {
-    @Published var isPlaying: Bool = false
-    
     private var metronome: MetronomePlaybackViewModel
     
     init(metronome: MetronomePlaybackViewModel = MetronomePlaybackViewModel()) {
@@ -24,12 +22,10 @@ class PlaylistModeViewModel : ObservableObject {
         metronome.switchSong(song)
         metronome.setupMetronome()
         metronome.start()
-        isPlaying = true
     }
     
     func stop() {
         metronome.stop()
-        isPlaying = false
     }
     
     func addSongToPlaylist(_ song: Song, entries: [PlaylistEntry], context: ModelContext) {
