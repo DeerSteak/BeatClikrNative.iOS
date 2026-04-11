@@ -27,6 +27,7 @@ struct HomeView: View {
                     Label("Settings", systemImage: "gear")
                 }
         }
+        .tabViewStyle(.sidebarAdaptable)
     }
 }
 
