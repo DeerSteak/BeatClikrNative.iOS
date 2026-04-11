@@ -75,8 +75,8 @@ class UserDefaultsService: ObservableObject {
     }
     @Published var reminderTime: Date {
         didSet {
-            defaults.setValue(reminderTime, forKey: PreferenceKeys.reminderTime)
-            cloud.set(reminderTime, forKey: PreferenceKeys.reminderTime)
+            defaults.set(reminderTime.timeIntervalSinceReferenceDate, forKey: PreferenceKeys.reminderTime)
+            cloud.set(reminderTime.timeIntervalSinceReferenceDate, forKey: PreferenceKeys.reminderTime)
         }
     }
 
@@ -100,7 +100,8 @@ class UserDefaultsService: ObservableObject {
         playlistRhythm = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.playlistRhythm) ?? "") ?? FileConstants.ClickLo
 
         sendReminders = defaults.bool(forKey: PreferenceKeys.sendReminders)
-        reminderTime = defaults.object(forKey: PreferenceKeys.reminderTime) as? Date ?? Date.now
+        let storedInterval = defaults.double(forKey: PreferenceKeys.reminderTime)
+        reminderTime = storedInterval == 0 ? Date.now : Date(timeIntervalSinceReferenceDate: storedInterval)
 
         NotificationCenter.default.addObserver(
             self,
@@ -127,8 +128,9 @@ class UserDefaultsService: ObservableObject {
             self.playlistRhythm = FileConstants(rawValue: cloud.string(forKey: PreferenceKeys.playlistRhythm) ?? "") ?? .ClickLo
 
             self.sendReminders = cloud.bool(forKey: PreferenceKeys.sendReminders)
-            if let reminderDate = cloud.object(forKey: PreferenceKeys.reminderTime) as? Date {
-                self.reminderTime = reminderDate
+            let cloudInterval = cloud.double(forKey: PreferenceKeys.reminderTime)
+            if cloudInterval != 0 {
+                self.reminderTime = Date(timeIntervalSinceReferenceDate: cloudInterval)
             }
         }
     }
