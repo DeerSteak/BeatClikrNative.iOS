@@ -13,16 +13,13 @@ struct LibraryView: View {
     @EnvironmentObject var model: SongLibraryViewModel
 
     @Query(sort: [SortDescriptor(\Song.title), SortDescriptor(\Song.artist)]) private var items: [Song]
-
-    private let backupService = iCloudBackupService.shared
-    private let settings = UserDefaultsService.instance
     
     var body: some View {
         NavigationSplitView {
             VStack {
                 List {
                     ForEach(items.sorted(by: { a, b in
-                        a.title < b.title
+                        a.title! < b.title!
                     })) { item in
                         if (model.isPlayback) {
                             SongListItemView(song: item)
@@ -84,12 +81,6 @@ struct LibraryView: View {
             Text("Select an item")
         }
         .onDisappear(perform: model.stopMetronome)
-        .onChange(of: items.count) { _, _ in
-            // Auto-backup to iCloud when songs change
-            Task {
-                try? await backupService.backupSongs(items)
-            }
-        }
     }
     
     private func deleteItems(offsets: IndexSet) {

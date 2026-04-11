@@ -10,8 +10,10 @@ import SwiftData
 
 @Model
 final class PlaylistEntry: Identifiable {
-    var id: String
-    var sequence: Int
+    var id: String?
+    var sequence: Int?
+    
+    @Relationship(inverse: \Song.playlistEntries)
     var song: Song?
 
     init(song: Song, sequence: Int) {

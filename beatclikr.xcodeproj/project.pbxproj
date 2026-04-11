@@ -11,7 +11,6 @@
 		28363D582F898A110066C665 /* ImageConstantsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28363D552F898A110066C665 /* ImageConstantsTests.swift */; };
 		28363D592F898A110066C665 /* MetronomePlaybackViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28363D562F898A110066C665 /* MetronomePlaybackViewModelTests.swift */; };
 		28363D5A2F898A110066C665 /* MetronomeTimingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28363D572F898A110066C665 /* MetronomeTimingTests.swift */; };
-		28363D5C2F898F630066C665 /* iCloudBackupService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28363D5B2F898F630066C665 /* iCloudBackupService.swift */; };
 		283672342F8988AB0090EE63 /* MetronomeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283672332F8988AB0090EE63 /* MetronomeConstants.swift */; };
 		30DEB7A2263835E813BCF3F4 /* MetronomeAudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */; };
 		DFB72E0FB4B1DD3A4397382B /* AudioKitMetronomeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAB43FBDA8DD0BBF30036A0 /* AudioKitMetronomeEngine.swift */; };
@@ -93,7 +92,6 @@
 		28363D552F898A110066C665 /* ImageConstantsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConstantsTests.swift; sourceTree = "<group>"; };
 		28363D562F898A110066C665 /* MetronomePlaybackViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlaybackViewModelTests.swift; sourceTree = "<group>"; };
 		28363D572F898A110066C665 /* MetronomeTimingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeTimingTests.swift; sourceTree = "<group>"; };
-		28363D5B2F898F630066C665 /* iCloudBackupService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = iCloudBackupService.swift; sourceTree = "<group>"; };
 		283672332F8988AB0090EE63 /* MetronomeConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeConstants.swift; sourceTree = "<group>"; };
 		CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MetronomeAudioEngine.swift; sourceTree = "<group>"; };
 		EE0473182AA388EB004E958A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -110,6 +108,7 @@
 		EE5DFD752AD8253300756566 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		EE5DFD772AD82B5A00756566 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		EE5DFD7A2AD82CA500756566 /* PreviewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewContainer.swift; sourceTree = "<group>"; };
+		EE60CA7E2F89CC4F007C2459 /* beatclikrDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = beatclikrDebug.entitlements; sourceTree = "<group>"; };
 		EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlayerView.swift; sourceTree = "<group>"; };
 		EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlaybackViewModel.swift; sourceTree = "<group>"; };
 		EE6406D22A7EF6B800DEDED2 /* crashr_A3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = crashr_A3.wav; sourceTree = "<group>"; };
@@ -216,6 +215,7 @@
 		EE84F2F32A7C7A21009E2F23 /* beatclikr */ = {
 			isa = PBXGroup;
 			children = (
+				EE60CA7E2F89CC4F007C2459 /* beatclikrDebug.entitlements */,
 				EEE911512A7EDDF5008DFDED /* Constants */,
 				EEE9112F2A7EDC89008DFDED /* Resources */,
 				EE0939E52A7EA825005491BB /* CustomViews */,
@@ -300,7 +300,6 @@
 		EE84F3252A7C7A55009E2F23 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				28363D5B2F898F630066C665 /* iCloudBackupService.swift */,
 				EE6CD1342A87C014003F66C0 /* MetronomeTimer.swift */,
 				EE82F9A92A7FBFE100B873E7 /* FlashlightService.swift */,
 				EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */,
@@ -546,7 +545,6 @@
 				EE8201832A81B1E900675A1C /* PlaylistModeView.swift in Sources */,
 				EE9BD3DD2F89A555007F91FA /* PlaylistEntry.swift in Sources */,
 				EE5DFD742AD8201C00756566 /* SettingsView.swift in Sources */,
-				28363D5C2F898F630066C665 /* iCloudBackupService.swift in Sources */,
 				EE5DFD782AD82B5A00756566 /* SettingsViewModel.swift in Sources */,
 				283672342F8988AB0090EE63 /* MetronomeConstants.swift in Sources */,
 				30DEB7A2263835E813BCF3F4 /* MetronomeAudioEngine.swift in Sources */,
@@ -715,7 +713,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = beatclikr/beatclikr.entitlements;
+				CODE_SIGN_ENTITLEMENTS = beatclikr/beatclikrDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;

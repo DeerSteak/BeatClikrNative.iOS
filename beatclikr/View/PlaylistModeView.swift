@@ -18,8 +18,6 @@ struct PlaylistModeView: View {
     
     @State private var showingSongPicker = false
     
-    private let backupService = iCloudBackupService.shared
-    
     var body: some View {
         NavigationStack {
             VStack {
@@ -60,11 +58,6 @@ struct PlaylistModeView: View {
                     } label: {
                         Image(systemName: "plus")
                     }
-                }
-            }
-            .onChange(of: entries.count) { _, _ in
-                Task {
-                    try? await backupService.backupPlaylistEntries(entries)
                 }
             }
             .sheet(isPresented: $showingSongPicker) {
