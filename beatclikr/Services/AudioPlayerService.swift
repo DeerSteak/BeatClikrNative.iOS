@@ -80,16 +80,4 @@ class AudioPlayerService: HasAudioEngine, MetronomeAudioEngineDelegate {
         // Forward to external delegate (ViewModel)
         delegate?.metronomeBeatFired(isBeat: isBeat)
     }
-
-    // MARK: - Legacy API (for backwards compatibility during migration)
-
-    @available(*, deprecated, message: "Use startMetronome instead")
-    func playBeat() {
-        // This is now handled by the sequencer/timer
-    }
-
-    @available(*, deprecated, message: "Use startMetronome instead")
-    func playRhythm() {
-        // This is now handled by the sequencer/timer
-    }
 }

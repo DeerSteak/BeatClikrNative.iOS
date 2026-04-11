@@ -18,9 +18,6 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     
     private var isLiveMode: Bool = false
     private var liveModeStarted: Bool = false
-    private var isMuted: Bool = false
-    private var useFlashlight: Bool = false
-    private var useVibration: Bool = false
     private var song: Song
     
     private var isBeat: Bool = false
@@ -35,9 +32,9 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
                 Song.instantSong.beatsPerMinute = beatsPerMinute
                 defaults.instantBpm = beatsPerMinute
             }
-            // Update tempo in real-time if playing
             if isPlaying {
-                audio.updateTempo(bpm: beatsPerMinute, subdivisions: song.groove!.rawValue)
+                stop()
+                start()
             }
         }
     }
@@ -48,9 +45,9 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
                 Song.instantSong.groove = selectedGroove
                 defaults.instantGroove = selectedGroove
             }
-            // Update subdivisions in real-time if playing
             if isPlaying {
-                audio.updateTempo(bpm: beatsPerMinute, subdivisions: selectedGroove.rawValue)
+                stop()
+                start()
             }
         }
     }
@@ -148,9 +145,6 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     }
     
     func setupMetronome() {
-        isMuted = defaults.muteMetronome
-        useFlashlight = defaults.useFlashlight
-        useVibration = defaults.useVibration
         
         if let bpm = song.beatsPerMinute, !bpm.isNaN {
             if bpm < MetronomeConstants.minBPM {
@@ -213,25 +207,19 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     
     //MARK: Private helpers
     private func handleBeat() {
-        if !isMuted && !liveModeStarted {
-            // Audio is handled by the sequencer
-        }
-        if useVibration {
+        if defaults.useVibration {
             vibration.vibrateBeat()
         }
-        if useFlashlight {
+        if defaults.useFlashlight {
             flashlight.turnFlashlightOn()
         }
     }
     
     private func handleRhythm() {
-        if !isMuted && !liveModeStarted {
-            // Audio is handled by the sequencer
-        }
-        if useVibration {
+        if defaults.useVibration {
             vibration.vibrateRhythm()
         }
-        if useFlashlight {
+        if defaults.useFlashlight {
             flashlight.turnFlashlightOff()
         }
     }

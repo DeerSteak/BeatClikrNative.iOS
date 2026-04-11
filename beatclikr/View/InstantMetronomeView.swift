@@ -37,7 +37,6 @@ struct InstantMetronomeView: View {
                     HStack {
                         Button(action: {
                             model.beatsPerMinute = max(MetronomeConstants.defaultMinSliderBPM, model.beatsPerMinute - 1)
-                            resetMetronome()
                         }) {
                             Image(systemName: "minus")
                                 .font(.title2.bold())
@@ -50,7 +49,6 @@ struct InstantMetronomeView: View {
                         Slider(value: $model.beatsPerMinute, in: MetronomeConstants.defaultMinSliderBPM...MetronomeConstants.defaultMaxSliderBPM, step: 1)
                         Button(action: {
                             model.beatsPerMinute = min(MetronomeConstants.defaultMaxSliderBPM, model.beatsPerMinute + 1)
-                            resetMetronome()
                         }) {
                             Image(systemName: "plus")
                                 .font(.title2.bold())
@@ -61,9 +59,7 @@ struct InstantMetronomeView: View {
                         }
                         .buttonStyle(.plain)
                     }
-                    .onChange(of: model.beatsPerMinute) {
-                        resetMetronome()
-                    }
+
                 }
                 Grid(alignment: .trailing, verticalSpacing: 16) {
                     GridRow {
@@ -72,7 +68,6 @@ struct InstantMetronomeView: View {
                             ForEach(Groove.allCases) { option in
                                 Button(action: {
                                     model.selectedGroove = option
-                                    resetMetronome()
                                 }) {
                                     Text(String(describing: option))
                                         .font(.caption)
@@ -95,7 +90,6 @@ struct InstantMetronomeView: View {
                                     Text(String(describing: option))
                                 }
                             }
-                            .onChange(of: model.beat) { resetMetronome() }
                             .pickerStyle(.inline)
                             .labelsHidden()
                         }, label: {
@@ -111,7 +105,6 @@ struct InstantMetronomeView: View {
                                     Text(String(describing: option))
                                 }
                             }
-                            .onChange(of: model.rhythm) { resetMetronome() }
                             .pickerStyle(.inline)
                             .labelsHidden()
                         }, label: {
@@ -142,13 +135,7 @@ struct InstantMetronomeView: View {
         }
     }
     
-    private func resetMetronome() {
-        let wasPlaying = model.isPlaying
-        model.resetMetronome()
-        if wasPlaying {
-            model.start()
-        }
-    }
+
 }
 
 #Preview {
