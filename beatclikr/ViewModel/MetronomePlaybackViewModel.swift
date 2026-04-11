@@ -29,12 +29,10 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     @Published var beatsPerMinute: Double = UserDefaultsService.instance.instantBpm {
         didSet {
             if clickerType == .instant {
-                Song.instantSong.beatsPerMinute = beatsPerMinute
                 defaults.instantBpm = beatsPerMinute
             }
             if isPlaying {
-                stop()
-                start()
+                audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.rawValue)
             }
         }
     }
@@ -42,12 +40,10 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     @Published var selectedGroove: Groove = UserDefaultsService.instance.instantGroove {
         didSet {
             if clickerType == .instant {
-                Song.instantSong.groove = selectedGroove
                 defaults.instantGroove = selectedGroove
             }
             if isPlaying {
-                stop()
-                start()
+                audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.rawValue)
             }
         }
     }
@@ -115,7 +111,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             iconScale = MetronomeConstants.iconScaleMax
             
             // Calculate duration for one full beat (in seconds)
-            let beatDuration = 60.0 / (song.beatsPerMinute ?? 60)
+            let beatDuration = 60.0 / beatsPerMinute
             
             // Animate linearly to min over the beat duration
             withAnimation(.linear(duration: beatDuration)) {
@@ -175,10 +171,10 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     }
     
     func start() {
+        song.beatsPerMinute = beatsPerMinute
+        song.groove = selectedGroove
         setupMetronome()
-        let bpm = song.beatsPerMinute ?? MetronomeConstants.minBPM
-        let groove = song.groove?.rawValue ?? Groove.quarter.rawValue
-        audio.startMetronome(bpm: bpm, subdivisions: groove)
+        audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.rawValue)
         isPlaying = true
     }
     

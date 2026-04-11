@@ -27,13 +27,18 @@ struct beatclikrApp: App {
         }
     }
     
+    @StateObject private var songLibraryViewModel = SongLibraryViewModel()
+    @StateObject private var playlistModeViewModel = PlaylistModeViewModel()
+    @StateObject private var metronomeViewModel = MetronomePlaybackViewModel()
+    @StateObject private var settingsViewModel = SettingsViewModel()
+
     var body: some Scene {
         WindowGroup {
             HomeView()
-                .environmentObject(SongLibraryViewModel())
-                .environmentObject(PlaylistModeViewModel())
-                .environmentObject(MetronomePlaybackViewModel())
-                .environmentObject(SettingsViewModel())
+                .environmentObject(songLibraryViewModel)
+                .environmentObject(playlistModeViewModel)
+                .environmentObject(metronomeViewModel)
+                .environmentObject(settingsViewModel)
         }
         .modelContainer(container)
     }
