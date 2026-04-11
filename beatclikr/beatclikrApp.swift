@@ -9,14 +9,14 @@ import SwiftUI
 import SwiftData
 @main
 struct beatclikrApp: App {
-
+    
     let container: ModelContainer
-
+    
     init() {
         let config = ModelConfiguration(
             cloudKitDatabase: .private("iCloud.com.bfunkstudios.beatclikr")
         )
-
+        
         do {
             container = try ModelContainer(
                 for: Song.self, PlaylistEntry.self,
@@ -26,7 +26,7 @@ struct beatclikrApp: App {
             fatalError(error.localizedDescription)
         }
     }
-
+    
     var body: some Scene {
         WindowGroup {
             HomeView()
@@ -36,5 +36,5 @@ struct beatclikrApp: App {
         }
         .modelContainer(container)
     }
-
+    
 }

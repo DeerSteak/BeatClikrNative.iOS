@@ -8,7 +8,7 @@
 import Foundation
 
 struct InstrumentLists {
-    static let rhythm: [FileConstants] = 
+    static let rhythm: [FileConstants] =
     [
         .ClickHi,
         .ClickLo,
@@ -22,7 +22,7 @@ struct InstrumentLists {
         .Tamb
     ]
     
-    static let beat: [FileConstants] = 
+    static let beat: [FileConstants] =
     [
         .ClickHi,
         .ClickLo,

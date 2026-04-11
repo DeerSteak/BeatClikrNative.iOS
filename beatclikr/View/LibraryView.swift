@@ -11,7 +11,7 @@ import SwiftData
 struct LibraryView: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: SongLibraryViewModel
-
+    
     @Query(sort: [SortDescriptor(\Song.title), SortDescriptor(\Song.artist)]) private var items: [Song]
     
     var body: some View {

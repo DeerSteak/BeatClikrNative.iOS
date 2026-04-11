@@ -11,7 +11,7 @@ struct HomeView: View {
     var body: some View {
         TabView {
             InstantMetronomeView()
-                .tabItem { 
+                .tabItem {
                     Label("Instant", systemImage: "metronome")
                 }
             LibraryView()
@@ -36,5 +36,5 @@ struct HomeView: View {
         .environmentObject(MetronomePlaybackViewModel())
         .environmentObject(SettingsViewModel())
         .environmentObject(SongLibraryViewModel(container: previewContainer.container))
-        
+    
 }

@@ -15,20 +15,20 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     private let flashlight: FlashlightService
     private let audio: AudioPlayerService
     private let defaults: UserDefaultsService
-
+    
     private var isLiveMode: Bool = false
     private var liveModeStarted: Bool = false
     private var isMuted: Bool = false
     private var useFlashlight: Bool = false
     private var useVibration: Bool = false
     private var song: Song
-
+    
     private var isBeat: Bool = false
-
+    
     //MARK: Published properties
     @Published var iconScale: CGFloat = MetronomeConstants.iconScaleMin
     @Published var isPlaying: Bool = false
-
+    
     @Published var beatsPerMinute: Double = UserDefaultsService.instance.instantBpm {
         didSet {
             if clickerType == .instant {
@@ -41,7 +41,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             }
         }
     }
-
+    
     @Published var selectedGroove: Groove = UserDefaultsService.instance.instantGroove {
         didSet {
             if clickerType == .instant {
@@ -54,7 +54,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             }
         }
     }
-
+    
     @Published var beat: FileConstants = UserDefaultsService.instance.instantBeat {
         didSet {
             if clickerType == .instant {
@@ -65,7 +65,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         }
     }
-
+    
     @Published var rhythm: FileConstants = UserDefaultsService.instance.instantRhythm {
         didSet {
             if clickerType == .instant {
@@ -76,7 +76,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         }
     }
-
+    
     @Published var clickerType: ClickerType = .instant {
         didSet {
             if !isPlaying {
@@ -84,7 +84,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             }
         }
     }
-
+    
     //MARK: Initializer
     init(
         vibration: VibrationService = .instance,
@@ -96,7 +96,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         self.flashlight = flashlight
         self.audio = audio
         self.defaults = defaults
-
+        
         song = Song.instantSong
         song.groove = defaults.instantGroove
         song.beatsPerMinute = defaults.instantBpm
@@ -104,37 +104,37 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         rhythm = defaults.instantRhythm
         clickerType = .instant
         isBeat = false
-
+        
         // Set self as delegate for audio callbacks
         audio.delegate = self
     }
-
+    
     //MARK: MetronomeAudioEngineDelegate
     func metronomeBeatFired(isBeat: Bool) {
         self.isBeat = isBeat
-
+        
         if isBeat {
             // Reset scale to max instantly on beat
             iconScale = MetronomeConstants.iconScaleMax
-
+            
             // Calculate duration for one full beat (in seconds)
             let beatDuration = 60.0 / (song.beatsPerMinute ?? 60)
-
+            
             // Animate linearly to min over the beat duration
             withAnimation(.linear(duration: beatDuration)) {
                 iconScale = MetronomeConstants.iconScaleMin
             }
-
+            
             handleBeat()
         } else {
             handleRhythm()
         }
     }
-
+    
     //MARK: Public functions
     func switchSong(_ song: Song) {
         self.song = song
-
+        
         // Reload beat/rhythm from defaults in case they changed in settings
         if clickerType == .instant {
             beat = defaults.instantBeat
@@ -143,10 +143,10 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             beat = defaults.playlistBeat
             rhythm = defaults.playlistRhythm
         }
-
+        
         setupMetronome()
     }
-
+    
     func setupMetronome() {
         isMuted = defaults.muteMetronome
         useFlashlight = defaults.useFlashlight
@@ -163,14 +163,14 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         else {
             song.beatsPerMinute = MetronomeConstants.minBPM
         }
-
+        
         if song.groove == nil {
             song.groove = .quarter
         }
-
+        
         audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
     }
-
+    
     func togglePlayPause() {
         isPlaying.toggle()
         if isPlaying {
@@ -179,7 +179,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             stop()
         }
     }
-
+    
     func start() {
         setupMetronome()
         let bpm = song.beatsPerMinute ?? MetronomeConstants.minBPM
@@ -187,17 +187,17 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         audio.startMetronome(bpm: bpm, subdivisions: groove)
         isPlaying = true
     }
-
+    
     func stop() {
         audio.stopMetronome()
         flashlight.turnFlashlightOff()
         isPlaying = false
     }
-
+    
     func resetMetronome() {
         let wasPlaying = isPlaying
         stop()
-
+        
         if clickerType == .instant {
             beat = defaults.instantBeat
             rhythm = defaults.instantRhythm
@@ -210,7 +210,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             start()
         }
     }
-
+    
     //MARK: Private helpers
     private func handleBeat() {
         if !isMuted && !liveModeStarted {
@@ -223,7 +223,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             flashlight.turnFlashlightOn()
         }
     }
-
+    
     private func handleRhythm() {
         if !isMuted && !liveModeStarted {
             // Audio is handled by the sequencer

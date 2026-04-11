@@ -13,10 +13,10 @@ import SwiftUI
 class SongLibraryViewModel : ObservableObject {
     @Published var isPlayback: Bool = true
     @Published var isPlaying: Bool = false
-
+    
     private var model: MetronomePlaybackViewModel
     private var context: ModelContext
-
+    
     init(container: ModelContainer? = nil) {
         if let container {
             context = ModelContext(container)
@@ -27,16 +27,16 @@ class SongLibraryViewModel : ObservableObject {
         }
         model = MetronomePlaybackViewModel()
     }
-
+    
     func switchSong(_ song: Song) {
         model.switchSong(song)
     }
-
+    
     func startMetronome() {
         model.setupMetronome()
         model.start()
     }
-
+    
     func stopMetronome() {
         model.stop()
     }

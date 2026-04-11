@@ -18,7 +18,7 @@ final class Song : Identifiable {
     var groove: Groove?
     
     var playlistEntries: [PlaylistEntry]? = []
-
+    
     @MainActor static let instantSong: Song = Song()
     
     init() {
@@ -29,7 +29,7 @@ final class Song : Identifiable {
         self.beatsPerMeasure = 4
         self.groove = .quarter
     }
-        
+    
     init(title: String, artist: String, beatsPerMinute: Double, beatsPerMeasure: Int, groove: Groove) {
         self.id = UUID().uuidString
         self.title = title

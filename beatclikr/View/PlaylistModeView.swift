@@ -96,7 +96,6 @@ struct PlaylistModeView: View {
             for index in offsets {
                 modelContext.delete(entries[index])
             }
-            // Re-sequence remaining entries
             let remaining = entries.enumerated().filter { !offsets.contains($0.offset) }
             for (newIndex, element) in remaining.enumerated() {
                 element.element.sequence = newIndex

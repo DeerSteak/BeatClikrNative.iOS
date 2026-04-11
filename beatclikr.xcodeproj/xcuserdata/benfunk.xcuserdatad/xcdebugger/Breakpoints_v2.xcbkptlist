@@ -95,9 +95,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "109"
-            endingLineNumber = "109"
-            landmarkName = "backupAll()"
-            landmarkType = "7">
+            endingLineNumber = "109">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -111,9 +109,7 @@
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "140"
-            endingLineNumber = "140"
-            landmarkName = "restoreAll()"
-            landmarkType = "7">
+            endingLineNumber = "140">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -146,6 +142,36 @@
             endingLineNumber = "37"
             landmarkName = "body"
             landmarkType = "24">
+            <Locations>
+               <Location
+                  uuid = "29B24300-A0A2-4A80-8A69-A18B18D261DF - 8b0c1b5b076c75a7"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; SwiftUI.TupleView&lt;(SwiftUI.Text, SwiftUI.Menu&lt;beatclikr.RectangleText, &lt;&lt;opaque return type of SwiftUI.View.labelsHidden() -&gt; some&gt;&gt;.0&gt;)&gt; in closure #1 () -&gt; SwiftUI.TupleView&lt;(SwiftUI.GridRow&lt;SwiftUI.TupleView&lt;(SwiftUI.Text, SwiftUI.Menu&lt;beatclikr.RectangleText, &lt;&lt;opaque return type of SwiftUI.View.labelsHidden() -&gt; some&gt;&gt;.0&gt;)&gt;&gt;, SwiftUI.GridRow&lt;SwiftUI.TupleView&lt;(SwiftUI.Text, SwiftUI.Menu&lt;beatclikr.RectangleText, &lt;&lt;opaque return type of SwiftUI.View.labelsHidden() -&gt; some&gt;&gt;.0&gt;)&gt;&gt;)&gt; in closure #1 () -&gt; SwiftUI.TupleView&lt;(SwiftUI.Text, SwiftUI.Text, SwiftUI.Toggle&lt;SwiftUI.Text&gt;, SwiftUI.Divider, SwiftUI.Text, SwiftUI.Text, SwiftUI.Toggle&lt;SwiftUI.Text&gt;, SwiftUI.Toggle&lt;SwiftUI.Text&gt;, SwiftUI.Toggle&lt;SwiftUI.Text&gt;, SwiftUI.Divider, SwiftUI.Text, SwiftUI.Text, SwiftUI.Text, SwiftUI.Grid&lt;SwiftUI.TupleView&lt;(SwiftUI.GridRow&lt;SwiftUI.TupleView&lt;(SwiftUI.Text, SwiftUI.Menu&lt;beatclikr.RectangleText, &lt;&lt;opaque return type of SwiftUI.View.labelsHidden() -&gt; some&gt;&gt;.0&gt;)&gt;&gt;, SwiftUI.GridRow&lt;SwiftUI.TupleView&lt;(SwiftUI.Text, SwiftUI.Menu&lt;beatclikr.RectangleText, &lt;&lt;opaque return type of SwiftUI.View.labelsHidden() -&gt; some&gt;&gt;.0&gt;)&gt;&gt;)&gt;&gt;, SwiftUI.Divider, SwiftUI.Text, SwiftUI.Grid&lt;SwiftUI.TupleView&lt;(SwiftUI.GridRow&lt;SwiftUI.TupleView&lt;(SwiftUI.Text, SwiftUI.Menu&lt;beatclikr.RectangleText, &lt;&lt;opaque return type of SwiftUI.View.labelsHidden() -&gt; some&gt;&gt;.0&gt;)&gt;&gt;, SwiftUI.GridRow&lt;SwiftUI.TupleView&lt;(SwiftUI.Text, SwiftUI.Menu&lt;beatclikr.RectangleText, &lt;&lt;opaque return type of SwiftUI.View.labelsHidden() -&gt; some&gt;&gt;.0&gt;)&gt;&gt;)&gt;&gt;, SwiftUI.Divider)&gt; in closure #1 () -&gt; &lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0 in closure #1 () -&gt; &lt;&lt;opaque return type of SwiftUI.View.navigationTitle(SwiftUI.LocalizedStringKey) -&gt; some&gt;&gt;.0 in beatclikr.SettingsView.body.getter : some"
+                  moduleName = "beatclikr.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/benfunk/Projects/BeatClikrNative.iOS/beatclikr/View/SettingsView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "37"
+                  endingLineNumber = "37">
+               </Location>
+               <Location
+                  uuid = "29B24300-A0A2-4A80-8A69-A18B18D261DF - bd9154fbe31d30f3"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 () -&gt; &lt;&lt;opaque return type of SwiftUI.View.labelsHidden() -&gt; some&gt;&gt;.0 in closure #1 () -&gt; SwiftUI.TupleView&lt;(SwiftUI.Text, SwiftUI.Menu&lt;beatclikr.RectangleText, &lt;&lt;opaque return type of SwiftUI.View.labelsHidden() -&gt; some&gt;&gt;.0&gt;)&gt; in closure #1 () -&gt; SwiftUI.TupleView&lt;(SwiftUI.GridRow&lt;SwiftUI.TupleView&lt;(SwiftUI.Text, SwiftUI.Menu&lt;beatclikr.RectangleText, &lt;&lt;opaque return type of SwiftUI.View.labelsHidden() -&gt; some&gt;&gt;.0&gt;)&gt;&gt;, SwiftUI.GridRow&lt;SwiftUI.TupleView&lt;(SwiftUI.Text, SwiftUI.Menu&lt;beatclikr.RectangleText, &lt;&lt;opaque return type of SwiftUI.View.labelsHidden() -&gt; some&gt;&gt;.0&gt;)&gt;&gt;)&gt; in closure #1 () -&gt; SwiftUI.TupleView&lt;(SwiftUI.Text, SwiftUI.Text, SwiftUI.Toggle&lt;SwiftUI.Text&gt;, SwiftUI.Divider, SwiftUI.Text, SwiftUI.Text, SwiftUI.Toggle&lt;SwiftUI.Text&gt;, SwiftUI.Toggle&lt;SwiftUI.Text&gt;, SwiftUI.Toggle&lt;SwiftUI.Text&gt;, SwiftUI.Divider, SwiftUI.Text, SwiftUI.Text, SwiftUI.Text, SwiftUI.Grid&lt;SwiftUI.TupleView&lt;(SwiftUI.GridRow&lt;SwiftUI.TupleView&lt;(SwiftUI.Text, SwiftUI.Menu&lt;beatclikr.RectangleText, &lt;&lt;opaque return type of SwiftUI.View.labelsHidden() -&gt; some&gt;&gt;.0&gt;)&gt;&gt;, SwiftUI.GridRow&lt;SwiftUI.TupleView&lt;(SwiftUI.Text, SwiftUI.Menu&lt;beatclikr.RectangleText, &lt;&lt;opaque return type of SwiftUI.View.labelsHidden() -&gt; some&gt;&gt;.0&gt;)&gt;&gt;)&gt;&gt;, SwiftUI.Divider, SwiftUI.Text, SwiftUI.Grid&lt;SwiftUI.TupleView&lt;(SwiftUI.GridRow&lt;SwiftUI.TupleView&lt;(SwiftUI.Text, SwiftUI.Menu&lt;beatclikr.RectangleText, &lt;&lt;opaque return type of SwiftUI.View.labelsHidden() -&gt; some&gt;&gt;.0&gt;)&gt;&gt;, SwiftUI.GridRow&lt;SwiftUI.TupleView&lt;(SwiftUI.Text, SwiftUI.Menu&lt;beatclikr.RectangleText, &lt;&lt;opaque return type of SwiftUI.View.labelsHidden() -&gt; some&gt;&gt;.0&gt;)&gt;&gt;)&gt;&gt;, SwiftUI.Divider)&gt; in closure #1 () -&gt; &lt;&lt;opaque return type of SwiftUI.View.padding(SwiftUI.Edge.Set, Swift.Optional&lt;CoreGraphics.CGFloat&gt;) -&gt; some&gt;&gt;.0 in closure #1 () -&gt; &lt;&lt;opaque return type of SwiftUI.View.navigationTitle(SwiftUI.LocalizedStringKey) -&gt; some&gt;&gt;.0 in beatclikr.SettingsView.body.getter : some"
+                  moduleName = "beatclikr.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/benfunk/Projects/BeatClikrNative.iOS/beatclikr/View/SettingsView.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "37"
+                  endingLineNumber = "37">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy

@@ -74,7 +74,7 @@ struct SongDetailsView: View {
                         ForEach(Groove.allCases) {
                             option in
                             Text(String(describing: option))
-                    }
+                        }
                     }
                     .pickerStyle(.menu)
                 }
