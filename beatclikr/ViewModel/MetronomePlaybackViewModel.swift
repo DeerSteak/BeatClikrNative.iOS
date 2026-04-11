@@ -37,7 +37,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             }
             // Update tempo in real-time if playing
             if isPlaying {
-                audio.updateTempo(bpm: beatsPerMinute, subdivisions: song.groove.rawValue)
+                audio.updateTempo(bpm: beatsPerMinute, subdivisions: song.groove!.rawValue)
             }
         }
     }
@@ -118,7 +118,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             iconScale = MetronomeConstants.iconScaleMax
 
             // Calculate duration for one full beat (in seconds)
-            let beatDuration = 60.0 / song.beatsPerMinute
+            let beatDuration = 60.0 / (song.beatsPerMinute ?? 60)
 
             // Animate linearly to min over the beat duration
             withAnimation(.linear(duration: beatDuration)) {
@@ -151,12 +151,21 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         isMuted = defaults.muteMetronome
         useFlashlight = defaults.useFlashlight
         useVibration = defaults.useVibration
-
-        if song.beatsPerMinute < MetronomeConstants.minBPM {
+        
+        if let bpm = song.beatsPerMinute, !bpm.isNaN {
+            if bpm < MetronomeConstants.minBPM {
+                song.beatsPerMinute = MetronomeConstants.minBPM
+            }
+            else if bpm > MetronomeConstants.maxBPM {
+                song.beatsPerMinute = MetronomeConstants.maxBPM
+            }
+        }
+        else {
             song.beatsPerMinute = MetronomeConstants.minBPM
         }
-        else if song.beatsPerMinute > MetronomeConstants.maxBPM {
-            song.beatsPerMinute = MetronomeConstants.maxBPM
+
+        if song.groove == nil {
+            song.groove = .quarter
         }
 
         audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
@@ -173,7 +182,9 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
     func start() {
         setupMetronome()
-        audio.startMetronome(bpm: song.beatsPerMinute, subdivisions: song.groove.rawValue)
+        let bpm = song.beatsPerMinute ?? MetronomeConstants.minBPM
+        let groove = song.groove?.rawValue ?? Groove.quarter.rawValue
+        audio.startMetronome(bpm: bpm, subdivisions: groove)
         isPlaying = true
     }
 

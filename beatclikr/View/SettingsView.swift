@@ -6,14 +6,12 @@
 //
 
 import SwiftUI
-import SwiftData
 
 struct SettingsView: View {
     @EnvironmentObject var model: SettingsViewModel
-    @Environment(\.modelContext) private var modelContext
-    @Query private var songs: [Song]
-    
+
     var body: some View {
+        NavigationStack {
         ScrollView {
             VStack(alignment: .leading) {
                 Text("PracticeRemindersTitle")
@@ -47,7 +45,7 @@ struct SettingsView: View {
                             .labelsHidden()
                         }, label: {
                             RectangleText("\(model.instantBeat.description)", backgroundColor: Color(UIColor.systemBackground), foregroundColor: .appPrimary)
-                                
+
                         })
                     }
                     GridRow {
@@ -69,7 +67,7 @@ struct SettingsView: View {
                 Divider()
                 Text("PlaybackInstrumentsPlaylistTitle")
                     .font(.title2)
-                
+
                 Grid(alignment: .leading) {
                     GridRow {
                         Text("Beat")
@@ -84,7 +82,7 @@ struct SettingsView: View {
                             .labelsHidden()
                         }, label: {
                             RectangleText("\(model.playlistBeat.description)", backgroundColor: Color(UIColor.systemBackground), foregroundColor: .appPrimary)
-                                
+
                         })
                     }
                     GridRow {
@@ -104,79 +102,16 @@ struct SettingsView: View {
                     }
                 }
                 Divider()
-                Text("iCloud Backup")
-                    .font(.title)
-                Text("Back up your settings and songs to iCloud. You can restore them on any device.")
-                    .font(.caption)
-                    .foregroundColor(.secondary)
 
-                if let lastBackup = model.lastBackupDate {
-                    Text("Last backup: \(lastBackup.formatted(date: .abbreviated, time: .shortened))")
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                }
-
-                HStack {
-                    Button(action: {
-                        model.backupToiCloud(songs: songs)
-                    }) {
-                        HStack {
-                            if model.isBackingUp {
-                                ProgressView()
-                                    .progressViewStyle(.circular)
-                                    .scaleEffect(0.8)
-                            } else {
-                                Image(systemName: "icloud.and.arrow.up")
-                            }
-                            Text("Backup to iCloud")
-                        }
-                    }
-                    .disabled(model.isBackingUp || model.isRestoring || !model.checkiCloudAvailability())
-
-                    Spacer()
-
-                    Button(action: {
-                        model.restoreFromiCloud(modelContext: modelContext)
-                    }) {
-                        HStack {
-                            if model.isRestoring {
-                                ProgressView()
-                                    .progressViewStyle(.circular)
-                                    .scaleEffect(0.8)
-                            } else {
-                                Image(systemName: "icloud.and.arrow.down")
-                            }
-                            Text("Restore from iCloud")
-                        }
-                    }
-                    .disabled(model.isBackingUp || model.isRestoring || !model.checkiCloudAvailability())
-                }
-
-                if let error = model.backupError {
-                    Text(error)
-                        .foregroundColor(.red)
-                        .font(.caption)
-                }
-
-                if let success = model.backupSuccess {
-                    Text(success)
-                        .foregroundColor(.green)
-                        .font(.caption)
-                }
-
-                if !model.checkiCloudAvailability() {
-                    Text("iCloud is not available. Please enable iCloud Drive in Settings.")
-                        .foregroundColor(.orange)
-                        .font(.caption)
-                }
             }
             .padding()
         }
-
+        .navigationTitle("Settings")
+        }
     }
 }
 
 #Preview {
-    return SettingsView()        
+    return SettingsView()
         .environmentObject(SettingsViewModel())
 }

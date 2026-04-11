@@ -10,14 +10,14 @@ import SwiftData
 
 @Model
 final class Song : Identifiable {
-    var id: String
-    var title: String
-    var artist: String
-    var beatsPerMinute: Double
-    var beatsPerMeasure: Int
-    var liveSequence: Int?
-    var rehearsalSequence: Int?
-    var groove: Groove
+    var id: String?
+    var title: String?
+    var artist: String?
+    var beatsPerMinute: Double?
+    var beatsPerMeasure: Int?
+    var groove: Groove?
+    
+    var playlistEntries: [PlaylistEntry]? = []
 
     @MainActor static let instantSong: Song = Song()
     
