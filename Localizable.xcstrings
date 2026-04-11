@@ -467,6 +467,7 @@
       }
     },
     "Select an item" : {
+      "extractionState" : "stale",
       "localizations" : {
         "es" : {
           "stringUnit" : {

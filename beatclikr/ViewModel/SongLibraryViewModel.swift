@@ -13,30 +13,22 @@ import SwiftUI
 class SongLibraryViewModel : ObservableObject {
     @Published var isPlaying: Bool = false
     
-    private var model: MetronomePlaybackViewModel
-    private var context: ModelContext
+    private var metronome: MetronomePlaybackViewModel
     
-    init(container: ModelContainer? = nil) {
-        if let container {
-            context = ModelContext(container)
-        } else {
-            let config = ModelConfiguration(cloudKitDatabase: .none)
-            let fallback = try! ModelContainer(for: Song.self, PlaylistEntry.self, configurations: config)
-            context = ModelContext(fallback)
-        }
-        model = MetronomePlaybackViewModel()
-        model.clickerType = .playlist
+    init(metronome: MetronomePlaybackViewModel = MetronomePlaybackViewModel()) {
+        self.metronome = metronome
     }
     
     func playSong(_ song: Song) {
-        model.switchSong(song)
-        model.setupMetronome()
-        model.start()
+        metronome.clickerType = .playlist
+        metronome.switchSong(song)
+        metronome.setupMetronome()
+        metronome.start()
         isPlaying = true
     }
     
     func stop() {
-        model.stop()
+        metronome.stop()
         isPlaying = false
     }
     
@@ -45,7 +37,11 @@ class SongLibraryViewModel : ObservableObject {
             for index in offsets {
                 context.delete(items[index])
             }
-            try! context.save()
+            do {
+                try context.save()
+            } catch {
+                print("Failed to delete songs: \(error)")
+            }
         }
     }
 }

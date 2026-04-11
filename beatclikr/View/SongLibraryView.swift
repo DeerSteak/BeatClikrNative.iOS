@@ -19,12 +19,9 @@ struct SongLibraryView: View {
     @State private var editingSong: Song?
     
     var body: some View {
-        NavigationSplitView {
-            VStack {
-                List {
-                    ForEach(items.sorted(by: { a, b in
-                        a.title! < b.title!
-                    })) { item in
+        NavigationStack {
+            List {
+                ForEach(items) { item in
                         HStack {
                             SongListItemView(song: item)
                             Spacer()
@@ -47,14 +44,15 @@ struct SongLibraryView: View {
                         .onTapGesture {
                             guard !editMode.isEditing else { return }
                             tappedId = item.id
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            Task {
+                                try? await Task.sleep(for: .seconds(0.5))
                                 tappedId = nil
                             }
                             model.playSong(item)
                         }
                         
                     }
-                    .onDelete(perform: editMode.isEditing ? { offsets in model.deleteItems(offsets: offsets, items: items.sorted(by: { $0.title! < $1.title! }), context: modelContext) } : nil)
+                    .onDelete(perform: editMode.isEditing ? { offsets in model.deleteItems(offsets: offsets, items: items, context: modelContext) } : nil)
                 }
                 .environment(\.editMode, $editMode)
                 .overlay(content: {
@@ -100,17 +98,12 @@ struct SongLibraryView: View {
                 }
                 .toolbarTitleDisplayMode(.automatic)
                 .navigationTitle("Song Library")
-            }
-        } detail: {
-            Text("Select an item")
         }
         .onDisappear(perform: model.stop)
     }
 }
 
 #Preview {
-    let previewContainer = PreviewContainer([Song.self])
-    let vm = SongLibraryViewModel(container: previewContainer.container)
     return SongLibraryView()
-        .environmentObject(vm)
+        .environmentObject(SongLibraryViewModel())
 }

@@ -48,7 +48,8 @@ struct PlaylistModeView: View {
                         .onTapGesture {
                             guard !editMode.isEditing else { return }
                             tappedId = entry.id
-                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            Task {
+                                try? await Task.sleep(for: .seconds(0.5))
                                 tappedId = nil
                             }
                             model.playSong(song)

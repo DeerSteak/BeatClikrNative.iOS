@@ -131,16 +131,19 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
     private func playCurrentBeat() {
         let isBeat = subdivisionCounter == 0
 
-        if isBeat {
-            if let beatSound = beatSound {
-                sampler.play(noteNumber: MIDINoteNumber(beatSound.midiNote))
-            }
-        } else {
-            if let rhythmSound = rhythmSound {
-                sampler.play(noteNumber: MIDINoteNumber(rhythmSound.midiNote))
+        if !UserDefaultsService.instance.muteMetronome {
+            if isBeat {
+                if let beatSound = beatSound {
+                    sampler.play(noteNumber: MIDINoteNumber(beatSound.midiNote))
+                }
+            } else {
+                if let rhythmSound = rhythmSound {
+                    sampler.play(noteNumber: MIDINoteNumber(rhythmSound.midiNote))
+                }
             }
         }
 
+        // Always fire the delegate so animation, vibration, and flashlight still work when muted
         delegate?.metronomeBeatFired(isBeat: isBeat)
     }
 }

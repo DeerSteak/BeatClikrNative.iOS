@@ -7,11 +7,18 @@
 
 import SwiftUI
 import SwiftData
+
 @main
+@MainActor
 struct beatclikrApp: App {
     
     let container: ModelContainer
     
+    @StateObject private var metronomeViewModel: MetronomePlaybackViewModel
+    @StateObject private var songLibraryViewModel: SongLibraryViewModel
+    @StateObject private var playlistModeViewModel: PlaylistModeViewModel
+    @StateObject private var settingsViewModel: SettingsViewModel
+
     init() {
         let config = ModelConfiguration(
             cloudKitDatabase: .private("iCloud.com.bfunkstudios.beatclikr")
@@ -25,12 +32,13 @@ struct beatclikrApp: App {
         } catch {
             fatalError(error.localizedDescription)
         }
+        
+        let metronome = MetronomePlaybackViewModel()
+        _metronomeViewModel = StateObject(wrappedValue: metronome)
+        _songLibraryViewModel = StateObject(wrappedValue: SongLibraryViewModel(metronome: metronome))
+        _playlistModeViewModel = StateObject(wrappedValue: PlaylistModeViewModel(metronome: metronome))
+        _settingsViewModel = StateObject(wrappedValue: SettingsViewModel())
     }
-    
-    @StateObject private var songLibraryViewModel = SongLibraryViewModel()
-    @StateObject private var playlistModeViewModel = PlaylistModeViewModel()
-    @StateObject private var metronomeViewModel = MetronomePlaybackViewModel()
-    @StateObject private var settingsViewModel = SettingsViewModel()
 
     var body: some Scene {
         WindowGroup {

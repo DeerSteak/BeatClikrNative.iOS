@@ -14,21 +14,13 @@ class PlaylistModeViewModel : ObservableObject {
     @Published var isPlaying: Bool = false
     
     private var metronome: MetronomePlaybackViewModel
-    private var context: ModelContext
     
-    init(container: ModelContainer? = nil) {
-        if let container {
-            context = ModelContext(container)
-        } else {
-            let config = ModelConfiguration(cloudKitDatabase: .none)
-            let fallback = try! ModelContainer(for: Song.self, PlaylistEntry.self, configurations: config)
-            context = ModelContext(fallback)
-        }
-        metronome = MetronomePlaybackViewModel()
-        metronome.clickerType = .playlist
+    init(metronome: MetronomePlaybackViewModel = MetronomePlaybackViewModel()) {
+        self.metronome = metronome
     }
     
     func playSong(_ song: Song) {
+        metronome.clickerType = .playlist
         metronome.switchSong(song)
         metronome.setupMetronome()
         metronome.start()
@@ -44,7 +36,11 @@ class PlaylistModeViewModel : ObservableObject {
         withAnimation {
             let entry = PlaylistEntry(song: song, sequence: entries.count)
             context.insert(entry)
-            try! context.save()
+            do {
+                try context.save()
+            } catch {
+                print("Failed to add song to playlist: \(error)")
+            }
         }
     }
     
@@ -57,7 +53,11 @@ class PlaylistModeViewModel : ObservableObject {
             for (newIndex, element) in remaining.enumerated() {
                 element.element.sequence = newIndex
             }
-            try! context.save()
+            do {
+                try context.save()
+            } catch {
+                print("Failed to delete playlist entries: \(error)")
+            }
         }
     }
     
