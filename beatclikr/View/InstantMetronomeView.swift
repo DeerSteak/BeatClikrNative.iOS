@@ -89,7 +89,7 @@ struct InstantMetronomeView: View {
                 
             }
             Button(action: togglePlayPause, label: {
-                RectangleText(model.isPlaying ? "Pause" : "Play")
+                RectangleText(model.isPlaying ? String(localized: "Pause") : String(localized: "Play"))
             })
             
             Spacer()

@@ -86,7 +86,7 @@ struct SongDetailsView: View {
                     dismiss()
                 }
             }, label: {
-                RectangleText("Save", backgroundColor: .clear, foregroundColor: songIsValid() ? .blue : .gray)
+                RectangleText(String(localized: "Save"), backgroundColor: .clear, foregroundColor: songIsValid() ? .blue : .gray)
             })
             .alert(isPresented: $showAlert, content: {
                 Alert(title: Text("Error saving"))
@@ -95,7 +95,7 @@ struct SongDetailsView: View {
             Button(action: {
                 dismiss()
             }, label: {
-                RectangleText("Cancel", backgroundColor: .red, foregroundColor: .white)
+                RectangleText(String(localized: "Cancel"), backgroundColor: .red, foregroundColor: .white)
             })
             Spacer()
                 .navigationBarTitleDisplayMode(.automatic)
@@ -127,7 +127,7 @@ struct SongDetailsView: View {
     }
     
     public func navTitle() -> String {
-        return song.title.isEmpty ? "Add Song" : "Song Details"
+        return song.title.isEmpty ? String(localized: "Add Song") : String(localized: "Song Details")
     }
 }
 
