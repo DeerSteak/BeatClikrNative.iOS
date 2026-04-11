@@ -18,6 +18,9 @@ struct SettingsView: View {
                         .font(.title)
                     Text("PracticeRemindersDescription")
                     Toggle(LocalizedStringKey("PracticeRemindersLabel"), isOn: $model.sendReminders)
+                    if model.sendReminders {
+                        DatePicker("Reminder Time", selection: $model.reminderTime, displayedComponents: .hourAndMinute)
+                    }
                     Divider()
                     Text("MetronomePlaybackTitle")
                         .font(.title)
@@ -107,6 +110,16 @@ struct SettingsView: View {
                 .padding()
             }
             .navigationTitle("Settings")
+        }
+        .alert("Notifications Disabled", isPresented: $model.showPermissionDeniedAlert) {
+            Button("Open Settings") {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Practice reminders require notification permissions. Please enable them in Settings.")
         }
     }
 }

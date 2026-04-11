@@ -6,14 +6,31 @@
 //
 
 import Foundation
+import UserNotifications
 
 @MainActor
 class SettingsViewModel: ObservableObject {
     private let defaults: UserDefaultsService = UserDefaultsService.instance
     
+    @Published var showPermissionDeniedAlert = false
+
     @Published var sendReminders: Bool {
         didSet {
             defaults.sendReminders = sendReminders
+            if sendReminders {
+                requestPermissionAndSchedule()
+            } else {
+                cancelReminder()
+            }
+        }
+    }
+    
+    @Published var reminderTime: Date {
+        didSet {
+            defaults.reminderTime = reminderTime
+            if sendReminders {
+                scheduleReminder()
+            }
         }
     }
     
@@ -61,6 +78,7 @@ class SettingsViewModel: ObservableObject {
     
     init() {
         sendReminders = defaults.sendReminders
+        reminderTime = defaults.reminderTime
         useFlashlight = defaults.useFlashlight
         useVibration = defaults.useVibration
         muteMetronome = defaults.muteMetronome
@@ -68,5 +86,39 @@ class SettingsViewModel: ObservableObject {
         instantRhythm = defaults.instantRhythm
         playlistBeat = defaults.playlistBeat
         playlistRhythm = defaults.playlistRhythm
+    }
+    
+    private func requestPermissionAndSchedule() {
+        Task { @MainActor in
+            let settings = await UNUserNotificationCenter.current().notificationSettings()
+            if settings.authorizationStatus == .denied {
+                sendReminders = false
+                showPermissionDeniedAlert = true
+                return
+            }
+            let granted = (try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound])) ?? false
+            if granted {
+                scheduleReminder()
+            } else {
+                sendReminders = false
+            }
+        }
+    }
+    
+    private func scheduleReminder() {
+        let content = UNMutableNotificationContent()
+        content.title = String(localized: "PracticeReminderNotificationTitle")
+        content.body = String(localized: "PracticeReminderNotificationBody")
+        content.sound = .default
+        
+        let components = Calendar.current.dateComponents([.hour, .minute], from: reminderTime)
+        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
+        let request = UNNotificationRequest(identifier: "practiceReminder", content: content, trigger: trigger)
+        
+        UNUserNotificationCenter.current().add(request)
+    }
+    
+    private func cancelReminder() {
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["practiceReminder"])
     }
 }
