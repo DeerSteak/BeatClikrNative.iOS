@@ -112,8 +112,8 @@ struct PlaylistModeView: View {
                 }
             }
         }
+        .onDisappear(perform: model.stop)
     }
-    
 }
 
 #Preview {

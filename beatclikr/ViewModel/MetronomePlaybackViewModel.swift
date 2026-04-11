@@ -171,10 +171,14 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     }
     
     func start() {
-        song.beatsPerMinute = beatsPerMinute
-        song.groove = selectedGroove
+        if clickerType == .instant {
+            song.beatsPerMinute = beatsPerMinute
+            song.groove = selectedGroove
+        }
         setupMetronome()
-        audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.rawValue)
+        let bpm = song.beatsPerMinute ?? beatsPerMinute
+        let groove = song.groove ?? selectedGroove
+        audio.startMetronome(bpm: bpm, subdivisions: groove.rawValue)
         isPlaying = true
     }
     

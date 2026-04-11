@@ -26,6 +26,7 @@ class PlaylistModeViewModel : ObservableObject {
             context = ModelContext(fallback)
         }
         metronome = MetronomePlaybackViewModel()
+        metronome.clickerType = .playlist
     }
     
     func playSong(_ song: Song) {
