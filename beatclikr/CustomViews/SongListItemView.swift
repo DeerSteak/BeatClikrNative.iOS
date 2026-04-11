@@ -19,6 +19,7 @@ struct SongListItemView: View {
                 .lineLimit(1)
             Text("\(song.artist ?? String(localized: "Unknown")) /  \(FormatterHelper.formatDouble(song.beatsPerMinute ?? 60)) BPM")
         }
+        .accessibilityElement(children: .combine)
     }
 }
 

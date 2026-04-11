@@ -110,6 +110,7 @@ struct SettingsView: View {
                 }
                 .padding()
             }
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle("Settings")
         }
         .alert("Notifications Disabled", isPresented: $model.showPermissionDeniedAlert) {

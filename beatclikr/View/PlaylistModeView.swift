@@ -27,7 +27,19 @@ struct PlaylistModeView: View {
                 ForEach(entries) { entry in
                     if let song = entry.song {
                         HStack {
-                            SongListItemView(song: song)
+                            Button {
+                                guard !editMode.isEditing else { return }
+                                tappedId = entry.id
+                                Task {
+                                    try? await Task.sleep(for: .seconds(0.5))
+                                    tappedId = nil
+                                }
+                                model.playSong(song)
+                            } label: {
+                                SongListItemView(song: song)
+                            }
+                            .buttonStyle(.plain)
+                            .disabled(editMode.isEditing)
                             Spacer()
                             if editMode.isEditing {
                                 Button {
@@ -38,6 +50,7 @@ struct PlaylistModeView: View {
                                 }
                                 .buttonStyle(.plain)
                                 .padding(.trailing, 8)
+                                .accessibilityLabel("Edit \(song.title ?? "song")")
                             }
                         }
                         .contentShape(Rectangle())
@@ -46,15 +59,6 @@ struct PlaylistModeView: View {
                                 .fill(tappedId == entry.id ? Color.accentColor.opacity(0.25) : Color.clear)
                                 .animation(.easeOut(duration: 0.5), value: tappedId)
                         )
-                        .onTapGesture {
-                            guard !editMode.isEditing else { return }
-                            tappedId = entry.id
-                            Task {
-                                try? await Task.sleep(for: .seconds(0.5))
-                                tappedId = nil
-                            }
-                            model.playSong(song)
-                        }
                     }
                 }
                 .onDelete(perform: editMode.isEditing ? { offsets in model.deleteEntries(offsets: offsets, entries: entries, context: modelContext) } : nil)
@@ -88,12 +92,14 @@ struct PlaylistModeView: View {
                     } label: {
                         Image(systemName: "plus")
                     }
+                    .accessibilityLabel("Add Song to Playlist")
                 }
                 if metronomeViewModel.isPlaying {
                     ToolbarItem {
                         Button(action: metronomeViewModel.stop) {
                             Image(systemName: "pause")
                         }
+                        .accessibilityLabel("Stop Metronome")
                     }
                 }
             }

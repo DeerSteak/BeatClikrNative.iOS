@@ -24,7 +24,19 @@ struct SongLibraryView: View {
             List {
                 ForEach(items) { item in
                         HStack {
-                            SongListItemView(song: item)
+                            Button {
+                                guard !editMode.isEditing else { return }
+                                tappedId = item.id
+                                Task {
+                                    try? await Task.sleep(for: .seconds(0.5))
+                                    tappedId = nil
+                                }
+                                model.playSong(item)
+                            } label: {
+                                SongListItemView(song: item)
+                            }
+                            .buttonStyle(.plain)
+                            .disabled(editMode.isEditing)
                             Spacer()
                             if editMode.isEditing {
                                 Button {
@@ -34,6 +46,7 @@ struct SongLibraryView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .buttonStyle(.plain)
+                                .accessibilityLabel("Edit \(item.title ?? "song")")
                             }
                         }
                         .contentShape(Rectangle())
@@ -42,15 +55,6 @@ struct SongLibraryView: View {
                                 .fill(tappedId == item.id ? Color.accentColor.opacity(0.25) : Color.clear)
                                 .animation(.easeOut(duration: 0.5), value: tappedId)
                         )
-                        .onTapGesture {
-                            guard !editMode.isEditing else { return }
-                            tappedId = item.id
-                            Task {
-                                try? await Task.sleep(for: .seconds(0.5))
-                                tappedId = nil
-                            }
-                            model.playSong(item)
-                        }
                         
                     }
                     .onDelete(perform: editMode.isEditing ? { offsets in model.deleteItems(offsets: offsets, items: items, context: modelContext) } : nil)
@@ -82,12 +86,14 @@ struct SongLibraryView: View {
                         } label: {
                             Image(systemName: "plus")
                         }
+                        .accessibilityLabel("Add Song")
                     }
                     if metronomeViewModel.isPlaying {
                         ToolbarItem {
                             Button(action: metronomeViewModel.stop) {
                                 Image(systemName: "pause")
                             }
+                            .accessibilityLabel("Stop Metronome")
                         }
                     }
                 }

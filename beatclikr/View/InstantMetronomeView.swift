@@ -46,6 +46,7 @@ struct InstantMetronomeView: View {
                                 .cornerRadius(8)
                         }
                         .buttonStyle(.plain)
+                        .accessibilityLabel("Decrease BPM")
                         Slider(value: $model.beatsPerMinute, in: MetronomeConstants.defaultMinSliderBPM...MetronomeConstants.defaultMaxSliderBPM, step: 1)
                         Button(action: {
                             model.beatsPerMinute = min(MetronomeConstants.defaultMaxSliderBPM, model.beatsPerMinute + 1)
@@ -58,6 +59,7 @@ struct InstantMetronomeView: View {
                                 .cornerRadius(8)
                         }
                         .buttonStyle(.plain)
+                        .accessibilityLabel("Increase BPM")
                     }
 
                 }
@@ -78,6 +80,7 @@ struct InstantMetronomeView: View {
                                         .cornerRadius(6)
                                 }
                                 .buttonStyle(.plain)
+                                .accessibilityAddTraits(model.selectedGroove == option ? .isSelected : [])
                             }
                         }
                     }
@@ -126,6 +129,7 @@ struct InstantMetronomeView: View {
                 UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
             }
             .padding(.all, 12)
+            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle("Instant Metronome")
         }
     }

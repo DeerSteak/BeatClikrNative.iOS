@@ -28,6 +28,7 @@ struct RectangleText: View {
                 .fill(self.backgroundColor)
                 .frame(height: 52)
                 .shadow(radius: 2)
+                .accessibilityHidden(true)
             
             Text(self.text)
                 .foregroundColor(self.foregroundColor)

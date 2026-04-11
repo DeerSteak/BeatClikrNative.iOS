@@ -18,6 +18,8 @@ struct MetronomePlayerView: View {
             .aspectRatio(contentMode: .fit)
             .frame(height: size * model.iconScale)
             .foregroundColor(Color.appPrimary)
+            .accessibilityLabel(model.isPlaying ? "Metronome playing" : "Metronome stopped")
+            .accessibilityAddTraits(.updatesFrequently)
     }
 }
 
