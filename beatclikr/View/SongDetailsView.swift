@@ -81,7 +81,7 @@ struct SongDetailsView: View {
                 }
             }
             .navigationTitle(navTitle())
-            .navigationBarTitleDisplayMode(.inline)
+            .navigationBarTitleDisplayMode(.automatic)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {

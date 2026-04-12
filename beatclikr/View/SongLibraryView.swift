@@ -60,6 +60,8 @@ struct SongLibraryView: View {
                     .onDelete(perform: editMode.isEditing ? { offsets in model.deleteItems(offsets: offsets, items: items, context: modelContext) } : nil)
                 }
                 .environment(\.editMode, $editMode)
+                .scrollContentBackground(.hidden)
+                .background(Color(UIColor.systemGroupedBackground))
                 .overlay(content: {
                     if (items.isEmpty) {
                         VStack {
@@ -105,6 +107,7 @@ struct SongLibraryView: View {
                 }
                 .toolbarTitleDisplayMode(.automatic)
                 .navigationTitle("Song Library")
+                .navigationBarTitleDisplayMode(.automatic)
         }
         .onDisappear(perform: model.stop)
         .onAppear {

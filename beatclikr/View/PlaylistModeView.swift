@@ -65,6 +65,8 @@ struct PlaylistModeView: View {
                 .onMove { fromOffsets, toOffset in model.sortEntries(fromOffsets: fromOffsets, toOffset: toOffset, entries: entries) }
             }
             .environment(\.editMode, $editMode)
+            .scrollContentBackground(.hidden)
+            .background(Color(UIColor.systemGroupedBackground))
             .overlay {
                 if entries.isEmpty {
                     VStack {
@@ -103,7 +105,7 @@ struct PlaylistModeView: View {
                     }
                 }
             }
-            .toolbarTitleDisplayMode(.automatic)
+            .navigationBarTitleDisplayMode(.automatic)
             .sheet(item: $editingSong) { song in
                 SongDetailsView(song: song)
             }
@@ -118,6 +120,7 @@ struct PlaylistModeView: View {
                         }
                     }
                     .navigationTitle("Add Song")
+                    .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
                             Button("Cancel") {

@@ -11,11 +11,9 @@ struct MetronomeConstants {
     // BPM (Beats Per Minute) constraints
     static let minBPM: Double = 30
     static let maxBPM: Double = 240
-    static let defaultMinSliderBPM: Double = 60
-    static let defaultMaxSliderBPM: Double = 180
     
     // Visual sizing
-    static let playerViewDefaultSize: CGFloat = 100
+    static let playerViewDefaultSize: CGFloat = 80
     static let playerViewToolbarSize: CGFloat = 30
     
     // Animation

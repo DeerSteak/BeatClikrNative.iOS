@@ -19,118 +19,174 @@ struct InstantMetronomeView: View {
     
     var body: some View {
         NavigationStack {
-            VStack(spacing: 20) {
-                HStack{
-                    Spacer()
-                    ZStack {
-                        // Invisible spacer to maintain fixed height at 100% scale
-                        Color.clear
-                            .frame(width: MetronomeConstants.playerViewDefaultSize, height: MetronomeConstants.playerViewDefaultSize)
-                        
-                        MetronomePlayerView()
-                    }
-                    .padding(.all, 12)
-                    Spacer()
-                }
-                VStack {
-                    Text("Tempo (BPM): \(FormatterHelper.formatDouble(model.beatsPerMinute))")
-                    HStack {
-                        Button(action: {
-                            model.beatsPerMinute = max(MetronomeConstants.defaultMinSliderBPM, model.beatsPerMinute - 1)
-                        }) {
-                            Image(systemName: "minus")
-                                .font(.title2.bold())
-                                .frame(width: 44, height: 44)
-                                .background(Color.appPrimary)
-                                .foregroundColor(.white)
-                                .cornerRadius(8)
+            ScrollView {
+                VStack(spacing: 8) {
+                    
+                    // BPM card
+                    VStack(spacing: 8) {
+                        HStack(spacing: 12) {
+                            ZStack {
+                                Color.clear.frame(width: MetronomeConstants.playerViewDefaultSize, height: MetronomeConstants.playerViewDefaultSize)
+                                MetronomePlayerView(size: MetronomeConstants.playerViewDefaultSize)
+                            }
+                            VStack(spacing: 8) {
+                                Text(FormatterHelper.formatDouble(model.beatsPerMinute))
+                                    .font(.system(size: 60, weight: .thin, design: .rounded))
+                                    .monospacedDigit()
+                                    .contentTransition(.numericText())
+                                Text("BPM")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                                    .tracking(2)
+                                    .textCase(.uppercase)
+                            }
                         }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel("Decrease BPM")
-                        Slider(value: $model.beatsPerMinute, in: MetronomeConstants.defaultMinSliderBPM...MetronomeConstants.defaultMaxSliderBPM, step: 1)
-                        Button(action: {
-                            model.beatsPerMinute = min(MetronomeConstants.defaultMaxSliderBPM, model.beatsPerMinute + 1)
-                        }) {
-                            Image(systemName: "plus")
-                                .font(.title2.bold())
-                                .frame(width: 44, height: 44)
-                                .background(Color.appPrimary)
-                                .foregroundColor(.white)
-                                .cornerRadius(8)
+                        HStack(spacing: 8) {
+                            Button {
+                                withAnimation {
+                                    model.beatsPerMinute = max(MetronomeConstants.minBPM, model.beatsPerMinute - 1)
+                                }
+                            } label: {
+                                Image(systemName: "minus")
+                                    .font(.title3.bold())
+                                    .frame(width: 40, height: 40)
+                            }
+                            .buttonStyle(.bordered)
+                            .clipShape(Circle())
+                            .accessibilityLabel("Decrease BPM")
+                            
+                            Slider(value: Binding(
+                                get: { model.beatsPerMinute },
+                                set: { newValue in withAnimation { model.beatsPerMinute = newValue } }
+                            ), in: MetronomeConstants.minBPM...MetronomeConstants.maxBPM, step: 1)
+                            
+                            Button {
+                                withAnimation {
+                                    model.beatsPerMinute = min(MetronomeConstants.maxBPM, model.beatsPerMinute + 1)
+                                }
+                            } label: {
+                                Image(systemName: "plus")
+                                    .font(.title3.bold())
+                                    .frame(width: 40, height: 40)
+                            }
+                            .buttonStyle(.bordered)
+                            .clipShape(Circle())
+                            .accessibilityLabel("Increase BPM")
                         }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel("Increase BPM")
                     }
-
-                }
-                Grid(alignment: .trailing, verticalSpacing: 16) {
-                    GridRow {
+                    .padding(12)
+                    .background(Color(UIColor.secondarySystemGroupedBackground))
+                    .cornerRadius(16)
+                    
+                    // Groove card
+                    VStack(alignment: .leading, spacing: 8) {
                         Text("Groove")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .tracking(1)
+                            .textCase(.uppercase)
+                            .padding(.horizontal, 4)
                         LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
                             ForEach(Groove.allCases) { option in
-                                Button(action: {
+                                Button {
                                     model.selectedGroove = option
-                                }) {
+                                } label: {
                                     Text(String(describing: option))
-                                        .font(.caption)
+                                        .font(.subheadline)
                                         .frame(maxWidth: .infinity)
-                                        .padding(.vertical, 12)
-                                        .background(model.selectedGroove == option ? Color.accentColor : Color(UIColor.systemGray5))
-                                        .foregroundColor(model.selectedGroove == option ? .white : .primary)
-                                        .cornerRadius(6)
+                                        .padding(.vertical, 10)
+                                        .background(model.selectedGroove == option ? Color.accentColor : Color(UIColor.tertiarySystemFill))
+                                        .foregroundStyle(model.selectedGroove == option ? Color.white : Color.primary)
+                                        .clipShape(Capsule())
                                 }
                                 .buttonStyle(.plain)
                                 .accessibilityAddTraits(model.selectedGroove == option ? .isSelected : [])
                             }
                         }
                     }
-                    GridRow {
-                        Text("Beat")
-                        Menu(content: {
-                            Picker("Beat", selection: $model.beat) {
-                                ForEach(InstrumentLists.beat) {
-                                    option in
-                                    Text(String(describing: option))
+                    .padding(12)
+                    .background(Color(UIColor.secondarySystemGroupedBackground))
+                    .cornerRadius(16)
+                    
+                    // Beat & Rhythm card
+                    VStack(spacing: 0) {
+                        HStack {
+                            Text("Beat")
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Menu {
+                                Picker("Beat", selection: $model.beat) {
+                                    ForEach(InstrumentLists.beat) { option in
+                                        Text(String(describing: option))
+                                    }
                                 }
-                            }
-                            .pickerStyle(.inline)
-                            .labelsHidden()
-                        }, label: {
-                            RectangleText("\(model.beat.description)", backgroundColor: Color(UIColor.systemBackground), foregroundColor: .appPrimary)
-                        })
-                    }
-                    GridRow {
-                        Text("Rhythm")
-                        Menu(content: {
-                            Picker("Rhythm", selection: $model.rhythm) {
-                                ForEach(InstrumentLists.rhythm) {
-                                    option in
-                                    Text(String(describing: option))
+                                .pickerStyle(.inline)
+                                .labelsHidden()
+                            } label: {
+                                HStack(spacing: 4) {
+                                    Text(model.beat.description)
+                                    Image(systemName: "chevron.up.chevron.down")
+                                        .font(.caption2)
                                 }
+                                .foregroundStyle(Color.accentColor)
                             }
-                            .pickerStyle(.inline)
-                            .labelsHidden()
-                        }, label: {
-                            RectangleText("\(model.rhythm.description)", backgroundColor: Color(UIColor.systemBackground), foregroundColor: .appPrimary)
-                        })
-                        
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
+
+                        Divider()
+                            .padding(.leading, 12)
+
+                        HStack {
+                            Text("Rhythm")
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Menu {
+                                Picker("Rhythm", selection: $model.rhythm) {
+                                    ForEach(InstrumentLists.rhythm) { option in
+                                        Text(String(describing: option))
+                                    }
+                                }
+                                .pickerStyle(.inline)
+                                .labelsHidden()
+                            } label: {
+                                HStack(spacing: 4) {
+                                    Text(model.rhythm.description)
+                                    Image(systemName: "chevron.up.chevron.down")
+                                        .font(.caption2)
+                                }
+                                .foregroundStyle(Color.accentColor)
+                            }
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
                     }
+                    .background(Color(UIColor.secondarySystemGroupedBackground))
+                    .cornerRadius(16)
+                    
+                    // Play / Pause
+                    Button(action: togglePlayPause) {
+                        Label(
+                            model.isPlaying ? String(localized: "Pause") : String(localized: "Play"),
+                            systemImage: model.isPlaying ? "pause.fill" : "play.fill"
+                        )
+                        .font(.title2.bold())
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 2)
+                    }
+                    .buttonStyle(.borderedProminent)
+                    .controlSize(.large)
                 }
-                Button(action: togglePlayPause, label: {
-                    RectangleText(model.isPlaying ? String(localized: "Pause") : String(localized: "Play"))
-                })
-                
-                Spacer()
-                
+                .padding()
             }
+            .background(Color(UIColor.systemGroupedBackground))
             .onDisappear(perform: model.stop)
             .onAppear {
                 model.clickerType = .instant
                 UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
             }
-            .padding(.all, 12)
-            .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle("Instant Metronome")
+            .navigationBarTitleDisplayMode(.automatic)
         }
     }
     
