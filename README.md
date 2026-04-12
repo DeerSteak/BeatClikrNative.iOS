@@ -1,5 +1,5 @@
 # BeatClikrNative.iOS
-BeatClikr's reimplementation for iOS 17+ with SwiftUI, SwiftData, AudioKit, and iCloud backup. 
+BeatClikr's reimplementation for iOS 17+ with SwiftUI, SwiftData, AudioKit, and iCloud sync. Available on the App Store.
 
 Note: This project relies on a series of .WAV files that are not in git. You will need to add these yourself:
 
@@ -13,14 +13,15 @@ The WAV files are proprietary and I recorded them myself. You're free to use thi
 BeatClikr follows an MVVM architecture with a clean separation of concerns:
 
 ### Models
-- **Song** - SwiftData model for song storage 
+- **Song** - SwiftData model for song storage
+- **PlaylistEntry** - SwiftData model for ordered playlist entries
 - **Groove** - Enum defining subdivision types (quarter notes, eighth notes, triplets, sixteenths)
 
 ### ViewModels (EnvironmentObjects)
 - **MetronomePlaybackViewModel** - Orchestrates metronome playback, coordinates services, handles UI state
-- **SettingsViewModel** - Manages user preferences and iCloud backup/restore operations
-- **SongLibraryViewModel** - Handles song library CRUD operations and playlist management
-- **PlaylistViewModel** - COMING SOON - playlists
+- **SettingsViewModel** - Manages user preferences
+- **SongLibraryViewModel** - Handles song library CRUD operations
+- **PlaylistModeViewModel** - Manages playlist mode playback and song sequencing
 
 ### Services Layer
 - **AudioKitMetronomeEngine** - Sample-accurate metronome using AudioKit's AppleSampler
@@ -28,7 +29,6 @@ BeatClikr follows an MVVM architecture with a clean separation of concerns:
 - **FlashlightService** - Controls device flashlight for visual accessibility
 - **VibrationService** - Manages haptic feedback (UIImpactFeedbackGenerator)
 - **UserDefaultsService** - Persists user preferences and instant metronome settings
-- **iCloudBackupService** - Handles backup/restore of settings and songs to iCloud Drive
 
 ### Constants
 - **MetronomeConstants** - Timing parameters, BPM ranges, animation values, tolerance thresholds
@@ -94,18 +94,9 @@ The song library uses **SwiftData** for local persistence (iOS 17+ requirement).
 - Groove/subdivision settings
 - Optional live and rehearsal sequence numbers for playlist ordering
 
-### iCloud Backup & Sync
+### iCloud Sync
 
-**Now Implemented!** The app includes full iCloud backup and restore functionality:
-
-- **iCloudBackupService** creates JSON backups of all settings and songs
-- Backups are stored in the user's iCloud Drive container
-- One-tap backup and restore from Settings
-- Includes versioning and timestamp metadata
-- Handles settings: playback preferences, instrument selections, metronome settings
-- Handles songs: full library with all metadata preserved
-
-Users can back up their library on one device and restore it on another, providing seamless multi-device support without custom cloud infrastructure.
+The song library syncs automatically across devices via **CloudKit** (private database). SwiftData handles the sync transparently — no user action required. Settings sync via iCloud Key-Value Store.
 
 ## Environment & Dependency Injection
 
