@@ -170,9 +170,15 @@ struct SettingsView: View {
         }
         .alert("Notifications Disabled", isPresented: $model.showPermissionDeniedAlert) {
             Button("Open Settings") {
+                #if targetEnvironment(macCatalyst)
+                if let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") {
+                    UIApplication.shared.open(url)
+                }
+                #else
                 if let url = URL(string: UIApplication.openSettingsURLString) {
                     UIApplication.shared.open(url)
                 }
+                #endif
             }
             Button("Cancel", role: .cancel) {}
         } message: {
