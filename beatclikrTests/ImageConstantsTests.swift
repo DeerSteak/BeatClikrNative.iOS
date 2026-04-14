@@ -10,25 +10,67 @@ import XCTest
 
 final class ImageConstantsTests: XCTestCase {
 
-    func testBeatIconExists() {
-        XCTAssertFalse(ImageConstants.beat.isEmpty, "Beat icon name should not be empty")
-        XCTAssertEqual(ImageConstants.beat, "diamond.fill", "Beat icon should be diamond.fill")
+    // MARK: - All constants are non-empty
+
+    func testAllConstantsAreNonEmpty() {
+        XCTAssertFalse(ImageConstants.beat.isEmpty)
+        XCTAssertFalse(ImageConstants.rhythm.isEmpty)
+        XCTAssertFalse(ImageConstants.tabInstant.isEmpty)
+        XCTAssertFalse(ImageConstants.tabLibrary.isEmpty)
+        XCTAssertFalse(ImageConstants.tabPlaylist.isEmpty)
+        XCTAssertFalse(ImageConstants.tabSettings.isEmpty)
+        XCTAssertFalse(ImageConstants.add.isEmpty)
+        XCTAssertFalse(ImageConstants.subtract.isEmpty)
+        XCTAssertFalse(ImageConstants.edit.isEmpty)
+        XCTAssertFalse(ImageConstants.pause.isEmpty)
+        XCTAssertFalse(ImageConstants.pauseFill.isEmpty)
+        XCTAssertFalse(ImageConstants.play.isEmpty)
+        XCTAssertFalse(ImageConstants.picker.isEmpty)
     }
 
-    func testRhythmIconExists() {
-        XCTAssertFalse(ImageConstants.rhythm.isEmpty, "Rhythm icon name should not be empty")
-        XCTAssertEqual(ImageConstants.rhythm, "circle.fill", "Rhythm icon should be circle.fill")
+    // MARK: - All constants are unique
+
+    func testAllConstantsAreUnique() {
+        let all = [
+            ImageConstants.beat,
+            ImageConstants.rhythm,
+            ImageConstants.tabInstant,
+            ImageConstants.tabLibrary,
+            ImageConstants.tabPlaylist,
+            ImageConstants.tabSettings,
+            ImageConstants.add,
+            ImageConstants.subtract,
+            ImageConstants.edit,
+            ImageConstants.pause,
+            ImageConstants.pauseFill,
+            ImageConstants.play,
+            ImageConstants.picker,
+        ]
+        XCTAssertEqual(all.count, Set(all).count, "Every ImageConstants value should be unique")
     }
 
-    func testIconsAreDifferent() {
-        XCTAssertNotEqual(ImageConstants.beat, ImageConstants.rhythm, "Beat and rhythm icons should be different")
+    // MARK: - Known values
+
+    func testBeatAndRhythmIcons() {
+        XCTAssertEqual(ImageConstants.beat, "diamond.fill")
+        XCTAssertEqual(ImageConstants.rhythm, "circle.fill")
+        XCTAssertNotEqual(ImageConstants.beat, ImageConstants.rhythm)
     }
 
-    func testIconsAreValidSFSymbols() {
-        // These are valid SF Symbols as of iOS 15+
-        let validSymbols = ["diamond.fill", "circle.fill"]
+    func testNavigationTabIcons() {
+        XCTAssertEqual(ImageConstants.tabInstant, "metronome")
+        XCTAssertEqual(ImageConstants.tabLibrary, "list.bullet.rectangle")
+        XCTAssertEqual(ImageConstants.tabPlaylist, "music.note.list")
+        XCTAssertEqual(ImageConstants.tabSettings, "gear")
+    }
 
-        XCTAssertTrue(validSymbols.contains(ImageConstants.beat), "Beat icon should be a valid SF Symbol")
-        XCTAssertTrue(validSymbols.contains(ImageConstants.rhythm), "Rhythm icon should be a valid SF Symbol")
+    func testActionIcons() {
+        XCTAssertEqual(ImageConstants.add, "plus")
+        XCTAssertEqual(ImageConstants.subtract, "minus")
+        XCTAssertEqual(ImageConstants.edit, "square.and.pencil")
+        XCTAssertEqual(ImageConstants.pause, "pause")
+        XCTAssertEqual(ImageConstants.pauseFill, "pause.fill")
+        XCTAssertEqual(ImageConstants.play, "play.fill")
+        XCTAssertEqual(ImageConstants.picker, "chevron.up.chevron.down")
     }
 }

@@ -42,7 +42,7 @@ struct SongLibraryView: View {
                                 Button {
                                     editingSong = item
                                 } label: {
-                                    Image(systemName: "square.and.pencil")
+                                    Image(systemName: ImageConstants.edit)
                                         .foregroundStyle(.secondary)
                                 }
                                 .buttonStyle(.plain)
@@ -86,14 +86,14 @@ struct SongLibraryView: View {
                         Button {
                             isAddingSong = true
                         } label: {
-                            Image(systemName: "plus")
+                            Image(systemName: ImageConstants.add)
                         }
                         .accessibilityLabel("Add Song")
                     }
                     if metronomeViewModel.isPlaying {
                         ToolbarItem {
                             Button(action: metronomeViewModel.stop) {
-                                Image(systemName: "pause")
+                                Image(systemName: ImageConstants.pause)
                             }
                             .accessibilityLabel("Stop Metronome")
                         }

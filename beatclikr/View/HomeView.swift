@@ -20,10 +20,10 @@ private enum AppSection: String, CaseIterable, Identifiable {
     }
     var icon: String {
         switch self {
-        case .instant:  return "metronome"
-        case .library:  return "list.bullet.rectangle"
-        case .playlist: return "music.note.list"
-        case .settings: return "gear"
+        case .instant:  return ImageConstants.tabInstant
+        case .library:  return ImageConstants.tabLibrary
+        case .playlist: return ImageConstants.tabPlaylist
+        case .settings: return ImageConstants.tabSettings
         }
     }
 }
@@ -54,13 +54,13 @@ struct HomeView: View {
         } else {
             TabView {
                 InstantMetronomeView()
-                    .tabItem { Label("Instant", systemImage: "metronome") }
+                    .tabItem { Label("Instant", systemImage: ImageConstants.tabInstant) }
                 SongLibraryView()
-                    .tabItem { Label("Library", systemImage: "list.bullet.rectangle") }
+                    .tabItem { Label("Library", systemImage: ImageConstants.tabLibrary) }
                 PlaylistModeView()
-                    .tabItem { Label("Playlist", systemImage: "music.note.list") }
+                    .tabItem { Label("Playlist", systemImage: ImageConstants.tabPlaylist) }
                 SettingsView()
-                    .tabItem { Label("Settings", systemImage: "gear") }
+                    .tabItem { Label("Settings", systemImage: ImageConstants.tabSettings) }
             }
         }
     }

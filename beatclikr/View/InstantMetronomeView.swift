@@ -47,7 +47,7 @@ struct InstantMetronomeView: View {
                                     model.beatsPerMinute = max(MetronomeConstants.minBPM, model.beatsPerMinute - 1)
                                 }
                             } label: {
-                                Image(systemName: "minus")
+                                Image(systemName: ImageConstants.subtract)
                                     .font(.title3.bold())
                                     .frame(width: 40, height: 40)
                             }
@@ -65,7 +65,7 @@ struct InstantMetronomeView: View {
                                     model.beatsPerMinute = min(MetronomeConstants.maxBPM, model.beatsPerMinute + 1)
                                 }
                             } label: {
-                                Image(systemName: "plus")
+                                Image(systemName: ImageConstants.add)
                                     .font(.title3.bold())
                                     .frame(width: 40, height: 40)
                             }
@@ -125,7 +125,7 @@ struct InstantMetronomeView: View {
                             } label: {
                                 HStack(spacing: 4) {
                                     Text(model.beat.description)
-                                    Image(systemName: "chevron.up.chevron.down")
+                                    Image(systemName: ImageConstants.picker)
                                         .font(.caption2)
                                 }
                                 .foregroundStyle(Color.accentColor)
@@ -152,7 +152,7 @@ struct InstantMetronomeView: View {
                             } label: {
                                 HStack(spacing: 4) {
                                     Text(model.rhythm.description)
-                                    Image(systemName: "chevron.up.chevron.down")
+                                    Image(systemName: ImageConstants.picker)
                                         .font(.caption2)
                                 }
                                 .foregroundStyle(Color.accentColor)
@@ -168,7 +168,7 @@ struct InstantMetronomeView: View {
                     Button(action: togglePlayPause) {
                         Label(
                             model.isPlaying ? String(localized: "Pause") : String(localized: "Play"),
-                            systemImage: model.isPlaying ? "pause.fill" : "play.fill"
+                            systemImage: model.isPlaying ? ImageConstants.pauseFill : ImageConstants.play
                         )
                         .font(.title2.bold())
                         .frame(maxWidth: .infinity)
