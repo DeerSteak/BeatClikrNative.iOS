@@ -12,135 +12,153 @@ struct PlaylistModeView: View {
     
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: PlaylistModeViewModel
-    @EnvironmentObject var metronomeViewModel: MetronomePlaybackViewModel
+    @EnvironmentObject var metronome: MetronomePlaybackViewModel
     @Query(sort: \PlaylistEntry.sequence) private var entries: [PlaylistEntry]
-    @Query(sort: [SortDescriptor(\Song.title), SortDescriptor(\Song.artist)]) private var allSongs: [Song]
     
     @State private var editMode: EditMode = .inactive
     @State private var showingSongPicker = false
     @State private var tappedId: String?
     @State private var editingSong: Song?
     
-    var body: some View {
-        NavigationStack {
-            List {
-                ForEach(entries) { entry in
-                    if let song = entry.song {
-                        HStack {
-                            Button {
-                                guard !editMode.isEditing else { return }
-                                tappedId = entry.id
-                                Task {
-                                    try? await Task.sleep(for: .seconds(0.5))
-                                    tappedId = nil
-                                }
-                                model.playSong(song)
-                            } label: {
-                                SongListItemView(song: song)
-                            }
-                            .buttonStyle(.plain)
-                            .disabled(editMode.isEditing)
-                            Spacer()
-                            if editMode.isEditing {
-                                Button {
-                                    editingSong = song
-                                } label: {
-                                    Image(systemName: "square.and.pencil")
-                                        .foregroundStyle(.secondary)
-                                }
-                                .buttonStyle(.plain)
-                                .padding(.trailing, 8)
-                                .accessibilityLabel("Edit \(song.title ?? "song")")
-                            }
-                        }
-                        .contentShape(Rectangle())
-                        .listRowBackground(
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(tappedId == entry.id ? Color.accentColor.opacity(0.25) : Color.clear)
-                                .animation(.easeOut(duration: 0.5), value: tappedId)
-                        )
-                    }
+    // Helper function to create a playlist row
+    @ViewBuilder
+    private func playlistRow(for song: Song, entry: PlaylistEntry, at index: Int) -> some View {
+        HStack {
+            Button {
+                guard !editMode.isEditing else { return }
+                tappedId = entry.id
+                Task {
+                    try? await Task.sleep(for: .seconds(0.5))
+                    tappedId = nil
                 }
-                .onDelete(perform: editMode.isEditing ? { offsets in model.deleteEntries(offsets: offsets, entries: entries, context: modelContext) } : nil)
-                .onMove { fromOffsets, toOffset in model.sortEntries(fromOffsets: fromOffsets, toOffset: toOffset, entries: entries) }
-            }
-            .environment(\.editMode, $editMode)
-            .scrollContentBackground(.hidden)
-            .background(Color(UIColor.systemGroupedBackground))
-            .overlay {
-                if entries.isEmpty {
-                    VStack {
-                        Text("Press the + button to add a song")
-                            .padding(.top, 40)
-                        Spacer()
+                model.playSong(song, at: index, metronome: metronome)
+            } label: {
+                HStack {
+                    // Play indicator
+                    if model.currentSongIndex == index {
+                        Image(systemName: "play.fill")
+                            .foregroundColor(.accentColor)
+                            .font(.caption)
                     }
+                    SongListItemView(song: song)
                 }
             }
-            .navigationTitle("Playlist")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarLeading) {
-                    if (entries.count > 0) {
-                        MetronomePlayerView(size: MetronomeConstants.playerViewToolbarSize)
-                    }
+            .buttonStyle(.plain)
+            .disabled(editMode.isEditing)
+            
+            Spacer()
+            
+            if editMode.isEditing {
+                Button {
+                    editingSong = song
+                } label: {
+                    Image(systemName: "square.and.pencil")
+                        .foregroundStyle(.secondary)
                 }
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(editMode.isEditing ? "Done" : "Edit") {
-                        editMode = editMode.isEditing ? .inactive : .active
-                    }
-                }
-                ToolbarItem {
-                    Button {
-                        showingSongPicker = true
-                    } label: {
-                        Image(systemName: "plus")
-                    }
-                    .accessibilityLabel("Add Song to Playlist")
-                }
-                if metronomeViewModel.isPlaying {
-                    ToolbarItem {
-                        Button(action: metronomeViewModel.stop) {
-                            Image(systemName: "pause")
-                        }
-                        .accessibilityLabel("Stop Metronome")
-                    }
-                }
-            }
-            .navigationBarTitleDisplayMode(.automatic)
-            .sheet(item: $editingSong) { song in
-                SongDetailsView(song: song)
-            }
-            .sheet(isPresented: $showingSongPicker) {
-                NavigationStack {
-                    List(allSongs) { song in
-                        Button {
-                            model.addSongToPlaylist(song, entries: entries, context: modelContext)
-                            showingSongPicker = false
-                        } label: {
-                            SongListItemView(song: song)
-                        }
-                    }
-                    .navigationTitle("Add Song")
-                    .navigationBarTitleDisplayMode(.inline)
-                    .toolbar {
-                        ToolbarItem(placement: .cancellationAction) {
-                            Button("Cancel") {
-                                showingSongPicker = false
-                            }
-                        }
-                    }
-                }
+                .buttonStyle(.plain)
+                .padding(.trailing, 8)
+                .accessibilityLabel("Edit \(song.title ?? "song")")
             }
         }
-        .onDisappear(perform: model.stop)
-        .onAppear {
-            UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
+        .contentShape(Rectangle())
+        .listRowBackground(rowBackground(for: entry, at: index))
+    }
+    
+    // Helper function to create the row background
+    @ViewBuilder
+    private func rowBackground(for entry: PlaylistEntry, at index: Int) -> some View {
+        let backgroundColor: Color = {
+            if tappedId == entry.id {
+                return Color.accentColor.opacity(0.25)
+            } else if model.currentSongIndex == index {
+                return Color.accentColor.opacity(0.1)
+            } else {
+                return Color.clear
+            }
+        }()
+        
+        RoundedRectangle(cornerRadius: 8)
+            .fill(backgroundColor)
+    }
+    
+    var body: some View {
+        NavigationStack {
+            ScrollViewReader { proxy in
+                List {
+                    // Song entries
+                    Section {
+                        ForEach(Array(entries.enumerated()), id: \.element.id) { index, entry in
+                            if let song = entry.song {
+                                playlistRow(for: song, entry: entry, at: index)
+                            }
+                        }
+                        .onDelete(perform: editMode.isEditing ? { offsets in model.deleteEntries(offsets: offsets, entries: entries, context: modelContext) } : nil)
+                        .onMove { fromOffsets, toOffset in model.sortEntries(fromOffsets: fromOffsets, toOffset: toOffset, entries: entries) }
+                    }
+                }
+                .environment(\.editMode, $editMode)
+                .scrollContentBackground(.hidden)
+                .background(Color(UIColor.systemGroupedBackground))
+                .onChange(of: model.currentSongIndex) { _, newIndex in
+                    if let newIndex, newIndex < entries.count {
+                        withAnimation {
+                            proxy.scrollTo(entries[newIndex].id, anchor: .center)
+                        }
+                    }
+                }
+                .overlay {
+                    if entries.isEmpty {
+                        VStack {
+                            Text("Press the + button to add a song")
+                                .padding(.top, 40)
+                            Spacer()
+                        }
+                    }
+                }
+                .safeAreaInset(edge: .bottom) {
+                    if !editMode.isEditing && !entries.isEmpty {
+                        PlaylistTransportView(entries: entries)
+                    }
+                }
+                .navigationTitle("Playlist")
+                .toolbar {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button(editMode.isEditing ? "Done" : "Edit") {
+                            editMode = editMode.isEditing ? .inactive : .active
+                        }
+                    }
+                    ToolbarItem {
+                        Button {
+                            showingSongPicker = true
+                        } label: {
+                            Image(systemName: "plus")
+                        }
+                        .accessibilityLabel("Add Song to Playlist")
+                    }
+                }
+                .navigationBarTitleDisplayMode(.automatic)
+                .sheet(item: $editingSong) { song in
+                    SongDetailsView(song: song)
+                }
+                .sheet(isPresented: $showingSongPicker) {
+                    SongPickerView(entries: entries)
+                }
+            }
+            .onDisappear(perform: metronome.stop)
+            .onAppear {
+                UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
+            }
         }
     }
 }
 
 #Preview {
-    PlaylistModeView()
-        .modelContainer(for: [Song.self, PlaylistEntry.self], inMemory: true)
+    let preview = PreviewContainer([Song.self, PlaylistEntry.self])
+    let songs = preview.addMockSongs()
+    preview.addMockPlaylistEntries(for: songs)
+
+    return PlaylistModeView()
+        .modelContainer(preview.container)
         .environmentObject(PlaylistModeViewModel())
         .environmentObject(MetronomePlaybackViewModel())
 }

@@ -13,6 +13,8 @@
 		28363D5A2F898A110066C665 /* MetronomeTimingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28363D572F898A110066C665 /* MetronomeTimingTests.swift */; };
 		283672342F8988AB0090EE63 /* MetronomeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283672332F8988AB0090EE63 /* MetronomeConstants.swift */; };
 		30DEB7A2263835E813BCF3F4 /* MetronomeAudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */; };
+		B53234762F8DD8D300BA7DE1 /* PlaylistTransportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */; };
+		B53234782F8DD8D900BA7DE1 /* SongPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53234772F8DD8D900BA7DE1 /* SongPickerView.swift */; };
 		DFB72E0FB4B1DD3A4397382B /* AudioKitMetronomeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAB43FBDA8DD0BBF30036A0 /* AudioKitMetronomeEngine.swift */; };
 		EE0473192AA388EB004E958A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0473182AA388EB004E958A /* HomeView.swift */; };
 		EE04731B2AA39267004E958A /* ClickerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE04731A2AA39267004E958A /* ClickerType.swift */; };
@@ -93,6 +95,8 @@
 		28363D562F898A110066C665 /* MetronomePlaybackViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlaybackViewModelTests.swift; sourceTree = "<group>"; };
 		28363D572F898A110066C665 /* MetronomeTimingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeTimingTests.swift; sourceTree = "<group>"; };
 		283672332F8988AB0090EE63 /* MetronomeConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeConstants.swift; sourceTree = "<group>"; };
+		B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistTransportView.swift; sourceTree = "<group>"; };
+		B53234772F8DD8D900BA7DE1 /* SongPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongPickerView.swift; sourceTree = "<group>"; };
 		CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MetronomeAudioEngine.swift; sourceTree = "<group>"; };
 		EE0473182AA388EB004E958A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		EE04731A2AA39267004E958A /* ClickerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickerType.swift; sourceTree = "<group>"; };
@@ -183,6 +187,8 @@
 		EE0939E52A7EA825005491BB /* CustomViews */ = {
 			isa = PBXGroup;
 			children = (
+				B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */,
+				B53234772F8DD8D900BA7DE1 /* SongPickerView.swift */,
 				EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */,
 				EE0939E62A7EA838005491BB /* RectangleText.swift */,
 				EE8201842A81B20F00675A1C /* SongListItemView.swift */,
@@ -527,6 +533,7 @@
 				EEE911552A7EDEDC008DFDED /* PreferenceKeys.swift in Sources */,
 				EEC392172AA5FA3000F4AAB4 /* ImageConstants.swift in Sources */,
 				EE97D59C2A7E7C3200FA11A0 /* SongLibraryViewModel.swift in Sources */,
+				B53234782F8DD8D900BA7DE1 /* SongPickerView.swift in Sources */,
 				EE207A3F2A89734F00D8E267 /* SoundFile.swift in Sources */,
 				EE8201852A81B20F00675A1C /* SongListItemView.swift in Sources */,
 				EEE911532A7EDE07008DFDED /* FileConstants.swift in Sources */,
@@ -543,6 +550,7 @@
 				EE82F9A82A7FBD7000B873E7 /* UserDefaultsService.swift in Sources */,
 				EE34F0762A7C7D8300CA5BD0 /* InstantMetronomeView.swift in Sources */,
 				EE6406BC2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift in Sources */,
+				B53234762F8DD8D300BA7DE1 /* PlaylistTransportView.swift in Sources */,
 				EE8201832A81B1E900675A1C /* PlaylistModeView.swift in Sources */,
 				EE9BD3DD2F89A555007F91FA /* PlaylistEntry.swift in Sources */,
 				EE5DFD742AD8201C00756566 /* SettingsView.swift in Sources */,

@@ -71,6 +71,6 @@ struct HomeView: View {
     HomeView()
         .environmentObject(metronome)
         .environmentObject(SettingsViewModel())
-        .environmentObject(SongLibraryViewModel(metronome: metronome))
-        .environmentObject(PlaylistModeViewModel(metronome: metronome))
+        .environmentObject(SongLibraryViewModel())
+        .environmentObject(PlaylistModeViewModel())
 }
