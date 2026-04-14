@@ -35,8 +35,8 @@ struct beatclikrApp: App {
         
         let metronome = MetronomePlaybackViewModel()
         _metronomeViewModel = StateObject(wrappedValue: metronome)
-        _songLibraryViewModel = StateObject(wrappedValue: SongLibraryViewModel(metronome: metronome))
-        _playlistModeViewModel = StateObject(wrappedValue: PlaylistModeViewModel(metronome: metronome))
+        _songLibraryViewModel = StateObject(wrappedValue: SongLibraryViewModel())
+        _playlistModeViewModel = StateObject(wrappedValue: PlaylistModeViewModel())
         _settingsViewModel = StateObject(wrappedValue: SettingsViewModel())
     }
 

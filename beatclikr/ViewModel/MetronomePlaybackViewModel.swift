@@ -24,6 +24,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     
     //MARK: Published properties
     @Published var iconScale: CGFloat = MetronomeConstants.iconScaleMin
+    @Published var beatPulse: Double = 0
     @Published var isPlaying: Bool = false
     
     @Published var beatsPerMinute: Double = UserDefaultsService.instance.instantBpm {
@@ -107,15 +108,21 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         self.isBeat = isBeat
         
         if isBeat {
-            // Reset scale to max instantly on beat
-            iconScale = MetronomeConstants.iconScaleMax
-            
             // Calculate duration for one full beat (in seconds)
             let beatDuration = 60.0 / beatsPerMinute
             
-            // Animate linearly to min over the beat duration
-            withAnimation(.linear(duration: beatDuration)) {
-                iconScale = MetronomeConstants.iconScaleMin
+            // Snap to max instantly with no animation
+            withAnimation(.none) {
+                iconScale = MetronomeConstants.iconScaleMax
+                beatPulse = 1.0
+            }
+            
+            // Defer the fade-out so SwiftUI renders the snapped state first
+            Task { @MainActor in
+                withAnimation(.linear(duration: beatDuration)) {
+                    self.iconScale = MetronomeConstants.iconScaleMin
+                    self.beatPulse = 0.0
+                }
             }
             
             handleBeat()

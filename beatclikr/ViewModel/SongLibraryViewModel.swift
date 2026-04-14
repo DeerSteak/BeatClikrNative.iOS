@@ -11,21 +11,11 @@ import SwiftUI
 
 @MainActor
 class SongLibraryViewModel : ObservableObject {
-    private var metronome: MetronomePlaybackViewModel
-    
-    init(metronome: MetronomePlaybackViewModel = MetronomePlaybackViewModel()) {
-        self.metronome = metronome
-    }
-    
-    func playSong(_ song: Song) {
+    func playSong(_ song: Song, metronome: MetronomePlaybackViewModel) {
         metronome.clickerType = .playlist
         metronome.switchSong(song)
         metronome.setupMetronome()
         metronome.start()
-    }
-    
-    func stop() {
-        metronome.stop()
     }
     
     func deleteItems(offsets: IndexSet, items: [Song], context: ModelContext) {

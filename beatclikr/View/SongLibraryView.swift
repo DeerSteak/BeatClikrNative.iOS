@@ -31,7 +31,7 @@ struct SongLibraryView: View {
                                     try? await Task.sleep(for: .seconds(0.5))
                                     tappedId = nil
                                 }
-                                model.playSong(item)
+                                model.playSong(item, metronome: metronomeViewModel)
                             } label: {
                                 SongListItemView(song: item)
                             }
@@ -109,7 +109,7 @@ struct SongLibraryView: View {
                 .navigationTitle("Song Library")
                 .navigationBarTitleDisplayMode(.automatic)
         }
-        .onDisappear(perform: model.stop)
+        .onDisappear(perform: metronomeViewModel.stop)
         .onAppear {
             UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
         }
@@ -119,6 +119,6 @@ struct SongLibraryView: View {
 #Preview {
     let metronome = MetronomePlaybackViewModel()
     SongLibraryView()
-        .environmentObject(SongLibraryViewModel(metronome: metronome))
+        .environmentObject(SongLibraryViewModel())
         .environmentObject(metronome)
 }
