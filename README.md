@@ -13,15 +13,30 @@ The WAV files are proprietary and I recorded them myself. You're free to use thi
 BeatClikr follows an MVVM architecture with a clean separation of concerns:
 
 ### Models
-- **Song** - SwiftData model for song storage
-- **PlaylistEntry** - SwiftData model for ordered playlist entries
+- **Song** - SwiftData model for song storage (title, artist, BPM, time signature, groove)
+- **PlaylistEntry** - SwiftData model for ordered playlist entries (linked to Song, with sequence index)
 - **Groove** - Enum defining subdivision types (quarter notes, eighth notes, triplets, sixteenths)
+- **ClickerType** - Enum distinguishing instant vs. playlist metronome modes
 
 ### ViewModels (EnvironmentObjects)
-- **MetronomePlaybackViewModel** - Orchestrates metronome playback, coordinates services, handles UI state
+- **MetronomePlaybackViewModel** - Orchestrates metronome playback, coordinates services, handles UI state (beat pulse, isPlaying)
 - **SettingsViewModel** - Manages user preferences
-- **SongLibraryViewModel** - Handles song library CRUD operations
-- **PlaylistModeViewModel** - Manages playlist mode playback and song sequencing
+- **SongLibraryViewModel** - Handles song library CRUD operations and playback
+- **PlaylistModeViewModel** - Manages playlist sequencing (next/previous/play), edit, reorder, and delete operations
+
+### Views
+- **HomeView** - Root container; uses `TabView` on iPhone and `NavigationSplitView` on iPad/Mac
+- **InstantMetronomeView** - Single-song metronome with live BPM/groove controls
+- **SongLibraryView** - Browsable song list; tap to play, swipe or edit to delete, + to add
+- **PlaylistModeView** - Ordered playlist with inline edit/reorder; shows transport bar when playing
+- **SongDetailsView** - Add or edit a song's metadata
+- **SettingsView** - App-wide preferences (sounds, haptics, flashlight, keep-awake)
+
+### Custom Views
+- **PlaylistTransportView** - Floating Previous / Stop / Next transport bar shown at the bottom of Playlist mode while a song is active; pulses with the beat
+- **SongPickerView** - Sheet for picking a library song to add to the playlist
+- **SongListItemView** - Reusable list row showing title, artist, BPM, and groove
+- **MetronomePlayerView** - Compact animated metronome indicator used in toolbars
 
 ### Services Layer
 - **AudioKitMetronomeEngine** - Sample-accurate metronome using AudioKit's AppleSampler
@@ -30,11 +45,14 @@ BeatClikr follows an MVVM architecture with a clean separation of concerns:
 - **VibrationService** - Manages haptic feedback (UIImpactFeedbackGenerator)
 - **UserDefaultsService** - Persists user preferences and instant metronome settings
 
+### Helpers
+- **PreviewContainer** - SwiftData `ModelContainer` wrapper for Xcode previews; provides `addMockSongs()` and `addMockPlaylistEntries(for:)` so previews across views share consistent sample data
+
 ### Constants
 - **MetronomeConstants** - Timing parameters, BPM ranges, animation values, tolerance thresholds
 - **ImageConstants** - Asset references for UI elements
 - **PreferenceKeys** - SwiftUI preference key definitions
-- **FileConstants** - Enum mapping sound file names to their audio files and MIDI notes - your files need to match these names
+- **FileConstants** - Enum mapping sound file names to their audio files and MIDI notes — your files need to match these names
 
 ## About Keeping Time
 
@@ -64,7 +82,7 @@ This approach provides:
 ### Delegate Pattern
 
 The `MetronomePlaybackViewModel` implements `MetronomeAudioEngineDelegate` to receive beat callbacks:
-- Triggers visual animations (icon scale transitions)
+- Triggers visual animations (icon scale transitions, beat pulse for transport bar)
 - Fires haptic feedback via VibrationService
 - Controls flashlight via FlashlightService
 - All synchronized to the audio engine's timing
@@ -92,7 +110,14 @@ The song library uses **SwiftData** for local persistence (iOS 17+ requirement).
 - Title and artist metadata
 - BPM and time signature
 - Groove/subdivision settings
-- Optional live and rehearsal sequence numbers for playlist ordering
+
+### Playlist Mode
+
+Songs from the library can be added to the playlist in any order. The playlist supports:
+- Drag-to-reorder and swipe-to-delete (via Edit mode)
+- Inline edit of any song's details
+- A transport bar (Previous / Stop / Next) that appears while a song is active and pulses with the beat
+- Auto-scroll to the currently playing song
 
 ### iCloud Sync
 
@@ -104,14 +129,16 @@ ViewModels are injected as `EnvironmentObject`s at the app level in `beatclikrAp
 ```swift
 WindowGroup {
     HomeView()
-        .environmentObject(SongLibraryViewModel())
-        .environmentObject(MetronomePlaybackViewModel())      
-        .environmentObject(SettingsViewModel())
+        .environmentObject(songLibraryViewModel)
+        .environmentObject(playlistModeViewModel)
+        .environmentObject(metronomeViewModel)
+        .environmentObject(settingsViewModel)
 }
+.modelContainer(container)
 ```
 
 This ensures:
 - Single shared instance across all views
 - No background metronome instances
 - Consistent state throughout the app
-- Proper cleanup on app termination 
+- Proper cleanup on app termination
