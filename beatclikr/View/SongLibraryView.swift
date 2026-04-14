@@ -117,8 +117,11 @@ struct SongLibraryView: View {
 }
 
 #Preview {
-    let metronome = MetronomePlaybackViewModel()
-    SongLibraryView()
+    let preview = PreviewContainer([Song.self, PlaylistEntry.self])
+    preview.addMockSongs()
+
+    return SongLibraryView()
+        .modelContainer(preview.container)
         .environmentObject(SongLibraryViewModel())
-        .environmentObject(metronome)
+        .environmentObject(MetronomePlaybackViewModel())
 }
