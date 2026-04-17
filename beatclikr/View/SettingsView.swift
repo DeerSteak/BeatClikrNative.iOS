@@ -187,7 +187,7 @@ struct SettingsView: View {
     }
     
     @ViewBuilder
-    private func menuRow(label: String, @ViewBuilder content: () -> some View) -> some View {
+    private func menuRow(label: LocalizedStringKey, @ViewBuilder content: () -> some View) -> some View {
         HStack {
             Text(label)
                 .foregroundStyle(.primary)

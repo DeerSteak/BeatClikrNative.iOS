@@ -362,10 +362,24 @@
       }
     },
     "Next" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siguiente"
+          }
+        }
+      }
     },
     "Next Song" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Siguiente Canción"
+          }
+        }
+      }
     },
     "Notifications Disabled" : {
       "comment" : "A title for an alert that appears when the user has denied notifications.",
@@ -380,7 +394,14 @@
       }
     },
     "Now Playing" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Reproduciendo Ahora"
+          }
+        }
+      }
     },
     "Open Settings" : {
       "comment" : "A button that opens the app's settings.",
@@ -489,7 +510,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Lista de Reproducción"
+            "value" : "Playlist"
           }
         }
       }
@@ -602,10 +623,24 @@
       }
     },
     "Previous" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Anterior"
+          }
+        }
+      }
     },
     "Previous Song" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Canción Anterior"
+          }
+        }
+      }
     },
     "Reminder Time" : {
       "comment" : "A label for the time of the user's reminder.",
@@ -707,8 +742,35 @@
         }
       }
     },
+    "TAP\nTEMPO" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "PULSAR\nTEMPO"
+          }
+        }
+      }
+    },
     "Tap a song to begin" : {
-
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Toca una canción para comenzar"
+          }
+        }
+      }
+    },
+    "Tap Tempo" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pulsar Tempo"
+          }
+        }
+      }
     },
     "Tempo" : {
       "comment" : "A section of the song details view that allows the user to set the tempo of the song.",
