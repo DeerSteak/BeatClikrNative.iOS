@@ -26,7 +26,7 @@ BeatClikr follows an MVVM architecture with a clean separation of concerns:
 
 ### Views
 - **HomeView** - Root container; uses `TabView` on iPhone and `NavigationSplitView` on iPad/Mac
-- **InstantMetronomeView** - Single-song metronome with live BPM/groove controls
+- **InstantMetronomeView** - Standalone metronome with live BPM/groove controls and tap tempo
 - **SongLibraryView** - Browsable song list; tap to play, swipe or edit to delete, + to add
 - **PlaylistModeView** - Ordered playlist with inline edit/reorder; shows transport bar when playing
 - **SongDetailsView** - Add or edit a song's metadata
@@ -103,6 +103,10 @@ The `AudioPlayerService` manages:
 - Mapping user preferences (beat/rhythm selection) to the correct MIDI notes
 - Starting/stopping the metronome
 - Real-time tempo and subdivision updates
+
+## Tap Tempo
+
+The Instant Metronome includes a **Tap Tempo** button displayed as a circle to the right of the BPM display. Tapping it calculates BPM from the average interval of the last several taps. The result is rounded to one decimal place and clamped to the app's min/max BPM range. If more than 2 seconds pass between taps, the tap history is cleared so you can set a new tempo.
 
 ## About the Song Library
 
