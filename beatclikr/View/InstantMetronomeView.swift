@@ -202,7 +202,7 @@ struct InstantMetronomeView: View {
                 UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
             }
             .navigationTitle("Instant Metronome")
-            .navigationBarTitleDisplayMode(.automatic)
+            .navigationBarTitleDisplayMode(UIScreen.main.bounds.height < 700 ? .inline : .large)
         }
     }
     
