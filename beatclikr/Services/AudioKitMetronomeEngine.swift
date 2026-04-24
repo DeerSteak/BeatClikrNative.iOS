@@ -11,21 +11,23 @@ import AVFoundation
 
 /// Sample-accurate metronome implementation using AudioKit's AppleSampler
 /// Works on both simulator and device with high-precision timing (<5ms jitter)
-@MainActor
-class AudioKitMetronomeEngine: MetronomeAudioEngine {
+class AudioKitMetronomeEngine: MetronomeAudioEngine, @unchecked Sendable {
     private let engine: AudioEngine
-    private let sampler = AppleSampler()
+    nonisolated(unsafe) private let sampler = AppleSampler()
 
-    private var sounds: [SoundFile] = []
-    private var beatSound: SoundFile?
-    private var rhythmSound: SoundFile?
+    nonisolated(unsafe) private var beatSound: SoundFile?
+    nonisolated(unsafe) private var rhythmSound: SoundFile?
+    nonisolated(unsafe) private weak var delegate: MetronomeAudioEngineDelegate?
 
-    private weak var delegate: MetronomeAudioEngineDelegate?
+    // All scheduling state is accessed exclusively on schedulingQueue
+    private let schedulingQueue = DispatchQueue(
+        label: "com.beatclikr.metronome",
+        qos: .userInteractive
+    )
     private var isPlaying = false
     private var currentBPM: Double = 60
     private var currentSubdivisions: Int = 1
-
-    private var timer: Timer?
+    private var sourceTimer: DispatchSourceTimer?
     private var nextBeatTime: CFAbsoluteTime = 0
     private var subdivisionCounter: Int = 0
 
@@ -39,9 +41,8 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
     }
 
     func loadSounds(beatName: String, rhythmName: String, from sounds: [SoundFile]) {
-        self.sounds = sounds
-        self.beatSound = sounds.first { $0.displayName == beatName }
-        self.rhythmSound = sounds.first { $0.displayName == rhythmName }
+        beatSound = sounds.first { $0.displayName == beatName }
+        rhythmSound = sounds.first { $0.displayName == rhythmName }
 
         do {
             let files = sounds.compactMap { $0.audioFile }
@@ -55,30 +56,33 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
     }
 
     func startMetronome(bpm: Double, subdivisions: Int, delegate: MetronomeAudioEngineDelegate) {
-        timer?.invalidate()
-        timer = nil
-
-        self.delegate = delegate
-        self.currentBPM = bpm
-        self.currentSubdivisions = subdivisions
-        self.subdivisionCounter = 0
-
-        self.nextBeatTime = CFAbsoluteTimeGetCurrent() + firstBeatDelay
-
-        self.isPlaying = true
-        startTimer()
+        schedulingQueue.async { [weak self] in
+            guard let self else { return }
+            self.stopSourceTimer()
+            self.delegate = delegate
+            self.currentBPM = bpm
+            self.currentSubdivisions = subdivisions
+            self.subdivisionCounter = 0
+            self.nextBeatTime = CFAbsoluteTimeGetCurrent() + self.firstBeatDelay
+            self.isPlaying = true
+            self.startSourceTimer()
+        }
     }
 
     func stopMetronome() {
-        isPlaying = false
-        timer?.invalidate()
-        timer = nil
-        subdivisionCounter = 0
+        schedulingQueue.async { [weak self] in
+            guard let self else { return }
+            self.isPlaying = false
+            self.stopSourceTimer()
+            self.subdivisionCounter = 0
+        }
     }
 
     func updateTempo(bpm: Double, subdivisions: Int) {
-        self.currentBPM = bpm
-        self.currentSubdivisions = subdivisions
+        schedulingQueue.async { [weak self] in
+            self?.currentBPM = bpm
+            self?.currentSubdivisions = subdivisions
+        }
     }
 
     func start() throws {
@@ -89,27 +93,30 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
         engine.stop()
     }
 
-    // MARK: - Private helpers
+    // MARK: - Private helpers (must be called from schedulingQueue)
 
     private func getSubdivisionDuration() -> Double {
-        return 60.0 / (currentBPM * Double(currentSubdivisions))
+        60.0 / (currentBPM * Double(currentSubdivisions))
     }
 
-    private func startTimer() {
-        timer?.invalidate()
-
-        timer = Timer.scheduledTimer(withTimeInterval: checkInterval, repeats: true) { [weak self] _ in
-            Task { @MainActor in
-                self?.checkAndPlayBeat()
-            }
+    private func startSourceTimer() {
+        let timer = DispatchSource.makeTimerSource(queue: schedulingQueue)
+        timer.schedule(deadline: .now(), repeating: checkInterval, leeway: .microseconds(500))
+        timer.setEventHandler { [weak self] in
+            self?.checkAndPlayBeat()
         }
-        RunLoop.main.add(timer!, forMode: .common)
+        timer.resume()
+        sourceTimer = timer
+    }
+
+    private func stopSourceTimer() {
+        sourceTimer?.cancel()
+        sourceTimer = nil
     }
 
     private func checkAndPlayBeat() {
         guard isPlaying else {
-            timer?.invalidate()
-            timer = nil
+            stopSourceTimer()
             return
         }
 
@@ -118,8 +125,7 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
         if now >= nextBeatTime - lookaheadTolerance {
             playCurrentBeat()
 
-            let subdivisionDuration = getSubdivisionDuration()
-            nextBeatTime = now + subdivisionDuration
+            nextBeatTime = now + getSubdivisionDuration()
 
             subdivisionCounter += 1
             if subdivisionCounter >= currentSubdivisions {
@@ -131,19 +137,17 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
     private func playCurrentBeat() {
         let isBeat = subdivisionCounter == 0
 
-        if !UserDefaultsService.instance.muteMetronome {
-            if isBeat {
-                if let beatSound = beatSound {
-                    sampler.play(noteNumber: MIDINoteNumber(beatSound.midiNote))
-                }
-            } else {
-                if let rhythmSound = rhythmSound {
-                    sampler.play(noteNumber: MIDINoteNumber(rhythmSound.midiNote))
-                }
+        if !UserDefaults.standard.bool(forKey: PreferenceKeys.muteMetronome) {
+            if isBeat, let beatSound {
+                sampler.play(noteNumber: MIDINoteNumber(beatSound.midiNote))
+            } else if !isBeat, let rhythmSound {
+                sampler.play(noteNumber: MIDINoteNumber(rhythmSound.midiNote))
             }
         }
 
-        // Always fire the delegate so animation, vibration, and flashlight still work when muted
-        delegate?.metronomeBeatFired(isBeat: isBeat)
+        // Hop back to main actor for UI/animation callbacks
+        Task { @MainActor [weak self] in
+            self?.delegate?.metronomeBeatFired(isBeat: isBeat)
+        }
     }
 }

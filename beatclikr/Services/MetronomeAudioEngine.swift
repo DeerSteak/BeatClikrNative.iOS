@@ -10,7 +10,6 @@ import AudioKit
 
 /// Protocol for metronome audio playback engines.
 /// Abstracts the difference between simulator (AudioPlayer) and device (AppleSampler/Sequencer) implementations.
-@MainActor
 protocol MetronomeAudioEngine {
     /// Load the beat and rhythm sound files
     func loadSounds(beatName: String, rhythmName: String, from sounds: [SoundFile])
@@ -33,6 +32,6 @@ protocol MetronomeAudioEngine {
 
 /// Delegate protocol for metronome beat callbacks
 @MainActor
-protocol MetronomeAudioEngineDelegate: AnyObject {
+protocol MetronomeAudioEngineDelegate: AnyObject, Sendable {
     func metronomeBeatFired(isBeat: Bool)
 }
