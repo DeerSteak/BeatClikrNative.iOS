@@ -15,7 +15,8 @@
 		30DEB7A2263835E813BCF3F4 /* MetronomeAudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */; };
 		B53234762F8DD8D300BA7DE1 /* PlaylistTransportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */; };
 		B53234782F8DD8D900BA7DE1 /* SongPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53234772F8DD8D900BA7DE1 /* SongPickerView.swift */; };
-		DFB72E0FB4B1DD3A4397382B /* AudioKitMetronomeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAB43FBDA8DD0BBF30036A0 /* AudioKitMetronomeEngine.swift */; };
+		B5D5D4CE2F9BFDF200C5A3AF /* AudioKitMetronomeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D5D4CD2F9BFDF200C5A3AF /* AudioKitMetronomeEngine.swift */; };
+		DFB72E0FB4B1DD3A4397382B /* AVAudioMetronomeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAB43FBDA8DD0BBF30036A0 /* AVAudioMetronomeEngine.swift */; };
 		EE0473192AA388EB004E958A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0473182AA388EB004E958A /* HomeView.swift */; };
 		EE04731B2AA39267004E958A /* ClickerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE04731A2AA39267004E958A /* ClickerType.swift */; };
 		EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07558E2A7E84D400E34D29 /* FormatterHelper.swift */; };
@@ -89,7 +90,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		1AAB43FBDA8DD0BBF30036A0 /* AudioKitMetronomeEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AudioKitMetronomeEngine.swift; sourceTree = "<group>"; };
+		1AAB43FBDA8DD0BBF30036A0 /* AVAudioMetronomeEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AVAudioMetronomeEngine.swift; sourceTree = "<group>"; };
 		28363D532F8989430066C665 /* MetronomeConstantsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeConstantsTests.swift; sourceTree = "<group>"; };
 		28363D552F898A110066C665 /* ImageConstantsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConstantsTests.swift; sourceTree = "<group>"; };
 		28363D562F898A110066C665 /* MetronomePlaybackViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlaybackViewModelTests.swift; sourceTree = "<group>"; };
@@ -97,6 +98,7 @@
 		283672332F8988AB0090EE63 /* MetronomeConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeConstants.swift; sourceTree = "<group>"; };
 		B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistTransportView.swift; sourceTree = "<group>"; };
 		B53234772F8DD8D900BA7DE1 /* SongPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongPickerView.swift; sourceTree = "<group>"; };
+		B5D5D4CD2F9BFDF200C5A3AF /* AudioKitMetronomeEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioKitMetronomeEngine.swift; sourceTree = "<group>"; };
 		CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MetronomeAudioEngine.swift; sourceTree = "<group>"; };
 		EE0473182AA388EB004E958A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		EE04731A2AA39267004E958A /* ClickerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickerType.swift; sourceTree = "<group>"; };
@@ -307,7 +309,8 @@
 		EE84F3252A7C7A55009E2F23 /* Services */ = {
 			isa = PBXGroup;
 			children = (
-				1AAB43FBDA8DD0BBF30036A0 /* AudioKitMetronomeEngine.swift */,
+				B5D5D4CD2F9BFDF200C5A3AF /* AudioKitMetronomeEngine.swift */,
+				1AAB43FBDA8DD0BBF30036A0 /* AVAudioMetronomeEngine.swift */,
 				EE478E8A2A879C51008337DB /* AudioPlayerService.swift */,
 				EE82F9A92A7FBFE100B873E7 /* FlashlightService.swift */,
 				CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */,
@@ -538,6 +541,7 @@
 				EE8201852A81B20F00675A1C /* SongListItemView.swift in Sources */,
 				EEE911532A7EDE07008DFDED /* FileConstants.swift in Sources */,
 				EE82F9AA2A7FBFE100B873E7 /* FlashlightService.swift in Sources */,
+				B5D5D4CE2F9BFDF200C5A3AF /* AudioKitMetronomeEngine.swift in Sources */,
 				EE5DFD7B2AD82CA600756566 /* PreviewContainer.swift in Sources */,
 				EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */,
 				EE478E8B2A879C51008337DB /* AudioPlayerService.swift in Sources */,
@@ -557,7 +561,7 @@
 				EE5DFD782AD82B5A00756566 /* SettingsViewModel.swift in Sources */,
 				283672342F8988AB0090EE63 /* MetronomeConstants.swift in Sources */,
 				30DEB7A2263835E813BCF3F4 /* MetronomeAudioEngine.swift in Sources */,
-				DFB72E0FB4B1DD3A4397382B /* AudioKitMetronomeEngine.swift in Sources */,
+				DFB72E0FB4B1DD3A4397382B /* AVAudioMetronomeEngine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

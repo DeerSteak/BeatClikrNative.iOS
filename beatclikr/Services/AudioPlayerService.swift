@@ -24,7 +24,7 @@ class AudioPlayerService: HasAudioEngine, MetronomeAudioEngineDelegate {
     init() {
         // Use AudioKit's AppleSampler for sample-accurate timing
         // Works on both simulator and device
-        audioEngine = AudioKitMetronomeEngine(engine: engine)
+        audioEngine = AVAudioMetronomeEngine(engine: engine)
 
         // Configure audio session
         do {

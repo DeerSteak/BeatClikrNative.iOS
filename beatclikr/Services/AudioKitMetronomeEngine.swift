@@ -12,7 +12,7 @@ import AVFoundation
 /// Sample-accurate metronome implementation using AudioKit's AppleSampler
 /// Works on both simulator and device with high-precision timing (<5ms jitter)
 @MainActor
-class AudioKitMetronomeEngine: MetronomeAudioEngine {
+class AudioKitMetronomeEngine: @preconcurrency MetronomeAudioEngine {
     private let engine: AudioEngine
     private let sampler = AppleSampler()
 
