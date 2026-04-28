@@ -97,6 +97,21 @@ BeatClikrNative.iOS relies on **AudioKit** for sound playback. It provides a hig
 - Beat vs. rhythm (subdivision) sounds are played based on subdivision counter
 - Supports instant sound switching without interrupting playback (Instant Metronome only)
 
+### Alternate Sixteenth Notes
+
+When the **Alternate Sixteenth Notes** setting is enabled and the sixteenth note groove is selected, the beat and rhythm sounds alternate across each group of four subdivisions:
+
+| Position | Counted as | Sound |
+|----------|-----------|-------|
+| 1st (counter 0) | Downbeat | Beat |
+| 2nd (counter 1) | "e" | Rhythm |
+| 3rd (counter 2) | "and" | Beat |
+| 4th (counter 3) | "ah" | Rhythm |
+
+This gives an eighth-note pulse within the sixteenth pattern — useful for feeling the strong subdivisions at both the downbeat and the "and". When the setting is off, only the downbeat plays the beat sound and the remaining three subdivisions play the rhythm sound (the default behavior for all other grooves).
+
+The visual circle animation, haptic feedback, and flashlight always pulse only on the downbeat (counter 0) regardless of this setting.
+
 The `AudioPlayerService` manages:
 - Loading audio files from the bundle
 - Configuring the audio engine

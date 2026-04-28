@@ -82,6 +82,12 @@ class SettingsViewModel: ObservableObject {
         }
     }
     
+    @Published var sixteenthAlternate: Bool {
+        didSet {
+            defaults.sixteenthAlternate = sixteenthAlternate
+        }
+    }
+    
     init() {
         sendReminders = defaults.sendReminders
         reminderTime = defaults.reminderTime
@@ -93,6 +99,7 @@ class SettingsViewModel: ObservableObject {
         playlistBeat = defaults.playlistBeat
         playlistRhythm = defaults.playlistRhythm
         keepAwake = defaults.keepAwake
+        sixteenthAlternate = defaults.sixteenthAlternate
     }
     
     private func requestPermissionAndSchedule() {
