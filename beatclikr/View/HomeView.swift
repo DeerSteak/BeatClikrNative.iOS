@@ -31,7 +31,7 @@ private enum AppSection: String, CaseIterable, Identifiable {
 struct HomeView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
     @State private var selectedSection: AppSection? = .instant
-
+    
     var body: some View {
         if sizeClass == .regular {
             NavigationSplitView {
@@ -51,6 +51,11 @@ struct HomeView: View {
                 case nil:       InstantMetronomeView()
                 }
             }
+            #if targetEnvironment(macCatalyst)
+            .onAppear {
+                (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.titlebar?.titleVisibility = .hidden
+            }
+            #endif
         } else {
             TabView {
                 InstantMetronomeView()

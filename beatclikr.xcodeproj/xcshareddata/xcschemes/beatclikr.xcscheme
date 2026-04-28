@@ -16,7 +16,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "EE84F2F02A7C7A21009E2F23"
-               BuildableName = "beatclikr.app"
+               BuildableName = "BeatClikr.app"
                BlueprintName = "beatclikr"
                ReferencedContainer = "container:beatclikr.xcodeproj">
             </BuildableReference>
@@ -70,7 +70,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "EE84F2F02A7C7A21009E2F23"
-            BuildableName = "beatclikr.app"
+            BuildableName = "BeatClikr.app"
             BlueprintName = "beatclikr"
             ReferencedContainer = "container:beatclikr.xcodeproj">
          </BuildableReference>
@@ -91,7 +91,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "EE84F2F02A7C7A21009E2F23"
-            BuildableName = "beatclikr.app"
+            BuildableName = "BeatClikr.app"
             BlueprintName = "beatclikr"
             ReferencedContainer = "container:beatclikr.xcodeproj">
          </BuildableReference>
