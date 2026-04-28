@@ -137,7 +137,7 @@
 		EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsService.swift; sourceTree = "<group>"; };
 		EE82F9A92A7FBFE100B873E7 /* FlashlightService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FlashlightService.swift; sourceTree = "<group>"; };
 		EE82F9AB2A7FC98200B873E7 /* VibrationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VibrationService.swift; sourceTree = "<group>"; };
-		EE84F2F12A7C7A21009E2F23 /* beatclikr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = beatclikr.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		EE84F2F12A7C7A21009E2F23 /* BeatClikr.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BeatClikr.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE84F2F42A7C7A21009E2F23 /* beatclikrApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = beatclikrApp.swift; sourceTree = "<group>"; };
 		EE84F2F62A7C7A21009E2F23 /* SongLibraryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongLibraryView.swift; sourceTree = "<group>"; };
 		EE84F2F82A7C7A21009E2F23 /* Song.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Song.swift; sourceTree = "<group>"; };
@@ -211,7 +211,7 @@
 		EE84F2F22A7C7A21009E2F23 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				EE84F2F12A7C7A21009E2F23 /* beatclikr.app */,
+				EE84F2F12A7C7A21009E2F23 /* BeatClikr.app */,
 				EE84F3052A7C7A23009E2F23 /* beatclikrTests.xctest */,
 				EE84F30F2A7C7A24009E2F23 /* beatclikrUITests.xctest */,
 			);
@@ -389,7 +389,7 @@
 				EE207A3C2A89723F00D8E267 /* AudioKit */,
 			);
 			productName = beatclikr;
-			productReference = EE84F2F12A7C7A21009E2F23 /* beatclikr.app */;
+			productReference = EE84F2F12A7C7A21009E2F23 /* BeatClikr.app */;
 			productType = "com.apple.product-type.application";
 		};
 		EE84F3042A7C7A23009E2F23 /* beatclikrTests */ = {
@@ -747,7 +747,7 @@
 				);
 				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bfunkstudios.beatclikr;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = BeatClikr;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = YES;
@@ -789,7 +789,7 @@
 				);
 				MARKETING_VERSION = 3.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bfunkstudios.beatclikr;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = BeatClikr;
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = YES;
