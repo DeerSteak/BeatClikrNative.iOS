@@ -63,6 +63,9 @@ struct SettingsView: View {
                             Divider().padding(.leading, 12)
                             Toggle(LocalizedStringKey("KeepAwake"), isOn: $model.keepAwake)
                                 .padding(12)
+                            Divider().padding(.leading, 12)
+                            Toggle(LocalizedStringKey("SixteenthAlternate"), isOn: $model.sixteenthAlternate)
+                                .padding(12)
                         }
                         .background(Color(UIColor.secondarySystemGroupedBackground))
                         .cornerRadius(16)

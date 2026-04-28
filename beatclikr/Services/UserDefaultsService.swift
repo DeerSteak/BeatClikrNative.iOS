@@ -106,6 +106,14 @@ class UserDefaultsService: ObservableObject {
         }
     }
     
+    @Published var sixteenthAlternate: Bool {
+        didSet {
+            guard oldValue != sixteenthAlternate else { return }
+            defaults.set(sixteenthAlternate, forKey: PreferenceKeys.sixteenthAlternate)
+            cloud.set(sixteenthAlternate, forKey: PreferenceKeys.sixteenthAlternate)
+        }
+    }
+    
     private let defaults = UserDefaults.standard
     private let cloud = NSUbiquitousKeyValueStore.default
     
@@ -116,6 +124,7 @@ class UserDefaultsService: ObservableObject {
         useVibration = defaults.bool(forKey: PreferenceKeys.useHaptic)
         muteMetronome = defaults.bool(forKey: PreferenceKeys.muteMetronome)
         keepAwake = defaults.bool(forKey: PreferenceKeys.keepAwake)
+        sixteenthAlternate = defaults.bool(forKey: PreferenceKeys.sixteenthAlternate)
         
         instantBeat = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.instantBeat) ?? "") ?? .ClickHi
         instantRhythm = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.instantRhythm) ?? "") ?? .ClickLo
@@ -152,6 +161,7 @@ class UserDefaultsService: ObservableObject {
         self.useVibration = cloud.bool(forKey: PreferenceKeys.useHaptic)
         self.muteMetronome = cloud.bool(forKey: PreferenceKeys.muteMetronome)
         self.keepAwake = cloud.bool(forKey: PreferenceKeys.keepAwake)
+        self.sixteenthAlternate = cloud.bool(forKey: PreferenceKeys.sixteenthAlternate)
         
         let beatStr = cloud.string(forKey: PreferenceKeys.instantBeat) ?? ""
         self.instantBeat = FileConstants(rawValue: beatStr) ?? .ClickHi

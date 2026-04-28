@@ -299,13 +299,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "BeatClikr will always animate the bulb icon, and it plays audio by default. Choose other playback settings below."
+            "value" : "BeatClikr will always animate the circle icon, and it plays audio by default. Choose other playback settings below."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "BeatClikr siempre animará el icono de luz y reproducirá audio de forma predeterminada. Seleccione otras opciones de reproducción a continuación."
+            "value" : "BeatClikr siempre animará el icono de círculo y reproducirá audio de forma predeterminada. Seleccione otras opciones de reproducción a continuación."
           }
         }
       }
@@ -357,6 +357,23 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Usar Vibración"
+          }
+        }
+      }
+    },
+    "SixteenthAlternate" : {
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alternate Sixteenth Notes"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Alternar Dieciseisavos"
           }
         }
       }

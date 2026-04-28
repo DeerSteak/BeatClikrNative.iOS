@@ -28,6 +28,7 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
     private var timer: Timer?
     private var nextBeatTime: CFAbsoluteTime = 0
     private var subdivisionCounter: Int = 0
+    private var useAlternateSixteenth: Bool = false
 
     private let checkInterval: TimeInterval = MetronomeConstants.timerCheckInterval
     private let firstBeatDelay: TimeInterval = MetronomeConstants.firstBeatDelay
@@ -62,6 +63,7 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
         self.currentBPM = bpm
         self.currentSubdivisions = subdivisions
         self.subdivisionCounter = 0
+        self.useAlternateSixteenth = UserDefaultsService.instance.sixteenthAlternate && subdivisions == 4
 
         self.nextBeatTime = CFAbsoluteTimeGetCurrent() + firstBeatDelay
 
@@ -129,10 +131,11 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
     }
 
     private func playCurrentBeat() {
+        let playBeatSound = useAlternateSixteenth ? subdivisionCounter % 2 == 0 : subdivisionCounter == 0
         let isBeat = subdivisionCounter == 0
 
         if !UserDefaultsService.instance.muteMetronome {
-            if isBeat {
+            if playBeatSound {
                 if let beatSound = beatSound {
                     sampler.play(noteNumber: MIDINoteNumber(beatSound.midiNote))
                 }

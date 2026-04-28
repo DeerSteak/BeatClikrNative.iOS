@@ -24,4 +24,5 @@ struct PreferenceKeys {
     static let hasAskedReminders = "HasAskedReminders"
     static let reminderTime = "ReminderTime"
     static let keepAwake = "KeepAwake"
+    static let sixteenthAlternate = "SixteenthAlternate"
 }
