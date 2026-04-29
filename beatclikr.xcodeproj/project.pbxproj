@@ -13,6 +13,8 @@
 		28363D5A2F898A110066C665 /* MetronomeTimingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28363D572F898A110066C665 /* MetronomeTimingTests.swift */; };
 		283672342F8988AB0090EE63 /* MetronomeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283672332F8988AB0090EE63 /* MetronomeConstants.swift */; };
 		30DEB7A2263835E813BCF3F4 /* MetronomeAudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */; };
+		B52B86512FA2743700B6FECE /* BpmSliderControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52B864F2FA2743700B6FECE /* BpmSliderControl.swift */; };
+		B52B86522FA2743700B6FECE /* GrooveSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52B86502FA2743700B6FECE /* GrooveSelectorView.swift */; };
 		B53234762F8DD8D300BA7DE1 /* PlaylistTransportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */; };
 		B53234782F8DD8D900BA7DE1 /* SongPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53234772F8DD8D900BA7DE1 /* SongPickerView.swift */; };
 		DFB72E0FB4B1DD3A4397382B /* AudioKitMetronomeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAB43FBDA8DD0BBF30036A0 /* AudioKitMetronomeEngine.swift */; };
@@ -95,6 +97,8 @@
 		28363D562F898A110066C665 /* MetronomePlaybackViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlaybackViewModelTests.swift; sourceTree = "<group>"; };
 		28363D572F898A110066C665 /* MetronomeTimingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeTimingTests.swift; sourceTree = "<group>"; };
 		283672332F8988AB0090EE63 /* MetronomeConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeConstants.swift; sourceTree = "<group>"; };
+		B52B864F2FA2743700B6FECE /* BpmSliderControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BpmSliderControl.swift; sourceTree = "<group>"; };
+		B52B86502FA2743700B6FECE /* GrooveSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrooveSelectorView.swift; sourceTree = "<group>"; };
 		B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistTransportView.swift; sourceTree = "<group>"; };
 		B53234772F8DD8D900BA7DE1 /* SongPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongPickerView.swift; sourceTree = "<group>"; };
 		CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MetronomeAudioEngine.swift; sourceTree = "<group>"; };
@@ -187,6 +191,8 @@
 		EE0939E52A7EA825005491BB /* CustomViews */ = {
 			isa = PBXGroup;
 			children = (
+				B52B864F2FA2743700B6FECE /* BpmSliderControl.swift */,
+				B52B86502FA2743700B6FECE /* GrooveSelectorView.swift */,
 				B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */,
 				B53234772F8DD8D900BA7DE1 /* SongPickerView.swift */,
 				EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */,
@@ -538,6 +544,8 @@
 				EE8201852A81B20F00675A1C /* SongListItemView.swift in Sources */,
 				EEE911532A7EDE07008DFDED /* FileConstants.swift in Sources */,
 				EE82F9AA2A7FBFE100B873E7 /* FlashlightService.swift in Sources */,
+				B52B86512FA2743700B6FECE /* BpmSliderControl.swift in Sources */,
+				B52B86522FA2743700B6FECE /* GrooveSelectorView.swift in Sources */,
 				EE5DFD7B2AD82CA600756566 /* PreviewContainer.swift in Sources */,
 				EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */,
 				EE478E8B2A879C51008337DB /* AudioPlayerService.swift in Sources */,

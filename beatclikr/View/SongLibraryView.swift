@@ -24,6 +24,20 @@ struct SongLibraryView: View {
             List {
                 ForEach(items) { item in
                         HStack {
+                            if editMode.isEditing {
+                                Button {
+                                    if let index = items.firstIndex(where: { $0.id == item.id }) {
+                                        model.deleteItems(offsets: IndexSet([index]), items: items, context: modelContext)
+                                    }
+                                } label: {
+                                    Image(systemName: "minus.circle.fill")
+                                        .foregroundStyle(.red)
+                                        .font(.title3)
+                                }
+                                .buttonStyle(.plain)
+                                .accessibilityLabel("Delete \(item.title ?? "song")")
+                                .transition(.opacity.combined(with: .scale(scale: 0.8, anchor: .leading)))
+                            }
                             Button {
                                 guard !editMode.isEditing else { return }
                                 tappedId = item.id
@@ -47,6 +61,7 @@ struct SongLibraryView: View {
                                 }
                                 .buttonStyle(.plain)
                                 .accessibilityLabel("Edit \(item.title ?? "song")")
+                                .transition(.opacity.combined(with: .scale(scale: 0.8, anchor: .trailing)))
                             }
                         }
                         .contentShape(Rectangle())
@@ -55,9 +70,8 @@ struct SongLibraryView: View {
                                 .fill(tappedId == item.id ? Color.accentColor.opacity(0.25) : Color.clear)
                                 .animation(.easeOut(duration: 0.5), value: tappedId)
                         )
-                        
+
                     }
-                    .onDelete(perform: editMode.isEditing ? { offsets in model.deleteItems(offsets: offsets, items: items, context: modelContext) } : nil)
                 }
                 .environment(\.editMode, $editMode)
                 .scrollContentBackground(.hidden)
@@ -79,7 +93,9 @@ struct SongLibraryView: View {
                     }
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(editMode.isEditing ? "Done" : "Edit") {
-                            editMode = editMode.isEditing ? .inactive : .active
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                editMode = editMode.isEditing ? .inactive : .active
+                            }
                         }
                     }
                     ToolbarItem {

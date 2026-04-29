@@ -19,8 +19,7 @@ struct SongDetailsView: View {
     @State var selectedGroove: Groove
     
     @State var showAlert: Bool
-    @FocusState private var bpmFocused: Bool
-    
+
     var song: Song
     
     init() {
@@ -50,34 +49,26 @@ struct SongDetailsView: View {
                     LabeledContent("Title") {
                         TextField("Required", text: $title)
                             .multilineTextAlignment(.trailing)
+                            .autocapitalization(.words)
                     }
                     LabeledContent("Artist") {
                         TextField("Required", text: $artist)
                             .multilineTextAlignment(.trailing)
+                            .autocapitalization(.words)
                     }
                 }
                 Section("Tempo") {
                     LabeledContent("BPM") {
-                        TextField("BPM", value: $bpm, format: .number)
-                            .keyboardType(.decimalPad)
-                            .multilineTextAlignment(.trailing)
-                            .focused($bpmFocused)
-                            .onChange(of: bpmFocused) { _, focused in
-                                if focused {
-                                    DispatchQueue.main.async {
-                                        UIApplication.shared.sendAction(#selector(UIResponder.selectAll(_:)), to: nil, from: nil, for: nil)
-                                    }
-                                }
-                            }
+                        Text(FormatterHelper.formatDouble(bpm))
+                            .font(.system(size: 28, weight: .thin, design: .rounded))
+                            .monospacedDigit()
                     }
+                    BpmSliderControl(value: $bpm, range: MetronomeConstants.minBPM...MetronomeConstants.maxBPM)
                     Stepper("Beats per Bar: \(beats)", value: $beats, in: 1...16, step: 1)
                 }
-                Section("Feel") {
-                    Picker("Groove", selection: $selectedGroove) {
-                        ForEach(Groove.allCases) { option in
-                            Text(String(describing: option))
-                        }
-                    }
+                Section("Groove") {
+                    GrooveSelectorView(selection: $selectedGroove)
+                        .padding(.vertical, 4)
                 }
             }
             .navigationTitle(navTitle())
