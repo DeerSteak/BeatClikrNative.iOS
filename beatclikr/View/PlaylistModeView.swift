@@ -24,6 +24,20 @@ struct PlaylistModeView: View {
     @ViewBuilder
     private func playlistRow(for song: Song, entry: PlaylistEntry, at index: Int) -> some View {
         HStack {
+            if editMode.isEditing {
+                Button {
+                    if let idx = entries.firstIndex(where: { $0.id == entry.id }) {
+                        model.deleteEntries(offsets: IndexSet([idx]), entries: entries, context: modelContext)
+                    }
+                } label: {
+                    Image(systemName: "minus.circle.fill")
+                        .foregroundStyle(.red)
+                        .font(.title3)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Delete \(song.title ?? "song")")
+                .transition(.opacity.combined(with: .scale(scale: 0.8, anchor: .leading)))
+            }
             Button {
                 guard !editMode.isEditing else { return }
                 tappedId = entry.id
@@ -34,7 +48,6 @@ struct PlaylistModeView: View {
                 model.playSong(song, at: index, metronome: metronome)
             } label: {
                 HStack {
-                    // Play indicator
                     if model.currentSongIndex == index {
                         Image(systemName: "play.fill")
                             .foregroundColor(.accentColor)
@@ -45,9 +58,9 @@ struct PlaylistModeView: View {
             }
             .buttonStyle(.plain)
             .disabled(editMode.isEditing)
-            
+
             Spacer()
-            
+
             if editMode.isEditing {
                 Button {
                     editingSong = song
@@ -58,6 +71,7 @@ struct PlaylistModeView: View {
                 .buttonStyle(.plain)
                 .padding(.trailing, 8)
                 .accessibilityLabel("Edit \(song.title ?? "song")")
+                .transition(.opacity.combined(with: .scale(scale: 0.8, anchor: .trailing)))
             }
         }
         .contentShape(Rectangle())
@@ -92,7 +106,6 @@ struct PlaylistModeView: View {
                                 playlistRow(for: song, entry: entry, at: index)
                             }
                         }
-                        .onDelete(perform: editMode.isEditing ? { offsets in model.deleteEntries(offsets: offsets, entries: entries, context: modelContext) } : nil)
                         .onMove { fromOffsets, toOffset in model.sortEntries(fromOffsets: fromOffsets, toOffset: toOffset, entries: entries) }
                     }
                 }
@@ -124,7 +137,9 @@ struct PlaylistModeView: View {
                 .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(editMode.isEditing ? "Done" : "Edit") {
-                            editMode = editMode.isEditing ? .inactive : .active
+                            withAnimation(.easeInOut(duration: 0.2)) {
+                                editMode = editMode.isEditing ? .inactive : .active
+                            }
                         }
                     }
                     ToolbarItem {
