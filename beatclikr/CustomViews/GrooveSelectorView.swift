@@ -13,7 +13,7 @@ struct GrooveSelectorView: View {
                         .font(.subheadline.bold())
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 10)
-                        .background(selection == groove ? Color.appPrimary : Color(.tertiarySystemFill))
+                        .background(selection == groove ? Color.accentColor : Color(.tertiarySystemFill))
                         .foregroundStyle(selection == groove ? Color.white : Color.primary)
                         .clipShape(Capsule())
                 }
