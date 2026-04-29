@@ -57,38 +57,10 @@ struct InstantMetronomeView: View {
                             .buttonStyle(.plain)
                             .accessibilityLabel("Tap Tempo")
                         }
-                        HStack(spacing: 8) {
-                            Button {
-                                withAnimation {
-                                    model.beatsPerMinute = max(MetronomeConstants.minBPM, model.beatsPerMinute - 1)
-                                }
-                            } label: {
-                                Image(systemName: "minus")
-                                    .font(.title3.bold())
-                                    .frame(width: 40, height: 40)
-                            }
-                            .buttonStyle(.bordered)
-                            .clipShape(Circle())
-                            .accessibilityLabel("Decrease BPM")
-                            
-                            Slider(value: Binding(
-                                get: { model.beatsPerMinute },
-                                set: { newValue in withAnimation { model.beatsPerMinute = newValue } }
-                            ), in: MetronomeConstants.minBPM...MetronomeConstants.maxBPM, step: 1)
-                            
-                            Button {
-                                withAnimation {
-                                    model.beatsPerMinute = min(MetronomeConstants.maxBPM, model.beatsPerMinute + 1)
-                                }
-                            } label: {
-                                Image(systemName: "plus")
-                                    .font(.title3.bold())
-                                    .frame(width: 40, height: 40)
-                            }
-                            .buttonStyle(.bordered)
-                            .clipShape(Circle())
-                            .accessibilityLabel("Increase BPM")
-                        }
+                        BpmSliderControl(value: Binding(
+                            get: { model.beatsPerMinute },
+                            set: { newValue in withAnimation { model.beatsPerMinute = newValue } }
+                        ), range: MetronomeConstants.minBPM...MetronomeConstants.maxBPM)
                     }
                     .padding(12)
                     .background(Color(UIColor.secondarySystemGroupedBackground))
@@ -102,23 +74,7 @@ struct InstantMetronomeView: View {
                             .tracking(1)
                             .textCase(.uppercase)
                             .padding(.horizontal, 4)
-                        LazyVGrid(columns: [GridItem(.flexible()), GridItem(.flexible())], spacing: 8) {
-                            ForEach(Groove.allCases) { option in
-                                Button {
-                                    model.selectedGroove = option
-                                } label: {
-                                    Text(String(describing: option))
-                                        .font(.subheadline)
-                                        .frame(maxWidth: .infinity)
-                                        .padding(.vertical, 10)
-                                        .background(model.selectedGroove == option ? Color.accentColor : Color(UIColor.tertiarySystemFill))
-                                        .foregroundStyle(model.selectedGroove == option ? Color.white : Color.primary)
-                                        .clipShape(Capsule())
-                                }
-                                .buttonStyle(.plain)
-                                .accessibilityAddTraits(model.selectedGroove == option ? .isSelected : [])
-                            }
-                        }
+                        GrooveSelectorView(selection: $model.selectedGroove)
                     }
                     .padding(12)
                     .background(Color(UIColor.secondarySystemGroupedBackground))

@@ -1,0 +1,34 @@
+import SwiftUI
+
+struct BpmSliderControl: View {
+    @Binding var value: Double
+    let range: ClosedRange<Double>
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Button {
+                value = max(range.lowerBound, value - 1)
+            } label: {
+                Image(systemName: "minus")
+                    .font(.title3.bold())
+                    .frame(width: 40, height: 40)
+            }
+            .buttonStyle(.bordered)
+            .clipShape(Circle())
+            .accessibilityLabel("Decrease BPM")
+
+            Slider(value: $value, in: range, step: 1)
+
+            Button {
+                value = min(range.upperBound, value + 1)
+            } label: {
+                Image(systemName: "plus")
+                    .font(.title3.bold())
+                    .frame(width: 40, height: 40)
+            }
+            .buttonStyle(.bordered)
+            .clipShape(Circle())
+            .accessibilityLabel("Increase BPM")
+        }
+    }
+}
