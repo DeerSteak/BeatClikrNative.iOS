@@ -49,10 +49,12 @@ struct SongDetailsView: View {
                     LabeledContent("Title") {
                         TextField("Required", text: $title)
                             .multilineTextAlignment(.trailing)
+                            .autocapitalization(.words)
                     }
                     LabeledContent("Artist") {
                         TextField("Required", text: $artist)
                             .multilineTextAlignment(.trailing)
+                            .autocapitalization(.words)
                     }
                 }
                 Section("Tempo") {
