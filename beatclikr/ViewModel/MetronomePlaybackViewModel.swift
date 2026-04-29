@@ -21,6 +21,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     private var song: Song
     
     private var isBeat: Bool = false
+    private var activeBpm: Double = 120.0
     
     //MARK: Published properties
     @Published var iconScale: CGFloat = MetronomeConstants.iconScaleMin
@@ -109,7 +110,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         
         if isBeat {
             // Calculate duration for one full beat (in seconds)
-            let beatDuration = 60.0 / beatsPerMinute
+            let beatDuration = 60.0 / activeBpm
             
             // Snap to max instantly with no animation
             withAnimation(.none) {
@@ -185,6 +186,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         }
         setupMetronome()
         let bpm = song.beatsPerMinute ?? beatsPerMinute
+        activeBpm = bpm
         let groove = song.groove ?? selectedGroove
         audio.startMetronome(bpm: bpm, subdivisions: groove.rawValue)
         isPlaying = true
