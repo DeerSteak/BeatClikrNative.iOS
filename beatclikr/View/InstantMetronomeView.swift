@@ -44,12 +44,12 @@ struct InstantMetronomeView: View {
                             Button(action: recordTap) {
                                 ZStack {
                                     Circle()
-                                        .fill(Color.accentColor.opacity(0.15))
+                                        .fill(Color.accent.opacity(0.15))
                                         .frame(width: MetronomeConstants.playerViewDefaultSize, height: MetronomeConstants.playerViewDefaultSize)
                                     Text("TAP\nTEMPO")
                                         .font(.caption.bold())
                                         .multilineTextAlignment(.center)
-                                        .foregroundStyle(Color.accentColor)
+                                        .foregroundStyle(Color.accent)
                                         .tracking(1)
                                         .textCase(.uppercase)
                                 }
@@ -100,7 +100,7 @@ struct InstantMetronomeView: View {
                                     Image(systemName: "chevron.up.chevron.down")
                                         .font(.caption2)
                                 }
-                                .foregroundStyle(Color.accentColor)
+                                .foregroundStyle(Color.accent)
                             }
                         }
                         .padding(.horizontal, 12)
@@ -127,7 +127,7 @@ struct InstantMetronomeView: View {
                                     Image(systemName: "chevron.up.chevron.down")
                                         .font(.caption2)
                                 }
-                                .foregroundStyle(Color.accentColor)
+                                .foregroundStyle(Color.accent)
                             }
                         }
                         .padding(.horizontal, 12)
@@ -148,6 +148,7 @@ struct InstantMetronomeView: View {
                     }
                     .buttonStyle(.borderedProminent)
                     .controlSize(.large)
+                    .tint(Color.appPrimary)
                 }
                 .padding()
             }
