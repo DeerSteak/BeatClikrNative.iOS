@@ -12,12 +12,14 @@ struct BpmSliderControl: View {
                 Image(systemName: "minus")
                     .font(.title3.bold())
                     .frame(width: 40, height: 40)
+                    .foregroundColor(value == range.lowerBound ? .gray : .appPrimary)
             }
             .buttonStyle(.bordered)
             .clipShape(Circle())
             .accessibilityLabel("Decrease BPM")
 
             Slider(value: $value, in: range, step: 1)
+                .tint(Color.appPrimary)
 
             Button {
                 value = min(range.upperBound, value + 1)
@@ -25,6 +27,7 @@ struct BpmSliderControl: View {
                 Image(systemName: "plus")
                     .font(.title3.bold())
                     .frame(width: 40, height: 40)
+                    .foregroundColor(value == range.upperBound ? .gray : .appPrimary)
             }
             .buttonStyle(.bordered)
             .clipShape(Circle())

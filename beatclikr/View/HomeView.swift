@@ -67,6 +67,7 @@ struct HomeView: View {
                 SettingsView()
                     .tabItem { Label("Settings", systemImage: "gear") }
             }
+            .tint(Color.appPrimary)
         }
     }
 }
