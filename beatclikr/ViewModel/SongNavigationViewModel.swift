@@ -18,7 +18,7 @@ extension Song: SongNavigatable {
 
 extension PlaylistEntry: SongNavigatable {}
 
-// Base class shared by SongLibraryViewModel and PlaylistModeViewModel.
+// Base class shared by SongLibraryViewModel and PlaylistDetailViewModel.
 // Tracks position in a list and drives playback navigation.
 @MainActor
 class SongNavigationViewModel: ObservableObject {
