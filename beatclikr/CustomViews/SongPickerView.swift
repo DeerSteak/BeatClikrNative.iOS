@@ -7,18 +7,18 @@ import SwiftUI
 import SwiftData
 
 struct SongPickerView: View {
-
+    
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var model: PlaylistModeViewModel
     @Query(sort: [SortDescriptor(\Song.title), SortDescriptor(\Song.artist)]) private var allSongs: [Song]
-    let entries: [PlaylistEntry]
-
+    let playlist: Playlist
+    
     var body: some View {
         NavigationStack {
             List(allSongs) { song in
                 Button {
-                    model.addSongToPlaylist(song, entries: entries, context: modelContext)
+                    model.addSongToPlaylist(song, playlist: playlist, context: modelContext)
                     dismiss()
                 } label: {
                     SongListItemView(song: song)

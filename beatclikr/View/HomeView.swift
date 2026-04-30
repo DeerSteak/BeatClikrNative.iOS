@@ -46,23 +46,23 @@ struct HomeView: View {
                 switch selectedSection {
                 case .instant:  InstantMetronomeView()
                 case .library:  SongLibraryView()
-                case .playlist: PlaylistModeView()
+                case .playlist: PlaylistListView()
                 case .settings: SettingsView()
                 case nil:       InstantMetronomeView()
                 }
             }
-            #if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst)
             .onAppear {
                 (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.titlebar?.titleVisibility = .hidden
             }
-            #endif
+#endif
         } else {
             TabView {
                 InstantMetronomeView()
                     .tabItem { Label("Instant", systemImage: "metronome") }
                 SongLibraryView()
                     .tabItem { Label("Library", systemImage: "list.bullet.rectangle") }
-                PlaylistModeView()
+                PlaylistListView()
                     .tabItem { Label("Playlist", systemImage: "music.note.list") }
                 SettingsView()
                     .tabItem { Label("Settings", systemImage: "gear") }
@@ -78,5 +78,5 @@ struct HomeView: View {
         .environmentObject(metronome)
         .environmentObject(SettingsViewModel())
         .environmentObject(SongLibraryViewModel())
-        .environmentObject(PlaylistModeViewModel())
+        .environmentObject(PlaylistListViewModel())
 }

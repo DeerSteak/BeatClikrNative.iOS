@@ -29,7 +29,7 @@ class PlaylistModeViewModel : ObservableObject {
             playSong(song, at: nextIdx, metronome: metronome)
         }
     }
-
+    
     func playPrevious(entries: [PlaylistEntry], metronome: MetronomePlaybackViewModel) {
         guard let currentIndex = currentSongIndex, currentIndex > 0 else { return }
         if let prevIdx = (0..<currentIndex).reversed().first(where: { entries[$0].song != nil }),
@@ -37,17 +37,17 @@ class PlaylistModeViewModel : ObservableObject {
             playSong(song, at: prevIdx, metronome: metronome)
         }
     }
-
+    
     func canGoNext(entries: [PlaylistEntry]) -> Bool {
         guard let currentIndex = currentSongIndex, currentIndex + 1 < entries.count else { return false }
         return ((currentIndex + 1)..<entries.count).contains { $0 < entries.count && entries[$0].song != nil }
     }
-
+    
     func canGoPrevious(entries: [PlaylistEntry]) -> Bool {
         guard let currentIndex = currentSongIndex, currentIndex > 0 else { return false }
         return (0..<currentIndex).contains { entries[$0].song != nil }
     }
-
+    
     func playOrResume(entries: [PlaylistEntry], metronome: MetronomePlaybackViewModel) {
         if let idx = currentSongIndex, idx < entries.count, let song = entries[idx].song {
             playSong(song, at: idx, metronome: metronome)
@@ -56,15 +56,16 @@ class PlaylistModeViewModel : ObservableObject {
             playSong(song, at: firstIdx, metronome: metronome)
         }
     }
-
+    
     func currentSongTitle(in entries: [PlaylistEntry]) -> String? {
         guard let idx = currentSongIndex, idx < entries.count else { return nil }
         return entries[idx].song?.title
     }
-
-    func addSongToPlaylist(_ song: Song, entries: [PlaylistEntry], context: ModelContext) {
+    
+    func addSongToPlaylist(_ song: Song, playlist: Playlist, context: ModelContext) {
         withAnimation {
-            let entry = PlaylistEntry(song: song, sequence: entries.count)
+            let entry = PlaylistEntry(song: song, sequence: (playlist.entries ?? []).count)
+            entry.playlist = playlist
             context.insert(entry)
             do {
                 try context.save()
