@@ -21,14 +21,13 @@ struct SongLibraryView: View {
     
     var body: some View {
         NavigationStack {
+            ScrollViewReader { proxy in
             List {
-                ForEach(items) { item in
+                ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
                         HStack {
                             if editMode.isEditing {
                                 Button {
-                                    if let index = items.firstIndex(where: { $0.id == item.id }) {
-                                        model.deleteItems(offsets: IndexSet([index]), items: items, context: modelContext)
-                                    }
+                                    model.deleteItems(offsets: IndexSet([index]), items: items, context: modelContext)
                                 } label: {
                                     Image(systemName: "minus.circle.fill")
                                         .foregroundStyle(.red)
@@ -45,9 +44,17 @@ struct SongLibraryView: View {
                                     try? await Task.sleep(for: .seconds(0.5))
                                     tappedId = nil
                                 }
-                                model.playSong(item, metronome: metronomeViewModel)
+                                model.playSong(item, at: index, metronome: metronomeViewModel)
                             } label: {
-                                SongListItemView(song: item)
+                                HStack {
+                                    if model.currentSongIndex == index {
+                                        Image(systemName: "play.fill")
+                                            .foregroundColor(.appPrimary)
+                                            .font(.caption)
+                                            .accessibilityHidden(true)
+                                    }
+                                    SongListItemView(song: item)
+                                }
                             }
                             .buttonStyle(.plain)
                             .disabled(editMode.isEditing)
@@ -67,7 +74,7 @@ struct SongLibraryView: View {
                         .contentShape(Rectangle())
                         .listRowBackground(
                             RoundedRectangle(cornerRadius: 8)
-                                .fill(tappedId == item.id ? Color.accentColor.opacity(0.25) : Color.clear)
+                                .fill(tappedId == item.id ? Color.appPrimary.opacity(0.25) : Color.clear)
                                 .animation(.easeOut(duration: 0.5), value: tappedId)
                         )
 
@@ -85,12 +92,19 @@ struct SongLibraryView: View {
                         }
                     }
                 })
-                .toolbar {
-                    ToolbarItem(placement: .navigationBarLeading) {
-                        if (items.count > 0) {
-                            MetronomePlayerView(size: MetronomeConstants.playerViewToolbarSize)
-                        }
+                .safeAreaInset(edge: .bottom) {
+                    if !editMode.isEditing && !items.isEmpty {
+                        PlaylistTransportView(
+                            currentTitle: model.currentSongTitle(in: items),
+                            onPlay: { model.playOrResume(items: items, metronome: metronomeViewModel) },
+                            canGoPrevious: model.canGoPrevious(items: items),
+                            onPrevious: { model.playPrevious(items: items, metronome: metronomeViewModel) },
+                            canGoNext: model.canGoNext(items: items),
+                            onNext: { model.playNext(items: items, metronome: metronomeViewModel) }
+                        )
                     }
+                }
+                .toolbar {
                     ToolbarItem(placement: .navigationBarTrailing) {
                         Button(editMode.isEditing ? "Done" : "Edit") {
                             withAnimation(.easeInOut(duration: 0.2)) {
@@ -106,14 +120,6 @@ struct SongLibraryView: View {
                         }
                         .accessibilityLabel("Add Song")
                     }
-                    if metronomeViewModel.isPlaying {
-                        ToolbarItem {
-                            Button(action: metronomeViewModel.stop) {
-                                Image(systemName: "pause")
-                            }
-                            .accessibilityLabel("Stop Metronome")
-                        }
-                    }
                 }
                 .sheet(isPresented: $isAddingSong) {
                     SongDetailsView()
@@ -124,6 +130,14 @@ struct SongLibraryView: View {
                 .toolbarTitleDisplayMode(.automatic)
                 .navigationTitle("Song Library")
                 .navigationBarTitleDisplayMode(.automatic)
+                .onChange(of: model.currentSongIndex) { _, newIndex in
+                    if let newIndex, newIndex < items.count {
+                        withAnimation {
+                            proxy.scrollTo(items[newIndex].id, anchor: .center)
+                        }
+                    }
+                }
+            }
         }
         .onDisappear(perform: metronomeViewModel.stop)
         .onAppear {

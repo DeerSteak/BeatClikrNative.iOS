@@ -50,7 +50,7 @@ struct PlaylistModeView: View {
                 HStack {
                     if model.currentSongIndex == index {
                         Image(systemName: "play.fill")
-                            .foregroundColor(.accentColor)
+                            .foregroundColor(.appPrimary)
                             .font(.caption)
                     }
                     SongListItemView(song: song)
@@ -83,9 +83,9 @@ struct PlaylistModeView: View {
     private func rowBackground(for entry: PlaylistEntry, at index: Int) -> some View {
         let backgroundColor: Color = {
             if tappedId == entry.id {
-                return Color.accentColor.opacity(0.25)
+                return Color.appPrimary.opacity(0.25)
             } else if model.currentSongIndex == index {
-                return Color.accentColor.opacity(0.1)
+                return Color.appPrimary.opacity(0.1)
             } else {
                 return Color.clear
             }
@@ -130,7 +130,14 @@ struct PlaylistModeView: View {
                 }
                 .safeAreaInset(edge: .bottom) {
                     if !editMode.isEditing && !entries.isEmpty {
-                        PlaylistTransportView(entries: entries)
+                        PlaylistTransportView(
+                            currentTitle: model.currentSongTitle(in: entries),
+                            onPlay: { model.playOrResume(entries: entries, metronome: metronome) },
+                            canGoPrevious: model.canGoPrevious(entries: entries),
+                            onPrevious: { model.playPrevious(entries: entries, metronome: metronome) },
+                            canGoNext: model.canGoNext(entries: entries),
+                            onNext: { model.playNext(entries: entries, metronome: metronome) }
+                        )
                     }
                 }
                 .navigationTitle("Playlist")
