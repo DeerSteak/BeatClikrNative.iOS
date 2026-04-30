@@ -17,6 +17,7 @@ final class Song : Identifiable {
     var beatsPerMeasure: Int?
     var groove: Groove?
     
+    @Relationship(deleteRule: .cascade)
     var playlistEntries: [PlaylistEntry]? = []
     
     @MainActor static let instantSong: Song = Song()

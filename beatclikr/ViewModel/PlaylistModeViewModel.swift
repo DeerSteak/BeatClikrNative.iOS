@@ -23,36 +23,45 @@ class PlaylistModeViewModel : ObservableObject {
     }
     
     func playNext(entries: [PlaylistEntry], metronome: MetronomePlaybackViewModel) {
-        print("⏭️ PlaylistModeViewModel.playNext - currentIndex: \(String(describing: currentSongIndex)), entries.count: \(entries.count)")
-        guard let currentIndex = currentSongIndex, currentIndex < entries.count - 1 else {
-            return
-        }
-        let nextEntry = entries[currentIndex + 1]
-        if let song = nextEntry.song {
-            playSong(song, at: currentIndex + 1, metronome: metronome)
+        guard let currentIndex = currentSongIndex, currentIndex + 1 < entries.count else { return }
+        if let nextIdx = ((currentIndex + 1)..<entries.count).first(where: { entries[$0].song != nil }),
+           let song = entries[nextIdx].song {
+            playSong(song, at: nextIdx, metronome: metronome)
         }
     }
-    
+
     func playPrevious(entries: [PlaylistEntry], metronome: MetronomePlaybackViewModel) {
-        guard let currentIndex = currentSongIndex, currentIndex > 0 else {
-            return
-        }
-        let previousEntry = entries[currentIndex - 1]
-        if let song = previousEntry.song {
-            playSong(song, at: currentIndex - 1, metronome: metronome)
+        guard let currentIndex = currentSongIndex, currentIndex > 0 else { return }
+        if let prevIdx = (0..<currentIndex).reversed().first(where: { entries[$0].song != nil }),
+           let song = entries[prevIdx].song {
+            playSong(song, at: prevIdx, metronome: metronome)
         }
     }
-    
+
     func canGoNext(entries: [PlaylistEntry]) -> Bool {
-        guard let currentIndex = currentSongIndex else { return false }
-        return currentIndex < entries.count - 1
+        guard let currentIndex = currentSongIndex, currentIndex + 1 < entries.count else { return false }
+        return ((currentIndex + 1)..<entries.count).contains { $0 < entries.count && entries[$0].song != nil }
     }
-    
+
     func canGoPrevious(entries: [PlaylistEntry]) -> Bool {
-        guard let currentIndex = currentSongIndex else { return false }
-        return currentIndex > 0
+        guard let currentIndex = currentSongIndex, currentIndex > 0 else { return false }
+        return (0..<currentIndex).contains { entries[$0].song != nil }
     }
-    
+
+    func playOrResume(entries: [PlaylistEntry], metronome: MetronomePlaybackViewModel) {
+        if let idx = currentSongIndex, idx < entries.count, let song = entries[idx].song {
+            playSong(song, at: idx, metronome: metronome)
+        } else if let firstIdx = entries.indices.first(where: { entries[$0].song != nil }),
+                  let song = entries[firstIdx].song {
+            playSong(song, at: firstIdx, metronome: metronome)
+        }
+    }
+
+    func currentSongTitle(in entries: [PlaylistEntry]) -> String? {
+        guard let idx = currentSongIndex, idx < entries.count else { return nil }
+        return entries[idx].song?.title
+    }
+
     func addSongToPlaylist(_ song: Song, entries: [PlaylistEntry], context: ModelContext) {
         withAnimation {
             let entry = PlaylistEntry(song: song, sequence: entries.count)

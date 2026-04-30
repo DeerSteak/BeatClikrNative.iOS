@@ -27,6 +27,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     @Published var iconScale: CGFloat = MetronomeConstants.iconScaleMin
     @Published var beatPulse: Double = 0
     @Published var isPlaying: Bool = false
+    @Published var currentSongTitle: String? = nil
     
     @Published var beatsPerMinute: Double = UserDefaultsService.instance.instantBpm {
         didSet {
@@ -135,6 +136,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     //MARK: Public functions
     func switchSong(_ song: Song) {
         self.song = song
+        currentSongTitle = song.title
         
         // Reload beat/rhythm from defaults in case they changed in settings
         if clickerType == .instant {
@@ -183,6 +185,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             song = Song.instantSong
             song.beatsPerMinute = beatsPerMinute
             song.groove = selectedGroove
+            currentSongTitle = nil
         }
         setupMetronome()
         let bpm = song.beatsPerMinute ?? beatsPerMinute

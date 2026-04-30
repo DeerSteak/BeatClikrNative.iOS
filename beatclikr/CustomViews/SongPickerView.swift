@@ -23,6 +23,7 @@ struct SongPickerView: View {
                 } label: {
                     SongListItemView(song: song)
                 }
+                .buttonStyle(.plain)
             }
             .navigationTitle("Add Song")
             .navigationBarTitleDisplayMode(.inline)
