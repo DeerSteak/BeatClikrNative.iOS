@@ -2,7 +2,7 @@ import SwiftUI
 
 struct BpmSliderControl: View {
     @Binding var value: Double
-    let range: ClosedRange<Double>
+    var range: ClosedRange<Double> = MetronomeConstants.minBPM...MetronomeConstants.maxBPM
 
     var body: some View {
         HStack(spacing: 8) {
