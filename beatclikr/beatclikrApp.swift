@@ -32,6 +32,15 @@ struct beatclikrApp: App {
         } catch {
             fatalError(error.localizedDescription)
         }
+
+        let context = container.mainContext
+        let orphaned = (try? context.fetch(
+            FetchDescriptor<PlaylistEntry>(predicate: #Predicate { $0.song == nil })
+        )) ?? []
+        if !orphaned.isEmpty {
+            orphaned.forEach { context.delete($0) }
+            try? context.save()
+        }
         
         let metronome = MetronomePlaybackViewModel()
         _metronomeViewModel = StateObject(wrappedValue: metronome)
