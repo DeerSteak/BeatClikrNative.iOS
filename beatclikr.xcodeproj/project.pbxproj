@@ -20,6 +20,8 @@
 		B537D34F2FA382B300CB2D7D /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = B537D34E2FA382B300CB2D7D /* Playlist.swift */; };
 		B537D3512FA383B400CB2D7D /* PlaylistListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B537D3502FA383B400CB2D7D /* PlaylistListViewModel.swift */; };
 		B537D3532FA383BD00CB2D7D /* PlaylistListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B537D3522FA383BD00CB2D7D /* PlaylistListView.swift */; };
+		B59482B12FA3C88A00410C67 /* TapTempoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59482B02FA3C88A00410C67 /* TapTempoButton.swift */; };
+		B59482B32FA3C90B00410C67 /* SongNavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */; };
 		DFB72E0FB4B1DD3A4397382B /* AudioKitMetronomeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAB43FBDA8DD0BBF30036A0 /* AudioKitMetronomeEngine.swift */; };
 		EE0473192AA388EB004E958A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0473182AA388EB004E958A /* HomeView.swift */; };
 		EE04731B2AA39267004E958A /* ClickerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE04731A2AA39267004E958A /* ClickerType.swift */; };
@@ -107,6 +109,8 @@
 		B537D34E2FA382B300CB2D7D /* Playlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
 		B537D3502FA383B400CB2D7D /* PlaylistListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistListViewModel.swift; sourceTree = "<group>"; };
 		B537D3522FA383BD00CB2D7D /* PlaylistListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistListView.swift; sourceTree = "<group>"; };
+		B59482B02FA3C88A00410C67 /* TapTempoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapTempoButton.swift; sourceTree = "<group>"; };
+		B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongNavigationViewModel.swift; sourceTree = "<group>"; };
 		CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MetronomeAudioEngine.swift; sourceTree = "<group>"; };
 		EE0473182AA388EB004E958A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		EE04731A2AA39267004E958A /* ClickerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickerType.swift; sourceTree = "<group>"; };
@@ -197,6 +201,7 @@
 		EE0939E52A7EA825005491BB /* CustomViews */ = {
 			isa = PBXGroup;
 			children = (
+				B59482B02FA3C88A00410C67 /* TapTempoButton.swift */,
 				B52B864F2FA2743700B6FECE /* BpmSliderControl.swift */,
 				B52B86502FA2743700B6FECE /* GrooveSelectorView.swift */,
 				B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */,
@@ -310,6 +315,7 @@
 		EE84F3242A7C7A50009E2F23 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
+				B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */,
 				B537D3502FA383B400CB2D7D /* PlaylistListViewModel.swift */,
 				EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */,
 				EE6D2F522F8A64D200A1D4B7 /* PlaylistDetailViewModel.swift */,
@@ -542,6 +548,7 @@
 				EE97D5A12A7E7EB900FA11A0 /* SongDetailsView.swift in Sources */,
 				EE04731B2AA39267004E958A /* ClickerType.swift in Sources */,
 				B537D34F2FA382B300CB2D7D /* Playlist.swift in Sources */,
+				B59482B32FA3C90B00410C67 /* SongNavigationViewModel.swift in Sources */,
 				EE84F2F72A7C7A21009E2F23 /* SongLibraryView.swift in Sources */,
 				B537D3532FA383BD00CB2D7D /* PlaylistListView.swift in Sources */,
 				EE6D2F532F8A64DA00A1D4B7 /* PlaylistDetailViewModel.swift in Sources */,
@@ -568,6 +575,7 @@
 				EE84F2F52A7C7A21009E2F23 /* beatclikrApp.swift in Sources */,
 				B537D3512FA383B400CB2D7D /* PlaylistListViewModel.swift in Sources */,
 				EE82F9A82A7FBD7000B873E7 /* UserDefaultsService.swift in Sources */,
+				B59482B12FA3C88A00410C67 /* TapTempoButton.swift in Sources */,
 				EE34F0762A7C7D8300CA5BD0 /* InstantMetronomeView.swift in Sources */,
 				EE6406BC2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift in Sources */,
 				B53234762F8DD8D300BA7DE1 /* PlaylistTransportView.swift in Sources */,
