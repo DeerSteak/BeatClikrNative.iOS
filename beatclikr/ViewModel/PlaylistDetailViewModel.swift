@@ -42,11 +42,16 @@ class PlaylistDetailViewModel: SongNavigationViewModel {
         }
     }
 
-    func sortEntries(fromOffsets: IndexSet, toOffset: Int, entries: [PlaylistEntry]) {
+    func sortEntries(fromOffsets: IndexSet, toOffset: Int, entries: [PlaylistEntry], context: ModelContext) {
         var revisedEntries = entries.map { $0 }
         revisedEntries.move(fromOffsets: fromOffsets, toOffset: toOffset)
         for (index, entry) in revisedEntries.enumerated() {
             entry.sequence = index
+        }
+        do {
+            try context.save()
+        } catch {
+            print("Failed to save sort order: \(error)")
         }
     }
 }

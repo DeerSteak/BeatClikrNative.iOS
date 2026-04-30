@@ -104,7 +104,7 @@ struct PlaylistDetailView: View {
                         }
                     }
                     .onMove { fromOffsets, toOffset in
-                        model.sortEntries(fromOffsets: fromOffsets, toOffset: toOffset, entries: entries)
+                        model.sortEntries(fromOffsets: fromOffsets, toOffset: toOffset, entries: entries, context: modelContext)
                     }
                 }
             }
