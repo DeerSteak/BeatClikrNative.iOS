@@ -131,11 +131,11 @@ struct PlaylistDetailView: View {
                 if !editMode.isEditing && !entries.isEmpty {
                     PlaylistTransportView(
                         currentTitle: model.currentSongTitle(in: entries),
-                        onPlay: { model.playOrResume(entries: entries, metronome: metronome) },
-                        canGoPrevious: model.canGoPrevious(entries: entries),
-                        onPrevious: { model.playPrevious(entries: entries, metronome: metronome) },
-                        canGoNext: model.canGoNext(entries: entries),
-                        onNext: { model.playNext(entries: entries, metronome: metronome) }
+                        onPlay: { model.playOrResume(items: entries, metronome: metronome) },
+                        canGoPrevious: model.canGoPrevious(items: entries),
+                        onPrevious: { model.playPrevious(items: entries, metronome: metronome) },
+                        canGoNext: model.canGoNext(items: entries),
+                        onNext: { model.playNext(items: entries, metronome: metronome) }
                     )
                 }
             }
