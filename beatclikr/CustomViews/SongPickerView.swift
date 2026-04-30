@@ -10,7 +10,7 @@ struct SongPickerView: View {
     
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
-    @EnvironmentObject var model: PlaylistModeViewModel
+    @EnvironmentObject var model: PlaylistDetailViewModel
     @Query(sort: [SortDescriptor(\Song.title), SortDescriptor(\Song.artist)]) private var allSongs: [Song]
     let playlist: Playlist
     

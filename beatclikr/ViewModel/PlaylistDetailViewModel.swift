@@ -10,7 +10,7 @@ import SwiftUI
 import SwiftData
 
 @MainActor
-class PlaylistModeViewModel: SongNavigationViewModel {
+class PlaylistDetailViewModel: SongNavigationViewModel {
 
     func addSongToPlaylist(_ song: Song, playlist: Playlist, context: ModelContext) {
         withAnimation {

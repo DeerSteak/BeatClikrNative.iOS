@@ -12,7 +12,7 @@ struct PlaylistDetailView: View {
 
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var metronome: MetronomePlaybackViewModel
-    @StateObject private var model = PlaylistModeViewModel()
+    @StateObject private var model = PlaylistDetailViewModel()
 
     let playlist: Playlist
 
