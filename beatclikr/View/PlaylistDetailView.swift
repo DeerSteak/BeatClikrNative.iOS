@@ -45,10 +45,10 @@ struct PlaylistDetailView: View {
                     try? await Task.sleep(for: .seconds(0.5))
                     tappedId = nil
                 }
-                model.playSong(song, at: index, metronome: metronome)
+                model.playSong(song, metronome: metronome)
             } label: {
                 HStack {
-                    if model.currentSongIndex == index {
+                    if model.currentIndex(in: entries) == index {
                         Image(systemName: "play.fill")
                             .foregroundColor(.appPrimary)
                             .font(.caption)
@@ -83,7 +83,7 @@ struct PlaylistDetailView: View {
         let backgroundColor: Color = {
             if tappedId == entry.id {
                 return Color.appPrimary.opacity(0.25)
-            } else if model.currentSongIndex == index {
+            } else if entry.song?.id == model.currentSongId {
                 return Color.appPrimary.opacity(0.1)
             } else {
                 return Color.clear
@@ -111,10 +111,10 @@ struct PlaylistDetailView: View {
             .environment(\.editMode, $editMode)
             .scrollContentBackground(.hidden)
             .background(Color(UIColor.systemGroupedBackground))
-            .onChange(of: model.currentSongIndex) { _, newIndex in
-                if let newIndex, newIndex < entries.count {
+            .onChange(of: model.currentSongId) { _, _ in
+                if let idx = model.currentIndex(in: entries), idx < entries.count {
                     withAnimation {
-                        proxy.scrollTo(entries[newIndex].id, anchor: .center)
+                        proxy.scrollTo(entries[idx].id, anchor: .center)
                     }
                 }
             }

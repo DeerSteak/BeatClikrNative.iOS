@@ -44,10 +44,10 @@ struct SongLibraryView: View {
                                     try? await Task.sleep(for: .seconds(0.5))
                                     tappedId = nil
                                 }
-                                model.playSong(item, at: index, metronome: metronomeViewModel)
+                                model.playSong(item, metronome: metronomeViewModel)
                             } label: {
                                 HStack {
-                                    if model.currentSongIndex == index {
+                                    if model.currentIndex(in: items) == index {
                                         Image(systemName: "play.fill")
                                             .foregroundColor(.appPrimary)
                                             .font(.caption)
@@ -130,8 +130,8 @@ struct SongLibraryView: View {
                 .toolbarTitleDisplayMode(.automatic)
                 .navigationTitle("Song Library")
                 .navigationBarTitleDisplayMode(.automatic)
-                .onChange(of: model.currentSongIndex) { _, newIndex in
-                    if let newIndex, newIndex < items.count {
+                .onChange(of: model.currentSongId) { _, _ in
+                    if let newIndex = model.currentIndex(in: items), newIndex < items.count {
                         withAnimation {
                             proxy.scrollTo(items[newIndex].id, anchor: .center)
                         }
