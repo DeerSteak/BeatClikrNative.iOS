@@ -22,6 +22,7 @@
 		B537D3532FA383BD00CB2D7D /* PlaylistListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B537D3522FA383BD00CB2D7D /* PlaylistListView.swift */; };
 		B59482B12FA3C88A00410C67 /* TapTempoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59482B02FA3C88A00410C67 /* TapTempoButton.swift */; };
 		B59482B32FA3C90B00410C67 /* SongNavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */; };
+		B59EE8512FA4DBC20021C335 /* SongNavigationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */; };
 		DFB72E0FB4B1DD3A4397382B /* AudioKitMetronomeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAB43FBDA8DD0BBF30036A0 /* AudioKitMetronomeEngine.swift */; };
 		EE0473192AA388EB004E958A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0473182AA388EB004E958A /* HomeView.swift */; };
 		EE04731B2AA39267004E958A /* ClickerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE04731A2AA39267004E958A /* ClickerType.swift */; };
@@ -111,6 +112,7 @@
 		B537D3522FA383BD00CB2D7D /* PlaylistListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistListView.swift; sourceTree = "<group>"; };
 		B59482B02FA3C88A00410C67 /* TapTempoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapTempoButton.swift; sourceTree = "<group>"; };
 		B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongNavigationViewModel.swift; sourceTree = "<group>"; };
+		B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongNavigationViewModelTests.swift; sourceTree = "<group>"; };
 		CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MetronomeAudioEngine.swift; sourceTree = "<group>"; };
 		EE0473182AA388EB004E958A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		EE04731A2AA39267004E958A /* ClickerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickerType.swift; sourceTree = "<group>"; };
@@ -272,6 +274,7 @@
 				28363D572F898A110066C665 /* MetronomeTimingTests.swift */,
 				28363D532F8989430066C665 /* MetronomeConstantsTests.swift */,
 				EE84F3092A7C7A23009E2F23 /* beatclikrTests.swift */,
+				B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */,
 			);
 			path = beatclikrTests;
 			sourceTree = "<group>";
@@ -598,6 +601,7 @@
 				28363D582F898A110066C665 /* ImageConstantsTests.swift in Sources */,
 				28363D592F898A110066C665 /* MetronomePlaybackViewModelTests.swift in Sources */,
 				28363D5A2F898A110066C665 /* MetronomeTimingTests.swift in Sources */,
+				B59EE8512FA4DBC20021C335 /* SongNavigationViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -845,7 +849,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/beatclikr.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/beatclikr";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BeatClikr.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BeatClikr";
 			};
 			name = Debug;
 		};
@@ -865,7 +869,7 @@
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/beatclikr.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/beatclikr";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BeatClikr.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/BeatClikr";
 			};
 			name = Release;
 		};

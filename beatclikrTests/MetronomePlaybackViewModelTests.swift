@@ -6,18 +6,18 @@
 //
 
 import XCTest
-@testable import beatclikr
+@testable import BeatClikr
 
 @MainActor
 final class MetronomePlaybackViewModelTests: XCTestCase {
 
     var viewModel: MetronomePlaybackViewModel!
 
-    override func setUpWithError() throws {
+    override func setUp() async throws {
         viewModel = MetronomePlaybackViewModel()
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() async throws {
         viewModel.stop()
         viewModel = nil
     }
@@ -48,9 +48,6 @@ final class MetronomePlaybackViewModelTests: XCTestCase {
     }
 
     func testBeatFiredUpdatesIconScale() {
-        // Set initial scale to min
-        let initialScale = MetronomeConstants.iconScaleMin
-
         // Simulate beat fired
         viewModel.metronomeBeatFired(isBeat: true)
 

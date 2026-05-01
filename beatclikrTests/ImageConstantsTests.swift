@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import beatclikr
+@testable import BeatClikr
 
 final class ImageConstantsTests: XCTestCase {
 
