@@ -18,6 +18,7 @@ struct beatclikrApp: App {
     @StateObject private var songLibraryViewModel: SongLibraryViewModel
     @StateObject private var playlistListViewModel: PlaylistListViewModel
     @StateObject private var settingsViewModel: SettingsViewModel
+    @StateObject private var practiceHistoryViewModel: PracticeHistoryViewModel
     
     init() {
         let config = ModelConfiguration(
@@ -26,7 +27,11 @@ struct beatclikrApp: App {
         
         do {
             container = try ModelContainer(
-                for: Song.self, PlaylistEntry.self, Playlist.self,
+                for: Song.self,
+                PlaylistEntry.self,
+                Playlist.self,
+                PracticedSong.self,
+                PracticeSession.self,
                 configurations: config
             )
         } catch {
@@ -62,6 +67,7 @@ struct beatclikrApp: App {
         _songLibraryViewModel = StateObject(wrappedValue: SongLibraryViewModel())
         _playlistListViewModel = StateObject(wrappedValue: PlaylistListViewModel())
         _settingsViewModel = StateObject(wrappedValue: SettingsViewModel())
+        _practiceHistoryViewModel = StateObject(wrappedValue: PracticeHistoryViewModel())
     }
     
     var body: some Scene {
@@ -71,6 +77,7 @@ struct beatclikrApp: App {
                 .environmentObject(playlistListViewModel)
                 .environmentObject(metronomeViewModel)
                 .environmentObject(settingsViewModel)
+                .environmentObject(practiceHistoryViewModel)
         }
         .modelContainer(container)
     }

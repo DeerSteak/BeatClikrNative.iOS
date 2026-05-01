@@ -13,6 +13,10 @@
 		28363D5A2F898A110066C665 /* MetronomeTimingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28363D572F898A110066C665 /* MetronomeTimingTests.swift */; };
 		283672342F8988AB0090EE63 /* MetronomeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283672332F8988AB0090EE63 /* MetronomeConstants.swift */; };
 		30DEB7A2263835E813BCF3F4 /* MetronomeAudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */; };
+		B524A0BE2FA528BF0085E73C /* PracticeHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524A0BD2FA528BF0085E73C /* PracticeHistoryView.swift */; };
+		B524A0C02FA528E80085E73C /* PracticeHistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524A0BF2FA528E80085E73C /* PracticeHistoryViewModel.swift */; };
+		B524A0C22FA529E00085E73C /* PracticeSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524A0C12FA529E00085E73C /* PracticeSession.swift */; };
+		B524A0C42FA52BB60085E73C /* PracticedSong.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524A0C32FA52BB60085E73C /* PracticedSong.swift */; };
 		B52B86512FA2743700B6FECE /* BpmSliderControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52B864F2FA2743700B6FECE /* BpmSliderControl.swift */; };
 		B52B86522FA2743700B6FECE /* GrooveSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52B86502FA2743700B6FECE /* GrooveSelectorView.swift */; };
 		B53234762F8DD8D300BA7DE1 /* PlaylistTransportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */; };
@@ -103,6 +107,10 @@
 		28363D562F898A110066C665 /* MetronomePlaybackViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlaybackViewModelTests.swift; sourceTree = "<group>"; };
 		28363D572F898A110066C665 /* MetronomeTimingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeTimingTests.swift; sourceTree = "<group>"; };
 		283672332F8988AB0090EE63 /* MetronomeConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeConstants.swift; sourceTree = "<group>"; };
+		B524A0BD2FA528BF0085E73C /* PracticeHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeHistoryView.swift; sourceTree = "<group>"; };
+		B524A0BF2FA528E80085E73C /* PracticeHistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeHistoryViewModel.swift; sourceTree = "<group>"; };
+		B524A0C12FA529E00085E73C /* PracticeSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeSession.swift; sourceTree = "<group>"; };
+		B524A0C32FA52BB60085E73C /* PracticedSong.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticedSong.swift; sourceTree = "<group>"; };
 		B52B864F2FA2743700B6FECE /* BpmSliderControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BpmSliderControl.swift; sourceTree = "<group>"; };
 		B52B86502FA2743700B6FECE /* GrooveSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrooveSelectorView.swift; sourceTree = "<group>"; };
 		B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistTransportView.swift; sourceTree = "<group>"; };
@@ -203,14 +211,14 @@
 		EE0939E52A7EA825005491BB /* CustomViews */ = {
 			isa = PBXGroup;
 			children = (
-				B59482B02FA3C88A00410C67 /* TapTempoButton.swift */,
 				B52B864F2FA2743700B6FECE /* BpmSliderControl.swift */,
 				B52B86502FA2743700B6FECE /* GrooveSelectorView.swift */,
-				B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */,
-				B53234772F8DD8D900BA7DE1 /* SongPickerView.swift */,
 				EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */,
+				B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */,
 				EE0939E62A7EA838005491BB /* RectangleText.swift */,
 				EE8201842A81B20F00675A1C /* SongListItemView.swift */,
+				B53234772F8DD8D900BA7DE1 /* SongPickerView.swift */,
+				B59482B02FA3C88A00410C67 /* TapTempoButton.swift */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";
@@ -291,10 +299,12 @@
 		EE84F3222A7C7A45009E2F23 /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				B537D34E2FA382B300CB2D7D /* Playlist.swift */,
 				EE04731A2AA39267004E958A /* ClickerType.swift */,
 				EE3BEF3B2A83B476004B0C97 /* Groove.swift */,
+				B537D34E2FA382B300CB2D7D /* Playlist.swift */,
 				EE9BD3DC2F89A555007F91FA /* PlaylistEntry.swift */,
+				B524A0C12FA529E00085E73C /* PracticeSession.swift */,
+				B524A0C32FA52BB60085E73C /* PracticedSong.swift */,
 				EE84F2F82A7C7A21009E2F23 /* Song.swift */,
 				EE207A3E2A89734F00D8E267 /* SoundFile.swift */,
 			);
@@ -304,10 +314,11 @@
 		EE84F3232A7C7A4D009E2F23 /* View */ = {
 			isa = PBXGroup;
 			children = (
-				B537D3522FA383BD00CB2D7D /* PlaylistListView.swift */,
 				EE0473182AA388EB004E958A /* HomeView.swift */,
 				EE34F0752A7C7D8300CA5BD0 /* InstantMetronomeView.swift */,
 				EE8201822A81B1E900675A1C /* PlaylistDetailView.swift */,
+				B537D3522FA383BD00CB2D7D /* PlaylistListView.swift */,
+				B524A0BD2FA528BF0085E73C /* PracticeHistoryView.swift */,
 				EE5DFD732AD8201C00756566 /* SettingsView.swift */,
 				EE97D5A02A7E7EB900FA11A0 /* SongDetailsView.swift */,
 				EE84F2F62A7C7A21009E2F23 /* SongLibraryView.swift */,
@@ -318,12 +329,13 @@
 		EE84F3242A7C7A50009E2F23 /* ViewModel */ = {
 			isa = PBXGroup;
 			children = (
-				B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */,
-				B537D3502FA383B400CB2D7D /* PlaylistListViewModel.swift */,
 				EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */,
 				EE6D2F522F8A64D200A1D4B7 /* PlaylistDetailViewModel.swift */,
+				B537D3502FA383B400CB2D7D /* PlaylistListViewModel.swift */,
+				B524A0BF2FA528E80085E73C /* PracticeHistoryViewModel.swift */,
 				EE5DFD772AD82B5A00756566 /* SettingsViewModel.swift */,
 				EE97D59B2A7E7C3200FA11A0 /* SongLibraryViewModel.swift */,
+				B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -560,6 +572,7 @@
 				EEE911552A7EDEDC008DFDED /* PreferenceKeys.swift in Sources */,
 				EEC392172AA5FA3000F4AAB4 /* ImageConstants.swift in Sources */,
 				EE97D59C2A7E7C3200FA11A0 /* SongLibraryViewModel.swift in Sources */,
+				B524A0C22FA529E00085E73C /* PracticeSession.swift in Sources */,
 				B53234782F8DD8D900BA7DE1 /* SongPickerView.swift in Sources */,
 				EE207A3F2A89734F00D8E267 /* SoundFile.swift in Sources */,
 				EE8201852A81B20F00675A1C /* SongListItemView.swift in Sources */,
@@ -568,12 +581,14 @@
 				B52B86512FA2743700B6FECE /* BpmSliderControl.swift in Sources */,
 				B52B86522FA2743700B6FECE /* GrooveSelectorView.swift in Sources */,
 				EE5DFD7B2AD82CA600756566 /* PreviewContainer.swift in Sources */,
+				B524A0C02FA528E80085E73C /* PracticeHistoryViewModel.swift in Sources */,
 				EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */,
 				EE478E8B2A879C51008337DB /* AudioPlayerService.swift in Sources */,
 				EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */,
 				EE0939E72A7EA838005491BB /* RectangleText.swift in Sources */,
 				EE3BEF3C2A83B476004B0C97 /* Groove.swift in Sources */,
 				EE84F2F92A7C7A21009E2F23 /* Song.swift in Sources */,
+				B524A0BE2FA528BF0085E73C /* PracticeHistoryView.swift in Sources */,
 				EE5772682A880BB6002AAC3A /* InstrumentLists.swift in Sources */,
 				EE84F2F52A7C7A21009E2F23 /* beatclikrApp.swift in Sources */,
 				B537D3512FA383B400CB2D7D /* PlaylistListViewModel.swift in Sources */,
@@ -588,6 +603,7 @@
 				EE5DFD782AD82B5A00756566 /* SettingsViewModel.swift in Sources */,
 				283672342F8988AB0090EE63 /* MetronomeConstants.swift in Sources */,
 				30DEB7A2263835E813BCF3F4 /* MetronomeAudioEngine.swift in Sources */,
+				B524A0C42FA52BB60085E73C /* PracticedSong.swift in Sources */,
 				DFB72E0FB4B1DD3A4397382B /* AudioKitMetronomeEngine.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

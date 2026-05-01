@@ -64,6 +64,8 @@ struct HomeView: View {
                     .tabItem { Label("Library", systemImage: "list.bullet.rectangle") }
                 PlaylistListView()
                     .tabItem { Label("Playlist", systemImage: "music.note.list") }
+                PracticeHistoryView()
+                    .tabItem { Label("History", systemImage: "clock") }
                 SettingsView()
                     .tabItem { Label("Settings", systemImage: "gear") }
             }

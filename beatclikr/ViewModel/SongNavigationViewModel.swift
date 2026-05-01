@@ -23,6 +23,8 @@ extension PlaylistEntry: SongNavigatable {}
 @MainActor
 class SongNavigationViewModel: ObservableObject {
     @Published var currentSongId: String?
+    
+    var onSongPlayed: ((Song) -> Void)?
 
     func playSong(_ song: Song, metronome: MetronomePlaybackViewModel) {
         metronome.clickerType = .playlist
@@ -30,6 +32,7 @@ class SongNavigationViewModel: ObservableObject {
         metronome.setupMetronome()
         metronome.start()
         currentSongId = song.id
+        onSongPlayed?(song)
     }
 
     // Derives the current position from identity rather than storing a raw index,
