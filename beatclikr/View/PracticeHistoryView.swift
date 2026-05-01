@@ -8,11 +8,18 @@
 import SwiftUI
 
 struct PracticeHistoryView: View {
+    @EnvironmentObject private var model: PracticeHistoryViewModel
+    @State private var selectedDate: Date? = .now
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        VStack {
+            CalendarView(markedDates:[], selectedDate: $selectedDate)
+            Text("Hello, World!")
+        }
     }
 }
 
 #Preview {
     PracticeHistoryView()
+        .environmentObject(PracticeHistoryViewModel())
 }

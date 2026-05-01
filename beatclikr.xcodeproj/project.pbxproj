@@ -17,6 +17,7 @@
 		B524A0C02FA528E80085E73C /* PracticeHistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524A0BF2FA528E80085E73C /* PracticeHistoryViewModel.swift */; };
 		B524A0C22FA529E00085E73C /* PracticeSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524A0C12FA529E00085E73C /* PracticeSession.swift */; };
 		B524A0C42FA52BB60085E73C /* PracticedSong.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524A0C32FA52BB60085E73C /* PracticedSong.swift */; };
+		B524A0C62FA540110085E73C /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524A0C52FA540110085E73C /* CalendarView.swift */; };
 		B52B86512FA2743700B6FECE /* BpmSliderControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52B864F2FA2743700B6FECE /* BpmSliderControl.swift */; };
 		B52B86522FA2743700B6FECE /* GrooveSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52B86502FA2743700B6FECE /* GrooveSelectorView.swift */; };
 		B53234762F8DD8D300BA7DE1 /* PlaylistTransportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */; };
@@ -111,6 +112,7 @@
 		B524A0BF2FA528E80085E73C /* PracticeHistoryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeHistoryViewModel.swift; sourceTree = "<group>"; };
 		B524A0C12FA529E00085E73C /* PracticeSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeSession.swift; sourceTree = "<group>"; };
 		B524A0C32FA52BB60085E73C /* PracticedSong.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticedSong.swift; sourceTree = "<group>"; };
+		B524A0C52FA540110085E73C /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		B52B864F2FA2743700B6FECE /* BpmSliderControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BpmSliderControl.swift; sourceTree = "<group>"; };
 		B52B86502FA2743700B6FECE /* GrooveSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrooveSelectorView.swift; sourceTree = "<group>"; };
 		B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistTransportView.swift; sourceTree = "<group>"; };
@@ -212,6 +214,7 @@
 			isa = PBXGroup;
 			children = (
 				B52B864F2FA2743700B6FECE /* BpmSliderControl.swift */,
+				B524A0C52FA540110085E73C /* CalendarView.swift */,
 				B52B86502FA2743700B6FECE /* GrooveSelectorView.swift */,
 				EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */,
 				B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */,
@@ -562,6 +565,7 @@
 			files = (
 				EE97D5A12A7E7EB900FA11A0 /* SongDetailsView.swift in Sources */,
 				EE04731B2AA39267004E958A /* ClickerType.swift in Sources */,
+				B524A0C62FA540110085E73C /* CalendarView.swift in Sources */,
 				B537D34F2FA382B300CB2D7D /* Playlist.swift in Sources */,
 				B59482B32FA3C90B00410C67 /* SongNavigationViewModel.swift in Sources */,
 				EE84F2F72A7C7A21009E2F23 /* SongLibraryView.swift in Sources */,
