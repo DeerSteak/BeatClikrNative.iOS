@@ -1,3 +1,10 @@
+//
+//  BpmSliderControl.swift
+//  beatclikr
+//
+//  Created by Ben Funk on 4/25/26.
+//
+
 import SwiftUI
 
 struct BpmSliderControl: View {
