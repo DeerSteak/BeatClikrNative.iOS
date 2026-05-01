@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import beatclikr
+@testable import BeatClikr
 
 // This file serves as the main test suite entry point.
 // Individual test files:

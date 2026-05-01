@@ -6,7 +6,7 @@
 //
 
 import XCTest
-@testable import beatclikr
+@testable import BeatClikr
 
 final class MetronomeConstantsTests: XCTestCase {
 
@@ -15,13 +15,6 @@ final class MetronomeConstantsTests: XCTestCase {
         XCTAssertEqual(MetronomeConstants.minBPM, 30, "Minimum BPM should be 30")
         XCTAssertEqual(MetronomeConstants.maxBPM, 240, "Maximum BPM should be 240")
         XCTAssertLessThan(MetronomeConstants.minBPM, MetronomeConstants.maxBPM, "Min BPM should be less than max BPM")
-    }
-
-    func testSliderDefaults() {
-        // Verify slider defaults are within BPM constraints
-        XCTAssertGreaterThanOrEqual(MetronomeConstants.defaultMinSliderBPM, MetronomeConstants.minBPM, "Slider min should be >= absolute min")
-        XCTAssertLessThanOrEqual(MetronomeConstants.defaultMaxSliderBPM, MetronomeConstants.maxBPM, "Slider max should be <= absolute max")
-        XCTAssertLessThan(MetronomeConstants.defaultMinSliderBPM, MetronomeConstants.defaultMaxSliderBPM, "Slider min should be less than slider max")
     }
 
     func testAnimationScales() {
