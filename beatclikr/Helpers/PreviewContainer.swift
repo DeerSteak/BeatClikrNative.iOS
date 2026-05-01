@@ -10,13 +10,13 @@ import SwiftData
 
 struct PreviewContainer {
     let container: ModelContainer!
-
+    
     init(_ types: [any PersistentModel.Type], isStoredInMemoryOnly: Bool = true) {
         let schema = Schema(types)
         let config = ModelConfiguration(isStoredInMemoryOnly: isStoredInMemoryOnly)
         self.container = try! ModelContainer(for: schema, configurations: [config])
     }
-
+    
     /// Inserts mock songs and returns them for further use (e.g. building playlist entries).
     @MainActor
     @discardableResult
@@ -30,7 +30,7 @@ struct PreviewContainer {
         songs.forEach { container.mainContext.insert($0) }
         return songs
     }
-
+    
     /// Inserts playlist entries for each song in order.
     @MainActor
     func addMockPlaylistEntries(for songs: [Song]) {
@@ -38,9 +38,22 @@ struct PreviewContainer {
             container.mainContext.insert(PlaylistEntry(song: song, sequence: index))
         }
     }
-
+    
+    /// Creates a named playlist with entries for the given songs and returns it.
+    @MainActor
+    @discardableResult
+    func addMockPlaylist(named name: String, songs: [Song]) -> Playlist {
+        let playlist = Playlist(name: name)
+        container.mainContext.insert(playlist)
+        for (index, song) in songs.enumerated() {
+            let entry = PlaylistEntry(song: song, sequence: index)
+            entry.playlist = playlist
+            container.mainContext.insert(entry)
+        }
+        return playlist
+    }
+    
     // MARK: - Private
-
     private func makeSong(_ title: String, artist: String, bpm: Double) -> Song {
         let song = Song()
         song.title = title

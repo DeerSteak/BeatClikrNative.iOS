@@ -63,7 +63,13 @@ struct SongDetailsView: View {
                             .font(.system(size: 28, weight: .thin, design: .rounded))
                             .monospacedDigit()
                     }
-                    BpmSliderControl(value: $bpm, range: MetronomeConstants.minBPM...MetronomeConstants.maxBPM)
+                    HStack {
+                        Spacer()
+                        TapTempoButton(bpm: $bpm)
+                        Spacer()
+                    }
+                    .listRowSeparator(.hidden)
+                    BpmSliderControl(value: $bpm)
                     Stepper("Beats per Bar: \(beats)", value: $beats, in: 1...16, step: 1)
                 }
                 Section("Groove") {

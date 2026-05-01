@@ -103,7 +103,7 @@ struct SettingsView: View {
                             menuRow(label: "Rhythm") {
                                 Menu {
                                     Picker("Rhythm", selection: $model.instantRhythm) {
-                                        ForEach(InstrumentLists.beat) { option in
+                                        ForEach(InstrumentLists.rhythm) { option in
                                             Text(String(describing: option))
                                         }
                                     }
@@ -145,7 +145,7 @@ struct SettingsView: View {
                             menuRow(label: "Rhythm") {
                                 Menu {
                                     Picker("Rhythm", selection: $model.playlistRhythm) {
-                                        ForEach(InstrumentLists.beat) { option in
+                                        ForEach(InstrumentLists.rhythm) { option in
                                             Text(String(describing: option))
                                         }
                                     }

@@ -16,6 +16,9 @@ final class PlaylistEntry: Identifiable {
     @Relationship(inverse: \Song.playlistEntries)
     var song: Song?
     
+    @Relationship(inverse: \Playlist.entries)
+    var playlist: Playlist?
+    
     init(song: Song, sequence: Int) {
         self.id = UUID().uuidString
         self.song = song
