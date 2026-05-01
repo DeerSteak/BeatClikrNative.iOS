@@ -14,7 +14,7 @@ struct PlaylistListView: View {
     @EnvironmentObject var model: PlaylistListViewModel
     @Query(sort: \Playlist.createdAt) private var playlists: [Playlist]
     
-    @State private var path: [Playlist] = []
+    @State private var path = NavigationPath()
     @State private var editMode: EditMode = .inactive
     @State private var showingNewPlaylistAlert = false
     @State private var newPlaylistName = ""
@@ -75,6 +75,7 @@ struct PlaylistListView: View {
                 Button("Cancel", role: .cancel) { }
             }
         }
+        .onDisappear { path = NavigationPath() }
     }
 }
 
