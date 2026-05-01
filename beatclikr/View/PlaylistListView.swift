@@ -75,7 +75,7 @@ struct PlaylistListView: View {
                 Button("Cancel", role: .cancel) { }
             }
         }
-        .onDisappear { path = NavigationPath() }
+        .onAppear { path = NavigationPath() }
     }
 }
 
