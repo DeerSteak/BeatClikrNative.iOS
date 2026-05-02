@@ -12,6 +12,7 @@ struct PlaylistDetailView: View {
 
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var metronome: MetronomePlaybackViewModel
+    @EnvironmentObject var practiceHistory: PracticeHistoryViewModel
     @StateObject private var model = PlaylistDetailViewModel()
 
     let playlist: Playlist
@@ -169,6 +170,9 @@ struct PlaylistDetailView: View {
         .onDisappear(perform: metronome.stop)
         .onAppear {
             UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
+            model.onSongPlayed = { song in
+                practiceHistory.recordSongPlayed(song: song, context: modelContext)
+            }
         }
     }
 }
@@ -183,4 +187,5 @@ struct PlaylistDetailView: View {
     }
     .modelContainer(preview.container)
     .environmentObject(MetronomePlaybackViewModel())
+    .environmentObject(PracticeHistoryViewModel())
 }

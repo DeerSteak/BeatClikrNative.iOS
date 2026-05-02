@@ -12,6 +12,7 @@ struct SongLibraryView: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: SongLibraryViewModel
     @EnvironmentObject var metronomeViewModel: MetronomePlaybackViewModel
+    @EnvironmentObject var practiceHistory: PracticeHistoryViewModel
     @Query(sort: [SortDescriptor(\Song.title), SortDescriptor(\Song.artist)]) private var items: [Song]
     
     @State private var editMode: EditMode = .inactive
@@ -142,6 +143,9 @@ struct SongLibraryView: View {
         .onDisappear(perform: metronomeViewModel.stop)
         .onAppear {
             UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
+            model.onSongPlayed = { song in
+                practiceHistory.recordSongPlayed(song: song, context: modelContext)
+            }
         }
     }
 }
@@ -154,4 +158,5 @@ struct SongLibraryView: View {
         .modelContainer(preview.container)
         .environmentObject(SongLibraryViewModel())
         .environmentObject(MetronomePlaybackViewModel())
+        .environmentObject(PracticeHistoryViewModel())
 }

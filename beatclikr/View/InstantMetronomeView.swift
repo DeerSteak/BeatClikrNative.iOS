@@ -11,7 +11,9 @@ import SwiftData
 struct InstantMetronomeView: View {
     
     @State var showAlert: Bool
+    @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: MetronomePlaybackViewModel
+    @EnvironmentObject var practiceHistory: PracticeHistoryViewModel
     
     init () {
         _showAlert = State(initialValue: false)
@@ -153,6 +155,7 @@ struct InstantMetronomeView: View {
             model.stop()
         } else {
             model.start()
+            practiceHistory.recordSongPlayed(song: Song.instantSong, context: modelContext)
         }
     }
     

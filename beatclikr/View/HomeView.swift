@@ -8,13 +8,14 @@
 import SwiftUI
 
 private enum AppSection: String, CaseIterable, Identifiable {
-    case instant, library, playlist, settings
+    case instant, library, playlist, history, settings
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .instant:  return "Instant"
-        case .library:  return "Library"
-        case .playlist: return "Playlist"
+        case .instant:  return "Instant Metronome"
+        case .library:  return "Song Library"
+        case .playlist: return "All Playlists"
+        case .history:  return "Practice History"
         case .settings: return "Settings"
         }
     }
@@ -23,6 +24,7 @@ private enum AppSection: String, CaseIterable, Identifiable {
         case .instant:  return "metronome"
         case .library:  return "list.bullet.rectangle"
         case .playlist: return "music.note.list"
+        case .history:  return "clock"
         case .settings: return "gear"
         }
     }
@@ -47,6 +49,7 @@ struct HomeView: View {
                 case .instant:  InstantMetronomeView()
                 case .library:  SongLibraryView()
                 case .playlist: PlaylistListView()
+                case .history:  PracticeHistoryView()
                 case .settings: SettingsView()
                 case nil:       InstantMetronomeView()
                 }
@@ -64,6 +67,8 @@ struct HomeView: View {
                     .tabItem { Label("Library", systemImage: "list.bullet.rectangle") }
                 PlaylistListView()
                     .tabItem { Label("Playlist", systemImage: "music.note.list") }
+                PracticeHistoryView()
+                    .tabItem { Label("History", systemImage: "clock") }
                 SettingsView()
                     .tabItem { Label("Settings", systemImage: "gear") }
             }

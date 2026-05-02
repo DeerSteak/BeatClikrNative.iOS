@@ -14,25 +14,33 @@ BeatClikr follows an MVVM architecture with a clean separation of concerns:
 
 ### Models
 - **Song** - SwiftData model for song storage (title, artist, BPM, time signature, groove)
+- **Playlist** - SwiftData model for a named playlist
 - **PlaylistEntry** - SwiftData model for ordered playlist entries (linked to Song, with sequence index)
+- **PracticeSession** - SwiftData model for a single day's practice session; owns a list of `PracticedSong` records
+- **PracticedSong** - SwiftData model recording a song's title, BPM, groove, and play count within a session
 - **Groove** - Enum defining subdivision types (quarter notes, eighth notes, triplets, sixteenths)
 - **ClickerType** - Enum distinguishing instant vs. playlist metronome modes
 
 ### ViewModels (EnvironmentObjects)
 - **MetronomePlaybackViewModel** - Orchestrates metronome playback, coordinates services, handles UI state (beat pulse, isPlaying)
-- **SettingsViewModel** - Manages user preferences
+- **SettingsViewModel** - Manages user preferences; delegates all notification scheduling to `ReminderNotificationService`
 - **SongLibraryViewModel** - Handles song library CRUD operations and playback
-- **PlaylistModeViewModel** - Manages playlist sequencing (next/previous/play), edit, reorder, and delete operations
+- **PlaylistListViewModel** - Manages the list of playlists (create, delete)
+- **PlaylistDetailViewModel** - Manages playlist sequencing (next/previous/play), edit, reorder, and delete operations for a single playlist
+- **PracticeHistoryViewModel** - Records songs played per day (`recordSongPlayed`); computes current and longest streaks; generates personalized notification bodies projected across future days; exposes an `onPracticeRecorded` callback invoked after each save so the app can immediately reschedule notifications
 
 ### Views
-- **HomeView** - Root container; uses `TabView` on iPhone and `NavigationSplitView` on iPad/Mac
+- **HomeView** - Root container; uses `TabView` on iPhone and `NavigationSplitView` on iPad/Mac; sections: Instant, Library, Playlists, History, Settings
 - **InstantMetronomeView** - Standalone metronome with live BPM/groove controls and tap tempo
 - **SongLibraryView** - Browsable song list; tap to play, swipe or edit to delete, + to add
-- **PlaylistModeView** - Ordered playlist with inline edit/reorder; shows transport bar when playing
+- **PlaylistListView** - List of all named playlists; tap to open, swipe to delete, + to create
+- **PlaylistDetailView** - Ordered playlist with inline edit/reorder; shows transport bar when playing
+- **PracticeHistoryView** - Calendar showing days on which practice was recorded; tap a day to see details
 - **SongDetailsView** - Add or edit a song's metadata
 - **SettingsView** - App-wide preferences (sounds, haptics, flashlight, keep-awake)
 
 ### Custom Views
+- **CalendarView** - Monthly calendar grid with marked-date dots and tap-to-select; accepts a `Set<Date>` of marked days and a `Binding<Date?>` for the selected date
 - **PlaylistTransportView** - Floating Previous / Stop / Next transport bar shown at the bottom of Playlist mode while a song is active; pulses with the beat
 - **SongPickerView** - Sheet for picking a library song to add to the playlist
 - **SongListItemView** - Reusable list row showing title, artist, BPM, and groove
@@ -44,9 +52,10 @@ BeatClikr follows an MVVM architecture with a clean separation of concerns:
 - **FlashlightService** - Controls device flashlight for visual accessibility
 - **VibrationService** - Manages haptic feedback (UIImpactFeedbackGenerator)
 - **UserDefaultsService** - Persists user preferences and instant metronome settings
+- **ReminderNotificationService** - Manages `UNUserNotificationCenter` authorization and scheduling; schedules 7 individual ahead-of-time notifications (one per upcoming day) with pre-computed personalized bodies; caches the last set of bodies so time-change reschedules don't require a new body computation
 
 ### Helpers
-- **PreviewContainer** - SwiftData `ModelContainer` wrapper for Xcode previews; provides `addMockSongs()` and `addMockPlaylistEntries(for:)` so previews across views share consistent sample data
+- **PreviewContainer** - SwiftData `ModelContainer` wrapper for Xcode previews; provides `addMockSongs()`, `addMockPlaylistEntries(for:)`, and `addMockPracticeHistory()` so previews across views share consistent sample data
 
 ### Constants
 - **MetronomeConstants** - Timing parameters, BPM ranges, animation values, tolerance thresholds
@@ -130,13 +139,24 @@ The song library uses **SwiftData** for local persistence (iOS 17+ requirement).
 - BPM and time signature
 - Groove/subdivision settings
 
-### Playlist Mode
+### Playlists
 
-Songs from the library can be added to the playlist in any order. The playlist supports:
+The app supports multiple named playlists. Each playlist can be independently configured and played. Within a playlist:
 - Drag-to-reorder and swipe-to-delete (via Edit mode)
 - Inline edit of any song's details
 - A transport bar (Previous / Stop / Next) that appears while a song is active and pulses with the beat
 - Auto-scroll to the currently playing song
+
+### Practice History
+
+Every time a song is played, `PracticeHistoryViewModel.recordSongPlayed` increments that song's play count in today's `PracticeSession`. The History tab shows:
+- A monthly calendar where days with practice are marked with a dot; tap any day to see the songs played
+- Current and longest streak counts with start dates
+- A reminder banner when the user has an active streak but hasn't practiced today
+
+Streaks are calculated as consecutive calendar days ending on today or yesterday. Practicing yesterday counts as an active streak — missing today breaks it only after today ends.
+
+After each practice session is saved, the app reschedules 7 ahead-of-time daily notifications with content that reflects the projected streak state for each upcoming day (keep streak alive, streak broken, or generic). Notifications also reschedule when the app becomes active or when the reminder time changes in Settings.
 
 ### iCloud Sync
 
@@ -149,7 +169,8 @@ ViewModels are injected as `EnvironmentObject`s at the app level in `beatclikrAp
 WindowGroup {
     HomeView()
         .environmentObject(songLibraryViewModel)
-        .environmentObject(playlistModeViewModel)
+        .environmentObject(playlistListViewModel)
+        .environmentObject(practiceHistoryViewModel)
         .environmentObject(metronomeViewModel)
         .environmentObject(settingsViewModel)
 }

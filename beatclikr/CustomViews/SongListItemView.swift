@@ -7,8 +7,14 @@
 
 import SwiftUI
 
-struct SongListItemView: View {
-    var song: Song
+protocol SongDisplayable {
+    var title: String? { get }
+    var artist: String? { get }
+    var beatsPerMinute: Double? { get }
+}
+
+struct SongListItemView<S: SongDisplayable>: View {
+    var song: S
     
     var body: some View {
         VStack (alignment: .leading) {
