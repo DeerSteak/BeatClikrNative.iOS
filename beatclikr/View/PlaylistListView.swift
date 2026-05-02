@@ -59,7 +59,7 @@ struct PlaylistListView: View {
                         newPlaylistName = ""
                         showingNewPlaylistAlert = true
                     } label: {
-                        Image(systemName: "plus")
+                        Image(systemName: ImageConstants.add)
                     }
                     .accessibilityLabel("New Playlist")
                 }

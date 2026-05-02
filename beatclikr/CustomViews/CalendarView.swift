@@ -41,7 +41,7 @@ struct CalendarView: View {
                     displayedMonth = calendar.date(byAdding: .month, value: -1, to: displayedMonth)!
                     selectedDate = nil
                 } label: {
-                    Image(systemName: "chevron.left")
+                    Image(systemName: ImageConstants.chevronLeft)
                         .font(.title3)
                         .foregroundStyle(Color.appPrimary)
                 }
@@ -57,7 +57,7 @@ struct CalendarView: View {
                     displayedMonth = calendar.date(byAdding: .month, value: 1, to: displayedMonth)!
                     selectedDate = nil
                 } label: {
-                    Image(systemName: "chevron.right")
+                    Image(systemName: ImageConstants.chevronRight)
                         .font(.title3)
                         .foregroundStyle(Color.appPrimary)
                 }

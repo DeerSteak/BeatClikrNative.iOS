@@ -84,7 +84,7 @@ struct InstantMetronomeView: View {
                             } label: {
                                 HStack(spacing: 4) {
                                     Text(model.beat.description)
-                                    Image(systemName: "chevron.up.chevron.down")
+                                    Image(systemName: ImageConstants.chevronUpDown)
                                         .font(.caption2)
                                 }
                                 .foregroundStyle(Color.accent)
@@ -111,7 +111,7 @@ struct InstantMetronomeView: View {
                             } label: {
                                 HStack(spacing: 4) {
                                     Text(model.rhythm.description)
-                                    Image(systemName: "chevron.up.chevron.down")
+                                    Image(systemName: ImageConstants.chevronUpDown)
                                         .font(.caption2)
                                 }
                                 .foregroundStyle(Color.accent)
@@ -127,7 +127,7 @@ struct InstantMetronomeView: View {
                     Button(action: togglePlayPause) {
                         Label(
                             model.isPlaying ? String(localized: "Pause") : String(localized: "Play"),
-                            systemImage: model.isPlaying ? "pause.fill" : "play.fill"
+                            systemImage: model.isPlaying ? ImageConstants.pause : ImageConstants.play
                         )
                         .font(.title2.bold())
                         .frame(maxWidth: .infinity)

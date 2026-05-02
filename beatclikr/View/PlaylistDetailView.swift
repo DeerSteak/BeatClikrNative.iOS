@@ -31,7 +31,7 @@ struct PlaylistDetailView: View {
                         model.deleteEntries(offsets: IndexSet([idx]), entries: entries, context: modelContext)
                     }
                 } label: {
-                    Image(systemName: "minus.circle.fill")
+                    Image(systemName: ImageConstants.removeCircle)
                         .foregroundStyle(.red)
                         .font(.title3)
                 }
@@ -50,7 +50,7 @@ struct PlaylistDetailView: View {
             } label: {
                 HStack {
                     if model.currentIndex(in: entries) == index {
-                        Image(systemName: "play.fill")
+                        Image(systemName: ImageConstants.play)
                             .foregroundColor(.appPrimary)
                             .font(.caption)
                     }
@@ -66,7 +66,7 @@ struct PlaylistDetailView: View {
                 Button {
                     editingSong = song
                 } label: {
-                    Image(systemName: "square.and.pencil")
+                    Image(systemName: ImageConstants.edit)
                         .foregroundStyle(.secondary)
                 }
                 .buttonStyle(.plain)
@@ -153,7 +153,7 @@ struct PlaylistDetailView: View {
                     Button {
                         showingSongPicker = true
                     } label: {
-                        Image(systemName: "plus")
+                        Image(systemName: ImageConstants.add)
                     }
                     .accessibilityLabel("Add Song to Playlist")
                 }

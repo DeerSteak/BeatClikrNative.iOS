@@ -23,7 +23,7 @@ struct PlaylistTransportView: View {
                 HStack(spacing: 16) {
                     Button { onPrevious?() } label: {
                         HStack {
-                            Image(systemName: "chevron.left")
+                            Image(systemName: ImageConstants.chevronLeft)
                                 .font(.title2)
                                 .fontWeight(.semibold)
                             Text("Previous")
@@ -46,7 +46,7 @@ struct PlaylistTransportView: View {
                         HStack {
                             Text("Next")
                                 .font(.headline)
-                            Image(systemName: "chevron.right")
+                            Image(systemName: ImageConstants.chevronRight)
                                 .font(.title2)
                                 .fontWeight(.semibold)
                         }
@@ -90,7 +90,7 @@ struct PlaylistTransportView: View {
                 onPlay?()
             }
         } label: {
-            Image(systemName: metronome.isPlaying ? "pause.fill" : "play.fill")
+            Image(systemName: metronome.isPlaying ? ImageConstants.pause : ImageConstants.play)
                 .font(.title2)
                 .fontWeight(.semibold)
                 .frame(width: 56, height: 56)

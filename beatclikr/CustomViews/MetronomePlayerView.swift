@@ -13,7 +13,7 @@ struct MetronomePlayerView: View {
     var size: CGFloat = MetronomeConstants.playerViewDefaultSize
     
     var body: some View {
-        Image(systemName: "circle.fill")
+        Image(systemName: ImageConstants.rhythm)
             .resizable()
             .aspectRatio(contentMode: .fit)
             .frame(height: size * model.iconScale)
