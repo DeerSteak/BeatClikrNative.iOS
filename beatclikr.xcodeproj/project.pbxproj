@@ -20,6 +20,9 @@
 		B524A0C62FA540110085E73C /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524A0C52FA540110085E73C /* CalendarView.swift */; };
 		B52B86512FA2743700B6FECE /* BpmSliderControl.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52B864F2FA2743700B6FECE /* BpmSliderControl.swift */; };
 		B52B86522FA2743700B6FECE /* GrooveSelectorView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B52B86502FA2743700B6FECE /* GrooveSelectorView.swift */; };
+		B53042152FA671A100A3CAE6 /* SharableStreakCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53042142FA671A100A3CAE6 /* SharableStreakCard.swift */; };
+		B530421D2FA68ECF00A3CAE6 /* BeatClikrAppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = B530421C2FA68ECE00A3CAE6 /* BeatClikrAppIcon.icon */; };
+		B530421F2FA68FE800A3CAE6 /* appicondisplay.png in Resources */ = {isa = PBXBuildFile; fileRef = B530421E2FA68FE800A3CAE6 /* appicondisplay.png */; };
 		B53234762F8DD8D300BA7DE1 /* PlaylistTransportView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */; };
 		B53234782F8DD8D900BA7DE1 /* SongPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B53234772F8DD8D900BA7DE1 /* SongPickerView.swift */; };
 		B537D34F2FA382B300CB2D7D /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = B537D34E2FA382B300CB2D7D /* Playlist.swift */; };
@@ -118,6 +121,9 @@
 		B524A0C52FA540110085E73C /* CalendarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		B52B864F2FA2743700B6FECE /* BpmSliderControl.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BpmSliderControl.swift; sourceTree = "<group>"; };
 		B52B86502FA2743700B6FECE /* GrooveSelectorView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrooveSelectorView.swift; sourceTree = "<group>"; };
+		B53042142FA671A100A3CAE6 /* SharableStreakCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharableStreakCard.swift; sourceTree = "<group>"; };
+		B530421C2FA68ECE00A3CAE6 /* BeatClikrAppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = BeatClikrAppIcon.icon; sourceTree = "<group>"; };
+		B530421E2FA68FE800A3CAE6 /* appicondisplay.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = appicondisplay.png; sourceTree = "<group>"; };
 		B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistTransportView.swift; sourceTree = "<group>"; };
 		B53234772F8DD8D900BA7DE1 /* SongPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongPickerView.swift; sourceTree = "<group>"; };
 		B537D34E2FA382B300CB2D7D /* Playlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
@@ -225,6 +231,7 @@
 				EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */,
 				B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */,
 				EE0939E62A7EA838005491BB /* RectangleText.swift */,
+				B53042142FA671A100A3CAE6 /* SharableStreakCard.swift */,
 				EE8201842A81B20F00675A1C /* SongListItemView.swift */,
 				B53234772F8DD8D900BA7DE1 /* SongPickerView.swift */,
 				B59482B02FA3C88A00410C67 /* TapTempoButton.swift */,
@@ -235,6 +242,7 @@
 		EE84F2E82A7C7A21009E2F23 = {
 			isa = PBXGroup;
 			children = (
+				B530421C2FA68ECE00A3CAE6 /* BeatClikrAppIcon.icon */,
 				EE5DFD752AD8253300756566 /* Localizable.xcstrings */,
 				EE5DFD712AD81FA900756566 /* README.md */,
 				EE84F2F32A7C7A21009E2F23 /* beatclikr */,
@@ -377,6 +385,7 @@
 		EEE9112F2A7EDC89008DFDED /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				B530421E2FA68FE800A3CAE6 /* appicondisplay.png */,
 				EEE911302A7EDC94008DFDED /* Sounds */,
 			);
 			path = Resources;
@@ -541,7 +550,9 @@
 				EE6406E52A7EF6B900DEDED2 /* clickhi_E5.wav in Resources */,
 				EE6406EF2A7EF6B900DEDED2 /* clicklo_F5.wav in Resources */,
 				EE6406EA2A7EF6B900DEDED2 /* cowbell_G#3.wav in Resources */,
+				B530421D2FA68ECF00A3CAE6 /* BeatClikrAppIcon.icon in Resources */,
 				EE6406E92A7EF6B900DEDED2 /* kick_C2.wav in Resources */,
+				B530421F2FA68FE800A3CAE6 /* appicondisplay.png in Resources */,
 				EE5DFD722AD81FA900756566 /* README.md in Resources */,
 				EE6406ED2A7EF6B900DEDED2 /* silence_D7.wav in Resources */,
 				EE6406EB2A7EF6B900DEDED2 /* ridebell_F3.wav in Resources */,
@@ -597,6 +608,7 @@
 				B524A0C02FA528E80085E73C /* PracticeHistoryViewModel.swift in Sources */,
 				EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */,
 				EE478E8B2A879C51008337DB /* AudioPlayerService.swift in Sources */,
+				B53042152FA671A100A3CAE6 /* SharableStreakCard.swift in Sources */,
 				EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */,
 				EE0939E72A7EA838005491BB /* RectangleText.swift in Sources */,
 				EE3BEF3C2A83B476004B0C97 /* Groove.swift in Sources */,
@@ -784,7 +796,7 @@
 		EE84F31A2A7C7A24009E2F23 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = BeatClikrAppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = beatclikr/beatclikrDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -826,7 +838,7 @@
 		EE84F31B2A7C7A24009E2F23 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_APPICON_NAME = BeatClikrAppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = beatclikr/beatclikr.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
