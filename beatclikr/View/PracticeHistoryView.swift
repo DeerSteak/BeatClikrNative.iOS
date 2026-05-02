@@ -36,9 +36,9 @@ struct PracticeHistoryView: View {
         NavigationStack {
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
-                    StreakStatView(value: currentStreak, label: "Current Streak", icon: "flame.fill", subtitle: currentStreakSubtitle)
+                    StreakStatView(value: currentStreak, label: "Current Streak", icon: "flame.fill", iconColor: .orange, subtitle: currentStreakSubtitle)
                     Divider().frame(height: 44)
-                    StreakStatView(value: longestStreak, label: "Longest Streak", icon: "trophy.fill", subtitle: longestStreakSubtitle)
+                    StreakStatView(value: longestStreak, label: "Longest Streak", icon: "trophy.fill", iconColor: Color(red: 0.95, green: 0.73, blue: 0.1), subtitle: longestStreakSubtitle)
                 }
                 .padding(.horizontal, 12)
                 .padding(.top, 12)
@@ -70,7 +70,7 @@ struct PracticeHistoryView: View {
 
                 if let selectedDate {
                     List {
-                        Section(selectedDate.formatted(date: .long, time: .omitted)) {
+                        Section("Practiced History" + selectedDate.formatted(date: .long, time: .omitted)) {
                             if practicedSongs.isEmpty {
                                 Text("No practice recorded")
                                     .foregroundStyle(.secondary)
@@ -108,13 +108,14 @@ private struct StreakStatView: View {
     let value: Int
     let label: LocalizedStringKey
     let icon: String
+    let iconColor: Color
     let subtitle: String
 
     var body: some View {
         VStack(spacing: 2) {
             HStack(spacing: 4) {
                 Image(systemName: icon)
-                    .foregroundStyle(Color.appPrimary)
+                    .foregroundStyle(iconColor)
                     .font(.subheadline)
                 Text("\(value) day\(value == 1 ? "" : "s")")
                     .font(.headline)
