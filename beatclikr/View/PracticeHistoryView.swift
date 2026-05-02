@@ -119,6 +119,9 @@ struct PracticeHistoryView: View {
 
         .onAppear {
             markedDates = model.markedDates(context: modelContext)
+            if let date = selectedDate {
+                practicedSongs = model.session(for: date, context: modelContext)?.songsPracticed ?? []
+            }
         }
         .onChange(of: selectedDate) { _, newDate in
             guard let newDate else {
