@@ -35,7 +35,7 @@ struct CalendarView: View {
     }
 
     var body: some View {
-        VStack(spacing: 8) {
+        VStack(spacing: 4) {
             HStack {
                 Button {
                     displayedMonth = calendar.date(byAdding: .month, value: -1, to: displayedMonth)!
@@ -89,15 +89,15 @@ struct CalendarView: View {
                             selectedDate = dayKey
                         }
                     } else {
-                        Color.clear.frame(height: 44)
+                        Color.clear.frame(height: 36)
                     }
                 }
             }
         }
-        .padding(12)
+        .padding(8)
         .background(Color(UIColor.secondarySystemGroupedBackground))
-        .cornerRadius(16)
-        .frame(maxWidth: 400)
+        .cornerRadius(8)
+        .frame(maxWidth: 360)
         .frame(maxWidth: .infinity)
     }
 }
@@ -125,20 +125,20 @@ private struct CalendarDayCell: View {
     }
 
     var body: some View {
-        VStack(spacing: 2) {
+        VStack(spacing: 1) {
             ZStack {
                 Circle()
                     .fill(circleBackground)
-                    .frame(width: 32, height: 32)
+                    .frame(width: 28, height: 28)
                 Text(day.formatted(.dateTime.day()))
                     .font(isToday ? .callout.bold() : .callout)
                     .foregroundStyle(textColor)
             }
             Circle()
                 .fill(dotColor)
-                .frame(width: 5, height: 5)
+                .frame(width: 4, height: 4)
         }
-        .frame(maxWidth: .infinity, minHeight: 44)
+        .frame(maxWidth: .infinity, minHeight: 36)
         .contentShape(Rectangle())
     }
 }
