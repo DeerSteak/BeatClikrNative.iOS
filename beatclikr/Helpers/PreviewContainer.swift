@@ -53,6 +53,32 @@ struct PreviewContainer {
         return playlist
     }
     
+    /// Inserts practice sessions for several recent days with mock songs.
+    @MainActor
+    func addMockPracticeHistory() {
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: .now)
+        let sessionData: [(daysAgo: Int, songs: [(String, String, Double)])] = [
+            (0, [("Bohemian Rhapsody", "Queen", 72), ("Hotel California", "Eagles", 74)]),
+            (1, [("Sweet Child O' Mine", "Guns N' Roses", 125)]),
+            (3, [("Stairway to Heaven", "Led Zeppelin", 82), ("Black Dog", "Led Zeppelin", 92)]),
+            (5, [("Roxanne", "The Police", 130)]),
+            (8, [("Come As You Are", "Nirvana", 120), ("Smells Like Teen Spirit", "Nirvana", 116), ("In Bloom", "Nirvana", 110)]),
+            (12, [("Yellow", "Coldplay", 88)]),
+        ]
+        for entry in sessionData {
+            let date = cal.date(byAdding: .day, value: -entry.daysAgo, to: today)!
+            let session = PracticeSession(date: date)
+            let practiced = entry.songs.map { title, artist, bpm -> PracticedSong in
+                let song = makeSong(title, artist: artist, bpm: bpm)
+                return PracticedSong(from: song)
+            }
+            practiced.forEach { container.mainContext.insert($0) }
+            session.songsPracticed = practiced
+            container.mainContext.insert(session)
+        }
+    }
+
     // MARK: - Private
     private func makeSong(_ title: String, artist: String, bpm: Double) -> Song {
         let song = Song()
