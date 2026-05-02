@@ -164,6 +164,40 @@ struct SettingsView: View {
                             .foregroundStyle(.secondary)
                             .padding(.horizontal, 4)
                     }
+
+                    // About card
+                    VStack(alignment: .leading, spacing: 6) {
+                        Text("About")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .tracking(1)
+                            .textCase(.uppercase)
+                            .padding(.horizontal, 4)
+
+                        VStack(spacing: 0) {
+                            HStack {
+                                Text("Version")
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 10)
+                            Divider().padding(.leading, 12)
+                            HStack {
+                                Text("Copyright")
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                Text("© \(String(Calendar.current.component(.year, from: Date.now))) Benjamin Funk")
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 10)
+                        }
+                        .background(Color(UIColor.secondarySystemGroupedBackground))
+                        .cornerRadius(16)
+                    }
                 }
                 .padding()
             }
