@@ -9,7 +9,7 @@ import Foundation
 import SwiftData
 
 @Model
-final class Song : Identifiable {
+final class Song: Identifiable, SongDisplayable {
     var id: String?
     var title: String?
     var artist: String?
