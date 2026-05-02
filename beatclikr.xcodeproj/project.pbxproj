@@ -30,6 +30,7 @@
 		B59EE8512FA4DBC20021C335 /* SongNavigationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */; };
 		B5F4E57A2FA5B5BD003FC6E6 /* PracticeHistoryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F4E5792FA5B5BD003FC6E6 /* PracticeHistoryViewModelTests.swift */; };
 		B5F4E57C2FA5B5BD003FC6E6 /* PracticeHistoryUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F4E57B2FA5B5BD003FC6E6 /* PracticeHistoryUITests.swift */; };
+		B5F4E57E2FA65B90003FC6E6 /* ReminderNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F4E57D2FA65B90003FC6E6 /* ReminderNotificationService.swift */; };
 		DFB72E0FB4B1DD3A4397382B /* AudioKitMetronomeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAB43FBDA8DD0BBF30036A0 /* AudioKitMetronomeEngine.swift */; };
 		EE0473192AA388EB004E958A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0473182AA388EB004E958A /* HomeView.swift */; };
 		EE04731B2AA39267004E958A /* ClickerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE04731A2AA39267004E958A /* ClickerType.swift */; };
@@ -127,6 +128,7 @@
 		B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongNavigationViewModelTests.swift; sourceTree = "<group>"; };
 		B5F4E5792FA5B5BD003FC6E6 /* PracticeHistoryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeHistoryViewModelTests.swift; sourceTree = "<group>"; };
 		B5F4E57B2FA5B5BD003FC6E6 /* PracticeHistoryUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeHistoryUITests.swift; sourceTree = "<group>"; };
+		B5F4E57D2FA65B90003FC6E6 /* ReminderNotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderNotificationService.swift; sourceTree = "<group>"; };
 		CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MetronomeAudioEngine.swift; sourceTree = "<group>"; };
 		EE0473182AA388EB004E958A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		EE04731A2AA39267004E958A /* ClickerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickerType.swift; sourceTree = "<group>"; };
@@ -356,6 +358,7 @@
 				EE478E8A2A879C51008337DB /* AudioPlayerService.swift */,
 				EE82F9A92A7FBFE100B873E7 /* FlashlightService.swift */,
 				CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */,
+				B5F4E57D2FA65B90003FC6E6 /* ReminderNotificationService.swift */,
 				EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */,
 				EE82F9AB2A7FC98200B873E7 /* VibrationService.swift */,
 			);
@@ -606,6 +609,7 @@
 				B59482B12FA3C88A00410C67 /* TapTempoButton.swift in Sources */,
 				EE34F0762A7C7D8300CA5BD0 /* InstantMetronomeView.swift in Sources */,
 				EE6406BC2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift in Sources */,
+				B5F4E57E2FA65B90003FC6E6 /* ReminderNotificationService.swift in Sources */,
 				B53234762F8DD8D300BA7DE1 /* PlaylistTransportView.swift in Sources */,
 				EE8201832A81B1E900675A1C /* PlaylistDetailView.swift in Sources */,
 				EE9BD3DD2F89A555007F91FA /* PlaylistEntry.swift in Sources */,

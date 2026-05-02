@@ -6,21 +6,21 @@
 //
 
 import Foundation
-import UserNotifications
 
 @MainActor
 class SettingsViewModel: ObservableObject {
     private let defaults: UserDefaultsService = UserDefaultsService.instance
+    private let notificationService = ReminderNotificationService()
     
     @Published var showPermissionDeniedAlert = false
-
+    
     @Published var sendReminders: Bool {
         didSet {
             defaults.sendReminders = sendReminders
             if sendReminders {
                 requestPermissionAndSchedule()
             } else {
-                cancelReminder()
+                notificationService.cancel()
             }
         }
     }
@@ -29,7 +29,7 @@ class SettingsViewModel: ObservableObject {
         didSet {
             defaults.reminderTime = reminderTime
             if sendReminders {
-                scheduleReminder()
+                notificationService.reschedule(at: reminderTime)
             }
         }
     }
@@ -104,35 +104,20 @@ class SettingsViewModel: ObservableObject {
     
     private func requestPermissionAndSchedule() {
         Task { @MainActor in
-            let settings = await UNUserNotificationCenter.current().notificationSettings()
-            if settings.authorizationStatus == .denied {
+            switch await notificationService.checkAndRequestAuthorization() {
+            case .granted:
+                notificationService.reschedule(at: reminderTime)
+            case .denied:
                 sendReminders = false
                 showPermissionDeniedAlert = true
-                return
-            }
-            let granted = (try? await UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound])) ?? false
-            if granted {
-                scheduleReminder()
-            } else {
+            case .notGranted:
                 sendReminders = false
             }
         }
     }
     
-    private func scheduleReminder() {
-        let content = UNMutableNotificationContent()
-        content.title = String(localized: "PracticeReminderNotificationTitle")
-        content.body = String(localized: "PracticeReminderNotificationBody")
-        content.sound = .default
-        
-        let components = Calendar.current.dateComponents([.hour, .minute], from: reminderTime)
-        let trigger = UNCalendarNotificationTrigger(dateMatching: components, repeats: true)
-        let request = UNNotificationRequest(identifier: "practiceReminder", content: content, trigger: trigger)
-        
-        UNUserNotificationCenter.current().add(request)
-    }
-    
-    private func cancelReminder() {
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["practiceReminder"])
+    func rescheduleReminder(bodies: [String]) {
+        guard sendReminders else { return }
+        notificationService.schedule(bodies: bodies, at: reminderTime)
     }
 }
