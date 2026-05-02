@@ -1,5 +1,5 @@
 # BeatClikrNative.iOS
-BeatClikr's reimplementation for iOS 17+ with SwiftUI, SwiftData, AudioKit, and iCloud sync. Available on the App Store.
+BeatClikr's reimplementation for iOS 18+ with SwiftUI, SwiftData, AudioKit, and iCloud sync. Available on the App Store.
 
 Note: This project relies on a series of .WAV files that are not in git. You will need to add these yourself:
 
