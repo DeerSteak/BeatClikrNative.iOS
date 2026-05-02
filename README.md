@@ -23,11 +23,11 @@ BeatClikr follows an MVVM architecture with a clean separation of concerns:
 
 ### ViewModels (EnvironmentObjects)
 - **MetronomePlaybackViewModel** - Orchestrates metronome playback, coordinates services, handles UI state (beat pulse, isPlaying)
-- **SettingsViewModel** - Manages user preferences
+- **SettingsViewModel** - Manages user preferences; delegates all notification scheduling to `ReminderNotificationService`
 - **SongLibraryViewModel** - Handles song library CRUD operations and playback
 - **PlaylistListViewModel** - Manages the list of playlists (create, delete)
 - **PlaylistDetailViewModel** - Manages playlist sequencing (next/previous/play), edit, reorder, and delete operations for a single playlist
-- **PracticeHistoryViewModel** - Records songs played per day (`recordSongPlayed`); creates or retrieves today's `PracticeSession` on demand
+- **PracticeHistoryViewModel** - Records songs played per day (`recordSongPlayed`); computes current and longest streaks; generates personalized notification bodies projected across future days; exposes an `onPracticeRecorded` callback invoked after each save so the app can immediately reschedule notifications
 
 ### Views
 - **HomeView** - Root container; uses `TabView` on iPhone and `NavigationSplitView` on iPad/Mac; sections: Instant, Library, Playlists, History, Settings
@@ -52,9 +52,10 @@ BeatClikr follows an MVVM architecture with a clean separation of concerns:
 - **FlashlightService** - Controls device flashlight for visual accessibility
 - **VibrationService** - Manages haptic feedback (UIImpactFeedbackGenerator)
 - **UserDefaultsService** - Persists user preferences and instant metronome settings
+- **ReminderNotificationService** - Manages `UNUserNotificationCenter` authorization and scheduling; schedules 7 individual ahead-of-time notifications (one per upcoming day) with pre-computed personalized bodies; caches the last set of bodies so time-change reschedules don't require a new body computation
 
 ### Helpers
-- **PreviewContainer** - SwiftData `ModelContainer` wrapper for Xcode previews; provides `addMockSongs()` and `addMockPlaylistEntries(for:)` so previews across views share consistent sample data
+- **PreviewContainer** - SwiftData `ModelContainer` wrapper for Xcode previews; provides `addMockSongs()`, `addMockPlaylistEntries(for:)`, and `addMockPracticeHistory()` so previews across views share consistent sample data
 
 ### Constants
 - **MetronomeConstants** - Timing parameters, BPM ranges, animation values, tolerance thresholds
@@ -148,7 +149,14 @@ The app supports multiple named playlists. Each playlist can be independently co
 
 ### Practice History
 
-Every time a song is played, `PracticeHistoryViewModel.recordSongPlayed` increments that song's play count in today's `PracticeSession`. The History tab shows a monthly calendar where days with any practice are marked with a dot.
+Every time a song is played, `PracticeHistoryViewModel.recordSongPlayed` increments that song's play count in today's `PracticeSession`. The History tab shows:
+- A monthly calendar where days with practice are marked with a dot; tap any day to see the songs played
+- Current and longest streak counts with start dates
+- A reminder banner when the user has an active streak but hasn't practiced today
+
+Streaks are calculated as consecutive calendar days ending on today or yesterday. Practicing yesterday counts as an active streak — missing today breaks it only after today ends.
+
+After each practice session is saved, the app reschedules 7 ahead-of-time daily notifications with content that reflects the projected streak state for each upcoming day (keep streak alive, streak broken, or generic). Notifications also reschedule when the app becomes active or when the reminder time changes in Settings.
 
 ### iCloud Sync
 
