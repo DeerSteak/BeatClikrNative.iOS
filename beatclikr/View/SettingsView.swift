@@ -166,22 +166,6 @@ struct SettingsView: View {
                         Rectangle()
                             .foregroundColor(Color(.clear))
                             .frame(height: 5)
-                        HStack {
-                            Text("Version")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                                .padding(.horizontal, 4)
-                            Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                                .padding(.horizontal, 4)
-                            
-                            Spacer()
-                            Text ("©\(String(Calendar.current.component(.year, from: Date.now))) Benjamin Funk")
-                                .font(.footnote)
-                                .foregroundStyle(.secondary)
-                                .padding(.horizontal, 4)
-                        }
                     }
 
                     // About card
@@ -226,15 +210,15 @@ struct SettingsView: View {
         }
         .alert("Notifications Disabled", isPresented: $model.showPermissionDeniedAlert) {
             Button("Open Settings") {
-                #if targetEnvironment(macCatalyst)
+#if targetEnvironment(macCatalyst)
                 if let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") {
                     UIApplication.shared.open(url)
                 }
-                #else
+#else
                 if let url = URL(string: UIApplication.openSettingsURLString) {
                     UIApplication.shared.open(url)
                 }
-                #endif
+#endif
             }
             Button("Cancel", role: .cancel) {}
         } message: {
