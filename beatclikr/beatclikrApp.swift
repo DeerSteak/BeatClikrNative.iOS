@@ -58,17 +58,26 @@ struct beatclikrApp: App {
                 try? context.save()
             }
             
-            // Migrate legacy entries (no playlist) into a default playlist
-            let legacyEntries = (try? context.fetch(
-                FetchDescriptor<PlaylistEntry>(predicate: #Predicate { $0.playlist == nil })
-            )) ?? []
-            if !legacyEntries.isEmpty {
-                let defaultPlaylist = Playlist(name: "My Playlist")
-                context.insert(defaultPlaylist)
-                for entry in legacyEntries {
-                    entry.playlist = defaultPlaylist
+            // Migrate legacy entries (no playlist) into a default playlist (once per device)
+            if !UserDefaults.standard.bool(forKey: PreferenceKeys.didMigrateToMultiplePlaylists) {
+                let legacyEntries = (try? context.fetch(
+                    FetchDescriptor<PlaylistEntry>(predicate: #Predicate { $0.playlist == nil })
+                )) ?? []
+                if !legacyEntries.isEmpty {
+                    let existing = (try? context.fetch(
+                        FetchDescriptor<Playlist>(predicate: #Predicate { $0.name == "My Playlist" })
+                    ))?.first
+                    let defaultPlaylist = existing ?? {
+                        let p = Playlist(name: "My Playlist")
+                        context.insert(p)
+                        return p
+                    }()
+                    for entry in legacyEntries {
+                        entry.playlist = defaultPlaylist
+                    }
+                    try? context.save()
                 }
-                try? context.save()
+                UserDefaults.standard.set(true, forKey: PreferenceKeys.didMigrateToMultiplePlaylists)
             }
         }
         
