@@ -45,6 +45,24 @@ struct PracticeHistoryView: View {
                 .padding(.bottom, 8)
                 .background(Color(UIColor.systemGroupedBackground))
 
+                if model.practiceReminderNeeded(from: markedDates) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "flame.fill")
+                            .foregroundStyle(.orange)
+                            .font(.subheadline)
+                        Text("Practice today to keep your streak going!")
+                            .font(.subheadline)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(Color.orange.opacity(0.12))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .padding(.horizontal, 12)
+                    .padding(.bottom, 8)
+                    .background(Color(UIColor.systemGroupedBackground))
+                }
+
                 CalendarView(markedDates: markedDates, selectedDate: $selectedDate)
                     .padding(.horizontal, 12)
                     .padding(.bottom, 12)

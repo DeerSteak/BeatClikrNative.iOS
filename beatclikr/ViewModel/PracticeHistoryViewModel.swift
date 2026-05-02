@@ -73,6 +73,11 @@ class PracticeHistoryViewModel : ObservableObject {
         longestStreakInfo(from: dates).map { ($0.start, $0.end) }
     }
 
+    func practiceReminderNeeded(from dates: Set<Date>) -> Bool {
+        let today = Calendar.current.startOfDay(for: .now)
+        return currentStreak(from: dates) > 0 && !dates.contains(today)
+    }
+
     // MARK: - Private helpers
 
     private func currentStreakInfo(from dates: Set<Date>) -> (length: Int, start: Date?) {
