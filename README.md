@@ -1,6 +1,14 @@
 # BeatClikrNative.iOS
 BeatClikr's reimplementation for iOS 18+ with SwiftUI, SwiftData, AudioKit, and iCloud sync. Available on the App Store.
 
+## What's New
+
+### Streak Sharing
+The Practice History tab now has a **Share** button in the navigation bar. Tapping it renders a `SharableStreakCard` — a 360×360 image showing the current streak count, the BeatClikr app icon, and a gradient background — and opens the system share sheet with pre-written text. The share text adapts based on whether the user has an active current streak, a past longest streak, or neither.
+
+### Liquid Glass App Icon (iOS 26+)
+The app now includes `BeatClikrAppIcon.icon`, a multilayer Icon Composer file that provides a Liquid Glass app icon for iOS 26 and later. The icon has a blue gradient background in light mode and automatically adapts to a dark background in dark mode. Xcode generates a static fallback from the same file for iOS 18–25 at build time.
+
 Note: This project relies on a series of .WAV files that are not in git. You will need to add these yourself:
 
 - WAV files go with their correct names in Resources/Sounds
@@ -35,7 +43,7 @@ BeatClikr follows an MVVM architecture with a clean separation of concerns:
 - **SongLibraryView** - Browsable song list; tap to play, swipe or edit to delete, + to add
 - **PlaylistListView** - List of all named playlists; tap to open, swipe to delete, + to create
 - **PlaylistDetailView** - Ordered playlist with inline edit/reorder; shows transport bar when playing
-- **PracticeHistoryView** - Calendar showing days on which practice was recorded; tap a day to see details
+- **PracticeHistoryView** - Calendar showing days on which practice was recorded; tap a day to see details; share button renders a `SharableStreakCard` and opens the system share sheet
 - **SongDetailsView** - Add or edit a song's metadata
 - **SettingsView** - App-wide preferences (sounds, haptics, flashlight, keep-awake)
 
@@ -45,6 +53,7 @@ BeatClikr follows an MVVM architecture with a clean separation of concerns:
 - **SongPickerView** - Sheet for picking a library song to add to the playlist
 - **SongListItemView** - Reusable list row showing title, artist, BPM, and groove
 - **MetronomePlayerView** - Compact animated metronome indicator used in toolbars
+- **SharableStreakCard** - 360×360 shareable image card showing the streak count with the app icon and a black-to-blue gradient; rendered off-screen via `ImageRenderer` for the share sheet
 
 ### Services Layer
 - **AudioKitMetronomeEngine** - Sample-accurate metronome using AudioKit's AppleSampler

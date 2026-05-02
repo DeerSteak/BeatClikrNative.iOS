@@ -16,7 +16,7 @@ struct BpmSliderControl: View {
             Button {
                 value = max(range.lowerBound, value - 1)
             } label: {
-                Image(systemName: "minus")
+                Image(systemName: ImageConstants.subtract)
                     .font(.title3.bold())
                     .frame(width: 40, height: 40)
                     .foregroundColor(value == range.lowerBound ? .gray : .appPrimary)
@@ -31,7 +31,7 @@ struct BpmSliderControl: View {
             Button {
                 value = min(range.upperBound, value + 1)
             } label: {
-                Image(systemName: "plus")
+                Image(systemName: ImageConstants.add)
                     .font(.title3.bold())
                     .frame(width: 40, height: 40)
                     .foregroundColor(value == range.upperBound ? .gray : .appPrimary)

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <clipPath id="bodyClip">
+      <path d="M 368 100 L 656 100 Q 710 100 742 148 L 876 890 Q 876 940 826 940 L 198 940 Q 148 940 148 890 L 282 148 Q 314 100 368 100 Z"/>
+    </clipPath>
+    <clipPath id="leftClip">
+      <rect x="0" y="0" width="512" height="1024"/>
+    </clipPath>
+  </defs>
+  <rect x="0"   y="0"   width="512" height="1024" fill="#404040" clip-path="url(#bodyClip)"/>
+  <rect x="512" y="0"   width="512" height="1024" fill="#323232" clip-path="url(#bodyClip)"/>
+  <rect x="0"   y="628" width="512" height="400"  fill="#E8421A" clip-path="url(#bodyClip)"/>
+  <rect x="512" y="628" width="512" height="400"  fill="#C83810" clip-path="url(#bodyClip)"/>
+</svg>

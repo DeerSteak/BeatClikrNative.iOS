@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <!-- Pendulum rod - diagonal yellow stick from pivot near base center up to upper right -->
+  <line x1="512" y1="620" x2="840" y2="185" stroke="#F5C227" stroke-width="42" stroke-linecap="round"/>
+  <!-- Subtle highlight on rod -->
+  <line x1="516" y1="612" x2="840" y2="192" stroke="#F9D860" stroke-width="14" stroke-linecap="round" opacity="0.5"/>
+</svg>

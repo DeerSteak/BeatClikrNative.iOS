@@ -204,7 +204,7 @@ struct SettingsView: View {
     private func menuLabel(_ text: String) -> some View {
         HStack(spacing: 4) {
             Text(text)
-            Image(systemName: "chevron.up.chevron.down")
+            Image(systemName: ImageConstants.chevronUpDown)
                 .font(.caption2)
         }
         .foregroundStyle(Color.accentColor)
