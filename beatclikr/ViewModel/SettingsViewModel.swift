@@ -11,7 +11,7 @@ import UserNotifications
 @MainActor
 class SettingsViewModel: ObservableObject {
     private let defaults: UserDefaultsService = UserDefaultsService.instance
-    private let notificationService = ReminderNotificationService()
+    private let notificationService: any ReminderNotificationServicing
     
     @Published var showPermissionDeniedAlert = false
     @Published var notificationsBlockedLocally = false
@@ -76,7 +76,8 @@ class SettingsViewModel: ObservableObject {
         didSet { defaults.sixteenthAlternate = sixteenthAlternate }
     }
     
-    init() {
+    init(notificationService: any ReminderNotificationServicing = ReminderNotificationService()) {
+        self.notificationService = notificationService
         sendReminders = defaults.sendReminders
         reminderTime = defaults.reminderTime
         useFlashlight = defaults.useFlashlight

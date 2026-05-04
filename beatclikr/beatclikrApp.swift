@@ -24,6 +24,8 @@ struct beatclikrApp: App {
     
     private static let uiTestPracticeState: String? =
     ProcessInfo.processInfo.environment["UI_TESTING_PRACTICE_STATE"]
+    private static let uiTestNotificationState: String? =
+    ProcessInfo.processInfo.environment["UI_TESTING_NOTIFICATION_STATE"]
     
     init() {
         let isUITesting = Self.uiTestPracticeState != nil
@@ -47,6 +49,16 @@ struct beatclikrApp: App {
         let context = container.mainContext
         
         if let state = Self.uiTestPracticeState {
+            // Reset notification-related defaults to a known clean baseline for each UI test
+            UserDefaults.standard.removeObject(forKey: PreferenceKeys.remindersDeferredDate)
+            UserDefaults.standard.set(false, forKey: PreferenceKeys.sendReminders)
+            if Self.uiTestNotificationState == "deferred" {
+                UserDefaults.standard.set(
+                    Date.now.timeIntervalSinceReferenceDate,
+                    forKey: PreferenceKeys.remindersDeferredDate
+                )
+                UserDefaults.standard.set(true, forKey: PreferenceKeys.sendReminders)
+            }
             Self.seedUITestData(state: state, context: context)
         } else {
             // Remove entries whose song was deleted

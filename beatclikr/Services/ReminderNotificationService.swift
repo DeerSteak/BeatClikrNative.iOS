@@ -8,16 +8,25 @@
 import Foundation
 import UserNotifications
 
+enum NotificationAuthorizationResult {
+    case granted, denied, notGranted
+}
+
 @MainActor
-class ReminderNotificationService {
-    
-    enum AuthorizationResult {
-        case granted, denied, notGranted
-    }
-    
+protocol ReminderNotificationServicing: AnyObject {
+    func checkAndRequestAuthorization() async -> NotificationAuthorizationResult
+    func currentAuthorizationStatus() async -> UNAuthorizationStatus
+    func schedule(bodies: [String], at time: Date)
+    func reschedule(at time: Date)
+    func cancel()
+}
+
+@MainActor
+class ReminderNotificationService: ReminderNotificationServicing {
+
     private var cachedBodies: [String] = [String(localized: "PracticeReminderNotificationBody")]
-    
-    func checkAndRequestAuthorization() async -> AuthorizationResult {
+
+    func checkAndRequestAuthorization() async -> NotificationAuthorizationResult {
         let center = UNUserNotificationCenter.current()
         let settings = await center.notificationSettings()
         if settings.authorizationStatus == .denied { return .denied }
