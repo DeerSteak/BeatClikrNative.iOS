@@ -25,6 +25,10 @@ class ReminderNotificationService {
         return granted ? .granted : .notGranted
     }
     
+    func currentAuthorizationStatus() async -> UNAuthorizationStatus {
+        await UNUserNotificationCenter.current().notificationSettings().authorizationStatus
+    }
+    
     func schedule(bodies: [String], at time: Date) {
         cachedBodies = bodies
         performSchedule(bodies: bodies, at: time)

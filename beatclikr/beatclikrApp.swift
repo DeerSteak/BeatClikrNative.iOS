@@ -105,16 +105,16 @@ struct beatclikrApp: App {
                 .environmentObject(metronomeViewModel)
                 .environmentObject(settingsViewModel)
                 .environmentObject(practiceHistoryViewModel)
-            .onReceive(
-                NotificationCenter.default
-                    .publisher(for: .NSPersistentStoreRemoteChange)
-                    .receive(on: DispatchQueue.main)
-            ) { _ in
-                guard settingsViewModel.sendReminders else { return }
-                let dates = practiceHistoryViewModel.markedDates(context: container.mainContext)
-                let bodies = practiceHistoryViewModel.scheduledNotificationBodies(from: dates, days: 7)
-                settingsViewModel.rescheduleReminder(bodies: bodies)
-            }
+                .onReceive(
+                    NotificationCenter.default
+                        .publisher(for: .NSPersistentStoreRemoteChange)
+                        .receive(on: DispatchQueue.main)
+                ) { _ in
+                    guard settingsViewModel.sendReminders else { return }
+                    let dates = practiceHistoryViewModel.markedDates(context: container.mainContext)
+                    let bodies = practiceHistoryViewModel.scheduledNotificationBodies(from: dates, days: 7)
+                    settingsViewModel.rescheduleReminder(bodies: bodies)
+                }
         }
         .modelContainer(container)
         .onChange(of: scenePhase) { _, newPhase in
@@ -122,6 +122,7 @@ struct beatclikrApp: App {
             let dates = practiceHistoryViewModel.markedDates(context: container.mainContext)
             let bodies = practiceHistoryViewModel.scheduledNotificationBodies(from: dates, days: 7)
             settingsViewModel.rescheduleReminder(bodies: bodies)
+            settingsViewModel.refreshNotificationStatus()
         }
     }
     

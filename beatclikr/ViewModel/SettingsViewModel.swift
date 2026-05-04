@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UserNotifications
 
 @MainActor
 class SettingsViewModel: ObservableObject {
@@ -13,6 +14,9 @@ class SettingsViewModel: ObservableObject {
     private let notificationService = ReminderNotificationService()
     
     @Published var showPermissionDeniedAlert = false
+    @Published var notificationsBlockedLocally = false
+    @Published var notificationsDeferredLocally = false
+    @Published var showCrossDeviceReminderPrompt = false
     
     @Published var sendReminders: Bool {
         didSet {
@@ -20,6 +24,8 @@ class SettingsViewModel: ObservableObject {
             if sendReminders {
                 requestPermissionAndSchedule()
             } else {
+                notificationsBlockedLocally = false
+                clearDeferral()
                 notificationService.cancel()
             }
         }
@@ -35,57 +41,39 @@ class SettingsViewModel: ObservableObject {
     }
     
     @Published var useFlashlight: Bool {
-        didSet {
-            defaults.useFlashlight = useFlashlight
-        }
+        didSet { defaults.useFlashlight = useFlashlight }
     }
     
     @Published var useVibration: Bool {
-        didSet {
-            defaults.useVibration = useVibration
-        }
+        didSet { defaults.useVibration = useVibration }
     }
     
     @Published var muteMetronome: Bool {
-        didSet {
-            defaults.muteMetronome = muteMetronome
-        }
+        didSet { defaults.muteMetronome = muteMetronome }
     }
     
     @Published var instantBeat: FileConstants {
-        didSet {
-            defaults.instantBeat = instantBeat
-        }
+        didSet { defaults.instantBeat = instantBeat }
     }
     
     @Published var instantRhythm: FileConstants {
-        didSet {
-            defaults.instantRhythm = instantRhythm
-        }
+        didSet { defaults.instantRhythm = instantRhythm }
     }
     
     @Published var playlistBeat: FileConstants {
-        didSet {
-            defaults.playlistBeat = playlistBeat
-        }
+        didSet { defaults.playlistBeat = playlistBeat }
     }
     
     @Published var playlistRhythm: FileConstants {
-        didSet {
-            defaults.playlistRhythm = playlistRhythm
-        }
+        didSet { defaults.playlistRhythm = playlistRhythm }
     }
     
     @Published var keepAwake: Bool {
-        didSet {
-            defaults.keepAwake = keepAwake
-        }
+        didSet { defaults.keepAwake = keepAwake }
     }
     
     @Published var sixteenthAlternate: Bool {
-        didSet {
-            defaults.sixteenthAlternate = sixteenthAlternate
-        }
+        didSet { defaults.sixteenthAlternate = sixteenthAlternate }
     }
     
     init() {
@@ -100,12 +88,25 @@ class SettingsViewModel: ObservableObject {
         playlistRhythm = defaults.playlistRhythm
         keepAwake = defaults.keepAwake
         sixteenthAlternate = defaults.sixteenthAlternate
+        notificationsDeferredLocally = UserDefaults.standard.object(forKey: PreferenceKeys.remindersDeferredDate) != nil
+        
+        if sendReminders {
+            checkPermissionsFromExternalTrigger()
+        }
+        
+        defaults.onSendRemindersEnabled = { [weak self] in
+            Task { @MainActor [weak self] in
+                self?.checkPermissionsFromExternalTrigger()
+            }
+        }
     }
     
     private func requestPermissionAndSchedule() {
         Task { @MainActor in
             switch await notificationService.checkAndRequestAuthorization() {
             case .granted:
+                clearDeferral()
+                notificationsBlockedLocally = false
                 notificationService.reschedule(at: reminderTime)
             case .denied:
                 sendReminders = false
@@ -116,8 +117,71 @@ class SettingsViewModel: ObservableObject {
         }
     }
     
+    private func checkPermissionsFromExternalTrigger() {
+        Task { @MainActor in
+            switch await notificationService.currentAuthorizationStatus() {
+            case .authorized, .provisional, .ephemeral:
+                clearDeferral()
+                notificationsBlockedLocally = false
+                notificationService.reschedule(at: reminderTime)
+            case .denied:
+                notificationsBlockedLocally = true
+            case .notDetermined:
+                if notificationsDeferredLocally {
+                    // Already deferred — keep inline warning visible, don't re-prompt
+                    break
+                }
+                showCrossDeviceReminderPrompt = true
+            @unknown default:
+                notificationsBlockedLocally = true
+            }
+        }
+    }
+    
+    func allowRemindersFromOtherDevice() {
+        Task { @MainActor in
+            switch await notificationService.checkAndRequestAuthorization() {
+            case .granted:
+                clearDeferral()
+                notificationsBlockedLocally = false
+                notificationService.reschedule(at: reminderTime)
+            case .denied, .notGranted:
+                // Deferral is resolved — permission is now actually denied
+                clearDeferral()
+                notificationsBlockedLocally = true
+            }
+        }
+    }
+    
+    func declineRemindersFromOtherDevice() {
+        UserDefaults.standard.set(
+            Date.now.timeIntervalSinceReferenceDate,
+            forKey: PreferenceKeys.remindersDeferredDate
+        )
+        notificationsDeferredLocally = true
+    }
+    
+    func refreshNotificationStatus() {
+        guard sendReminders else { return }
+        Task { @MainActor in
+            switch await notificationService.currentAuthorizationStatus() {
+            case .authorized, .provisional, .ephemeral:
+                clearDeferral()
+                notificationsBlockedLocally = false
+                notificationService.reschedule(at: reminderTime)
+            default:
+                break
+            }
+        }
+    }
+    
     func rescheduleReminder(bodies: [String]) {
         guard sendReminders else { return }
         notificationService.schedule(bodies: bodies, at: reminderTime)
+    }
+    
+    private func clearDeferral() {
+        UserDefaults.standard.removeObject(forKey: PreferenceKeys.remindersDeferredDate)
+        notificationsDeferredLocally = false
     }
 }
