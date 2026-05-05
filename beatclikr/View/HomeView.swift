@@ -47,14 +47,18 @@ struct HomeView: View {
                     }
                     .navigationTitle("BeatClikr")
                 } detail: {
-                    switch selectedSection {
-                    case .instant:  InstantMetronomeView()
-                    case .library:  SongLibraryView()
-                    case .playlist: PlaylistListView()
-                    case .history:  PracticeHistoryView()
-                    case .settings: SettingsView()
-                    case nil:       InstantMetronomeView()
+                    Group {
+                        switch selectedSection {
+                        case .instant:  InstantMetronomeView()
+                        case .library:  SongLibraryView()
+                        case .playlist: PlaylistListView()
+                        case .history:  PracticeHistoryView()
+                        case .settings: SettingsView()
+                        case nil:       InstantMetronomeView()
+                        }
                     }
+                    .frame(maxWidth: 500)
+                    .frame(maxWidth: .infinity, alignment: .center)
                 }
 #if targetEnvironment(macCatalyst)
                 .onAppear {
