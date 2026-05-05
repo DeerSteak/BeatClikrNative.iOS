@@ -55,6 +55,7 @@ struct PlaylistListView: View {
             .navigationDestination(for: Playlist.self) { playlist in
                 PlaylistDetailView(playlist: playlist)
             }
+            .animation(.spring(duration: 0.4), value: sortAscending)
             .environment(\.editMode, $editMode)
             .overlay {
                 if sortedPlaylists.isEmpty {
@@ -77,7 +78,7 @@ struct PlaylistListView: View {
                 }
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
-                        withAnimation {
+                        withAnimation(.spring(duration: 0.4)) {
                             sortAscending.toggle()
                         }
                     } label: {
