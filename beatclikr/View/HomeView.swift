@@ -32,47 +32,76 @@ private enum AppSection: String, CaseIterable, Identifiable {
 
 struct HomeView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @EnvironmentObject private var settingsViewModel: SettingsViewModel
     @State private var selectedSection: AppSection? = .instant
     
     var body: some View {
-        if sizeClass == .regular {
-            NavigationSplitView {
-                List(selection: $selectedSection) {
-                    ForEach(AppSection.allCases) { section in
-                        Label(section.title, systemImage: section.icon)
-                            .tag(section)
+        Group {
+            if sizeClass == .regular {
+                NavigationSplitView {
+                    List(selection: $selectedSection) {
+                        ForEach(AppSection.allCases) { section in
+                            Label(section.title, systemImage: section.icon)
+                                .tag(section)
+                        }
+                    }
+                    .navigationTitle("BeatClikr")
+                } detail: {
+                    switch selectedSection {
+                    case .instant:  InstantMetronomeView()
+                    case .library:  SongLibraryView()
+                    case .playlist: PlaylistListView()
+                    case .history:  PracticeHistoryView()
+                    case .settings: SettingsView()
+                    case nil:       InstantMetronomeView()
                     }
                 }
-                .navigationTitle("BeatClikr")
-            } detail: {
-                switch selectedSection {
-                case .instant:  InstantMetronomeView()
-                case .library:  SongLibraryView()
-                case .playlist: PlaylistListView()
-                case .history:  PracticeHistoryView()
-                case .settings: SettingsView()
-                case nil:       InstantMetronomeView()
-                }
-            }
 #if targetEnvironment(macCatalyst)
-            .onAppear {
-                (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.titlebar?.titleVisibility = .hidden
-            }
+                .onAppear {
+                    (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.titlebar?.titleVisibility = .hidden
+                }
 #endif
-        } else {
-            TabView {
-                InstantMetronomeView()
-                    .tabItem { Label("Instant", systemImage: ImageConstants.tabInstant) }
-                SongLibraryView()
-                    .tabItem { Label("Library", systemImage: ImageConstants.tabLibrary) }
-                PlaylistListView()
-                    .tabItem { Label("Playlist", systemImage: ImageConstants.tabPlaylist) }
-                PracticeHistoryView()
-                    .tabItem { Label("History", systemImage: ImageConstants.tabHistory) }
-                SettingsView()
-                    .tabItem { Label("Settings", systemImage: ImageConstants.tabSettings) }
+            } else {
+                TabView {
+                    InstantMetronomeView()
+                        .tabItem { Label("Instant", systemImage: ImageConstants.tabInstant) }
+                    SongLibraryView()
+                        .tabItem { Label("Library", systemImage: ImageConstants.tabLibrary) }
+                    PlaylistListView()
+                        .tabItem { Label("Playlist", systemImage: ImageConstants.tabPlaylist) }
+                    PracticeHistoryView()
+                        .tabItem { Label("History", systemImage: ImageConstants.tabHistory) }
+                    SettingsView()
+                        .tabItem { Label("Settings", systemImage: ImageConstants.tabSettings) }
+                }
+                .tint(Color.appPrimary)
             }
-            .tint(Color.appPrimary)
+        }
+        .alert("Practice Reminders", isPresented: $settingsViewModel.showCrossDeviceReminderPrompt) {
+            Button("Allow Notifications") {
+                settingsViewModel.allowRemindersFromOtherDevice()
+            }
+            Button("Not Now", role: .cancel) {
+                settingsViewModel.declineRemindersFromOtherDevice()
+            }
+        } message: {
+            Text("Practice reminders are enabled on another device. Allow BeatClikr to send them on this device too?")
+        }
+        .alert("Notifications Disabled", isPresented: $settingsViewModel.showPermissionDeniedAlert) {
+            Button("Open Settings") {
+#if targetEnvironment(macCatalyst)
+                if let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") {
+                    UIApplication.shared.open(url)
+                }
+#else
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+#endif
+            }
+            Button("Cancel", role: .cancel) {}
+        } message: {
+            Text("Practice reminders require notification permissions. Please enable them in Settings.")
         }
     }
 }

@@ -24,6 +24,8 @@ struct beatclikrApp: App {
     
     private static let uiTestPracticeState: String? =
     ProcessInfo.processInfo.environment["UI_TESTING_PRACTICE_STATE"]
+    private static let uiTestNotificationState: String? =
+    ProcessInfo.processInfo.environment["UI_TESTING_NOTIFICATION_STATE"]
     
     init() {
         let isUITesting = Self.uiTestPracticeState != nil
@@ -47,6 +49,16 @@ struct beatclikrApp: App {
         let context = container.mainContext
         
         if let state = Self.uiTestPracticeState {
+            // Reset notification-related defaults to a known clean baseline for each UI test
+            UserDefaults.standard.removeObject(forKey: PreferenceKeys.remindersDeferredDate)
+            UserDefaults.standard.set(false, forKey: PreferenceKeys.sendReminders)
+            if Self.uiTestNotificationState == "deferred" {
+                UserDefaults.standard.set(
+                    Date.now.timeIntervalSinceReferenceDate,
+                    forKey: PreferenceKeys.remindersDeferredDate
+                )
+                UserDefaults.standard.set(true, forKey: PreferenceKeys.sendReminders)
+            }
             Self.seedUITestData(state: state, context: context)
         } else {
             // Remove entries whose song was deleted
@@ -105,16 +117,16 @@ struct beatclikrApp: App {
                 .environmentObject(metronomeViewModel)
                 .environmentObject(settingsViewModel)
                 .environmentObject(practiceHistoryViewModel)
-            .onReceive(
-                NotificationCenter.default
-                    .publisher(for: .NSPersistentStoreRemoteChange)
-                    .receive(on: DispatchQueue.main)
-            ) { _ in
-                guard settingsViewModel.sendReminders else { return }
-                let dates = practiceHistoryViewModel.markedDates(context: container.mainContext)
-                let bodies = practiceHistoryViewModel.scheduledNotificationBodies(from: dates, days: 7)
-                settingsViewModel.rescheduleReminder(bodies: bodies)
-            }
+                .onReceive(
+                    NotificationCenter.default
+                        .publisher(for: .NSPersistentStoreRemoteChange)
+                        .receive(on: DispatchQueue.main)
+                ) { _ in
+                    guard settingsViewModel.sendReminders else { return }
+                    let dates = practiceHistoryViewModel.markedDates(context: container.mainContext)
+                    let bodies = practiceHistoryViewModel.scheduledNotificationBodies(from: dates, days: 7)
+                    settingsViewModel.rescheduleReminder(bodies: bodies)
+                }
         }
         .modelContainer(container)
         .onChange(of: scenePhase) { _, newPhase in
@@ -122,6 +134,7 @@ struct beatclikrApp: App {
             let dates = practiceHistoryViewModel.markedDates(context: container.mainContext)
             let bodies = practiceHistoryViewModel.scheduledNotificationBodies(from: dates, days: 7)
             settingsViewModel.rescheduleReminder(bodies: bodies)
+            settingsViewModel.refreshNotificationStatus()
         }
     }
     

@@ -31,6 +31,8 @@
 		B59482B12FA3C88A00410C67 /* TapTempoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59482B02FA3C88A00410C67 /* TapTempoButton.swift */; };
 		B59482B32FA3C90B00410C67 /* SongNavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */; };
 		B59EE8512FA4DBC20021C335 /* SongNavigationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */; };
+		B5C6B8222FA937DD005DE6FD /* SettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C6B8212FA937DD005DE6FD /* SettingsViewModelTests.swift */; };
+		B5C6B8242FA937DD005DE6FD /* SettingsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C6B8232FA937DD005DE6FD /* SettingsUITests.swift */; };
 		B5F4E57A2FA5B5BD003FC6E6 /* PracticeHistoryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F4E5792FA5B5BD003FC6E6 /* PracticeHistoryViewModelTests.swift */; };
 		B5F4E57C2FA5B5BD003FC6E6 /* PracticeHistoryUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F4E57B2FA5B5BD003FC6E6 /* PracticeHistoryUITests.swift */; };
 		B5F4E57E2FA65B90003FC6E6 /* ReminderNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F4E57D2FA65B90003FC6E6 /* ReminderNotificationService.swift */; };
@@ -132,6 +134,8 @@
 		B59482B02FA3C88A00410C67 /* TapTempoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapTempoButton.swift; sourceTree = "<group>"; };
 		B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongNavigationViewModel.swift; sourceTree = "<group>"; };
 		B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongNavigationViewModelTests.swift; sourceTree = "<group>"; };
+		B5C6B8212FA937DD005DE6FD /* SettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModelTests.swift; sourceTree = "<group>"; };
+		B5C6B8232FA937DD005DE6FD /* SettingsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsUITests.swift; sourceTree = "<group>"; };
 		B5F4E5792FA5B5BD003FC6E6 /* PracticeHistoryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeHistoryViewModelTests.swift; sourceTree = "<group>"; };
 		B5F4E57B2FA5B5BD003FC6E6 /* PracticeHistoryUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeHistoryUITests.swift; sourceTree = "<group>"; };
 		B5F4E57D2FA65B90003FC6E6 /* ReminderNotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderNotificationService.swift; sourceTree = "<group>"; };
@@ -301,6 +305,7 @@
 				EE84F3092A7C7A23009E2F23 /* beatclikrTests.swift */,
 				B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */,
 				B5F4E5792FA5B5BD003FC6E6 /* PracticeHistoryViewModelTests.swift */,
+				B5C6B8212FA937DD005DE6FD /* SettingsViewModelTests.swift */,
 			);
 			path = beatclikrTests;
 			sourceTree = "<group>";
@@ -311,6 +316,7 @@
 				EE84F3132A7C7A24009E2F23 /* beatclikrUITests.swift */,
 				EE84F3152A7C7A24009E2F23 /* beatclikrUITestsLaunchTests.swift */,
 				B5F4E57B2FA5B5BD003FC6E6 /* PracticeHistoryUITests.swift */,
+				B5C6B8232FA937DD005DE6FD /* SettingsUITests.swift */,
 			);
 			path = beatclikrUITests;
 			sourceTree = "<group>";
@@ -645,6 +651,7 @@
 				28363D592F898A110066C665 /* MetronomePlaybackViewModelTests.swift in Sources */,
 				28363D5A2F898A110066C665 /* MetronomeTimingTests.swift in Sources */,
 				B59EE8512FA4DBC20021C335 /* SongNavigationViewModelTests.swift in Sources */,
+				B5C6B8222FA937DD005DE6FD /* SettingsViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -654,6 +661,7 @@
 			files = (
 				EE84F3162A7C7A24009E2F23 /* beatclikrUITestsLaunchTests.swift in Sources */,
 				B5F4E57C2FA5B5BD003FC6E6 /* PracticeHistoryUITests.swift in Sources */,
+				B5C6B8242FA937DD005DE6FD /* SettingsUITests.swift in Sources */,
 				EE84F3142A7C7A24009E2F23 /* beatclikrUITests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -801,7 +809,7 @@
 				CODE_SIGN_ENTITLEMENTS = beatclikr/beatclikrDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_ASSET_PATHS = "\"beatclikr/Preview Content\"";
 				DEVELOPMENT_TEAM = 4C4LJCSB2Q;
 				ENABLE_PREVIEWS = YES;
@@ -843,7 +851,7 @@
 				CODE_SIGN_ENTITLEMENTS = beatclikr/beatclikr.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 14;
+				CURRENT_PROJECT_VERSION = 16;
 				DEVELOPMENT_ASSET_PATHS = "\"beatclikr/Preview Content\"";
 				DEVELOPMENT_TEAM = 4C4LJCSB2Q;
 				ENABLE_PREVIEWS = YES;

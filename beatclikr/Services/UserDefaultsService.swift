@@ -117,6 +117,9 @@ class UserDefaultsService: ObservableObject {
     private let defaults = UserDefaults.standard
     private let cloud = NSUbiquitousKeyValueStore.default
     
+    // Called when sendReminders changed from false -> true via cloud sync.
+    var onSendRemindersEnabled: (() -> Void)?
+    
     static let instance = UserDefaultsService()
     
     init() {
@@ -138,7 +141,7 @@ class UserDefaultsService: ObservableObject {
         sendReminders = defaults.bool(forKey: PreferenceKeys.sendReminders)
         let storedInterval = defaults.double(forKey: PreferenceKeys.reminderTime)
         reminderTime = storedInterval == 0 ? Date.now : Date(timeIntervalSinceReferenceDate: storedInterval)
-
+        
         NotificationCenter.default.addObserver(
             forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
             object: cloud,
@@ -148,10 +151,10 @@ class UserDefaultsService: ObservableObject {
                 self?.syncWithCloud()
             }
         }
-
+        
         cloud.synchronize()
     }
-
+    
     // Ensure this is a private Swift function (No @objc)
     private func syncWithCloud() {
         cloud.synchronize()
@@ -181,7 +184,11 @@ class UserDefaultsService: ObservableObject {
         let pRhythmStr = cloud.string(forKey: PreferenceKeys.playlistRhythm) ?? ""
         self.playlistRhythm = FileConstants(rawValue: pRhythmStr) ?? .ClickLo
         
+        let wasSendingReminders = self.sendReminders
         self.sendReminders = cloud.bool(forKey: PreferenceKeys.sendReminders)
+        if !wasSendingReminders && self.sendReminders {
+            onSendRemindersEnabled?()
+        }
         
         let cloudInterval = cloud.double(forKey: PreferenceKeys.reminderTime)
         if cloudInterval != 0 {

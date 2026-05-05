@@ -31,21 +31,21 @@ BeatClikr follows an MVVM architecture with a clean separation of concerns:
 
 ### ViewModels (EnvironmentObjects)
 - **MetronomePlaybackViewModel** - Orchestrates metronome playback, coordinates services, handles UI state (beat pulse, isPlaying)
-- **SettingsViewModel** - Manages user preferences; delegates all notification scheduling to `ReminderNotificationService`
+- **SettingsViewModel** - Manages user preferences and notification permission state. Maintains three separate permission states: `notificationsBlockedLocally` (system denied), `notificationsDeferredLocally` (user tapped "Not Now" on the cross-device pre-prompt), and `showCrossDeviceReminderPrompt` (undetermined, needs to ask). Delegates all scheduling to `ReminderNotificationService`; see *Cross-Device Notification Permissions* below
 - **SongLibraryViewModel** - Handles song library CRUD operations and playback
 - **PlaylistListViewModel** - Manages the list of playlists (create, delete)
 - **PlaylistDetailViewModel** - Manages playlist sequencing (next/previous/play), edit, reorder, and delete operations for a single playlist
 - **PracticeHistoryViewModel** - Records songs played per day (`recordSongPlayed`); computes current and longest streaks; generates personalized notification bodies projected across future days; exposes an `onPracticeRecorded` callback invoked after each save so the app can immediately reschedule notifications
 
 ### Views
-- **HomeView** - Root container; uses `TabView` on iPhone and `NavigationSplitView` on iPad/Mac; sections: Instant, Library, Playlists, History, Settings
+- **HomeView** - Root container; uses `TabView` on iPhone and `NavigationSplitView` on iPad/Mac; sections: Instant, Library, Playlists, History, Settings. Hosts root-level alerts for notification permission flows (`showPermissionDeniedAlert`, `showCrossDeviceReminderPrompt`) so they surface regardless of which tab is active
 - **InstantMetronomeView** - Standalone metronome with live BPM/groove controls and tap tempo
 - **SongLibraryView** - Browsable song list; tap to play, swipe or edit to delete, + to add
 - **PlaylistListView** - List of all named playlists; tap to open, swipe to delete, + to create
 - **PlaylistDetailView** - Ordered playlist with inline edit/reorder; shows transport bar when playing
 - **PracticeHistoryView** - Calendar showing days on which practice was recorded; tap a day to see details; share button renders a `SharableStreakCard` and opens the system share sheet
 - **SongDetailsView** - Add or edit a song's metadata
-- **SettingsView** - App-wide preferences (sounds, haptics, flashlight, keep-awake)
+- **SettingsView** - App-wide preferences (sounds, haptics, flashlight, keep-awake, practice reminders). Shows an inline warning below the reminders toggle when notifications are blocked or deferred on this device, with context-appropriate actions: "Open Settings" for denied permissions, "Enable" to trigger the system prompt when previously deferred
 
 ### Custom Views
 - **CalendarView** - Monthly calendar grid with marked-date dots and tap-to-select; accepts a `Set<Date>` of marked days and a `Binding<Date?>` for the selected date
@@ -60,8 +60,8 @@ BeatClikr follows an MVVM architecture with a clean separation of concerns:
 - **AudioPlayerService** - Wrapper for audio engine, manages sound loading and playback
 - **FlashlightService** - Controls device flashlight for visual accessibility
 - **VibrationService** - Manages haptic feedback (UIImpactFeedbackGenerator)
-- **UserDefaultsService** - Persists user preferences and instant metronome settings
-- **ReminderNotificationService** - Manages `UNUserNotificationCenter` authorization and scheduling; schedules 7 individual ahead-of-time notifications (one per upcoming day) with pre-computed personalized bodies; caches the last set of bodies so time-change reschedules don't require a new body computation
+- **UserDefaultsService** - Persists user preferences to both `UserDefaults.standard` and `NSUbiquitousKeyValueStore` for cross-device sync. Observes `didChangeExternallyNotification` to pull in changes from other devices. Exposes an `onSendRemindersEnabled` callback that fires when `sendReminders` transitions `false → true` via cloud sync, so `SettingsViewModel` can respond without coupling the two layers with Combine
+- **ReminderNotificationService** - Manages `UNUserNotificationCenter` authorization and scheduling; schedules 7 individual ahead-of-time notifications (one per upcoming day) with pre-computed personalized bodies; caches the last set of bodies so time-change reschedules don't require a new body computation; exposes `currentAuthorizationStatus()` for non-prompting status checks
 
 ### Helpers
 - **PreviewContainer** - SwiftData `ModelContainer` wrapper for Xcode previews; provides `addMockSongs()`, `addMockPlaylistEntries(for:)`, and `addMockPracticeHistory()` so previews across views share consistent sample data
@@ -69,7 +69,7 @@ BeatClikr follows an MVVM architecture with a clean separation of concerns:
 ### Constants
 - **MetronomeConstants** - Timing parameters, BPM ranges, animation values, tolerance thresholds
 - **ImageConstants** - Asset references for UI elements
-- **PreferenceKeys** - SwiftUI preference key definitions
+- **PreferenceKeys** - String constants for all `UserDefaults` and `NSUbiquitousKeyValueStore` keys, divided into two groups: *Synced* (written to both stores) and *Local only* (never synced to cloud)
 - **FileConstants** - Enum mapping sound file names to their audio files and MIDI notes — your files need to match these names
 
 ## About Keeping Time
@@ -169,7 +169,22 @@ After each practice session is saved, the app reschedules 7 ahead-of-time daily 
 
 ### iCloud Sync
 
-The song library syncs automatically across devices via **CloudKit** (private database). SwiftData handles the sync transparently — no user action required. Settings sync via iCloud Key-Value Store.
+The song library syncs automatically across devices via **CloudKit** (private database). SwiftData handles the sync transparently — no user action required. Settings (including the practice reminder toggle and time) sync via **iCloud Key-Value Store** (`NSUbiquitousKeyValueStore`).
+
+### Cross-Device Notification Permissions
+
+Because the reminder setting syncs across devices, a device can receive `sendReminders = true` without ever having been asked for notification permission. The app handles this with two distinct permission paths:
+
+**User-initiated** (`sendReminders` toggled on in the UI): the system permission prompt is shown immediately. If denied, the toggle flips back off and an alert explains how to re-enable in Settings. If the user dismisses the prompt without allowing, the toggle also flips off.
+
+**External trigger** (app launch with `sendReminders` already on, or live cloud sync): the current authorization status is checked first without prompting:
+- **Authorized** — schedules notifications normally
+- **Denied** — shows an inline warning in Settings with an "Open Settings" link; does *not* flip `sendReminders` off (that would sync back and disable reminders on other devices)
+- **Not determined** — shows a pre-prompt alert: *"Practice reminders are enabled on another device. Allow BeatClikr to send them on this device too?"* with "Allow Notifications" / "Not Now"
+
+Tapping **"Not Now"** saves the deferral date to local-only `UserDefaults` (`RemindersDeferredDate`) so the pre-prompt is suppressed on subsequent launches. The Settings screen instead shows a `bell.slash` inline warning with an "Enable" button that re-triggers the system prompt when the user is ready. The deferral date is retained even after the choice is resolved, in case it's useful for future logic (e.g. re-prompting after a long period).
+
+Alerts (`showPermissionDeniedAlert`, `showCrossDeviceReminderPrompt`) are attached to `HomeView` rather than `SettingsView` so they surface from any tab.
 
 ## Environment & Dependency Injection
 

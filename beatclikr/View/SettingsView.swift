@@ -40,6 +40,46 @@ struct SettingsView: View {
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                             .padding(.horizontal, 4)
+                        
+                        if model.sendReminders {
+                            if model.notificationsBlockedLocally {
+                                HStack(spacing: 6) {
+                                    Image(systemName: "exclamationmark.triangle.fill")
+                                        .foregroundStyle(.orange)
+                                    Text("Notifications are blocked on this device. You may still receive them on other devices.")
+                                        .font(.footnote)
+                                        .foregroundStyle(.secondary)
+                                    Spacer()
+                                    Button("Open Settings") {
+#if targetEnvironment(macCatalyst)
+                                        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") {
+                                            UIApplication.shared.open(url)
+                                        }
+#else
+                                        if let url = URL(string: UIApplication.openSettingsURLString) {
+                                            UIApplication.shared.open(url)
+                                        }
+#endif
+                                    }
+                                    .font(.footnote)
+                                }
+                                .padding(.horizontal, 4)
+                            } else if model.notificationsDeferredLocally {
+                                HStack(spacing: 6) {
+                                    Image(systemName: "bell.slash")
+                                        .foregroundStyle(.secondary)
+                                    Text("Reminders aren't enabled on this device.")
+                                        .font(.footnote)
+                                        .foregroundStyle(.secondary)
+                                    Spacer()
+                                    Button("Enable") {
+                                        model.allowRemindersFromOtherDevice()
+                                    }
+                                    .font(.footnote)
+                                }
+                                .padding(.horizontal, 4)
+                            }
+                        }
                     }
                     
                     // Metronome Playback card
@@ -167,7 +207,7 @@ struct SettingsView: View {
                             .foregroundColor(Color(.clear))
                             .frame(height: 5)
                     }
-
+                    
                     // About card
                     VStack(alignment: .leading, spacing: 6) {
                         Text("About")
@@ -176,7 +216,7 @@ struct SettingsView: View {
                             .tracking(1)
                             .textCase(.uppercase)
                             .padding(.horizontal, 4)
-
+                        
                         VStack(spacing: 0) {
                             HStack {
                                 Text("Version")
@@ -207,22 +247,6 @@ struct SettingsView: View {
             .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.automatic)
-        }
-        .alert("Notifications Disabled", isPresented: $model.showPermissionDeniedAlert) {
-            Button("Open Settings") {
-#if targetEnvironment(macCatalyst)
-                if let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") {
-                    UIApplication.shared.open(url)
-                }
-#else
-                if let url = URL(string: UIApplication.openSettingsURLString) {
-                    UIApplication.shared.open(url)
-                }
-#endif
-            }
-            Button("Cancel", role: .cancel) {}
-        } message: {
-            Text("Practice reminders require notification permissions. Please enable them in Settings.")
         }
     }
     

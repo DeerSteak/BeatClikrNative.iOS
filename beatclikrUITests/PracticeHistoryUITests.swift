@@ -127,7 +127,7 @@ final class PracticeHistoryUITests: XCTestCase {
     }
     
     // MARK: - Practice list
-    
+
     func testPracticeSectionAppearsForSelectedDate() {
         launchApp(practiceState: "empty")
         navigateToPracticeHistory()
@@ -135,5 +135,62 @@ final class PracticeHistoryUITests: XCTestCase {
         let hasPracticeList = app.tables.firstMatch
         let appeared = noPractice.waitForExistence(timeout: 3) || hasPracticeList.waitForExistence(timeout: 3)
         XCTAssertTrue(appeared, "A practice section should be displayed for the selected date")
+    }
+
+    func testNoPracticeRecordedTextAppearsForEmptyState() {
+        launchApp(practiceState: "empty")
+        navigateToPracticeHistory()
+        XCTAssertTrue(
+            app.staticTexts["No practice recorded"].waitForExistence(timeout: 3),
+            "No practice recorded should appear when no session exists for the selected date"
+        )
+    }
+
+    // MARK: - Singular day display
+
+    func testCurrentStreakShowsOneDayForYesterdayOnlyStreak() {
+        launchApp(practiceState: "streak_yesterday")
+        navigateToPracticeHistory()
+        XCTAssertTrue(
+            app.staticTexts["1 day"].waitForExistence(timeout: 3),
+            "Current streak should show '1 day' (singular) when streak is exactly one day"
+        )
+    }
+
+    // MARK: - Five-day streak
+
+    func testCurrentStreakShowsCorrectCountForFiveDayStreak() {
+        launchApp(practiceState: "streak_5_days")
+        navigateToPracticeHistory()
+        XCTAssertTrue(
+            app.staticTexts["5 days"].waitForExistence(timeout: 3),
+            "Current streak should show '5 days' for a five-day streak"
+        )
+    }
+
+    // MARK: - Streak start date subtitle
+
+    func testCurrentStreakSubtitleShowsSinceDateForActiveStreak() {
+        launchApp(practiceState: "streak_active")
+        navigateToPracticeHistory()
+        let hasSinceLabel = app.staticTexts
+            .matching(NSPredicate(format: "label BEGINSWITH 'Since'"))
+            .firstMatch
+            .waitForExistence(timeout: 3)
+        XCTAssertTrue(
+            hasSinceLabel,
+            "Current streak subtitle should show a 'Since [date]' label when there is an active streak"
+        )
+    }
+
+    // MARK: - Share button
+
+    func testShareButtonVisibleWithPracticeHistory() {
+        launchApp(practiceState: "streak_5_days")
+        navigateToPracticeHistory()
+        XCTAssertTrue(
+            app.buttons["Share"].waitForExistence(timeout: 3),
+            "Share button should be visible in the navigation bar when there is practice history"
+        )
     }
 }
