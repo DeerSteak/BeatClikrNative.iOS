@@ -9,19 +9,19 @@ import SwiftUI
 import SwiftData
 
 struct PlaylistDetailView: View {
-
+    
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var metronome: MetronomePlaybackViewModel
     @EnvironmentObject var practiceHistory: PracticeHistoryViewModel
     @StateObject private var model = PlaylistDetailViewModel()
-
+    
     let playlist: Playlist
-
+    
     @State private var editMode: EditMode = .inactive
     @State private var showingSongPicker = false
-    @State private var tappedId: String?
     @State private var editingSong: Song?
-
+    @State private var tappedId: String?
+    
     @ViewBuilder
     private func playlistRow(for song: Song, entry: PlaylistEntry, at index: Int, in entries: [PlaylistEntry]) -> some View {
         HStack {
@@ -49,19 +49,18 @@ struct PlaylistDetailView: View {
                 model.playSong(song, metronome: metronome)
             } label: {
                 HStack {
-                    if model.currentIndex(in: entries) == index {
-                        Image(systemName: ImageConstants.play)
-                            .foregroundColor(.appPrimary)
-                            .font(.caption)
-                    }
+                    Image(systemName: ImageConstants.play)
+                        .foregroundColor(.appPrimary)
+                        .font(.caption)
+                        .opacity(model.currentIndex(in: entries) == index ? 1 : 0)
                     SongListItemView(song: song)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
             .disabled(editMode.isEditing)
-
-            Spacer()
-
+            
             if editMode.isEditing {
                 Button {
                     editingSong = song
@@ -75,25 +74,16 @@ struct PlaylistDetailView: View {
                 .transition(.opacity.combined(with: .scale(scale: 0.8, anchor: .trailing)))
             }
         }
-        .contentShape(Rectangle())
-        .listRowBackground(rowBackground(for: entry, at: index))
-    }
-
-    @ViewBuilder
-    private func rowBackground(for entry: PlaylistEntry, at index: Int) -> some View {
-        let backgroundColor: Color = {
-            if tappedId == entry.id {
-                return Color.appPrimary.opacity(0.25)
-            } else if entry.song?.id == model.currentSongId {
-                return Color.appPrimary.opacity(0.1)
-            } else {
-                return Color.clear
+        .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
+        .listRowBackground(
+            ZStack {
+                Color(UIColor.systemBackground)
+                Color.appPrimary.opacity(tappedId == entry.id ? 0.25 : 0)
+                    .animation(.easeOut(duration: 0.5), value: tappedId)
             }
-        }()
-        RoundedRectangle(cornerRadius: 8)
-            .fill(backgroundColor)
+        )
     }
-
+    
     var body: some View {
         let entries = (playlist.entries ?? []).sorted { ($0.sequence ?? 0) < ($1.sequence ?? 0) }
         ScrollViewReader { proxy in
@@ -110,8 +100,6 @@ struct PlaylistDetailView: View {
                 }
             }
             .environment(\.editMode, $editMode)
-            .scrollContentBackground(.hidden)
-            .background(Color(UIColor.systemGroupedBackground))
             .onChange(of: model.currentSongId) { _, _ in
                 if let idx = model.currentIndex(in: entries), idx < entries.count {
                     withAnimation {
@@ -181,7 +169,7 @@ struct PlaylistDetailView: View {
     let preview = PreviewContainer([Song.self, PlaylistEntry.self, Playlist.self])
     let songs = preview.addMockSongs()
     let playlist = preview.addMockPlaylist(named: "My Playlist", songs: songs)
-
+    
     return NavigationStack {
         PlaylistDetailView(playlist: playlist)
     }
