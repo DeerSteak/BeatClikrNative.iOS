@@ -46,6 +46,7 @@ struct HomeView: View {
                         }
                     }
                     .navigationTitle("BeatClikr")
+                    .navigationSplitViewColumnWidth(min: 300, ideal: 300, max: 300)
                 } detail: {
                     Group {
                         switch selectedSection {
@@ -57,12 +58,18 @@ struct HomeView: View {
                         case nil:       InstantMetronomeView()
                         }
                     }
-                    .frame(maxWidth: 500)
-                    .frame(maxWidth: .infinity, alignment: .center)
+                    .frame(maxWidth: 500, alignment: .center)
+                    .frame(maxWidth: .infinity)
+                    .background(Color(UIColor.systemGroupedBackground))
                 }
 #if targetEnvironment(macCatalyst)
                 .onAppear {
-                    (UIApplication.shared.connectedScenes.first as? UIWindowScene)?.titlebar?.titleVisibility = .hidden
+                    if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
+                        scene.titlebar?.titleVisibility = .hidden
+                        scene.sizeRestrictions?.minimumSize = CGSize(width: 820, height: 680)
+                        scene.sizeRestrictions?.maximumSize = CGSize(width: 820, height: 2000)
+                        scene.sizeRestrictions?.allowsFullScreen = false
+                    }
                 }
 #endif
             } else {
