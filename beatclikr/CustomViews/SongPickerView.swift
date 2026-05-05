@@ -24,6 +24,8 @@ struct SongPickerView: View {
                     dismiss()
                 } label: {
                     SongListItemView(song: song)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .contentShape(Rectangle())
                 }
                 .buttonStyle(.plain)
             }
