@@ -55,9 +55,9 @@ struct PlaylistDetailView: View {
                         .opacity(model.currentIndex(in: entries) == index ? 1 : 0)
                     SongListItemView(song: song)
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .contentShape(Rectangle())
             .buttonStyle(.plain)
             .disabled(editMode.isEditing)
             
