@@ -16,7 +16,7 @@ struct PlaylistListView: View {
 
     @State private var path = NavigationPath()
     @State private var editMode: EditMode = .inactive
-    @State private var sortAscending = true
+    @AppStorage(PreferenceKeys.playlistSortAscending) private var sortAscending = true
     @State private var showingNewPlaylistAlert = false
     @State private var newPlaylistName = ""
     @State private var showingRenameAlert = false

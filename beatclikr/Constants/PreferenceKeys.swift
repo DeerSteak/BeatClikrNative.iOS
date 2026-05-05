@@ -31,4 +31,5 @@ struct PreferenceKeys {
     static let hasAskedReminders = "HasAskedReminders"
     static let didMigrateToMultiplePlaylists = "DidMigrateToMultiplePlaylists"
     static let remindersDeferredDate = "RemindersDeferredDate"
+    static let playlistSortAscending = "PlaylistSortAscending"
 }
