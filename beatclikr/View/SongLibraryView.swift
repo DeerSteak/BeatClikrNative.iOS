@@ -56,10 +56,10 @@ struct SongLibraryView: View {
                                     }
                                     SongListItemView(song: item)
                                 }
+                                .frame(maxWidth: .infinity, alignment: .leading)
                             }
                             .buttonStyle(.plain)
                             .disabled(editMode.isEditing)
-                            Spacer()
                             if editMode.isEditing {
                                 Button {
                                     editingSong = item

@@ -24,6 +24,17 @@ class PlaylistListViewModel: ObservableObject {
         return playlist
     }
     
+    func renamePlaylist(_ playlist: Playlist, name: String, context: ModelContext) {
+        let trimmed = name.trimmingCharacters(in: .whitespaces)
+        guard !trimmed.isEmpty else { return }
+        playlist.name = trimmed
+        do {
+            try context.save()
+        } catch {
+            print("Failed to rename playlist: \(error)")
+        }
+    }
+    
     func deletePlaylists(offsets: IndexSet, playlists: [Playlist], context: ModelContext) {
         withAnimation {
             for index in offsets {
