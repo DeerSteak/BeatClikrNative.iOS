@@ -14,17 +14,17 @@ struct SongLibraryView: View {
     @EnvironmentObject var metronomeViewModel: MetronomePlaybackViewModel
     @EnvironmentObject var practiceHistory: PracticeHistoryViewModel
     @Query(sort: [SortDescriptor(\Song.title), SortDescriptor(\Song.artist)]) private var items: [Song]
-    
+
     @State private var editMode: EditMode = .inactive
     @State private var tappedId: String?
     @State private var isAddingSong = false
     @State private var editingSong: Song?
-    
+
     var body: some View {
         NavigationStack {
             ScrollViewReader { proxy in
-            List {
-                ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
+                List {
+                    ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
                         HStack {
                             if editMode.isEditing {
                                 Button {
@@ -48,16 +48,16 @@ struct SongLibraryView: View {
                                 model.playSong(item, metronome: metronomeViewModel)
                             } label: {
                                 HStack {
-                                    if model.currentIndex(in: items) == index {
-                                        Image(systemName: ImageConstants.play)
-                                            .foregroundColor(.appPrimary)
-                                            .font(.caption)
-                                            .accessibilityHidden(true)
-                                    }
+                                    Image(systemName: ImageConstants.play)
+                                        .foregroundColor(.appPrimary)
+                                        .font(.caption)
+                                        .accessibilityHidden(true)
+                                        .opacity(model.currentIndex(in: items) == index ? 1 : 0)
                                     SongListItemView(song: item)
                                 }
-                                .frame(maxWidth: .infinity, alignment: .leading)
                             }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .contentShape(Rectangle())
                             .buttonStyle(.plain)
                             .disabled(editMode.isEditing)
                             if editMode.isEditing {
@@ -72,18 +72,17 @@ struct SongLibraryView: View {
                                 .transition(.opacity.combined(with: .scale(scale: 0.8, anchor: .trailing)))
                             }
                         }
-                        .contentShape(Rectangle())
+                        .alignmentGuide(.listRowSeparatorLeading) { _ in 0 }
                         .listRowBackground(
-                            RoundedRectangle(cornerRadius: 8)
-                                .fill(tappedId == item.id ? Color.appPrimary.opacity(0.25) : Color.clear)
-                                .animation(.easeOut(duration: 0.5), value: tappedId)
+                            ZStack {
+                                Color(UIColor.systemBackground)
+                                Color.appPrimary.opacity(tappedId == item.id ? 0.25 : 0)
+                                    .animation(.easeOut(duration: 0.5), value: tappedId)
+                            }
                         )
-
                     }
                 }
                 .environment(\.editMode, $editMode)
-                .scrollContentBackground(.hidden)
-                .background(Color(UIColor.systemGroupedBackground))
                 .overlay(content: {
                     if (items.isEmpty) {
                         VStack {
