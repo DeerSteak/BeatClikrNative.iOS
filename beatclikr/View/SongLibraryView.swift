@@ -82,6 +82,8 @@ struct SongLibraryView: View {
                         )
                     }
                 }
+                .scrollContentBackground(.hidden)
+                .background(Color(UIColor.systemGroupedBackground))
                 .environment(\.editMode, $editMode)
                 .overlay(content: {
                     if (items.isEmpty) {

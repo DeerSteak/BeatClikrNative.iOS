@@ -99,6 +99,8 @@ struct PlaylistDetailView: View {
                     }
                 }
             }
+            .scrollContentBackground(.hidden)
+            .background(Color(UIColor.systemGroupedBackground))
             .environment(\.editMode, $editMode)
             .onChange(of: model.currentSongId) { _, _ in
                 if let idx = model.currentIndex(in: entries), idx < entries.count {

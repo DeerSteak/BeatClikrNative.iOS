@@ -55,6 +55,8 @@ struct PlaylistListView: View {
             .navigationDestination(for: Playlist.self) { playlist in
                 PlaylistDetailView(playlist: playlist)
             }
+            .scrollContentBackground(.hidden)
+            .background(Color(UIColor.systemGroupedBackground))
             .animation(.spring(duration: 0.4), value: sortAscending)
             .environment(\.editMode, $editMode)
             .overlay {
