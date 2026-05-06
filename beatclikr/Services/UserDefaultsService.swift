@@ -89,7 +89,39 @@ class UserDefaultsService: ObservableObject {
             cloud.set(playlistRhythm.rawValue, forKey: PreferenceKeys.playlistRhythm)
         }
     }
-    
+
+    @Published var polyrhythmBeat: FileConstants {
+        didSet {
+            guard oldValue != polyrhythmBeat else { return }
+            defaults.setValue(polyrhythmBeat.rawValue, forKey: PreferenceKeys.polyrhythmBeat)
+            cloud.set(polyrhythmBeat.rawValue, forKey: PreferenceKeys.polyrhythmBeat)
+        }
+    }
+
+    @Published var polyrhythmRhythm: FileConstants {
+        didSet {
+            guard oldValue != polyrhythmRhythm else { return }
+            defaults.setValue(polyrhythmRhythm.rawValue, forKey: PreferenceKeys.polyrhythmRhythm)
+            cloud.set(polyrhythmRhythm.rawValue, forKey: PreferenceKeys.polyrhythmRhythm)
+        }
+    }
+
+    @Published var polyrhythmBeats: Int {
+        didSet {
+            guard oldValue != polyrhythmBeats else { return }
+            defaults.setValue(polyrhythmBeats, forKey: PreferenceKeys.polyrhythmBeats)
+            cloud.set(Int64(polyrhythmBeats), forKey: PreferenceKeys.polyrhythmBeats)
+        }
+    }
+
+    @Published var polyrhythmAgainst: Int {
+        didSet {
+            guard oldValue != polyrhythmAgainst else { return }
+            defaults.setValue(polyrhythmAgainst, forKey: PreferenceKeys.polyrhythmAgainst)
+            cloud.set(Int64(polyrhythmAgainst), forKey: PreferenceKeys.polyrhythmAgainst)
+        }
+    }
+
     @Published var sendReminders: Bool {
         didSet {
             guard oldValue != sendReminders else { return }
@@ -147,7 +179,14 @@ class UserDefaultsService: ObservableObject {
         
         playlistBeat = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.playlistBeat) ?? "") ?? .ClickHi
         playlistRhythm = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.playlistRhythm) ?? "") ?? .ClickLo
-        
+
+        polyrhythmBeat = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.polyrhythmBeat) ?? "") ?? .ClickHi
+        polyrhythmRhythm = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.polyrhythmRhythm) ?? "") ?? .ClickLo
+        let savedBeats = defaults.integer(forKey: PreferenceKeys.polyrhythmBeats)
+        polyrhythmBeats = savedBeats == 0 ? 3 : savedBeats
+        let savedAgainst = defaults.integer(forKey: PreferenceKeys.polyrhythmAgainst)
+        polyrhythmAgainst = savedAgainst == 0 ? 2 : savedAgainst
+
         sendReminders = defaults.bool(forKey: PreferenceKeys.sendReminders)
         let storedInterval = defaults.double(forKey: PreferenceKeys.reminderTime)
         reminderTime = storedInterval == 0 ? Date.now : Date(timeIntervalSinceReferenceDate: storedInterval)
@@ -195,7 +234,16 @@ class UserDefaultsService: ObservableObject {
         
         let pRhythmStr = cloud.string(forKey: PreferenceKeys.playlistRhythm) ?? ""
         self.playlistRhythm = FileConstants(rawValue: pRhythmStr) ?? .ClickLo
-        
+
+        let polyBeatStr = cloud.string(forKey: PreferenceKeys.polyrhythmBeat) ?? ""
+        self.polyrhythmBeat = FileConstants(rawValue: polyBeatStr) ?? .ClickHi
+        let polyRhythmStr = cloud.string(forKey: PreferenceKeys.polyrhythmRhythm) ?? ""
+        self.polyrhythmRhythm = FileConstants(rawValue: polyRhythmStr) ?? .ClickLo
+        let cloudBeats = Int(cloud.longLong(forKey: PreferenceKeys.polyrhythmBeats))
+        self.polyrhythmBeats = cloudBeats == 0 ? 3 : cloudBeats
+        let cloudAgainst = Int(cloud.longLong(forKey: PreferenceKeys.polyrhythmAgainst))
+        self.polyrhythmAgainst = cloudAgainst == 0 ? 2 : cloudAgainst
+
         let wasSendingReminders = self.sendReminders
         self.sendReminders = cloud.bool(forKey: PreferenceKeys.sendReminders)
         if !wasSendingReminders && self.sendReminders {

@@ -25,6 +25,11 @@ struct PreferenceKeys {
     static let sendReminders = "SendReminders"
     static let reminderTime = "ReminderTime"
 
+    static let polyrhythmBeat = "PolyrhythmBeat"
+    static let polyrhythmRhythm = "PolyrhythmRhythm"
+    static let polyrhythmBeats = "PolyrhythmBeats"
+    static let polyrhythmAgainst = "PolyrhythmAgainst"
+
     // MARK: - Local only (UserDefaults only, never synced)
     static let onboarded = "Onboarded"
     static let hasAskedFlashlight = "HasAskedFlashlight"

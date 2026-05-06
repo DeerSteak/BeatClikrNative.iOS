@@ -17,6 +17,7 @@ struct beatclikrApp: App {
     let container: ModelContainer
     
     @StateObject private var metronomeViewModel: MetronomePlaybackViewModel
+    @StateObject private var polyrhythmViewModel: PolyrhythmViewModel
     @StateObject private var songLibraryViewModel: SongLibraryViewModel
     @StateObject private var playlistListViewModel: PlaylistListViewModel
     @StateObject private var settingsViewModel: SettingsViewModel
@@ -95,6 +96,7 @@ struct beatclikrApp: App {
         
         let metronome = MetronomePlaybackViewModel()
         _metronomeViewModel = StateObject(wrappedValue: metronome)
+        _polyrhythmViewModel = StateObject(wrappedValue: PolyrhythmViewModel())
         _songLibraryViewModel = StateObject(wrappedValue: SongLibraryViewModel())
         _playlistListViewModel = StateObject(wrappedValue: PlaylistListViewModel())
         let settingsVM = SettingsViewModel()
@@ -115,6 +117,7 @@ struct beatclikrApp: App {
                 .environmentObject(songLibraryViewModel)
                 .environmentObject(playlistListViewModel)
                 .environmentObject(metronomeViewModel)
+                .environmentObject(polyrhythmViewModel)
                 .environmentObject(settingsViewModel)
                 .environmentObject(practiceHistoryViewModel)
                 .onReceive(

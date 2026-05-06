@@ -28,6 +28,7 @@ struct ImageConstants {
 
     // Tab bar
     static let tabInstant = "metronome"
+    static let tabPolyrhythm = "waveform"
     static let tabLibrary = "list.bullet.rectangle"
     static let tabPlaylist = "music.note.list"
     static let tabHistory = "clock"
