@@ -14,7 +14,7 @@ import AVFoundation
 @MainActor
 class AudioKitMetronomeEngine: MetronomeAudioEngine {
     private let engine: AudioEngine
-    private let sampler = AppleSampler()
+    private let sampler: AppleSampler
 
     private var sounds: [SoundFile] = []
     private var beatSound: SoundFile?
@@ -36,9 +36,9 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
     private let firstBeatDelay: TimeInterval = MetronomeConstants.firstBeatDelay
     private let lookaheadTolerance: TimeInterval = MetronomeConstants.lookaheadTolerance
 
-    init(engine: AudioEngine) {
+    init(engine: AudioEngine, sampler: AppleSampler) {
         self.engine = engine
-        engine.output = sampler
+        self.sampler = sampler
     }
 
     func loadSounds(beatName: String, rhythmName: String, from sounds: [SoundFile]) {
