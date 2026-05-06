@@ -8,24 +8,30 @@
 import SwiftUI
 
 private enum AppSection: String, CaseIterable, Identifiable {
-    case instant, library, playlist, history, settings
-    var id: String { rawValue }
+    case instant, polyrhythm, library, playlist, history, settings
+    var id: String {
+        rawValue
+    }
+
     var title: String {
         switch self {
-        case .instant:  return "Instant Metronome"
-        case .library:  return "Song Library"
-        case .playlist: return "All Playlists"
-        case .history:  return "Practice History"
-        case .settings: return "Settings"
+        case .instant: "Instant Metronome"
+        case .polyrhythm: "Polyrhythm"
+        case .library: "Song Library"
+        case .playlist: "All Playlists"
+        case .history: "Practice History"
+        case .settings: "Settings"
         }
     }
+
     var icon: String {
         switch self {
-        case .instant:  return ImageConstants.tabInstant
-        case .library:  return ImageConstants.tabLibrary
-        case .playlist: return ImageConstants.tabPlaylist
-        case .history:  return ImageConstants.tabHistory
-        case .settings: return ImageConstants.tabSettings
+        case .instant: ImageConstants.tabInstant
+        case .polyrhythm: ImageConstants.tabPolyrhythm
+        case .library: ImageConstants.tabLibrary
+        case .playlist: ImageConstants.tabPlaylist
+        case .history: ImageConstants.tabHistory
+        case .settings: ImageConstants.tabSettings
         }
     }
 }
@@ -33,8 +39,9 @@ private enum AppSection: String, CaseIterable, Identifiable {
 struct HomeView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
     @EnvironmentObject private var settingsViewModel: SettingsViewModel
+    @EnvironmentObject private var polyrhythmViewModel: PolyrhythmViewModel
     @State private var selectedSection: AppSection? = .instant
-    
+
     var body: some View {
         Group {
             if sizeClass == .regular {
@@ -50,19 +57,27 @@ struct HomeView: View {
                 } detail: {
                     Group {
                         switch selectedSection {
-                        case .instant:  InstantMetronomeView()
-                        case .library:  SongLibraryView()
+                        case .instant:
+                            InstantMetronomeView()
+                                .navigationTitle("Instant Metronome")
+                        case .polyrhythm:
+                            PolyrhythmView()
+                                .environmentObject(polyrhythmViewModel)
+                                .navigationTitle("Polyrhythm")
+                        case .library: SongLibraryView()
                         case .playlist: PlaylistListView()
-                        case .history:  PracticeHistoryView()
+                        case .history: PracticeHistoryView()
                         case .settings: SettingsView()
-                        case nil:       InstantMetronomeView()
+                        case nil:
+                            InstantMetronomeView()
+                                .navigationTitle("Instant Metronome")
                         }
                     }
                     .frame(maxWidth: 500, alignment: .center)
                     .frame(maxWidth: .infinity)
                     .background(Color(UIColor.systemGroupedBackground))
                 }
-#if targetEnvironment(macCatalyst)
+                #if targetEnvironment(macCatalyst)
                 .onAppear {
                     if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                         scene.titlebar?.titleVisibility = .hidden
@@ -71,11 +86,11 @@ struct HomeView: View {
                         scene.sizeRestrictions?.allowsFullScreen = false
                     }
                 }
-#endif
+                #endif
             } else {
                 TabView {
-                    InstantMetronomeView()
-                        .tabItem { Label("Instant", systemImage: ImageConstants.tabInstant) }
+                    MetronomeContainerView()
+                        .tabItem { Label("Metronome", systemImage: ImageConstants.tabInstant) }
                     SongLibraryView()
                         .tabItem { Label("Library", systemImage: ImageConstants.tabLibrary) }
                     PlaylistListView()
@@ -100,15 +115,15 @@ struct HomeView: View {
         }
         .alert("Notifications Disabled", isPresented: $settingsViewModel.showPermissionDeniedAlert) {
             Button("Open Settings") {
-#if targetEnvironment(macCatalyst)
-                if let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") {
-                    UIApplication.shared.open(url)
-                }
-#else
-                if let url = URL(string: UIApplication.openSettingsURLString) {
-                    UIApplication.shared.open(url)
-                }
-#endif
+                #if targetEnvironment(macCatalyst)
+                    if let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") {
+                        UIApplication.shared.open(url)
+                    }
+                #else
+                    if let url = URL(string: UIApplication.openSettingsURLString) {
+                        UIApplication.shared.open(url)
+                    }
+                #endif
             }
             Button("Cancel", role: .cancel) {}
         } message: {
@@ -118,9 +133,9 @@ struct HomeView: View {
 }
 
 #Preview {
-    let metronome = MetronomePlaybackViewModel()
     HomeView()
-        .environmentObject(metronome)
+        .environmentObject(MetronomePlaybackViewModel())
+        .environmentObject(PolyrhythmViewModel())
         .environmentObject(SettingsViewModel())
         .environmentObject(SongLibraryViewModel())
         .environmentObject(PlaylistListViewModel())

@@ -5,16 +5,16 @@
 //  Created by Ben Funk on 4/10/26.
 //
 
-import Foundation
 import AudioKit
 import AVFoundation
+import Foundation
 
 /// Sample-accurate metronome implementation using AudioKit's AppleSampler
 /// Works on both simulator and device with high-precision timing (<5ms jitter)
 @MainActor
 class AudioKitMetronomeEngine: MetronomeAudioEngine {
     private let engine: AudioEngine
-    private let sampler = AppleSampler()
+    private let sampler: AppleSampler
 
     private var sounds: [SoundFile] = []
     private var beatSound: SoundFile?
@@ -29,25 +29,25 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
     private var nextBeatTime: CFAbsoluteTime = 0
     private var subdivisionCounter: Int = 0
     private var useAlternateSixteenth: Bool = false
-    private var accentPattern: [Bool]? = nil
+    private var accentPattern: [Bool]?
     private var patternIndex: Int = 0
 
     private let checkInterval: TimeInterval = MetronomeConstants.timerCheckInterval
     private let firstBeatDelay: TimeInterval = MetronomeConstants.firstBeatDelay
     private let lookaheadTolerance: TimeInterval = MetronomeConstants.lookaheadTolerance
 
-    init(engine: AudioEngine) {
+    init(engine: AudioEngine, sampler: AppleSampler) {
         self.engine = engine
-        engine.output = sampler
+        self.sampler = sampler
     }
 
     func loadSounds(beatName: String, rhythmName: String, from sounds: [SoundFile]) {
         self.sounds = sounds
-        self.beatSound = sounds.first { $0.displayName == beatName }
-        self.rhythmSound = sounds.first { $0.displayName == rhythmName }
+        beatSound = sounds.first { $0.displayName == beatName }
+        rhythmSound = sounds.first { $0.displayName == rhythmName }
 
         do {
-            let files = sounds.compactMap { $0.audioFile }
+            let files = sounds.compactMap(\.audioFile)
             if files.count != sounds.count {
                 print("Warning: Only loaded \(files.count) of \(sounds.count) sound files")
             }
@@ -62,16 +62,16 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
         timer = nil
 
         self.delegate = delegate
-        self.currentBPM = bpm
-        self.currentSubdivisions = subdivisions
-        self.subdivisionCounter = 0
+        currentBPM = bpm
+        currentSubdivisions = subdivisions
+        subdivisionCounter = 0
         self.accentPattern = accentPattern
-        self.patternIndex = 0
-        self.useAlternateSixteenth = UserDefaultsService.instance.sixteenthAlternate && subdivisions == 4
+        patternIndex = 0
+        useAlternateSixteenth = UserDefaultsService.instance.sixteenthAlternate && subdivisions == 4
 
-        self.nextBeatTime = CFAbsoluteTimeGetCurrent() + firstBeatDelay
+        nextBeatTime = CFAbsoluteTimeGetCurrent() + firstBeatDelay
 
-        self.isPlaying = true
+        isPlaying = true
         startTimer()
     }
 
@@ -84,8 +84,8 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
     }
 
     func updateTempo(bpm: Double, subdivisions: Int) {
-        self.currentBPM = bpm
-        self.currentSubdivisions = subdivisions
+        currentBPM = bpm
+        currentSubdivisions = subdivisions
     }
 
     func start() throws {
@@ -99,7 +99,7 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
     // MARK: - Private helpers
 
     private func getSubdivisionDuration() -> Double {
-        return 60.0 / (currentBPM * Double(currentSubdivisions))
+        60.0 / (currentBPM * Double(currentSubdivisions))
     }
 
     private func startTimer() {
@@ -138,29 +138,46 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
     private func playCurrentBeat() {
         let isBeat: Bool
         let playBeatSound: Bool
+        let beatInterval: TimeInterval
+        let subdivisionDuration = getSubdivisionDuration()
 
         if let pattern = accentPattern {
             isBeat = pattern[patternIndex]
             playBeatSound = isBeat
+
+            if isBeat {
+                // Count subdivision ticks until the next accented beat in the pattern
+                var ticksToNext = 1
+                var lookIndex = (patternIndex + 1) % pattern.count
+                while !pattern[lookIndex], ticksToNext < pattern.count {
+                    ticksToNext += 1
+                    lookIndex = (lookIndex + 1) % pattern.count
+                }
+                beatInterval = subdivisionDuration * Double(ticksToNext)
+            } else {
+                beatInterval = subdivisionDuration
+            }
+
             patternIndex = (patternIndex + 1) % pattern.count
         } else {
             playBeatSound = useAlternateSixteenth ? subdivisionCounter % 2 == 0 : subdivisionCounter == 0
             isBeat = subdivisionCounter == 0
+            beatInterval = 60.0 / currentBPM
         }
 
         if !UserDefaultsService.instance.muteMetronome {
             if playBeatSound {
-                if let beatSound = beatSound {
+                if let beatSound {
                     sampler.play(noteNumber: MIDINoteNumber(beatSound.midiNote))
                 }
             } else {
-                if let rhythmSound = rhythmSound {
+                if let rhythmSound {
                     sampler.play(noteNumber: MIDINoteNumber(rhythmSound.midiNote))
                 }
             }
         }
 
         // Always fire the delegate so animation, vibration, and flashlight still work when muted
-        delegate?.metronomeBeatFired(isBeat: isBeat)
+        delegate?.metronomeBeatFired(isBeat: isBeat, beatInterval: beatInterval)
     }
 }

@@ -27,76 +27,78 @@ struct CalendarView: View {
         let leadingBlanks = calendar.component(.weekday, from: firstOfMonth) - 1
         let daysInMonth = calendar.range(of: .day, in: .month, for: firstOfMonth)!.count
         var days: [Date?] = Array(repeating: nil, count: leadingBlanks)
-        for i in 0..<daysInMonth {
+        for i in 0 ..< daysInMonth {
             days.append(calendar.date(byAdding: .day, value: i, to: firstOfMonth))
         }
-        while days.count % 7 != 0 { days.append(nil) }
+        while days.count % 7 != 0 {
+            days.append(nil)
+        }
         return days
     }
 
     var body: some View {
-        VStack(spacing: 4) {
-            HStack {
-                Button {
-                    displayedMonth = calendar.date(byAdding: .month, value: -1, to: displayedMonth)!
-                    selectedDate = nil
-                } label: {
-                    Image(systemName: ImageConstants.chevronLeft)
-                        .font(.title3)
-                        .foregroundStyle(Color.appPrimary)
+        CardContainer {
+            VStack(spacing: 4) {
+                HStack {
+                    Button {
+                        displayedMonth = calendar.date(byAdding: .month, value: -1, to: displayedMonth)!
+                        selectedDate = nil
+                    } label: {
+                        Image(systemName: ImageConstants.chevronLeft)
+                            .font(.title3)
+                            .foregroundStyle(Color.appPrimary)
+                    }
+
+                    Spacer()
+
+                    Text(displayedMonth.formatted(.dateTime.month(.wide).year()))
+                        .font(.title3.weight(.semibold))
+
+                    Spacer()
+
+                    Button {
+                        displayedMonth = calendar.date(byAdding: .month, value: 1, to: displayedMonth)!
+                        selectedDate = nil
+                    } label: {
+                        Image(systemName: ImageConstants.chevronRight)
+                            .font(.title3)
+                            .foregroundStyle(Color.appPrimary)
+                    }
+                }
+                .padding(.horizontal, 4)
+                .padding(.bottom, 4)
+
+                LazyVGrid(columns: gridColumns, spacing: 0) {
+                    ForEach(Array(calendar.veryShortWeekdaySymbols.enumerated()), id: \.offset) { _, symbol in
+                        Text(symbol)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity)
+                            .padding(.bottom, 4)
+                    }
                 }
 
-                Spacer()
-
-                Text(displayedMonth.formatted(.dateTime.month(.wide).year()))
-                    .font(.title3.weight(.semibold))
-
-                Spacer()
-
-                Button {
-                    displayedMonth = calendar.date(byAdding: .month, value: 1, to: displayedMonth)!
-                    selectedDate = nil
-                } label: {
-                    Image(systemName: ImageConstants.chevronRight)
-                        .font(.title3)
-                        .foregroundStyle(Color.appPrimary)
-                }
-            }
-            .padding(.horizontal, 4)
-            .padding(.bottom, 4)
-
-            LazyVGrid(columns: gridColumns, spacing: 0) {
-                ForEach(Array(calendar.veryShortWeekdaySymbols.enumerated()), id: \.offset) { _, symbol in
-                    Text(symbol)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity)
-                        .padding(.bottom, 4)
-                }
-            }
-
-            LazyVGrid(columns: gridColumns, spacing: 0) {
-                ForEach(Array(daysGrid.enumerated()), id: \.offset) { _, day in
-                    if let day {
-                        let dayKey = calendar.startOfDay(for: day)
-                        CalendarDayCell(
-                            day: day,
-                            isMarked: markedDates.contains(dayKey),
-                            isToday: calendar.isDateInToday(day),
-                            isSelected: selectedDate.map { calendar.isDate($0, inSameDayAs: day) } ?? false
-                        )
-                        .onTapGesture {
-                            selectedDate = dayKey
+                LazyVGrid(columns: gridColumns, spacing: 0) {
+                    ForEach(Array(daysGrid.enumerated()), id: \.offset) { _, day in
+                        if let day {
+                            let dayKey = calendar.startOfDay(for: day)
+                            CalendarDayCell(
+                                day: day,
+                                isMarked: markedDates.contains(dayKey),
+                                isToday: calendar.isDateInToday(day),
+                                isSelected: selectedDate.map { calendar.isDate($0, inSameDayAs: day) } ?? false,
+                            )
+                            .onTapGesture {
+                                selectedDate = dayKey
+                            }
+                        } else {
+                            Color.clear.frame(height: 36)
                         }
-                    } else {
-                        Color.clear.frame(height: 36)
                     }
                 }
             }
+            .padding(8)
         }
-        .padding(8)
-        .background(Color(UIColor.secondarySystemGroupedBackground))
-        .cornerRadius(8)
         .frame(maxWidth: 360)
         .frame(maxWidth: .infinity)
     }
@@ -152,9 +154,9 @@ private struct CalendarDayCell: View {
         today,
         cal.date(byAdding: .day, value: -2, to: today)!,
         cal.date(byAdding: .day, value: -5, to: today)!,
-        cal.date(byAdding: .day, value: -10, to: today)!
+        cal.date(byAdding: .day, value: -10, to: today)!,
     ]
-    
+
     return CalendarView(markedDates: marked, selectedDate: $selectedDate)
         .padding()
         .background(Color(UIColor.systemGroupedBackground))

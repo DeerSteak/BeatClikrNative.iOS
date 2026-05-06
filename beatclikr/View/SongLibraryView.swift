@@ -1,12 +1,12 @@
 //
-//  ContentView.swift
+//  SongLibraryView.swift
 //  beatclikr
 //
 //  Created by Ben Funk on 8/3/23.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct SongLibraryView: View {
     @Environment(\.modelContext) private var modelContext
@@ -78,7 +78,7 @@ struct SongLibraryView: View {
                                 Color(UIColor.systemBackground)
                                 Color.appPrimary.opacity(tappedId == item.id ? 0.25 : 0)
                                     .animation(.easeOut(duration: 0.5), value: tappedId)
-                            }
+                            },
                         )
                     }
                 }
@@ -86,7 +86,7 @@ struct SongLibraryView: View {
                 .background(Color(UIColor.systemGroupedBackground))
                 .environment(\.editMode, $editMode)
                 .overlay(content: {
-                    if (items.isEmpty) {
+                    if items.isEmpty {
                         VStack {
                             Text("Press the + button to add a song")
                                 .padding(.top, 40)
@@ -95,14 +95,14 @@ struct SongLibraryView: View {
                     }
                 })
                 .safeAreaInset(edge: .bottom) {
-                    if !editMode.isEditing && !items.isEmpty {
+                    if !editMode.isEditing, !items.isEmpty {
                         PlaylistTransportView(
                             currentTitle: model.currentSongTitle(in: items),
                             onPlay: { model.playOrResume(items: items, metronome: metronomeViewModel) },
                             canGoPrevious: model.canGoPrevious(items: items),
                             onPrevious: { model.playPrevious(items: items, metronome: metronomeViewModel) },
                             canGoNext: model.canGoNext(items: items),
-                            onNext: { model.playNext(items: items, metronome: metronomeViewModel) }
+                            onNext: { model.playNext(items: items, metronome: metronomeViewModel) },
                         )
                     }
                 }
@@ -143,7 +143,7 @@ struct SongLibraryView: View {
         }
         .onDisappear(perform: metronomeViewModel.stop)
         .onAppear {
-            UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
+            model.onAppear()
             model.onSongPlayed = { song in
                 practiceHistory.recordSongPlayed(song: song, context: modelContext)
             }

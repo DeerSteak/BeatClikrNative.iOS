@@ -69,7 +69,7 @@ struct GrooveSelectorView: View {
                 Menu {
                     Picker("Pattern", selection: Binding(
                         get: { beatPattern ?? .sevenEightA },
-                        set: { beatPattern = $0 }
+                        set: { beatPattern = $0 },
                     )) {
                         ForEach(BeatPattern.allCases) { pattern in
                             Text(pattern.displayName).tag(pattern)

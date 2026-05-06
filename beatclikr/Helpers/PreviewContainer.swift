@@ -1,5 +1,5 @@
 //
-//  PreviewDataContainer.swift
+//  PreviewContainer.swift
 //  beatclikr
 //
 //  Created by Ben Funk on 10/12/23.
@@ -10,13 +10,13 @@ import SwiftData
 
 struct PreviewContainer {
     let container: ModelContainer!
-    
+
     init(_ types: [any PersistentModel.Type], isStoredInMemoryOnly: Bool = true) {
         let schema = Schema(types)
         let config = ModelConfiguration(isStoredInMemoryOnly: isStoredInMemoryOnly)
-        self.container = try! ModelContainer(for: schema, configurations: [config])
+        container = try! ModelContainer(for: schema, configurations: [config])
     }
-    
+
     /// Inserts mock songs and returns them for further use (e.g. building playlist entries).
     @MainActor
     @discardableResult
@@ -30,7 +30,7 @@ struct PreviewContainer {
         songs.forEach { container.mainContext.insert($0) }
         return songs
     }
-    
+
     /// Inserts playlist entries for each song in order.
     @MainActor
     func addMockPlaylistEntries(for songs: [Song]) {
@@ -38,7 +38,7 @@ struct PreviewContainer {
             container.mainContext.insert(PlaylistEntry(song: song, sequence: index))
         }
     }
-    
+
     /// Creates a named playlist with entries for the given songs and returns it.
     @MainActor
     @discardableResult
@@ -52,7 +52,7 @@ struct PreviewContainer {
         }
         return playlist
     }
-    
+
     /// Inserts practice sessions for several recent days with mock songs.
     @MainActor
     func addMockPracticeHistory() {
@@ -80,6 +80,7 @@ struct PreviewContainer {
     }
 
     // MARK: - Private
+
     private func makeSong(_ title: String, artist: String, bpm: Double) -> Song {
         let song = Song()
         song.title = title

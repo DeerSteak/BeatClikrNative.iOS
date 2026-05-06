@@ -5,17 +5,16 @@
 //  Created by Ben Funk 4/24/26
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct SongPickerView: View {
-    
     @Environment(\.modelContext) private var modelContext
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var model: PlaylistDetailViewModel
     @Query(sort: [SortDescriptor(\Song.title), SortDescriptor(\Song.artist)]) private var allSongs: [Song]
     let playlist: Playlist
-    
+
     var body: some View {
         NavigationStack {
             List(allSongs) { song in

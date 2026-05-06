@@ -5,8 +5,8 @@
 //  Created by Ben Funk on 8/3/23.
 //
 
-import XCTest
 @testable import BeatClikr
+import XCTest
 
 // This file serves as the main test suite entry point.
 // Individual test files:

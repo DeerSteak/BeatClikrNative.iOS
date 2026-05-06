@@ -1,5 +1,5 @@
 //
-//  RegularButton.swift
+//  RectangleText.swift
 //  beatclikr
 //
 //  Created by Ben Funk on 8/5/23.
@@ -9,29 +9,29 @@ import SwiftUI
 
 struct RectangleText: View {
     var text: String
-    var backgroundColor: Color = Color.appPrimary
+    var backgroundColor: Color = .appPrimary
     var foregroundColor: Color = .white
-    
-    init (_ text: String) {
+
+    init(_ text: String) {
         self.text = text
     }
-    
-    init (_ text: String, backgroundColor: Color, foregroundColor: Color) {
+
+    init(_ text: String, backgroundColor: Color, foregroundColor: Color) {
         self.text = text
         self.backgroundColor = backgroundColor
         self.foregroundColor = foregroundColor
     }
-    
+
     var body: some View {
         ZStack {
             RoundedRectangle(cornerSize: CGSize(width: 5, height: 5))
-                .fill(self.backgroundColor)
+                .fill(backgroundColor)
                 .frame(height: 52)
                 .shadow(radius: 2)
                 .accessibilityHidden(true)
-            
-            Text(self.text)
-                .foregroundColor(self.foregroundColor)
+
+            Text(text)
+                .foregroundColor(foregroundColor)
                 .bold()
         }
     }

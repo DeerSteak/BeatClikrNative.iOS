@@ -15,15 +15,15 @@ public class FormatterHelper {
         formatter.minimumFractionDigits = 0
         return formatter
     }()
-    
+
     public static func formatNumber(_ num: NSNumber) -> String {
         if let str = numberFormatter.string(from: num) {
             return str
         }
         return ""
     }
-    
+
     public static func formatDouble(_ num: Double) -> String {
-        return formatNumber(num as NSNumber)
+        formatNumber(num as NSNumber)
     }
 }

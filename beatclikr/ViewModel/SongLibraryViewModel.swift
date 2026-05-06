@@ -11,7 +11,6 @@ import SwiftUI
 
 @MainActor
 class SongLibraryViewModel: SongNavigationViewModel {
-
     func deleteItems(offsets: IndexSet, items: [Song], context: ModelContext) {
         withAnimation {
             for index in offsets {

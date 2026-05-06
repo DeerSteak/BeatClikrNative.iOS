@@ -14,11 +14,11 @@ class VibrationService {
 
     private var beatGenerator = UIImpactFeedbackGenerator(style: .heavy)
     private var rhythmGenerator = UIImpactFeedbackGenerator(style: .soft)
-    
+
     func vibrateBeat() {
         beatGenerator.impactOccurred()
     }
-    
+
     func vibrateRhythm() {
         rhythmGenerator.impactOccurred()
     }

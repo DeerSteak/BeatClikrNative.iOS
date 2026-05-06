@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct ImageConstants {
+enum ImageConstants {
     // Metronome beat indicators
     static let beat = "diamond.fill"
     static let rhythm = "circle.fill"
@@ -28,6 +28,7 @@ struct ImageConstants {
 
     // Tab bar
     static let tabInstant = "metronome"
+    static let tabPolyrhythm = "waveform"
     static let tabLibrary = "list.bullet.rectangle"
     static let tabPlaylist = "music.note.list"
     static let tabHistory = "clock"

@@ -15,9 +15,9 @@ protocol SongDisplayable {
 
 struct SongListItemView<S: SongDisplayable>: View {
     var song: S
-    
+
     var body: some View {
-        VStack (alignment: .leading) {
+        VStack(alignment: .leading) {
             Text(song.title ?? String(localized: "Untitled"))
                 .bold()
                 .font(.title3)

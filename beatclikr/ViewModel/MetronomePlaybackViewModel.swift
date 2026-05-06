@@ -10,25 +10,27 @@ import SwiftUI
 
 @MainActor
 class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate {
-    //MARK: Private variables
+    // MARK: Private variables
+
     private let vibration: VibrationService
     private let flashlight: FlashlightService
     private let audio: AudioPlayerService
     private let defaults: UserDefaultsService
-    
+
     private var isLiveMode: Bool = false
     private var liveModeStarted: Bool = false
     private var song: Song
-    
+
     private var isBeat: Bool = false
     private var activeBpm: Double = 120.0
-    
-    //MARK: Published properties
+
+    // MARK: Published properties
+
     @Published var iconScale: CGFloat = MetronomeConstants.iconScaleMin
     @Published var beatPulse: Double = 0
     @Published var isPlaying: Bool = false
     @Published var currentSongTitle: String? = nil
-    
+
     @Published var beatsPerMinute: Double = UserDefaultsService.instance.instantBpm {
         didSet {
             if clickerType == .instant {
@@ -50,7 +52,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             }
         }
     }
-    
+
     @Published var beat: FileConstants = UserDefaultsService.instance.instantBeat {
         didSet {
             if clickerType == .instant {
@@ -61,7 +63,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         }
     }
-    
+
     @Published var rhythm: FileConstants = UserDefaultsService.instance.instantRhythm {
         didSet {
             if clickerType == .instant {
@@ -72,7 +74,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         }
     }
-    
+
     @Published var selectedBeatPattern: BeatPattern? = nil {
         didSet {
             if clickerType == .instant {
@@ -91,19 +93,20 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             }
         }
     }
-    
-    //MARK: Initializer
+
+    // MARK: Initializer
+
     init(
         vibration: VibrationService = .instance,
         flashlight: FlashlightService = .instance,
         audio: AudioPlayerService = .instance,
-        defaults: UserDefaultsService = .instance
+        defaults: UserDefaultsService = .instance,
     ) {
         self.vibration = vibration
         self.flashlight = flashlight
         self.audio = audio
         self.defaults = defaults
-        
+
         song = Song.instantSong
         song.groove = defaults.instantGroove
         song.beatsPerMinute = defaults.instantBpm
@@ -112,44 +115,43 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         selectedBeatPattern = defaults.instantBeatPattern.flatMap { BeatPattern(rawValue: $0) }
         clickerType = .instant
         isBeat = false
-        
+
         // Set self as delegate for audio callbacks
         audio.delegate = self
     }
-    
-    //MARK: MetronomeAudioEngineDelegate
-    func metronomeBeatFired(isBeat: Bool) {
+
+    // MARK: MetronomeAudioEngineDelegate
+
+    func metronomeBeatFired(isBeat: Bool, beatInterval: TimeInterval) {
         self.isBeat = isBeat
-        
+
         if isBeat {
-            // Calculate duration for one full beat (in seconds)
-            let beatDuration = 60.0 / activeBpm
-            
             // Snap to max instantly with no animation
             withAnimation(.none) {
                 iconScale = MetronomeConstants.iconScaleMax
                 beatPulse = 1.0
             }
-            
-            // Defer the fade-out so SwiftUI renders the snapped state first
+
+            // Fade out over the exact interval to the next beat, matching each rhythmic group
             Task { @MainActor in
-                withAnimation(.linear(duration: beatDuration)) {
+                withAnimation(.linear(duration: beatInterval)) {
                     self.iconScale = MetronomeConstants.iconScaleMin
                     self.beatPulse = 0.0
                 }
             }
-            
+
             handleBeat()
         } else {
             handleRhythm()
         }
     }
-    
-    //MARK: Public functions
+
+    // MARK: Public functions
+
     func switchSong(_ song: Song) {
         self.song = song
         currentSongTitle = song.title
-        
+
         // Reload beat/rhythm from defaults in case they changed in settings
         if clickerType == .instant {
             beat = defaults.instantBeat
@@ -158,31 +160,33 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             beat = defaults.playlistBeat
             rhythm = defaults.playlistRhythm
         }
-        
+
         setupMetronome()
     }
-    
+
     func setupMetronome() {
-        
         if let bpm = song.beatsPerMinute, !bpm.isNaN {
             if bpm < MetronomeConstants.minBPM {
                 song.beatsPerMinute = MetronomeConstants.minBPM
-            }
-            else if bpm > MetronomeConstants.maxBPM {
+            } else if bpm > MetronomeConstants.maxBPM {
                 song.beatsPerMinute = MetronomeConstants.maxBPM
             }
-        }
-        else {
+        } else {
             song.beatsPerMinute = MetronomeConstants.minBPM
         }
-        
+
         if song.groove == nil {
             song.groove = .quarter
         }
-        
+
         audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
     }
-    
+
+    func onAppear() {
+        clickerType = .instant
+        UIApplication.shared.isIdleTimerDisabled = defaults.keepAwake
+    }
+
     func togglePlayPause() {
         isPlaying.toggle()
         if isPlaying {
@@ -191,7 +195,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             stop()
         }
     }
-    
+
     func start() {
         if clickerType == .instant {
             song = Song.instantSong
@@ -206,17 +210,17 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         audio.startMetronome(bpm: bpm, subdivisions: groove.subdivisions, accentPattern: computeAccentPattern())
         isPlaying = true
     }
-    
+
     func stop() {
         audio.stopMetronome()
         flashlight.turnFlashlightOff()
         isPlaying = false
     }
-    
+
     func resetMetronome() {
         let wasPlaying = isPlaying
         stop()
-        
+
         if clickerType == .instant {
             song = Song.instantSong
             song.groove = selectedGroove
@@ -234,7 +238,8 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         }
     }
 
-    //MARK: Private helpers
+    // MARK: Private helpers
+
     private func computeAccentPattern() -> [Bool]? {
         let groove = clickerType == .instant ? selectedGroove : (song.groove ?? .quarter)
         guard groove.isOddMeter else { return nil }
@@ -253,7 +258,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             flashlight.turnFlashlightOn()
         }
     }
-    
+
     private func handleRhythm() {
         if defaults.useVibration {
             vibration.vibrateRhythm()

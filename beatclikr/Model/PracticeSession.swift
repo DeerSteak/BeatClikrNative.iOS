@@ -12,12 +12,12 @@ import SwiftData
 final class PracticeSession: Identifiable {
     var id: String?
     var date: Date?
-    
+
     @Relationship(deleteRule: .cascade)
     var songsPracticed: [PracticedSong]? = []
-    
+
     init(date: Date, songsPracticed: [PracticedSong] = []) {
-        self.id = UUID().uuidString
+        id = UUID().uuidString
         self.date = date
         self.songsPracticed = songsPracticed
     }

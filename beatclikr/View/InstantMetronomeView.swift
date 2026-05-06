@@ -5,26 +5,24 @@
 //  Created by Ben Funk on 8/3/23.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct InstantMetronomeView: View {
-    
     @State var showAlert: Bool
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: MetronomePlaybackViewModel
     @EnvironmentObject var practiceHistory: PracticeHistoryViewModel
-    
-    init () {
+
+    init() {
         _showAlert = State(initialValue: false)
     }
-    
+
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: 8) {
-                    
-                    // BPM card
+        ScrollView {
+            VStack(spacing: 8) {
+                // BPM card
+                CardContainer {
                     VStack(spacing: 8) {
                         HStack(spacing: 12) {
                             ZStack {
@@ -46,14 +44,14 @@ struct InstantMetronomeView: View {
                         }
                         BpmSliderControl(value: Binding(
                             get: { model.beatsPerMinute },
-                            set: { newValue in withAnimation { model.beatsPerMinute = newValue } }
+                            set: { newValue in withAnimation { model.beatsPerMinute = newValue } },
                         ))
                     }
                     .padding(12)
-                    .background(Color(UIColor.secondarySystemGroupedBackground))
-                    .cornerRadius(16)
-                    
-                    // Groove card
+                }
+
+                // Groove card
+                CardContainer {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Groove")
                             .font(.footnote)
@@ -64,10 +62,10 @@ struct InstantMetronomeView: View {
                         GrooveSelectorView(selection: $model.selectedGroove, beatPattern: $model.selectedBeatPattern)
                     }
                     .padding(12)
-                    .background(Color(UIColor.secondarySystemGroupedBackground))
-                    .cornerRadius(16)
-                    
-                    // Beat & Rhythm card
+                }
+
+                // Beat & Rhythm card
+                CardContainer {
                     VStack(spacing: 0) {
                         HStack {
                             Text("Beat")
@@ -120,36 +118,29 @@ struct InstantMetronomeView: View {
                         .padding(.horizontal, 12)
                         .padding(.vertical, 10)
                     }
-                    .background(Color(UIColor.secondarySystemGroupedBackground))
-                    .cornerRadius(16)
-                    
-                    // Play / Pause
-                    Button(action: togglePlayPause) {
-                        Label(
-                            model.isPlaying ? String(localized: "Pause") : String(localized: "Play"),
-                            systemImage: model.isPlaying ? ImageConstants.pause : ImageConstants.play
-                        )
-                        .font(.title2.bold())
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 2)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
-                    .tint(Color.appPrimary)
                 }
-                .padding()
+
+                // Play / Pause
+                Button(action: togglePlayPause) {
+                    Label(
+                        model.isPlaying ? String(localized: "Pause") : String(localized: "Play"),
+                        systemImage: model.isPlaying ? ImageConstants.pause : ImageConstants.play,
+                    )
+                    .font(.title2.bold())
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 2)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .tint(Color.appPrimary)
             }
-            .background(Color(UIColor.systemGroupedBackground))
-            .onDisappear(perform: model.stop)
-            .onAppear {
-                model.clickerType = .instant
-                UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
-            }
-            .navigationTitle("Instant Metronome")
-            .navigationBarTitleDisplayMode(UIScreen.main.bounds.height < 700 ? .inline : .large)
+            .padding()
         }
+        .background(Color(UIColor.systemGroupedBackground))
+        .onDisappear(perform: model.stop)
+        .onAppear(perform: model.onAppear)
     }
-    
+
     private func togglePlayPause() {
         if model.isPlaying {
             model.stop()
@@ -158,8 +149,6 @@ struct InstantMetronomeView: View {
             practiceHistory.recordSongPlayed(song: Song.instantSong, context: modelContext)
         }
     }
-    
-
 }
 
 #Preview {
@@ -167,5 +156,4 @@ struct InstantMetronomeView: View {
     return InstantMetronomeView()
         .modelContainer(previewContainer.container)
         .environmentObject(MetronomePlaybackViewModel())
-    
 }

@@ -6,18 +6,19 @@
 //
 
 import Foundation
+import UIKit
 import UserNotifications
 
 @MainActor
 class SettingsViewModel: ObservableObject {
-    private let defaults: UserDefaultsService = UserDefaultsService.instance
+    private let defaults: UserDefaultsService = .instance
     private let notificationService: any ReminderNotificationServicing
-    
+
     @Published var showPermissionDeniedAlert = false
     @Published var notificationsBlockedLocally = false
     @Published var notificationsDeferredLocally = false
     @Published var showCrossDeviceReminderPrompt = false
-    
+
     @Published var sendReminders: Bool {
         didSet {
             defaults.sendReminders = sendReminders
@@ -30,7 +31,7 @@ class SettingsViewModel: ObservableObject {
             }
         }
     }
-    
+
     @Published var reminderTime: Date {
         didSet {
             defaults.reminderTime = reminderTime
@@ -39,43 +40,51 @@ class SettingsViewModel: ObservableObject {
             }
         }
     }
-    
+
     @Published var useFlashlight: Bool {
         didSet { defaults.useFlashlight = useFlashlight }
     }
-    
+
     @Published var useVibration: Bool {
         didSet { defaults.useVibration = useVibration }
     }
-    
+
     @Published var muteMetronome: Bool {
         didSet { defaults.muteMetronome = muteMetronome }
     }
-    
+
     @Published var instantBeat: FileConstants {
         didSet { defaults.instantBeat = instantBeat }
     }
-    
+
     @Published var instantRhythm: FileConstants {
         didSet { defaults.instantRhythm = instantRhythm }
     }
-    
+
     @Published var playlistBeat: FileConstants {
         didSet { defaults.playlistBeat = playlistBeat }
     }
-    
+
     @Published var playlistRhythm: FileConstants {
         didSet { defaults.playlistRhythm = playlistRhythm }
     }
-    
+
+    @Published var polyrhythmBeat: FileConstants {
+        didSet { defaults.polyrhythmBeat = polyrhythmBeat }
+    }
+
+    @Published var polyrhythmRhythm: FileConstants {
+        didSet { defaults.polyrhythmRhythm = polyrhythmRhythm }
+    }
+
     @Published var keepAwake: Bool {
         didSet { defaults.keepAwake = keepAwake }
     }
-    
+
     @Published var sixteenthAlternate: Bool {
         didSet { defaults.sixteenthAlternate = sixteenthAlternate }
     }
-    
+
     init(notificationService: any ReminderNotificationServicing = ReminderNotificationService()) {
         self.notificationService = notificationService
         sendReminders = defaults.sendReminders
@@ -87,21 +96,23 @@ class SettingsViewModel: ObservableObject {
         instantRhythm = defaults.instantRhythm
         playlistBeat = defaults.playlistBeat
         playlistRhythm = defaults.playlistRhythm
+        polyrhythmBeat = defaults.polyrhythmBeat
+        polyrhythmRhythm = defaults.polyrhythmRhythm
         keepAwake = defaults.keepAwake
         sixteenthAlternate = defaults.sixteenthAlternate
         notificationsDeferredLocally = UserDefaults.standard.object(forKey: PreferenceKeys.remindersDeferredDate) != nil
-        
+
         if sendReminders {
             checkPermissionsFromExternalTrigger()
         }
-        
+
         defaults.onSendRemindersEnabled = { [weak self] in
             Task { @MainActor [weak self] in
                 self?.checkPermissionsFromExternalTrigger()
             }
         }
     }
-    
+
     private func requestPermissionAndSchedule() {
         Task { @MainActor in
             switch await notificationService.checkAndRequestAuthorization() {
@@ -117,7 +128,7 @@ class SettingsViewModel: ObservableObject {
             }
         }
     }
-    
+
     private func checkPermissionsFromExternalTrigger() {
         Task { @MainActor in
             switch await notificationService.currentAuthorizationStatus() {
@@ -138,7 +149,7 @@ class SettingsViewModel: ObservableObject {
             }
         }
     }
-    
+
     func allowRemindersFromOtherDevice() {
         Task { @MainActor in
             switch await notificationService.checkAndRequestAuthorization() {
@@ -153,15 +164,15 @@ class SettingsViewModel: ObservableObject {
             }
         }
     }
-    
+
     func declineRemindersFromOtherDevice() {
         UserDefaults.standard.set(
             Date.now.timeIntervalSinceReferenceDate,
-            forKey: PreferenceKeys.remindersDeferredDate
+            forKey: PreferenceKeys.remindersDeferredDate,
         )
         notificationsDeferredLocally = true
     }
-    
+
     func refreshNotificationStatus() {
         guard sendReminders else { return }
         Task { @MainActor in
@@ -175,12 +186,24 @@ class SettingsViewModel: ObservableObject {
             }
         }
     }
-    
+
+    func openNotificationSettings() {
+        #if targetEnvironment(macCatalyst)
+            if let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") {
+                UIApplication.shared.open(url)
+            }
+        #else
+            if let url = URL(string: UIApplication.openSettingsURLString) {
+                UIApplication.shared.open(url)
+            }
+        #endif
+    }
+
     func rescheduleReminder(bodies: [String]) {
         guard sendReminders else { return }
         notificationService.schedule(bodies: bodies, at: reminderTime)
     }
-    
+
     private func clearDeferral() {
         UserDefaults.standard.removeObject(forKey: PreferenceKeys.remindersDeferredDate)
         notificationsDeferredLocally = false

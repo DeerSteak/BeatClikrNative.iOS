@@ -1,24 +1,24 @@
 //
-//  FlashlightHelper.swift
+//  FlashlightService.swift
 //  beatclikr
 //
 //  Created by Ben Funk on 8/6/23.
 //
 
-import Foundation
 import AVKit
+import Foundation
 
 @MainActor
 class FlashlightService {
     static let instance = FlashlightService()
-    
+
     private var hasFlashlight: Bool
-    
+
     init() {
         let device = AVCaptureDevice.default(for: .video)
         hasFlashlight = device?.hasTorch ?? false
     }
-    
+
     func turnFlashlightOn() {
         if hasFlashlight {
             guard let device = AVCaptureDevice.default(for: .video) else { return }
@@ -32,7 +32,7 @@ class FlashlightService {
             }
         }
     }
-    
+
     func turnFlashlightOff() {
         if hasFlashlight {
             guard let device = AVCaptureDevice.default(for: .video) else { return }

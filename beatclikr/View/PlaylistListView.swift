@@ -5,11 +5,10 @@
 //  created by Ben Funk on 4/30/26
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct PlaylistListView: View {
-    
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: PlaylistListViewModel
     @Query(sort: \Playlist.name) private var playlists: [Playlist]
@@ -110,14 +109,14 @@ struct PlaylistListView: View {
                     let playlist = model.createPlaylist(name: name, context: modelContext)
                     path.append(playlist)
                 }
-                Button("Cancel", role: .cancel) { }
+                Button("Cancel", role: .cancel) {}
             }
             .alert("Rename Playlist", isPresented: $showingRenameAlert, presenting: playlistToRename) { playlist in
                 TextField("Name", text: $renameText)
                 Button("Rename") {
                     model.renamePlaylist(playlist, name: renameText, context: modelContext)
                 }
-                Button("Cancel", role: .cancel) { }
+                Button("Cancel", role: .cancel) {}
             }
         }
         .onAppear { path = NavigationPath() }
@@ -129,7 +128,7 @@ struct PlaylistListView: View {
     let songs = preview.addMockSongs()
     preview.addMockPlaylist(named: "Rock Classics", songs: songs)
     preview.addMockPlaylist(named: "Ballads", songs: Array(songs.prefix(2)))
-    
+
     return PlaylistListView()
         .modelContainer(preview.container)
         .environmentObject(PlaylistListViewModel())

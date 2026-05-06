@@ -1,17 +1,16 @@
 //
-//  PlaylistModeViewModel.swift
+//  PlaylistDetailViewModel.swift
 //  beatclikr
 //
 //  Created by Ben Funk on 4/11/26.
 //
 
 import Foundation
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 @MainActor
 class PlaylistDetailViewModel: SongNavigationViewModel {
-
     func addSongToPlaylist(_ song: Song, playlist: Playlist, context: ModelContext) {
         withAnimation {
             let entry = PlaylistEntry(song: song, sequence: (playlist.entries ?? []).count)
@@ -43,7 +42,7 @@ class PlaylistDetailViewModel: SongNavigationViewModel {
     }
 
     func sortEntries(fromOffsets: IndexSet, toOffset: Int, entries: [PlaylistEntry], context: ModelContext) {
-        var revisedEntries = entries.map { $0 }
+        var revisedEntries = entries.map(\.self)
         revisedEntries.move(fromOffsets: fromOffsets, toOffset: toOffset)
         for (index, entry) in revisedEntries.enumerated() {
             entry.sequence = index

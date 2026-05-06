@@ -5,11 +5,10 @@
 //  Created by Ben Funk on 4/10/26.
 //
 
-import XCTest
 @testable import BeatClikr
+import XCTest
 
 final class MetronomeTimingTests: XCTestCase {
-
     // MARK: - Subdivision Duration Tests
 
     func testSubdivisionDurationCalculation() {

@@ -5,8 +5,8 @@
 //  Created by Ben Funk on 4/10/26.
 //
 
-import Foundation
 import AudioKit
+import Foundation
 
 /// Protocol for metronome audio playback engines.
 /// Abstracts the difference between simulator (AudioPlayer) and device (AppleSampler/Sequencer) implementations.
@@ -34,5 +34,7 @@ protocol MetronomeAudioEngine {
 /// Delegate protocol for metronome beat callbacks
 @MainActor
 protocol MetronomeAudioEngineDelegate: AnyObject {
-    func metronomeBeatFired(isBeat: Bool)
+    /// `beatInterval` is the time (in seconds) until the next accented beat fires,
+    /// so animations can match the actual rhythmic group length.
+    func metronomeBeatFired(isBeat: Bool, beatInterval: TimeInterval)
 }

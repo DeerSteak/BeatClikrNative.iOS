@@ -9,7 +9,6 @@ import XCTest
 
 @MainActor
 final class SettingsUITests: XCTestCase {
-
     var app: XCUIApplication!
 
     override func setUp() async throws {
@@ -21,7 +20,7 @@ final class SettingsUITests: XCTestCase {
         app = nil
     }
 
-    // Launches with a known clean notification state (resets defaults in the app on UI_TESTING_PRACTICE_STATE).
+    /// Launches with a known clean notification state (resets defaults in the app on UI_TESTING_PRACTICE_STATE).
     private func launchApp(notificationState: String? = nil) {
         app.launchEnvironment["UI_TESTING_PRACTICE_STATE"] = "empty"
         if let state = notificationState {
@@ -47,7 +46,7 @@ final class SettingsUITests: XCTestCase {
         navigateToSettings()
         XCTAssertTrue(
             app.navigationBars["Settings"].waitForExistence(timeout: 3),
-            "Settings navigation bar title should be visible"
+            "Settings navigation bar title should be visible",
         )
     }
 
@@ -59,15 +58,16 @@ final class SettingsUITests: XCTestCase {
         _ = app.navigationBars["Settings"].waitForExistence(timeout: 3)
         XCTAssertFalse(
             app.staticTexts["Reminders aren't enabled on this device."].exists,
-            "Deferred warning should not appear when sendReminders is off"
+            "Deferred warning should not appear when sendReminders is off",
         )
         XCTAssertFalse(
             app.staticTexts["Notifications are blocked on this device. You may still receive them on other devices."].exists,
-            "Blocked warning should not appear when sendReminders is off"
+            "Blocked warning should not appear when sendReminders is off",
         )
     }
 
     // MARK: - Deferred state
+
     //
     // The deferred warning ("Reminders aren't enabled on this device.") requires
     // UNAuthorizationStatus == .notDetermined. On a simulator where permissions were
@@ -83,7 +83,7 @@ final class SettingsUITests: XCTestCase {
         _ = app.navigationBars["Settings"].waitForExistence(timeout: 3)
         XCTAssertFalse(
             app.staticTexts["Notifications are blocked on this device. You may still receive them on other devices."].exists,
-            "Blocked warning must not appear when notification state is deferred (not denied)"
+            "Blocked warning must not appear when notification state is deferred (not denied)",
         )
     }
 
@@ -95,7 +95,7 @@ final class SettingsUITests: XCTestCase {
         navigateToSettings()
         XCTAssertTrue(
             app.datePickers.firstMatch.waitForExistence(timeout: 5),
-            "Reminder time picker should be visible when sendReminders is on"
+            "Reminder time picker should be visible when sendReminders is on",
         )
     }
 }

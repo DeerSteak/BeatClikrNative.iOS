@@ -10,12 +10,12 @@ import SwiftUI
 struct PlaylistTransportView: View {
     @EnvironmentObject var metronome: MetronomePlaybackViewModel
 
-    var currentTitle: String? = nil
-    var onPlay: (() -> Void)? = nil
+    var currentTitle: String?
+    var onPlay: (() -> Void)?
     var canGoPrevious: Bool = false
-    var onPrevious: (() -> Void)? = nil
+    var onPrevious: (() -> Void)?
     var canGoNext: Bool = false
-    var onNext: (() -> Void)? = nil
+    var onNext: (() -> Void)?
 
     var body: some View {
         VStack(spacing: 12) {
@@ -33,7 +33,7 @@ struct PlaylistTransportView: View {
                         .frame(height: 56)
                         .background(
                             RoundedRectangle(cornerRadius: 12)
-                                .fill(canGoPrevious ? Color.accent : Color.secondary.opacity(0.3))
+                                .fill(canGoPrevious ? Color.accent : Color.secondary.opacity(0.3)),
                         )
                         .foregroundStyle(.white)
                     }
@@ -54,7 +54,7 @@ struct PlaylistTransportView: View {
                         .frame(height: 56)
                         .background(
                             RoundedRectangle(cornerRadius: 12)
-                                .fill(canGoNext ? Color.accent : Color.secondary.opacity(0.3))
+                                .fill(canGoNext ? Color.accent : Color.secondary.opacity(0.3)),
                         )
                         .foregroundStyle(.white)
                     }
@@ -96,7 +96,7 @@ struct PlaylistTransportView: View {
                 .frame(width: 56, height: 56)
                 .background(
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(Color.accent)
+                        .fill(Color.accent),
                 )
                 .foregroundStyle(.white)
         }

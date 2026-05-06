@@ -5,24 +5,22 @@
 //  Created by Ben Funk on 8/7/23.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct PlaylistDetailView: View {
-    
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var metronome: MetronomePlaybackViewModel
     @EnvironmentObject var practiceHistory: PracticeHistoryViewModel
     @StateObject private var model = PlaylistDetailViewModel()
-    
+
     let playlist: Playlist
-    
+
     @State private var editMode: EditMode = .inactive
     @State private var showingSongPicker = false
     @State private var editingSong: Song?
     @State private var tappedId: String?
-    
-    @ViewBuilder
+
     private func playlistRow(for song: Song, entry: PlaylistEntry, at index: Int, in entries: [PlaylistEntry]) -> some View {
         HStack {
             if editMode.isEditing {
@@ -60,7 +58,7 @@ struct PlaylistDetailView: View {
             }
             .buttonStyle(.plain)
             .disabled(editMode.isEditing)
-            
+
             if editMode.isEditing {
                 Button {
                     editingSong = song
@@ -80,10 +78,10 @@ struct PlaylistDetailView: View {
                 Color(UIColor.systemBackground)
                 Color.appPrimary.opacity(tappedId == entry.id ? 0.25 : 0)
                     .animation(.easeOut(duration: 0.5), value: tappedId)
-            }
+            },
         )
     }
-    
+
     var body: some View {
         let entries = (playlist.entries ?? []).sorted { ($0.sequence ?? 0) < ($1.sequence ?? 0) }
         ScrollViewReader { proxy in
@@ -119,14 +117,14 @@ struct PlaylistDetailView: View {
                 }
             }
             .safeAreaInset(edge: .bottom) {
-                if !editMode.isEditing && !entries.isEmpty {
+                if !editMode.isEditing, !entries.isEmpty {
                     PlaylistTransportView(
                         currentTitle: model.currentSongTitle(in: entries),
                         onPlay: { model.playOrResume(items: entries, metronome: metronome) },
                         canGoPrevious: model.canGoPrevious(items: entries),
                         onPrevious: { model.playPrevious(items: entries, metronome: metronome) },
                         canGoNext: model.canGoNext(items: entries),
-                        onNext: { model.playNext(items: entries, metronome: metronome) }
+                        onNext: { model.playNext(items: entries, metronome: metronome) },
                     )
                 }
             }
@@ -159,7 +157,7 @@ struct PlaylistDetailView: View {
         }
         .onDisappear(perform: metronome.stop)
         .onAppear {
-            UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
+            model.onAppear()
             model.onSongPlayed = { song in
                 practiceHistory.recordSongPlayed(song: song, context: modelContext)
             }
@@ -171,7 +169,7 @@ struct PlaylistDetailView: View {
     let preview = PreviewContainer([Song.self, PlaylistEntry.self, Playlist.self])
     let songs = preview.addMockSongs()
     let playlist = preview.addMockPlaylist(named: "My Playlist", songs: songs)
-    
+
     return NavigationStack {
         PlaylistDetailView(playlist: playlist)
     }

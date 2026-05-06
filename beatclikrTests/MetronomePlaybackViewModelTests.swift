@@ -5,12 +5,11 @@
 //  Created by Ben Funk on 4/10/26.
 //
 
-import XCTest
 @testable import BeatClikr
+import XCTest
 
 @MainActor
 final class MetronomePlaybackViewModelTests: XCTestCase {
-
     var viewModel: MetronomePlaybackViewModel!
 
     override func setUp() async throws {

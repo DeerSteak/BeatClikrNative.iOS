@@ -18,18 +18,18 @@ final class PracticedSong: Identifiable, SongDisplayable {
     var groove: Groove?
     var timesPracticed: Int?
     var songId: String?
-    
+
     @Relationship(inverse: \PracticeSession.songsPracticed)
     var practiceSession: PracticeSession?
-    
+
     init(from song: Song) {
-        self.id = UUID().uuidString
-        self.title = song.title
-        self.artist = song.artist
-        self.beatsPerMinute = song.beatsPerMinute
-        self.beatsPerMeasure = song.beatsPerMeasure
-        self.groove = song.groove
-        self.timesPracticed = 1
-        self.songId = song.id
+        id = UUID().uuidString
+        title = song.title
+        artist = song.artist
+        beatsPerMinute = song.beatsPerMinute
+        beatsPerMeasure = song.beatsPerMeasure
+        groove = song.groove
+        timesPracticed = 1
+        songId = song.id
     }
 }
