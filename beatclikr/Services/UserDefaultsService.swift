@@ -95,6 +95,10 @@ class UserDefaultsService: ObservableObject {
     @Published var polyrhythmRhythm: FileConstants {
         didSet { syncSave(polyrhythmRhythm, oldValue: oldValue, key: PreferenceKeys.polyrhythmRhythm) }
     }
+
+    @Published var polyrhythmBpm: Double {
+        didSet { syncSave(polyrhythmBpm, oldValue: oldValue, key: PreferenceKeys.polyrhythmBpm) }
+    }
     
     private let defaults = UserDefaults.standard
     private let cloud = NSUbiquitousKeyValueStore.default
@@ -121,6 +125,7 @@ class UserDefaultsService: ObservableObject {
         polyrhythmRhythm = Self.loadEnum(defaults, key: PreferenceKeys.polyrhythmRhythm, default: .ClickLo)
         polyrhythmBeats = Self.loadNonZeroInt(defaults, key: PreferenceKeys.polyrhythmBeats, default: 3)
         polyrhythmAgainst = Self.loadNonZeroInt(defaults, key: PreferenceKeys.polyrhythmAgainst, default: 2)
+        polyrhythmBpm = Self.loadNonZeroDouble(defaults, key: PreferenceKeys.polyrhythmBpm, default: 60)
         
         sendReminders = defaults.bool(forKey: PreferenceKeys.sendReminders)
         reminderTime = Self.loadNonZeroDate(defaults, key: PreferenceKeys.reminderTime, default: .now)
@@ -162,6 +167,7 @@ class UserDefaultsService: ObservableObject {
         self.polyrhythmRhythm = cloudEnum(PreferenceKeys.polyrhythmRhythm, default: .ClickLo)
         self.polyrhythmBeats = cloudNonZeroInt(PreferenceKeys.polyrhythmBeats, default: 3)
         self.polyrhythmAgainst = cloudNonZeroInt(PreferenceKeys.polyrhythmAgainst, default: 2)
+        self.polyrhythmBpm = cloudNonZeroDouble(PreferenceKeys.polyrhythmBpm, default: 60)
         
         let wasSendingReminders = self.sendReminders
         self.sendReminders = cloud.bool(forKey: PreferenceKeys.sendReminders)

@@ -25,8 +25,9 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
         }
     }
 
-    @Published var bpm: Double = 60 {
+    @Published var bpm: Double {
         didSet {
+            defaults.polyrhythmBpm = bpm
             if isPlaying { start() }
         }
     }
@@ -70,6 +71,7 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
         self.defaults = defaults
         beats = defaults.polyrhythmBeats
         against = defaults.polyrhythmAgainst
+        bpm = defaults.polyrhythmBpm
         beat = defaults.polyrhythmBeat
         rhythm = defaults.polyrhythmRhythm
         audio.polyrhythmDelegate = self
@@ -106,6 +108,10 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
     }
 
     // MARK: - Playback control
+
+    func onAppear() {
+        UIApplication.shared.isIdleTimerDisabled = defaults.keepAwake
+    }
 
     func togglePlayPause() {
         if isPlaying { stop() } else { start() }

@@ -148,9 +148,7 @@ struct PolyrhythmView: View {
         }
         .background(Color(UIColor.systemGroupedBackground))
         .onDisappear(perform: model.stop)
-        .onAppear {
-            UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
-        }
+        .onAppear(perform: model.onAppear)
     }
 }
 

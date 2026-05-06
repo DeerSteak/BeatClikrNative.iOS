@@ -29,6 +29,7 @@ struct PreferenceKeys {
     static let polyrhythmRhythm = "PolyrhythmRhythm"
     static let polyrhythmBeats = "PolyrhythmBeats"
     static let polyrhythmAgainst = "PolyrhythmAgainst"
+    static let polyrhythmBpm = "PolyrhythmBpm"
 
     // MARK: - Local only (UserDefaults only, never synced)
     static let onboarded = "Onboarded"
