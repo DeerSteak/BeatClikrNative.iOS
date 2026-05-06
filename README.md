@@ -26,11 +26,13 @@ BeatClikr follows an MVVM architecture with a clean separation of concerns:
 - **PlaylistEntry** - SwiftData model for ordered playlist entries (linked to Song, with sequence index)
 - **PracticeSession** - SwiftData model for a single day's practice session; owns a list of `PracticedSong` records
 - **PracticedSong** - SwiftData model recording a song's title, BPM, groove, and play count within a session
-- **Groove** - Enum defining subdivision types (quarter notes, eighth notes, triplets, sixteenths)
+- **Groove** - Enum defining subdivision types: `quarter` (1), `eighth` (2), `triplet` (3), `sixteenth` (4), `oddMeterQuarter` (1 subdivision, accent-driven), `oddMeterEighth` (2 subdivisions, accent-driven). The `isOddMeter` property is true for the last two; `subdivisions` returns the number of ticks per beat used by the audio engine
+- **BeatPattern** - Enum encoding odd-meter accent groups as a comma-separated string raw value (e.g. `"3,2,2"` for 7/8). The `accentArray` computed property converts this to `[Bool]` where `true` marks the first tick of each group and `false` fills the remaining ticks — e.g. `"3,2,2"` → `[true, false, false, true, false, true, false]`. Patterns cover 5/8 through 15/8
 - **ClickerType** - Enum distinguishing instant vs. playlist metronome modes
 
 ### ViewModels (EnvironmentObjects)
-- **MetronomePlaybackViewModel** - Orchestrates metronome playback, coordinates services, handles UI state (beat pulse, isPlaying)
+- **MetronomePlaybackViewModel** - Orchestrates metronome playback, coordinates services, handles UI state (`iconScale`, `beatPulse`, `isPlaying`). Receives `metronomeBeatFired(isBeat:beatInterval:)` callbacks and animates the metronome icon and beat pulse over exactly `beatInterval` seconds — the engine-computed time to the next accented beat — so animations stay in sync with the actual rhythmic group length rather than always using a fixed quarter-note duration
+- **PolyrhythmViewModel** - Manages polyrhythm mode state: the M:N ratio (`beats` and `against`, each 1–9), BPM, sound selection, and per-row dot animations (`beatPulse`/`rhythmPulse`, `activeBeatIndex`/`activeRhythmIndex`). Receives `polyrhythmBeatFired` callbacks and fades each row's pulse over the appropriate interval: quarter-note duration for the beat row, rhythmInterval (`against × quarterNote / beats`) for the rhythm row
 - **SettingsViewModel** - Manages user preferences and notification permission state. Maintains three separate permission states: `notificationsBlockedLocally` (system denied), `notificationsDeferredLocally` (user tapped "Not Now" on the cross-device pre-prompt), and `showCrossDeviceReminderPrompt` (undetermined, needs to ask). Delegates all scheduling to `ReminderNotificationService`; see *Cross-Device Notification Permissions* below
 - **SongLibraryViewModel** - Handles song library CRUD operations and playback
 - **PlaylistListViewModel** - Manages the list of playlists (create, delete)
@@ -39,7 +41,8 @@ BeatClikr follows an MVVM architecture with a clean separation of concerns:
 
 ### Views
 - **HomeView** - Root container; uses `TabView` on iPhone and `NavigationSplitView` on iPad/Mac; sections: Instant, Library, Playlists, History, Settings. Hosts root-level alerts for notification permission flows (`showPermissionDeniedAlert`, `showCrossDeviceReminderPrompt`) so they surface regardless of which tab is active
-- **InstantMetronomeView** - Standalone metronome with live BPM/groove controls and tap tempo
+- **MetronomeContainerView** - iPhone-only container that hosts Instant and Polyrhythm as a segmented-control top tab inside a single `NavigationStack`, so both modes share one bottom tab
+- **InstantMetronomeView** - Standalone metronome with live BPM/groove controls and tap tempo; when an odd meter groove is selected, also shows a `BeatPattern` picker
 - **SongLibraryView** - Browsable song list; tap to play, swipe or edit to delete, + to add
 - **PlaylistListView** - List of all named playlists; tap to open, swipe to delete, + to create
 - **PlaylistDetailView** - Ordered playlist with inline edit/reorder; shows transport bar when playing
@@ -56,8 +59,9 @@ BeatClikr follows an MVVM architecture with a clean separation of concerns:
 - **SharableStreakCard** - 360×360 shareable image card showing the streak count with the app icon and a black-to-blue gradient; rendered off-screen via `ImageRenderer` for the share sheet
 
 ### Services Layer
-- **AudioKitMetronomeEngine** - Sample-accurate metronome using AudioKit's AppleSampler
-- **AudioPlayerService** - Wrapper for audio engine, manages sound loading and playback
+- **AudioKitMetronomeEngine** - Sample-accurate metronome using AudioKit's AppleSampler. For odd meter grooves, steps through a `[Bool]` accent pattern on every subdivision tick and computes `beatInterval` (time to the next `true` entry) so the delegate can animate each group correctly
+- **AudioKitPolyrhythmEngine** - Polyrhythm engine using a least-common-multiple grid. For M beats against N: cycle = N quarter notes; grid = LCM(M, N) equal steps; beat fires every LCM/N steps; rhythm fires every LCM/M steps. Step duration = N × (60/bpm) / LCM. Fires `polyrhythmBeatFired` with `beatFired`, `rhythmFired`, `beatIndex` (0..<N), and `rhythmIndex` (0..<M) so the view can animate individual dots independently
+- **AudioPlayerService** - Singleton wrapper that owns both `AudioKitMetronomeEngine` and `AudioKitPolyrhythmEngine` (they share the same `AppleSampler`). Forwards delegate callbacks to `MetronomePlaybackViewModel` (via `delegate`) and `PolyrhythmViewModel` (via `polyrhythmDelegate`)
 - **FlashlightService** - Controls device flashlight for visual accessibility
 - **VibrationService** - Manages haptic feedback (UIImpactFeedbackGenerator)
 - **UserDefaultsService** - Persists user preferences to both `UserDefaults.standard` and `NSUbiquitousKeyValueStore` for cross-device sync. Observes `didChangeExternallyNotification` to pull in changes from other devices. Exposes an `onSendRemindersEnabled` callback that fires when `sendReminders` transitions `false → true` via cloud sync, so `SettingsViewModel` can respond without coupling the two layers with Combine
@@ -136,6 +140,78 @@ The `AudioPlayerService` manages:
 - Mapping user preferences (beat/rhythm selection) to the correct MIDI notes
 - Starting/stopping the metronome
 - Real-time tempo and subdivision updates
+
+## About Odd Meter (Accented Patterns)
+
+The **Odd Quarter** and **Odd Eighth** grooves let the user play in asymmetric meters like 5/8, 7/8, 9/8, 11/8, 13/8, and 15/8. The meter is defined by a `BeatPattern` that describes how the total subdivisions are grouped.
+
+### How BeatPattern works
+
+A `BeatPattern` raw value is a comma-separated list of group sizes, e.g. `"3,2,2"` for 7/8. Its `accentArray` property converts this into a flat `[Bool]` array where `true` marks the first tick of each group:
+
+```
+"3,2,2"  →  [true, false, false, true, false, true, false]
+```
+
+This array is passed directly to `AudioKitMetronomeEngine` as the `accentPattern`. The engine steps through it on every subdivision tick: a `true` entry triggers the beat sound and fires `isBeat: true` to the delegate; a `false` entry triggers the rhythm (subdivision) sound and fires `isBeat: false`.
+
+### Subdivision rate
+
+- **Odd Quarter** (`subdivisions = 1`): one tick per quarter note. Accent groups are counted in quarter notes. Use this for meters where the quarter note is the pulse (e.g. 7/4 felt as 3+2+2 quarters).
+- **Odd Eighth** (`subdivisions = 2`): two ticks per quarter note (eighth-note grid). Accent groups are counted in eighth notes. Use this for meters where the eighth note is the pulse (e.g. 7/8 felt as 3+2+2 eighths).
+
+### Beat interval and animation
+
+When the engine fires an accented beat (`isBeat: true`), it looks ahead in the pattern to count how many subdivision ticks remain until the *next* accented beat, then passes that duration as `beatInterval` to the delegate:
+
+```
+beatInterval = ticksToNextBeat × subdivisionDuration
+```
+
+For a 7/8 (3+2+2) pattern at 120 BPM with Odd Eighth:
+- Subdivision duration = 60 / (120 × 2) = 250 ms
+- Beat 1 (group of 3): beatInterval = 3 × 250 ms = **750 ms**
+- Beat 2 (group of 2): beatInterval = 2 × 250 ms = **500 ms**
+- Beat 3 (group of 2): beatInterval = 2 × 250 ms = **500 ms**
+
+`MetronomePlaybackViewModel` uses `beatInterval` as the animation duration for both `iconScale` and `beatPulse`, so the metronome icon and any pulsing views expand at each beat and fade out over exactly the time until the next beat — matching the feel of the rhythmic group rather than a fixed quarter note.
+
+For regular grooves (no accent pattern), `beatInterval` is always `60 / bpm` (one quarter note), so the behavior is identical to before.
+
+## About Polyrhythm
+
+The Polyrhythm mode lets the user layer two independent rhythms at the same tempo: **M beats against N** (each 1–9). Both rhythms complete one cycle in the same total duration — N quarter notes.
+
+### LCM grid approach
+
+`AudioKitPolyrhythmEngine` computes the least common multiple of M and N to create a fine grid of equal time steps that aligns both rhythms exactly:
+
+```
+Grid steps per cycle  = LCM(M, N)
+Beat fires every      = LCM / N  steps  (fires N times per cycle)
+Rhythm fires every    = LCM / M  steps  (fires M times per cycle)
+Step duration         = N × (60 / bpm) / LCM
+```
+
+**Example — 3 against 2 at 60 BPM:**
+- LCM(3, 2) = 6 grid steps
+- Beat fires every 3 steps → 2 times per cycle (against = 2)
+- Rhythm fires every 2 steps → 3 times per cycle (beats = 3)
+- Cycle = 2 × 1.0 s = 2.0 s; step duration = 2.0 / 6 ≈ 333 ms
+
+The engine fires `polyrhythmBeatFired(beatFired:rhythmFired:beatIndex:rhythmIndex:)` at every grid step where at least one rhythm lands. Both can fire simultaneously on a shared step (e.g. the downbeat at step 0).
+
+### Visual dot rows
+
+`PolyrhythmView` shows two dot rows:
+- **Beat row** — N dots (one per `against` quarter note); the active dot lights up when the beat fires
+- **Rhythm row** — M dots (one per rhythm note); the active dot lights up when the rhythm fires
+
+Each row has a single pulse value (`beatPulse` / `rhythmPulse`) that snaps to 1.0 on a firing and fades linearly to 0.0 over the interval to the next firing in that row:
+- Beat pulse fades over one quarter note: `60 / bpm`
+- Rhythm pulse fades over one rhythm interval: `against × (60 / bpm) / beats`
+
+The active dot index and the shared pulse are stored in `PolyrhythmViewModel` and observed by the view.
 
 ## Tap Tempo
 
