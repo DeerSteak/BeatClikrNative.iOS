@@ -26,11 +26,11 @@ struct SettingsCard<Content: View, Footer: View>: View {
                 .tracking(1)
                 .textCase(.uppercase)
                 .padding(.horizontal, 4)
-            VStack(spacing: 0) {
-                content
+            CardContainer {
+                VStack(spacing: 0) {
+                    content
+                }
             }
-            .background(Color(UIColor.secondarySystemGroupedBackground))
-            .cornerRadius(16)
             footer
         }
     }

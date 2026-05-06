@@ -21,9 +21,10 @@ struct InstantMetronomeView: View {
     
     var body: some View {
         ScrollView {
-                VStack(spacing: 8) {
-                    
-                    // BPM card
+            VStack(spacing: 8) {
+                
+                // BPM card
+                CardContainer {
                     VStack(spacing: 8) {
                         HStack(spacing: 12) {
                             ZStack {
@@ -49,10 +50,10 @@ struct InstantMetronomeView: View {
                         ))
                     }
                     .padding(12)
-                    .background(Color(UIColor.secondarySystemGroupedBackground))
-                    .cornerRadius(16)
-                    
-                    // Groove card
+                }
+                
+                // Groove card
+                CardContainer {
                     VStack(alignment: .leading, spacing: 8) {
                         Text("Groove")
                             .font(.footnote)
@@ -63,10 +64,10 @@ struct InstantMetronomeView: View {
                         GrooveSelectorView(selection: $model.selectedGroove, beatPattern: $model.selectedBeatPattern)
                     }
                     .padding(12)
-                    .background(Color(UIColor.secondarySystemGroupedBackground))
-                    .cornerRadius(16)
-                    
-                    // Beat & Rhythm card
+                }
+                
+                // Beat & Rhythm card
+                CardContainer {
                     VStack(spacing: 0) {
                         HStack {
                             Text("Beat")
@@ -91,10 +92,10 @@ struct InstantMetronomeView: View {
                         }
                         .padding(.horizontal, 12)
                         .padding(.vertical, 10)
-
+                        
                         Divider()
                             .padding(.leading, 12)
-
+                        
                         HStack {
                             Text("Rhythm")
                                 .foregroundStyle(.primary)
@@ -119,31 +120,30 @@ struct InstantMetronomeView: View {
                         .padding(.horizontal, 12)
                         .padding(.vertical, 10)
                     }
-                    .background(Color(UIColor.secondarySystemGroupedBackground))
-                    .cornerRadius(16)
-                    
-                    // Play / Pause
-                    Button(action: togglePlayPause) {
-                        Label(
-                            model.isPlaying ? String(localized: "Pause") : String(localized: "Play"),
-                            systemImage: model.isPlaying ? ImageConstants.pause : ImageConstants.play
-                        )
-                        .font(.title2.bold())
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 2)
-                    }
-                    .buttonStyle(.borderedProminent)
-                    .controlSize(.large)
-                    .tint(Color.appPrimary)
                 }
-                .padding()
+                
+                // Play / Pause
+                Button(action: togglePlayPause) {
+                    Label(
+                        model.isPlaying ? String(localized: "Pause") : String(localized: "Play"),
+                        systemImage: model.isPlaying ? ImageConstants.pause : ImageConstants.play
+                    )
+                    .font(.title2.bold())
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 2)
+                }
+                .buttonStyle(.borderedProminent)
+                .controlSize(.large)
+                .tint(Color.appPrimary)
             }
-            .background(Color(UIColor.systemGroupedBackground))
-            .onDisappear(perform: model.stop)
-            .onAppear {
-                model.clickerType = .instant
-                UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
-            }
+            .padding()
+        }
+        .background(Color(UIColor.systemGroupedBackground))
+        .onDisappear(perform: model.stop)
+        .onAppear {
+            model.clickerType = .instant
+            UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
+        }
     }
     
     private func togglePlayPause() {
@@ -154,8 +154,6 @@ struct InstantMetronomeView: View {
             practiceHistory.recordSongPlayed(song: Song.instantSong, context: modelContext)
         }
     }
-    
-
 }
 
 #Preview {
@@ -163,5 +161,4 @@ struct InstantMetronomeView: View {
     return InstantMetronomeView()
         .modelContainer(previewContainer.container)
         .environmentObject(MetronomePlaybackViewModel())
-    
 }
