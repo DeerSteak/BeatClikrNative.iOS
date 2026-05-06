@@ -180,6 +180,11 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
     }
     
+    func onAppear() {
+        clickerType = .instant
+        UIApplication.shared.isIdleTimerDisabled = defaults.keepAwake
+    }
+
     func togglePlayPause() {
         isPlaying.toggle()
         if isPlaying {

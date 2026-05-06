@@ -140,10 +140,7 @@ struct InstantMetronomeView: View {
         }
         .background(Color(UIColor.systemGroupedBackground))
         .onDisappear(perform: model.stop)
-        .onAppear {
-            model.clickerType = .instant
-            UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
-        }
+        .onAppear(perform: model.onAppear)
     }
     
     private func togglePlayPause() {

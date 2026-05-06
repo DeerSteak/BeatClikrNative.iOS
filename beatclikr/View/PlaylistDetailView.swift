@@ -159,7 +159,7 @@ struct PlaylistDetailView: View {
         }
         .onDisappear(perform: metronome.stop)
         .onAppear {
-            UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
+            model.onAppear()
             model.onSongPlayed = { song in
                 practiceHistory.recordSongPlayed(song: song, context: modelContext)
             }

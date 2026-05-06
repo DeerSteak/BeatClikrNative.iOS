@@ -39,15 +39,7 @@ struct SettingsView: View {
                                         .foregroundStyle(.secondary)
                                     Spacer()
                                     Button("Open Settings") {
-#if targetEnvironment(macCatalyst)
-                                        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") {
-                                            UIApplication.shared.open(url)
-                                        }
-#else
-                                        if let url = URL(string: UIApplication.openSettingsURLString) {
-                                            UIApplication.shared.open(url)
-                                        }
-#endif
+                                        model.openNotificationSettings()
                                     }
                                     .font(.footnote)
                                 }

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import UIKit
 import UserNotifications
 
 @MainActor
@@ -186,6 +187,18 @@ class SettingsViewModel: ObservableObject {
         }
     }
     
+    func openNotificationSettings() {
+#if targetEnvironment(macCatalyst)
+        if let url = URL(string: "x-apple.systempreferences:com.apple.preference.notifications") {
+            UIApplication.shared.open(url)
+        }
+#else
+        if let url = URL(string: UIApplication.openSettingsURLString) {
+            UIApplication.shared.open(url)
+        }
+#endif
+    }
+
     func rescheduleReminder(bodies: [String]) {
         guard sendReminders else { return }
         notificationService.schedule(bodies: bodies, at: reminderTime)
