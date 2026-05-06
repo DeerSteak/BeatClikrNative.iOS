@@ -2,11 +2,11 @@
 //  MetronomeContainerView.swift
 //  beatclikr
 //
+//  Created by Ben Funk on 5/5/26.
+//
 
 import SwiftUI
 
-/// iPhone-only container that presents Instant and Polyrhythm as top tabs
-/// inside a single NavigationStack, so both metronome modes share one bottom tab.
 struct MetronomeContainerView: View {
     private enum Mode: Hashable { case instant, polyrhythm }
 

@@ -2,6 +2,8 @@
 //  PolyrhythmAudioEngine.swift
 //  beatclikr
 //
+//  Created by Ben Funk on 5/1/26.
+//
 
 import Foundation
 

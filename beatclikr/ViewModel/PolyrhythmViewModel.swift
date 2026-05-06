@@ -2,6 +2,8 @@
 //  PolyrhythmViewModel.swift
 //  beatclikr
 //
+//  Created by Ben Funk on 5/3/26.
+//
 
 import Foundation
 import SwiftUI

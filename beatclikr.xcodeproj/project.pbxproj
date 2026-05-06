@@ -247,17 +247,17 @@
 			children = (
 				B52B864F2FA2743700B6FECE /* BpmSliderControl.swift */,
 				B524A0C52FA540110085E73C /* CalendarView.swift */,
+				B5900FCA2FAB770F008416A1 /* CardContainer.swift */,
 				B52B86502FA2743700B6FECE /* GrooveSelectorView.swift */,
 				B5B638BD2FAADB6300675060 /* MetronomeContainerView.swift */,
 				EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */,
 				B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */,
 				EE0939E62A7EA838005491BB /* RectangleText.swift */,
+				B5900FC82FAB752B008416A1 /* SettingsCard.swift */,
 				B53042142FA671A100A3CAE6 /* SharableStreakCard.swift */,
 				EE8201842A81B20F00675A1C /* SongListItemView.swift */,
 				B53234772F8DD8D900BA7DE1 /* SongPickerView.swift */,
 				B59482B02FA3C88A00410C67 /* TapTempoButton.swift */,
-				B5900FC82FAB752B008416A1 /* SettingsCard.swift */,
-				B5900FCA2FAB770F008416A1 /* CardContainer.swift */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";

@@ -7,7 +7,6 @@
 
 import SwiftUI
 
-
 struct MetronomePlayerView: View {
     @EnvironmentObject var model: MetronomePlaybackViewModel
     var size: CGFloat = MetronomeConstants.playerViewDefaultSize
