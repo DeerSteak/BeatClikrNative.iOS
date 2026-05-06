@@ -216,30 +216,31 @@ struct SettingsView: View {
                             .tracking(1)
                             .textCase(.uppercase)
                             .padding(.horizontal, 4)
-                        
-                        VStack(spacing: 0) {
-                            HStack {
-                                Text("Version")
-                                    .foregroundStyle(.primary)
-                                Spacer()
-                                Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "")
-                                    .foregroundStyle(.secondary)
+                        if let buildStr = Bundle.main.infoDictionary?["CFBundleVersion"] as? String, let verStr = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+                            VStack(spacing: 0) {
+                                HStack {
+                                    Text("Version")
+                                        .foregroundStyle(.primary)
+                                    Spacer()
+                                    Text("\(verStr) (\(buildStr))")
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 10)
+                                Divider().padding(.leading, 12)
+                                HStack {
+                                    Text("Copyright")
+                                        .foregroundStyle(.primary)
+                                    Spacer()
+                                    Text("© \(String(Calendar.current.component(.year, from: Date.now))) Benjamin Funk")
+                                        .foregroundStyle(.secondary)
+                                }
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 10)
                             }
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 10)
-                            Divider().padding(.leading, 12)
-                            HStack {
-                                Text("Copyright")
-                                    .foregroundStyle(.primary)
-                                Spacer()
-                                Text("© \(String(Calendar.current.component(.year, from: Date.now))) Benjamin Funk")
-                                    .foregroundStyle(.secondary)
-                            }
-                            .padding(.horizontal, 12)
-                            .padding(.vertical, 10)
+                            .background(Color(UIColor.secondarySystemGroupedBackground))
+                            .cornerRadius(16)
                         }
-                        .background(Color(UIColor.secondarySystemGroupedBackground))
-                        .cornerRadius(16)
                     }
                 }
                 .padding()
@@ -249,6 +250,7 @@ struct SettingsView: View {
             .navigationBarTitleDisplayMode(.automatic)
         }
     }
+    
     
     @ViewBuilder
     private func menuRow(label: LocalizedStringKey, @ViewBuilder content: () -> some View) -> some View {
