@@ -35,18 +35,18 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
                 defaults.instantBpm = beatsPerMinute
             }
             if isPlaying {
-                audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.rawValue)
+                audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.subdivisions, accentPattern: computeAccentPattern())
             }
         }
     }
-    
+
     @Published var selectedGroove: Groove = UserDefaultsService.instance.instantGroove {
         didSet {
             if clickerType == .instant {
                 defaults.instantGroove = selectedGroove
             }
             if isPlaying {
-                audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.rawValue)
+                audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.subdivisions, accentPattern: computeAccentPattern())
             }
         }
     }
@@ -73,6 +73,17 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         }
     }
     
+    @Published var selectedBeatPattern: BeatPattern? = nil {
+        didSet {
+            if clickerType == .instant {
+                defaults.instantBeatPattern = selectedBeatPattern?.rawValue
+            }
+            if isPlaying {
+                audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.subdivisions, accentPattern: computeAccentPattern())
+            }
+        }
+    }
+
     @Published var clickerType: ClickerType = .instant {
         didSet {
             if !isPlaying {
@@ -98,6 +109,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         song.beatsPerMinute = defaults.instantBpm
         beat = defaults.instantBeat
         rhythm = defaults.instantRhythm
+        selectedBeatPattern = defaults.instantBeatPattern.flatMap { BeatPattern(rawValue: $0) }
         clickerType = .instant
         isBeat = false
         
@@ -191,7 +203,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         let bpm = song.beatsPerMinute ?? beatsPerMinute
         activeBpm = bpm
         let groove = song.groove ?? selectedGroove
-        audio.startMetronome(bpm: bpm, subdivisions: groove.rawValue)
+        audio.startMetronome(bpm: bpm, subdivisions: groove.subdivisions, accentPattern: computeAccentPattern())
         isPlaying = true
     }
     
@@ -211,6 +223,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             song.beatsPerMinute = beatsPerMinute
             beat = defaults.instantBeat
             rhythm = defaults.instantRhythm
+            selectedBeatPattern = defaults.instantBeatPattern.flatMap { BeatPattern(rawValue: $0) }
         } else {
             beat = defaults.playlistBeat
             rhythm = defaults.playlistRhythm
@@ -220,8 +233,18 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             start()
         }
     }
-    
+
     //MARK: Private helpers
+    private func computeAccentPattern() -> [Bool]? {
+        let groove = clickerType == .instant ? selectedGroove : (song.groove ?? .quarter)
+        guard groove.isOddMeter else { return nil }
+        if clickerType == .instant {
+            return (selectedBeatPattern ?? .sevenEightA).accentArray
+        } else {
+            return (BeatPattern(rawValue: song.beatPattern ?? "") ?? .sevenEightA).accentArray
+        }
+    }
+
     private func handleBeat() {
         if defaults.useVibration {
             vibration.vibrateBeat()

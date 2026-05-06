@@ -59,9 +59,9 @@ class AudioPlayerService: HasAudioEngine, MetronomeAudioEngineDelegate {
         audioEngine.loadSounds(beatName: beatName, rhythmName: rhythmName, from: sounds)
     }
 
-    /// Start the metronome with the given tempo and subdivisions
-    func startMetronome(bpm: Double, subdivisions: Int) {
-        audioEngine.startMetronome(bpm: bpm, subdivisions: subdivisions, delegate: self)
+    /// Start the metronome with the given tempo, subdivisions, and optional accent pattern
+    func startMetronome(bpm: Double, subdivisions: Int, accentPattern: [Bool]? = nil) {
+        audioEngine.startMetronome(bpm: bpm, subdivisions: subdivisions, accentPattern: accentPattern, delegate: self)
     }
 
     /// Stop the metronome
