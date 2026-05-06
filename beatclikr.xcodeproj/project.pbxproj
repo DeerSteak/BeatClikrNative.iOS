@@ -244,6 +244,7 @@
 				B52B864F2FA2743700B6FECE /* BpmSliderControl.swift */,
 				B524A0C52FA540110085E73C /* CalendarView.swift */,
 				B52B86502FA2743700B6FECE /* GrooveSelectorView.swift */,
+				B5B638BD2FAADB6300675060 /* MetronomeContainerView.swift */,
 				EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */,
 				B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */,
 				EE0939E62A7EA838005491BB /* RectangleText.swift */,
@@ -251,7 +252,6 @@
 				EE8201842A81B20F00675A1C /* SongListItemView.swift */,
 				B53234772F8DD8D900BA7DE1 /* SongPickerView.swift */,
 				B59482B02FA3C88A00410C67 /* TapTempoButton.swift */,
-				B5B638BD2FAADB6300675060 /* MetronomeContainerView.swift */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";
@@ -337,15 +337,15 @@
 		EE84F3222A7C7A45009E2F23 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				B59515C12FAA75DA0023CA41 /* BeatPattern.swift */,
 				EE04731A2AA39267004E958A /* ClickerType.swift */,
 				EE3BEF3B2A83B476004B0C97 /* Groove.swift */,
 				B537D34E2FA382B300CB2D7D /* Playlist.swift */,
 				EE9BD3DC2F89A555007F91FA /* PlaylistEntry.swift */,
-				B524A0C12FA529E00085E73C /* PracticeSession.swift */,
 				B524A0C32FA52BB60085E73C /* PracticedSong.swift */,
+				B524A0C12FA529E00085E73C /* PracticeSession.swift */,
 				EE84F2F82A7C7A21009E2F23 /* Song.swift */,
 				EE207A3E2A89734F00D8E267 /* SoundFile.swift */,
-				B59515C12FAA75DA0023CA41 /* BeatPattern.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -357,11 +357,11 @@
 				EE34F0752A7C7D8300CA5BD0 /* InstantMetronomeView.swift */,
 				EE8201822A81B1E900675A1C /* PlaylistDetailView.swift */,
 				B537D3522FA383BD00CB2D7D /* PlaylistListView.swift */,
+				B5B638BB2FAAD97900675060 /* PolyrhythmView.swift */,
 				B524A0BD2FA528BF0085E73C /* PracticeHistoryView.swift */,
 				EE5DFD732AD8201C00756566 /* SettingsView.swift */,
 				EE97D5A02A7E7EB900FA11A0 /* SongDetailsView.swift */,
 				EE84F2F62A7C7A21009E2F23 /* SongLibraryView.swift */,
-				B5B638BB2FAAD97900675060 /* PolyrhythmView.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -372,11 +372,11 @@
 				EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */,
 				EE6D2F522F8A64D200A1D4B7 /* PlaylistDetailViewModel.swift */,
 				B537D3502FA383B400CB2D7D /* PlaylistListViewModel.swift */,
+				B5B638B92FAAD95800675060 /* PolyrhythmViewModel.swift */,
 				B524A0BF2FA528E80085E73C /* PracticeHistoryViewModel.swift */,
 				EE5DFD772AD82B5A00756566 /* SettingsViewModel.swift */,
 				EE97D59B2A7E7C3200FA11A0 /* SongLibraryViewModel.swift */,
 				B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */,
-				B5B638B92FAAD95800675060 /* PolyrhythmViewModel.swift */,
 			);
 			path = ViewModel;
 			sourceTree = "<group>";
@@ -385,14 +385,14 @@
 			isa = PBXGroup;
 			children = (
 				1AAB43FBDA8DD0BBF30036A0 /* AudioKitMetronomeEngine.swift */,
+				B5B638B72FAAD8DC00675060 /* AudioKitPolyrhythmEngine.swift */,
 				EE478E8A2A879C51008337DB /* AudioPlayerService.swift */,
 				EE82F9A92A7FBFE100B873E7 /* FlashlightService.swift */,
 				CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */,
+				B5B638B52FAAD8C300675060 /* PolyrhythmAudioEngine.swift */,
 				B5F4E57D2FA65B90003FC6E6 /* ReminderNotificationService.swift */,
 				EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */,
 				EE82F9AB2A7FC98200B873E7 /* VibrationService.swift */,
-				B5B638B52FAAD8C300675060 /* PolyrhythmAudioEngine.swift */,
-				B5B638B72FAAD8DC00675060 /* AudioKitPolyrhythmEngine.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
