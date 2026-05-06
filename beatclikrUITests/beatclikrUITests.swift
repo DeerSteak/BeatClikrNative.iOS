@@ -8,7 +8,6 @@
 import XCTest
 
 final class beatclikrUITests: XCTestCase {
-
     override func setUpWithError() throws {
         // Put setup code here. This method is called before the invocation of each test method in the class.
 
@@ -22,7 +21,7 @@ final class beatclikrUITests: XCTestCase {
         // Put teardown code here. This method is called after the invocation of each test method in the class.
     }
 
-    @MainActor func testExample() throws {
+    @MainActor func testExample() {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
         app.launch()
@@ -30,7 +29,7 @@ final class beatclikrUITests: XCTestCase {
         // Use XCTAssert and related functions to verify your tests produce the correct results.
     }
 
-    @MainActor func testLaunchPerformance() throws {
+    @MainActor func testLaunchPerformance() {
         if #available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 7.0, *) {
             // This measures how long it takes to launch your application.
             measure(metrics: [XCTApplicationLaunchMetric()]) {

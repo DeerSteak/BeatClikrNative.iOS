@@ -1,17 +1,16 @@
 //
-//  PlaylistModeViewModel.swift
+//  PlaylistDetailViewModel.swift
 //  beatclikr
 //
 //  Created by Ben Funk on 4/11/26.
 //
 
 import Foundation
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 @MainActor
 class PlaylistDetailViewModel: SongNavigationViewModel {
-
     func addSongToPlaylist(_ song: Song, playlist: Playlist, context: ModelContext) {
         withAnimation {
             let entry = PlaylistEntry(song: song, sequence: (playlist.entries ?? []).count)

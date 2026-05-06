@@ -11,7 +11,6 @@ import SwiftUI
 
 @MainActor
 class PlaylistListViewModel: ObservableObject {
-    
     @discardableResult
     func createPlaylist(name: String, context: ModelContext) -> Playlist {
         let playlist = Playlist(name: name)
@@ -23,7 +22,7 @@ class PlaylistListViewModel: ObservableObject {
         }
         return playlist
     }
-    
+
     func renamePlaylist(_ playlist: Playlist, name: String, context: ModelContext) {
         let trimmed = name.trimmingCharacters(in: .whitespaces)
         guard !trimmed.isEmpty else { return }
@@ -34,7 +33,7 @@ class PlaylistListViewModel: ObservableObject {
             print("Failed to rename playlist: \(error)")
         }
     }
-    
+
     func deletePlaylists(offsets: IndexSet, playlists: [Playlist], context: ModelContext) {
         withAnimation {
             for index in offsets {

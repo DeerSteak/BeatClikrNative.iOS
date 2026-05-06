@@ -5,24 +5,22 @@
 //  Created by Ben Funk on 8/7/23.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct PlaylistDetailView: View {
-    
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var metronome: MetronomePlaybackViewModel
     @EnvironmentObject var practiceHistory: PracticeHistoryViewModel
     @StateObject private var model = PlaylistDetailViewModel()
-    
+
     let playlist: Playlist
-    
+
     @State private var editMode: EditMode = .inactive
     @State private var showingSongPicker = false
     @State private var editingSong: Song?
     @State private var tappedId: String?
-    
-    @ViewBuilder
+
     private func playlistRow(for song: Song, entry: PlaylistEntry, at index: Int, in entries: [PlaylistEntry]) -> some View {
         HStack {
             if editMode.isEditing {
@@ -60,7 +58,7 @@ struct PlaylistDetailView: View {
             }
             .buttonStyle(.plain)
             .disabled(editMode.isEditing)
-            
+
             if editMode.isEditing {
                 Button {
                     editingSong = song
@@ -83,7 +81,7 @@ struct PlaylistDetailView: View {
             }
         )
     }
-    
+
     var body: some View {
         let entries = (playlist.entries ?? []).sorted { ($0.sequence ?? 0) < ($1.sequence ?? 0) }
         ScrollViewReader { proxy in
@@ -171,7 +169,7 @@ struct PlaylistDetailView: View {
     let preview = PreviewContainer([Song.self, PlaylistEntry.self, Playlist.self])
     let songs = preview.addMockSongs()
     let playlist = preview.addMockPlaylist(named: "My Playlist", songs: songs)
-    
+
     return NavigationStack {
         PlaylistDetailView(playlist: playlist)
     }

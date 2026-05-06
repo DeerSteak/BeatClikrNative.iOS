@@ -5,8 +5,8 @@
 //  Created by Ben Funk on 4/10/26.
 //
 
-import Foundation
 import AudioKit
+import Foundation
 
 /// Protocol for metronome audio playback engines.
 /// Abstracts the difference between simulator (AudioPlayer) and device (AppleSampler/Sequencer) implementations.
@@ -14,19 +14,19 @@ import AudioKit
 protocol MetronomeAudioEngine {
     /// Load the beat and rhythm sound files
     func loadSounds(beatName: String, rhythmName: String, from sounds: [SoundFile])
-    
+
     /// Start the metronome with the given tempo, subdivisions, and optional accent pattern
     func startMetronome(bpm: Double, subdivisions: Int, accentPattern: [Bool]?, delegate: MetronomeAudioEngineDelegate)
-    
+
     /// Stop the metronome
     func stopMetronome()
-    
+
     /// Update the tempo while playing
     func updateTempo(bpm: Double, subdivisions: Int)
-    
+
     /// Start the audio engine
     func start() throws
-    
+
     /// Stop the audio engine
     func stop()
 }

@@ -14,7 +14,6 @@ struct SettingsView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-
                     // Practice Reminders card
                     SettingsCard("PracticeRemindersTitle") {
                         Toggle(LocalizedStringKey("PracticeRemindersLabel"), isOn: $model.sendReminders)
@@ -189,7 +188,8 @@ struct SettingsView: View {
                     // About card
                     SettingsCard("About") {
                         if let buildStr = Bundle.main.infoDictionary?["CFBundleVersion"] as? String,
-                           let verStr = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+                           let verStr = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+                        {
                             HStack {
                                 Text("Version")
                                     .foregroundStyle(.primary)
@@ -220,7 +220,6 @@ struct SettingsView: View {
         }
     }
 
-    @ViewBuilder
     private func menuRow(label: LocalizedStringKey, @ViewBuilder content: () -> some View) -> some View {
         HStack {
             Text(label)

@@ -3,8 +3,8 @@
 //  beatclikr
 //
 
-import Foundation
 import AudioKit
+import Foundation
 
 /// Polyrhythm engine using a least-common-multiple grid.
 ///
@@ -28,8 +28,8 @@ class AudioKitPolyrhythmEngine: PolyrhythmAudioEngine {
     private var stepIndex: Int = 0
 
     private var lcmValue: Int = 6
-    private var beatGridStep: Int = 3    // beat fires every N steps
-    private var rhythmGridStep: Int = 2  // rhythm fires every N steps
+    private var beatGridStep: Int = 3 // beat fires every N steps
+    private var rhythmGridStep: Int = 2 // rhythm fires every N steps
     private var stepDuration: Double = 0
 
     private let checkInterval = MetronomeConstants.timerCheckInterval
@@ -126,7 +126,9 @@ class AudioKitPolyrhythmEngine: PolyrhythmAudioEngine {
 
     private func computeGCD(_ a: Int, _ b: Int) -> Int {
         var a = a, b = b
-        while b != 0 { (a, b) = (b, a % b) }
+        while b != 0 {
+            (a, b) = (b, a % b)
+        }
         return a
     }
 }

@@ -10,7 +10,6 @@ import SwiftUI
 
 @MainActor
 class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
-
     // MARK: - Published properties
 
     @Published var beats: Int {

@@ -9,7 +9,7 @@ import SwiftUI
 
 struct SharableStreakCard: View {
     var streakDays: String
-    
+
     var body: some View {
         ZStack {
             LinearGradient(
@@ -17,7 +17,7 @@ struct SharableStreakCard: View {
                 startPoint: .top,
                 endPoint: .bottom
             )
-            VStack (spacing: 12) {
+            VStack(spacing: 12) {
                 ZStack {
                     Image(systemName: ImageConstants.streak)
                         .font(.system(size: 40, weight: .heavy))

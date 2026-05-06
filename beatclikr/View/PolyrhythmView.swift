@@ -9,23 +9,22 @@ import SwiftUI
 
 struct PolyrhythmView: View {
     @EnvironmentObject var model: PolyrhythmViewModel
-    
+
     var body: some View {
         ScrollView {
             VStack(spacing: 8) {
-                
                 // Ratio selector card
                 CardContainer {
                     VStack(spacing: 16) {
                         HStack(alignment: .center, spacing: 0) {
-                            PolyrhythmCountSelector(label: "Rhythm", value: $model.beats, range: 1...9)
+                            PolyrhythmCountSelector(label: "Rhythm", value: $model.beats, range: 1 ... 9)
                             Text(":")
                                 .font(.system(size: 48, weight: .thin))
                                 .foregroundStyle(.secondary)
                                 .frame(width: 32)
-                            PolyrhythmCountSelector(label: "Beat", value: $model.against, range: 1...9)
+                            PolyrhythmCountSelector(label: "Beat", value: $model.against, range: 1 ... 9)
                         }
-                        
+
                         // Visual dot indicators
                         VStack(spacing: 12) {
                             PolyrhythmDotRow(
@@ -50,7 +49,7 @@ struct PolyrhythmView: View {
                     }
                     .padding(12)
                 }
-                
+
                 // BPM card
                 CardContainer {
                     VStack(spacing: 8) {
@@ -75,7 +74,7 @@ struct PolyrhythmView: View {
                     }
                     .padding(12)
                 }
-                
+
                 // Sound pickers card
                 CardContainer {
                     VStack(spacing: 0) {
@@ -102,10 +101,10 @@ struct PolyrhythmView: View {
                         }
                         .padding(.horizontal, 12)
                         .padding(.vertical, 10)
-                        
+
                         Divider()
                             .padding(.leading, 12)
-                        
+
                         HStack {
                             Text("Rhythm")
                                 .foregroundStyle(.primary)
@@ -131,7 +130,7 @@ struct PolyrhythmView: View {
                         .padding(.vertical, 10)
                     }
                 }
-                
+
                 // Play / Pause
                 Button(action: model.togglePlayPause) {
                     Label(
@@ -160,7 +159,7 @@ private struct PolyrhythmCountSelector: View {
     let label: String
     @Binding var value: Int
     let range: ClosedRange<Int>
-    
+
     var body: some View {
         VStack(spacing: 6) {
             Text(label)
@@ -181,12 +180,12 @@ private struct PolyrhythmCountSelector: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(value <= range.lowerBound)
-                
+
                 Text("\(value)")
                     .font(.system(size: 48, weight: .thin, design: .rounded))
                     .monospacedDigit()
                     .frame(minWidth: 44)
-                
+
                 Button {
                     if value < range.upperBound { value += 1 }
                 } label: {
@@ -210,9 +209,9 @@ private struct PolyrhythmDotRow: View {
     let activeIndex: Int
     let pulse: Double
     let color: Color
-    
+
     @ScaledMetric private var labelWidth: CGFloat = 68
-    
+
     var body: some View {
         HStack(spacing: 8) {
             Text(label)
@@ -222,13 +221,13 @@ private struct PolyrhythmDotRow: View {
                 .textCase(.uppercase)
                 .lineLimit(1)
                 .frame(width: labelWidth, alignment: .leading)
-            
+
             ZStack {
                 Capsule()
                     .fill(color.opacity(0.2))
                     .frame(height: 2)
                 HStack(spacing: 0) {
-                    ForEach(0..<count, id: \.self) { i in
+                    ForEach(0 ..< count, id: \.self) { i in
                         Circle()
                             .fill(color)
                             .frame(width: 18, height: 18)
@@ -245,24 +244,24 @@ private struct PolyrhythmDotRow: View {
 private struct PolyrhythmPlayheadRow: View {
     let progress: Double
     let isPlaying: Bool
-    
+
     @ScaledMetric private var labelWidth: CGFloat = 68
-    
+
     var body: some View {
         HStack(spacing: 8) {
             Color.clear
                 .frame(width: labelWidth, height: 14)
-            
+
             GeometryReader { geo in
                 let dotSize: CGFloat = 14
                 let midY = geo.size.height / 2
                 let dotX = dotSize / 2 + (geo.size.width - dotSize) * CGFloat(progress)
-                
+
                 Capsule()
                     .fill(Color.orange.opacity(0.25))
                     .frame(width: geo.size.width, height: 2)
                     .position(x: geo.size.width / 2, y: midY)
-                
+
                 Circle()
                     .fill(Color.orange)
                     .frame(width: dotSize, height: dotSize)

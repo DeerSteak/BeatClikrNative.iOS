@@ -1,12 +1,12 @@
 //
-//  ContentView.swift
+//  SongLibraryView.swift
 //  beatclikr
 //
 //  Created by Ben Funk on 8/3/23.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct SongLibraryView: View {
     @Environment(\.modelContext) private var modelContext
@@ -86,7 +86,7 @@ struct SongLibraryView: View {
                 .background(Color(UIColor.systemGroupedBackground))
                 .environment(\.editMode, $editMode)
                 .overlay(content: {
-                    if (items.isEmpty) {
+                    if items.isEmpty {
                         VStack {
                             Text("Press the + button to add a song")
                                 .padding(.top, 40)

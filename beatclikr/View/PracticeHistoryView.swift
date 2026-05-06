@@ -5,8 +5,8 @@
 //  Created by Ben Funk on 5/1/26.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct PracticeHistoryView: View {
     @EnvironmentObject private var model: PracticeHistoryViewModel

@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 enum Groove: Int, CaseIterable, Identifiable, CustomStringConvertible, Codable {
     case quarter = 1
     case eighth = 2
@@ -14,15 +15,18 @@ enum Groove: Int, CaseIterable, Identifiable, CustomStringConvertible, Codable {
     case oddMeterQuarter = 5
     case oddMeterEighth = 6
 
-    var id: Self { self }
+    var id: Self {
+        self
+    }
+
     var description: String {
         switch self {
-        case .quarter:         return "Quarter Note"
-        case .eighth:          return "Eighth Note"
-        case .triplet:         return "Triplet 6/8"
-        case .sixteenth:       return "Sixteenth Note"
+        case .quarter: return "Quarter Note"
+        case .eighth: return "Eighth Note"
+        case .triplet: return "Triplet 6/8"
+        case .sixteenth: return "Sixteenth Note"
         case .oddMeterQuarter: return "Odd Quarter"
-        case .oddMeterEighth:  return "Odd Eighth"
+        case .oddMeterEighth: return "Odd Eighth"
         }
     }
 

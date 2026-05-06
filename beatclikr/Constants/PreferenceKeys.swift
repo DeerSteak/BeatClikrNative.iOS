@@ -7,9 +7,9 @@
 
 import Foundation
 
-struct PreferenceKeys {
-
+enum PreferenceKeys {
     // MARK: - Synced (UserDefaults + NSUbiquitousKeyValueStore)
+
     static let instantBeat = "InstantBeat"
     static let instantRhythm = "InstantRhythm"
     static let instantGroove = "InstantGroove"
@@ -32,6 +32,7 @@ struct PreferenceKeys {
     static let polyrhythmBpm = "PolyrhythmBpm"
 
     // MARK: - Local only (UserDefaults only, never synced)
+
     static let onboarded = "Onboarded"
     static let hasAskedFlashlight = "HasAskedFlashlight"
     static let hasAskedHaptic = "HasAskedHaptic"

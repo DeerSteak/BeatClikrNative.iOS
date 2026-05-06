@@ -5,10 +5,10 @@
 //  Created by Ben Funk on 5/4/26.
 //
 
-import Testing
-import Foundation
-import UserNotifications
 @testable import BeatClikr
+import Foundation
+import Testing
+import UserNotifications
 
 @MainActor
 final class MockReminderNotificationService: ReminderNotificationServicing {
@@ -19,16 +19,29 @@ final class MockReminderNotificationService: ReminderNotificationServicing {
     private(set) var scheduledTime: Date?
     private(set) var rescheduledTime: Date?
 
-    func checkAndRequestAuthorization() async -> NotificationAuthorizationResult { authorizationResult }
-    func currentAuthorizationStatus() async -> UNAuthorizationStatus { authorizationStatus }
-    func schedule(bodies: [String], at time: Date) { scheduledBodies = bodies; scheduledTime = time }
-    func reschedule(at time: Date) { rescheduledTime = time }
-    func cancel() { cancelCalled = true }
+    func checkAndRequestAuthorization() async -> NotificationAuthorizationResult {
+        authorizationResult
+    }
+
+    func currentAuthorizationStatus() async -> UNAuthorizationStatus {
+        authorizationStatus
+    }
+
+    func schedule(bodies: [String], at time: Date) {
+        scheduledBodies = bodies; scheduledTime = time
+    }
+
+    func reschedule(at time: Date) {
+        rescheduledTime = time
+    }
+
+    func cancel() {
+        cancelCalled = true
+    }
 }
 
 @MainActor
 struct SettingsViewModelTests {
-
     init() {
         // Reset shared state before each test; done before UserDefaultsService.instance is accessed
         UserDefaults.standard.removeObject(forKey: PreferenceKeys.remindersDeferredDate)
@@ -107,7 +120,9 @@ struct SettingsViewModelTests {
         )
         UserDefaultsService.instance.sendReminders = true
         let vm = SettingsViewModel(notificationService: mock)
-        for _ in 0..<3 { await Task.yield() }
+        for _ in 0 ..< 3 {
+            await Task.yield()
+        }
         #expect(vm.notificationsBlockedLocally == false)
         #expect(vm.notificationsDeferredLocally == false)
         #expect(mock.rescheduledTime != nil)
@@ -118,7 +133,9 @@ struct SettingsViewModelTests {
         mock.authorizationStatus = .denied
         UserDefaultsService.instance.sendReminders = true
         let vm = SettingsViewModel(notificationService: mock)
-        for _ in 0..<3 { await Task.yield() }
+        for _ in 0 ..< 3 {
+            await Task.yield()
+        }
         #expect(vm.notificationsBlockedLocally == true)
         #expect(vm.showCrossDeviceReminderPrompt == false)
     }
@@ -128,7 +145,9 @@ struct SettingsViewModelTests {
         mock.authorizationStatus = .notDetermined
         UserDefaultsService.instance.sendReminders = true
         let vm = SettingsViewModel(notificationService: mock)
-        for _ in 0..<3 { await Task.yield() }
+        for _ in 0 ..< 3 {
+            await Task.yield()
+        }
         #expect(vm.showCrossDeviceReminderPrompt == true)
         #expect(vm.notificationsBlockedLocally == false)
     }
@@ -142,7 +161,9 @@ struct SettingsViewModelTests {
         )
         UserDefaultsService.instance.sendReminders = true
         let vm = SettingsViewModel(notificationService: mock)
-        for _ in 0..<3 { await Task.yield() }
+        for _ in 0 ..< 3 {
+            await Task.yield()
+        }
         #expect(vm.showCrossDeviceReminderPrompt == false)
         #expect(vm.notificationsDeferredLocally == true)
     }
@@ -158,7 +179,9 @@ struct SettingsViewModelTests {
         )
         let vm = SettingsViewModel(notificationService: mock)
         vm.sendReminders = true
-        for _ in 0..<3 { await Task.yield() }
+        for _ in 0 ..< 3 {
+            await Task.yield()
+        }
         #expect(vm.notificationsDeferredLocally == false)
         #expect(vm.notificationsBlockedLocally == false)
         #expect(mock.rescheduledTime != nil)
@@ -169,7 +192,9 @@ struct SettingsViewModelTests {
         mock.authorizationResult = .denied
         let vm = SettingsViewModel(notificationService: mock)
         vm.sendReminders = true
-        for _ in 0..<3 { await Task.yield() }
+        for _ in 0 ..< 3 {
+            await Task.yield()
+        }
         #expect(vm.sendReminders == false)
         #expect(vm.showPermissionDeniedAlert == true)
     }
@@ -179,7 +204,9 @@ struct SettingsViewModelTests {
         mock.authorizationResult = .notGranted
         let vm = SettingsViewModel(notificationService: mock)
         vm.sendReminders = true
-        for _ in 0..<3 { await Task.yield() }
+        for _ in 0 ..< 3 {
+            await Task.yield()
+        }
         #expect(vm.sendReminders == false)
         #expect(vm.showPermissionDeniedAlert == false)
     }
@@ -195,7 +222,9 @@ struct SettingsViewModelTests {
         )
         let vm = SettingsViewModel(notificationService: mock)
         vm.allowRemindersFromOtherDevice()
-        for _ in 0..<3 { await Task.yield() }
+        for _ in 0 ..< 3 {
+            await Task.yield()
+        }
         #expect(vm.notificationsDeferredLocally == false)
         #expect(vm.notificationsBlockedLocally == false)
         #expect(mock.rescheduledTime != nil)
@@ -210,7 +239,9 @@ struct SettingsViewModelTests {
         )
         let vm = SettingsViewModel(notificationService: mock)
         vm.allowRemindersFromOtherDevice()
-        for _ in 0..<3 { await Task.yield() }
+        for _ in 0 ..< 3 {
+            await Task.yield()
+        }
         #expect(vm.notificationsBlockedLocally == true)
         #expect(vm.notificationsDeferredLocally == false)
     }
@@ -222,12 +253,16 @@ struct SettingsViewModelTests {
         mock.authorizationStatus = .denied
         UserDefaultsService.instance.sendReminders = true
         let vm = SettingsViewModel(notificationService: mock)
-        for _ in 0..<3 { await Task.yield() }
+        for _ in 0 ..< 3 {
+            await Task.yield()
+        }
         #expect(vm.notificationsBlockedLocally == true)
 
         mock.authorizationStatus = .authorized
         vm.refreshNotificationStatus()
-        for _ in 0..<3 { await Task.yield() }
+        for _ in 0 ..< 3 {
+            await Task.yield()
+        }
         #expect(vm.notificationsBlockedLocally == false)
     }
 }

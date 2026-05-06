@@ -10,7 +10,7 @@ import SwiftUI
 struct MetronomePlayerView: View {
     @EnvironmentObject var model: MetronomePlaybackViewModel
     var size: CGFloat = MetronomeConstants.playerViewDefaultSize
-    
+
     var body: some View {
         Image(systemName: ImageConstants.rhythm)
             .resizable()

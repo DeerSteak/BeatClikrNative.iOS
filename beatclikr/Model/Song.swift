@@ -1,5 +1,5 @@
 //
-//  Item.swift
+//  Song.swift
 //  beatclikr
 //
 //  Created by Ben Funk on 8/3/23.
@@ -17,23 +17,23 @@ final class Song: Identifiable, SongDisplayable {
     var beatsPerMeasure: Int?
     var groove: Groove?
     var beatPattern: String?
-    
+
     @Relationship(deleteRule: .cascade)
     var playlistEntries: [PlaylistEntry]? = []
-    
+
     @MainActor static let instantSong: Song = Song()
-    
+
     init() {
-        self.id = UUID().uuidString
-        self.title = "Instant"
-        self.artist = "Song"
-        self.beatsPerMinute = 60
-        self.beatsPerMeasure = 4
-        self.groove = .quarter
+        id = UUID().uuidString
+        title = "Instant"
+        artist = "Song"
+        beatsPerMinute = 60
+        beatsPerMeasure = 4
+        groove = .quarter
     }
-    
+
     init(title: String, artist: String, beatsPerMinute: Double, beatsPerMeasure: Int, groove: Groove) {
-        self.id = UUID().uuidString
+        id = UUID().uuidString
         self.title = title
         self.artist = artist
         self.beatsPerMinute = beatsPerMinute

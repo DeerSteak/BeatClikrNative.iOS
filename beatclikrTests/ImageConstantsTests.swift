@@ -5,11 +5,10 @@
 //  Created by Ben Funk on 4/10/26.
 //
 
-import XCTest
 @testable import BeatClikr
+import XCTest
 
 final class ImageConstantsTests: XCTestCase {
-
     func testBeatIconExists() {
         XCTAssertFalse(ImageConstants.beat.isEmpty, "Beat icon name should not be empty")
         XCTAssertEqual(ImageConstants.beat, "diamond.fill", "Beat icon should be diamond.fill")

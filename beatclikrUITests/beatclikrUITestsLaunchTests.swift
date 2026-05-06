@@ -8,7 +8,6 @@
 import XCTest
 
 final class beatclikrUITestsLaunchTests: XCTestCase {
-
     override class var runsForEachTargetApplicationUIConfiguration: Bool {
         true
     }
@@ -17,7 +16,7 @@ final class beatclikrUITestsLaunchTests: XCTestCase {
         continueAfterFailure = false
     }
 
-    @MainActor func testLaunch() throws {
+    @MainActor func testLaunch() {
         let app = XCUIApplication()
         app.launch()
 

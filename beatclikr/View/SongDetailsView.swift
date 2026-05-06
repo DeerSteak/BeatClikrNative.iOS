@@ -11,7 +11,7 @@ struct SongDetailsView: View {
     @EnvironmentObject var model: SongLibraryViewModel
     @Environment(\.dismiss) private var dismiss
     @Environment(\.modelContext) private var modelContext
-    
+
     @State var title: String
     @State var artist: String
     @State var bpm: Double
@@ -22,9 +22,9 @@ struct SongDetailsView: View {
     @State var showAlert: Bool
 
     var song: Song
-    
+
     init() {
-        self.song = Song(title: "", artist: "", beatsPerMinute: 60, beatsPerMeasure: 4, groove: .eighth)
+        song = Song(title: "", artist: "", beatsPerMinute: 60, beatsPerMeasure: 4, groove: .eighth)
         _title = State(initialValue: "")
         _artist = State(initialValue: "")
         _bpm = State(initialValue: 60)
@@ -44,7 +44,7 @@ struct SongDetailsView: View {
         _selectedGroove = State(initialValue: song.groove ?? .eighth)
         _selectedBeatPattern = State(initialValue: BeatPattern(rawValue: song.beatPattern ?? ""))
     }
-    
+
     var body: some View {
         NavigationStack {
             Form {
@@ -73,7 +73,7 @@ struct SongDetailsView: View {
                     }
                     .listRowSeparator(.hidden)
                     BpmSliderControl(value: $bpm)
-                    Stepper("Beats per Bar: \(beats)", value: $beats, in: 1...16, step: 1)
+                    Stepper("Beats per Bar: \(beats)", value: $beats, in: 1 ... 16, step: 1)
                 }
                 Section("Groove") {
                     GrooveSelectorView(selection: $selectedGroove, beatPattern: $selectedBeatPattern)
@@ -100,16 +100,16 @@ struct SongDetailsView: View {
             }
         }
     }
-    
-    public func saveSong() -> Bool {
+
+    func saveSong() -> Bool {
         song.title = title
         song.artist = artist
         song.beatsPerMinute = bpm
         song.beatsPerMeasure = beats
         song.groove = selectedGroove
         song.beatPattern = selectedGroove.isOddMeter ? selectedBeatPattern?.rawValue : nil
-        
-        if (song.title?.isEmpty ?? true || song.artist?.isEmpty ?? true) {
+
+        if song.title?.isEmpty ?? true || song.artist?.isEmpty ?? true {
             return false
         }
         modelContext.insert(song)
@@ -120,12 +120,12 @@ struct SongDetailsView: View {
             return false
         }
     }
-    
-    public func songIsValid() -> Bool {
+
+    func songIsValid() -> Bool {
         return title != "" && artist != "" && bpm >= MetronomeConstants.minBPM && bpm <= MetronomeConstants.maxBPM
     }
-    
-    public func navTitle() -> String {
+
+    func navTitle() -> String {
         return (song.title ?? "").isEmpty ? String(localized: "Add Song") : String(localized: "Song Details")
     }
 }

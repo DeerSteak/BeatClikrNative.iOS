@@ -5,12 +5,11 @@
 //  Created by Ben Funk on 5/1/26.
 //
 
-import XCTest
 @testable import BeatClikr
+import XCTest
 
 @MainActor
 final class SongNavigationViewModelTests: XCTestCase {
-
     // MARK: - Helpers
 
     private func makeSong(title: String = "Test", bpm: Double = 120) -> Song {

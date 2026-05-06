@@ -13,13 +13,13 @@ final class Playlist: Identifiable {
     var id: String?
     var name: String?
     var createdAt: Date = Date()
-    
+
     @Relationship(deleteRule: .cascade)
     var entries: [PlaylistEntry]? = []
-    
+
     init(name: String) {
-        self.id = UUID().uuidString
+        id = UUID().uuidString
         self.name = name
-        self.createdAt = Date()
+        createdAt = Date()
     }
 }

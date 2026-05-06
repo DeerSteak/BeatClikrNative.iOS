@@ -5,24 +5,22 @@
 //  Created by Ben Funk on 8/3/23.
 //
 
-import SwiftUI
 import SwiftData
+import SwiftUI
 
 struct InstantMetronomeView: View {
-    
     @State var showAlert: Bool
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: MetronomePlaybackViewModel
     @EnvironmentObject var practiceHistory: PracticeHistoryViewModel
-    
-    init () {
+
+    init() {
         _showAlert = State(initialValue: false)
     }
-    
+
     var body: some View {
         ScrollView {
             VStack(spacing: 8) {
-                
                 // BPM card
                 CardContainer {
                     VStack(spacing: 8) {
@@ -51,7 +49,7 @@ struct InstantMetronomeView: View {
                     }
                     .padding(12)
                 }
-                
+
                 // Groove card
                 CardContainer {
                     VStack(alignment: .leading, spacing: 8) {
@@ -65,7 +63,7 @@ struct InstantMetronomeView: View {
                     }
                     .padding(12)
                 }
-                
+
                 // Beat & Rhythm card
                 CardContainer {
                     VStack(spacing: 0) {
@@ -92,10 +90,10 @@ struct InstantMetronomeView: View {
                         }
                         .padding(.horizontal, 12)
                         .padding(.vertical, 10)
-                        
+
                         Divider()
                             .padding(.leading, 12)
-                        
+
                         HStack {
                             Text("Rhythm")
                                 .foregroundStyle(.primary)
@@ -121,7 +119,7 @@ struct InstantMetronomeView: View {
                         .padding(.vertical, 10)
                     }
                 }
-                
+
                 // Play / Pause
                 Button(action: togglePlayPause) {
                     Label(
@@ -142,7 +140,7 @@ struct InstantMetronomeView: View {
         .onDisappear(perform: model.stop)
         .onAppear(perform: model.onAppear)
     }
-    
+
     private func togglePlayPause() {
         if model.isPlaying {
             model.stop()

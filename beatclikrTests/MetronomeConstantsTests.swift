@@ -5,11 +5,10 @@
 //  Created by Ben Funk on 4/10/26.
 //
 
-import XCTest
 @testable import BeatClikr
+import XCTest
 
 final class MetronomeConstantsTests: XCTestCase {
-
     func testBPMConstraints() {
         // Verify BPM constraints are sensible
         XCTAssertEqual(MetronomeConstants.minBPM, 30, "Minimum BPM should be 30")

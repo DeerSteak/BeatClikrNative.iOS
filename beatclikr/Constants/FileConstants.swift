@@ -6,6 +6,7 @@
 //
 
 import Foundation
+
 enum FileConstants: String, CaseIterable, Identifiable, CustomStringConvertible, Codable {
     case FileExt = "wav"
     case ClickHi = "clickhi_E5"
@@ -24,9 +25,11 @@ enum FileConstants: String, CaseIterable, Identifiable, CustomStringConvertible,
     case TomHi = "tomhi_D3"
     case TomLo = "tomlow_A2"
     case TomMid = "tommid_B2"
-    
-    var id: Self {self}
-    
+
+    var id: Self {
+        self
+    }
+
     var description: String {
         switch self {
         case .ClickHi:
@@ -65,44 +68,43 @@ enum FileConstants: String, CaseIterable, Identifiable, CustomStringConvertible,
             return "Tom (Mid)"
         }
     }
-    
+
     func getNoteNumber() -> Int {
         switch self {
-            
         case .FileExt:
             return 99
         case .ClickHi:
-            return 76 //E5
+            return 76 // E5
         case .ClickLo:
-            return 77 //F5
+            return 77 // F5
         case .Cowbell:
-            return 56 //G#3
+            return 56 // G#3
         case .CrashL:
-            return 49 //C#3
+            return 49 // C#3
         case .CrashR:
-            return 57 //A3
+            return 57 // A3
         case .HatClosed:
-            return 42 //F#2
+            return 42 // F#2
         case .HatOpen:
-            return 46 //A#2
+            return 46 // A#2
         case .Kick:
-            return 36 //C2
+            return 36 // C2
         case .RideEdge:
-            return 51 //D#3
+            return 51 // D#3
         case .RideBell:
-            return 53 //F3
+            return 53 // F3
         case .Silence:
-            return 98 //D7
+            return 98 // D7
         case .Snare:
-            return 38 //D2
+            return 38 // D2
         case .Tamb:
-            return 54 //F#3
+            return 54 // F#3
         case .TomHi:
-            return 50 //D3
+            return 50 // D3
         case .TomLo:
-            return 45 //A2
+            return 45 // A2
         case .TomMid:
-            return 47 //B2
+            return 47 // B2
         }
     }
 }

@@ -9,26 +9,25 @@ import XCTest
 
 @MainActor
 final class PracticeHistoryUITests: XCTestCase {
-    
     var app: XCUIApplication!
-    
+
     override func setUp() async throws {
         continueAfterFailure = false
         app = XCUIApplication()
     }
-    
+
     override func tearDown() async throws {
         app = nil
     }
-    
+
     private func launchApp(practiceState: String? = nil) {
         if let state = practiceState {
             app.launchEnvironment["UI_TESTING_PRACTICE_STATE"] = state
         }
         app.launch()
     }
-    
-    // Navigates to Practice History on both iPhone (tab bar) and iPad (sidebar).
+
+    /// Navigates to Practice History on both iPhone (tab bar) and iPad (sidebar).
     private func navigateToPracticeHistory() {
         let historyTab = app.tabBars.buttons["History"]
         if historyTab.waitForExistence(timeout: 2) {
@@ -37,9 +36,9 @@ final class PracticeHistoryUITests: XCTestCase {
             app.buttons["Practice History"].tap()
         }
     }
-    
+
     // MARK: - Navigation
-    
+
     func testHistoryTabExistsInTabBar() {
         launchApp()
         XCTAssertTrue(
@@ -47,7 +46,7 @@ final class PracticeHistoryUITests: XCTestCase {
             "History tab should exist in the tab bar"
         )
     }
-    
+
     func testNavigationTitleShowsPracticeHistory() {
         launchApp()
         navigateToPracticeHistory()
@@ -56,9 +55,9 @@ final class PracticeHistoryUITests: XCTestCase {
             "Practice History navigation bar title should be visible"
         )
     }
-    
+
     // MARK: - Streak stats
-    
+
     func testCurrentStreakLabelIsVisible() {
         launchApp(practiceState: "empty")
         navigateToPracticeHistory()
@@ -67,7 +66,7 @@ final class PracticeHistoryUITests: XCTestCase {
             "Current Streak label should be visible"
         )
     }
-    
+
     func testLongestStreakLabelIsVisible() {
         launchApp(practiceState: "empty")
         navigateToPracticeHistory()
@@ -76,7 +75,7 @@ final class PracticeHistoryUITests: XCTestCase {
             "Longest Streak label should be visible"
         )
     }
-    
+
     func testStreakSubtitleShowsLetsGoWithNoHistory() {
         launchApp(practiceState: "empty")
         navigateToPracticeHistory()
@@ -85,7 +84,7 @@ final class PracticeHistoryUITests: XCTestCase {
             "Let's go! subtitle should appear when there is no practice history"
         )
     }
-    
+
     func testCurrentStreakShowsCorrectDayCountForActiveStreak() {
         launchApp(practiceState: "streak_active")
         navigateToPracticeHistory()
@@ -94,9 +93,9 @@ final class PracticeHistoryUITests: XCTestCase {
             "Current streak should show 2 days for today + yesterday"
         )
     }
-    
+
     // MARK: - Reminder banner
-    
+
     func testReminderBannerAbsentWithNoHistory() {
         launchApp(practiceState: "empty")
         navigateToPracticeHistory()
@@ -106,7 +105,7 @@ final class PracticeHistoryUITests: XCTestCase {
             "Reminder banner should not appear when there is no practice history"
         )
     }
-    
+
     func testReminderBannerVisibleWhenStreakEndsYesterday() {
         launchApp(practiceState: "streak_yesterday")
         navigateToPracticeHistory()
@@ -115,7 +114,7 @@ final class PracticeHistoryUITests: XCTestCase {
             "Reminder banner should appear when the active streak ends yesterday"
         )
     }
-    
+
     func testReminderBannerAbsentWhenPracticedToday() {
         launchApp(practiceState: "streak_active")
         navigateToPracticeHistory()
@@ -125,7 +124,7 @@ final class PracticeHistoryUITests: XCTestCase {
             "Reminder banner should not appear when the user has already practiced today"
         )
     }
-    
+
     // MARK: - Practice list
 
     func testPracticeSectionAppearsForSelectedDate() {
