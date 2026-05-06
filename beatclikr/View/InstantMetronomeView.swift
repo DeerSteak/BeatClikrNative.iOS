@@ -61,7 +61,7 @@ struct InstantMetronomeView: View {
                             .tracking(1)
                             .textCase(.uppercase)
                             .padding(.horizontal, 4)
-                        GrooveSelectorView(selection: $model.selectedGroove)
+                        GrooveSelectorView(selection: $model.selectedGroove, beatPattern: $model.selectedBeatPattern)
                     }
                     .padding(12)
                     .background(Color(UIColor.secondarySystemGroupedBackground))

@@ -15,8 +15,8 @@ protocol MetronomeAudioEngine {
     /// Load the beat and rhythm sound files
     func loadSounds(beatName: String, rhythmName: String, from sounds: [SoundFile])
 
-    /// Start the metronome with the given tempo and subdivisions
-    func startMetronome(bpm: Double, subdivisions: Int, delegate: MetronomeAudioEngineDelegate)
+    /// Start the metronome with the given tempo, subdivisions, and optional accent pattern
+    func startMetronome(bpm: Double, subdivisions: Int, accentPattern: [Bool]?, delegate: MetronomeAudioEngineDelegate)
 
     /// Stop the metronome
     func stopMetronome()

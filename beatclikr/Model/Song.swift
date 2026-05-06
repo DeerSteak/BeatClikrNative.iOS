@@ -16,6 +16,7 @@ final class Song: Identifiable, SongDisplayable {
     var beatsPerMinute: Double?
     var beatsPerMeasure: Int?
     var groove: Groove?
+    var beatPattern: String?
     
     @Relationship(deleteRule: .cascade)
     var playlistEntries: [PlaylistEntry]? = []

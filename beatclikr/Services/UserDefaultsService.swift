@@ -57,6 +57,14 @@ class UserDefaultsService: ObservableObject {
             cloud.set(instantGroove.rawValue, forKey: PreferenceKeys.instantGroove)
         }
     }
+
+    @Published var instantBeatPattern: String? {
+        didSet {
+            guard oldValue != instantBeatPattern else { return }
+            defaults.setValue(instantBeatPattern ?? "", forKey: PreferenceKeys.instantBeatPattern)
+            cloud.set(instantBeatPattern ?? "", forKey: PreferenceKeys.instantBeatPattern)
+        }
+    }
     
     @Published var instantRhythm: FileConstants {
         didSet {
@@ -134,6 +142,8 @@ class UserDefaultsService: ObservableObject {
         let bpm = defaults.double(forKey: PreferenceKeys.instantBpm)
         instantBpm = bpm == 0 ? 60 : bpm
         instantGroove = Groove(rawValue: defaults.integer(forKey: PreferenceKeys.instantGroove)) ?? .quarter
+        let savedBeatPattern = defaults.string(forKey: PreferenceKeys.instantBeatPattern) ?? ""
+        instantBeatPattern = savedBeatPattern.isEmpty ? nil : savedBeatPattern
         
         playlistBeat = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.playlistBeat) ?? "") ?? .ClickHi
         playlistRhythm = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.playlistRhythm) ?? "") ?? .ClickLo
@@ -177,6 +187,8 @@ class UserDefaultsService: ObservableObject {
         
         let grooveVal = Int(cloud.longLong(forKey: PreferenceKeys.instantGroove))
         self.instantGroove = Groove(rawValue: grooveVal) ?? .quarter
+        let bpStr = cloud.string(forKey: PreferenceKeys.instantBeatPattern) ?? ""
+        self.instantBeatPattern = bpStr.isEmpty ? nil : bpStr
         
         let pBeatStr = cloud.string(forKey: PreferenceKeys.playlistBeat) ?? ""
         self.playlistBeat = FileConstants(rawValue: pBeatStr) ?? .ClickHi

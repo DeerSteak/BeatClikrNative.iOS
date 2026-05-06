@@ -13,6 +13,7 @@ struct PreferenceKeys {
     static let instantBeat = "InstantBeat"
     static let instantRhythm = "InstantRhythm"
     static let instantGroove = "InstantGroove"
+    static let instantBeatPattern = "InstantBeatPattern"
     static let instantBpm = "InstantBpm"
     static let playlistBeat = "RehearsalBeat"
     static let playlistRhythm = "RehearsalRhythm"

@@ -17,7 +17,8 @@ struct SongDetailsView: View {
     @State var bpm: Double
     @State var beats: Int
     @State var selectedGroove: Groove
-    
+    @State var selectedBeatPattern: BeatPattern?
+
     @State var showAlert: Bool
 
     var song: Song
@@ -30,8 +31,9 @@ struct SongDetailsView: View {
         _beats = State(initialValue: 4)
         _showAlert = State(initialValue: false)
         _selectedGroove = State(initialValue: .eighth)
+        _selectedBeatPattern = State(initialValue: nil)
     }
-    
+
     init(song: Song) {
         self.song = song
         _title = State(initialValue: song.title ?? "")
@@ -40,6 +42,7 @@ struct SongDetailsView: View {
         _beats = State(initialValue: song.beatsPerMeasure ?? 4)
         _showAlert = State(initialValue: false)
         _selectedGroove = State(initialValue: song.groove ?? .eighth)
+        _selectedBeatPattern = State(initialValue: BeatPattern(rawValue: song.beatPattern ?? ""))
     }
     
     var body: some View {
@@ -73,7 +76,7 @@ struct SongDetailsView: View {
                     Stepper("Beats per Bar: \(beats)", value: $beats, in: 1...16, step: 1)
                 }
                 Section("Groove") {
-                    GrooveSelectorView(selection: $selectedGroove)
+                    GrooveSelectorView(selection: $selectedGroove, beatPattern: $selectedBeatPattern)
                         .padding(.vertical, 4)
                 }
             }
@@ -104,6 +107,7 @@ struct SongDetailsView: View {
         song.beatsPerMinute = bpm
         song.beatsPerMeasure = beats
         song.groove = selectedGroove
+        song.beatPattern = selectedGroove.isOddMeter ? selectedBeatPattern?.rawValue : nil
         
         if (song.title?.isEmpty ?? true || song.artist?.isEmpty ?? true) {
             return false

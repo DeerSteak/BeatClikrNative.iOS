@@ -29,6 +29,8 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
     private var nextBeatTime: CFAbsoluteTime = 0
     private var subdivisionCounter: Int = 0
     private var useAlternateSixteenth: Bool = false
+    private var accentPattern: [Bool]? = nil
+    private var patternIndex: Int = 0
 
     private let checkInterval: TimeInterval = MetronomeConstants.timerCheckInterval
     private let firstBeatDelay: TimeInterval = MetronomeConstants.firstBeatDelay
@@ -55,7 +57,7 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
         }
     }
 
-    func startMetronome(bpm: Double, subdivisions: Int, delegate: MetronomeAudioEngineDelegate) {
+    func startMetronome(bpm: Double, subdivisions: Int, accentPattern: [Bool]?, delegate: MetronomeAudioEngineDelegate) {
         timer?.invalidate()
         timer = nil
 
@@ -63,6 +65,8 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
         self.currentBPM = bpm
         self.currentSubdivisions = subdivisions
         self.subdivisionCounter = 0
+        self.accentPattern = accentPattern
+        self.patternIndex = 0
         self.useAlternateSixteenth = UserDefaultsService.instance.sixteenthAlternate && subdivisions == 4
 
         self.nextBeatTime = CFAbsoluteTimeGetCurrent() + firstBeatDelay
@@ -76,6 +80,7 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
         timer?.invalidate()
         timer = nil
         subdivisionCounter = 0
+        patternIndex = 0
     }
 
     func updateTempo(bpm: Double, subdivisions: Int) {
@@ -131,8 +136,17 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
     }
 
     private func playCurrentBeat() {
-        let playBeatSound = useAlternateSixteenth ? subdivisionCounter % 2 == 0 : subdivisionCounter == 0
-        let isBeat = subdivisionCounter == 0
+        let isBeat: Bool
+        let playBeatSound: Bool
+
+        if let pattern = accentPattern {
+            isBeat = pattern[patternIndex]
+            playBeatSound = isBeat
+            patternIndex = (patternIndex + 1) % pattern.count
+        } else {
+            playBeatSound = useAlternateSixteenth ? subdivisionCounter % 2 == 0 : subdivisionCounter == 0
+            isBeat = subdivisionCounter == 0
+        }
 
         if !UserDefaultsService.instance.muteMetronome {
             if playBeatSound {
