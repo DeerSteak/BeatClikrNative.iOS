@@ -39,7 +39,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             }
         }
     }
-
+    
     @Published var selectedGroove: Groove = UserDefaultsService.instance.instantGroove {
         didSet {
             if clickerType == .instant {
@@ -83,7 +83,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             }
         }
     }
-
+    
     @Published var clickerType: ClickerType = .instant {
         didSet {
             if !isPlaying {
@@ -118,22 +118,19 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     }
     
     //MARK: MetronomeAudioEngineDelegate
-    func metronomeBeatFired(isBeat: Bool) {
+    func metronomeBeatFired(isBeat: Bool, beatInterval: TimeInterval) {
         self.isBeat = isBeat
         
         if isBeat {
-            // Calculate duration for one full beat (in seconds)
-            let beatDuration = 60.0 / activeBpm
-            
             // Snap to max instantly with no animation
             withAnimation(.none) {
                 iconScale = MetronomeConstants.iconScaleMax
                 beatPulse = 1.0
             }
             
-            // Defer the fade-out so SwiftUI renders the snapped state first
+            // Fade out over the exact interval to the next beat, matching each rhythmic group
             Task { @MainActor in
-                withAnimation(.linear(duration: beatDuration)) {
+                withAnimation(.linear(duration: beatInterval)) {
                     self.iconScale = MetronomeConstants.iconScaleMin
                     self.beatPulse = 0.0
                 }
@@ -233,7 +230,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             start()
         }
     }
-
+    
     //MARK: Private helpers
     private func computeAccentPattern() -> [Bool]? {
         let groove = clickerType == .instant ? selectedGroove : (song.groove ?? .quarter)
@@ -244,7 +241,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             return (BeatPattern(rawValue: song.beatPattern ?? "") ?? .sevenEightA).accentArray
         }
     }
-
+    
     private func handleBeat() {
         if defaults.useVibration {
             vibration.vibrateBeat()

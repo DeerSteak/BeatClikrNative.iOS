@@ -14,19 +14,19 @@ import AudioKit
 protocol MetronomeAudioEngine {
     /// Load the beat and rhythm sound files
     func loadSounds(beatName: String, rhythmName: String, from sounds: [SoundFile])
-
+    
     /// Start the metronome with the given tempo, subdivisions, and optional accent pattern
     func startMetronome(bpm: Double, subdivisions: Int, accentPattern: [Bool]?, delegate: MetronomeAudioEngineDelegate)
-
+    
     /// Stop the metronome
     func stopMetronome()
-
+    
     /// Update the tempo while playing
     func updateTempo(bpm: Double, subdivisions: Int)
-
+    
     /// Start the audio engine
     func start() throws
-
+    
     /// Stop the audio engine
     func stop()
 }
@@ -34,5 +34,7 @@ protocol MetronomeAudioEngine {
 /// Delegate protocol for metronome beat callbacks
 @MainActor
 protocol MetronomeAudioEngineDelegate: AnyObject {
-    func metronomeBeatFired(isBeat: Bool)
+    /// `beatInterval` is the time (in seconds) until the next accented beat fires,
+    /// so animations can match the actual rhythmic group length.
+    func metronomeBeatFired(isBeat: Bool, beatInterval: TimeInterval)
 }
