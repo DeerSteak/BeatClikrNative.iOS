@@ -5,12 +5,54 @@
 //  Created by Ben Funk on 5/1/26.
 //
 
+import Combine
 import Foundation
 import SwiftData
 
 @MainActor
 class PracticeHistoryViewModel : ObservableObject {
     var onPracticeRecorded: ((ModelContext) -> Void)?
+    
+    @Published var practiceDates: Set<Date> = []
+    @Published var selectedDateSongs: [PracticedSong] = []
+    
+    var currentStreak: Int { currentStreak(from: practiceDates) }
+    var longestStreak: Int { longestStreak(from: practiceDates) }
+    var reminderNeeded: Bool { practiceReminderNeeded(from: practiceDates) }
+    
+    var currentStreakSubtitle: String {
+        guard let start = currentStreakStartDate(from: practiceDates) else { return String(localized: "Let's go!") }
+        return String(format: String(localized: "Since %@"), start.formatted(.dateTime.month().day().year()))
+    }
+    
+    var longestStreakSubtitle: String {
+        guard let range = longestStreakRange(from: practiceDates) else { return String(localized: "Let's go!") }
+        let fmt = Date.FormatStyle().month(.defaultDigits).day(.defaultDigits).year(.twoDigits)
+        if Calendar.current.isDate(range.start, inSameDayAs: range.end) {
+            return range.start.formatted(fmt)
+        }
+        return "\(range.start.formatted(fmt)) – \(range.end.formatted(fmt))"
+    }
+    
+    var shareText: String {
+        let link = "https://apps.apple.com/app/id1512245974"
+        if currentStreak > 0 {
+            return "I'm on a \(currentStreak)-day streak with BeatClikr! 🎵 \nDownload it now: \(link)"
+        } else if longestStreak > 0 {
+            return "My longest BeatClikr practice streak is \(longestStreak) days! Try to break my record. 🎶 \nDownload it now: \(link)"
+        } else {
+            return "I've been practicing with BeatClikr! 🎼 \nDownload it now: \(link)"
+        }
+    }
+    
+    func loadPracticeDates(context: ModelContext) {
+        practiceDates = markedDates(context: context)
+    }
+    
+    func loadSongs(for date: Date?, context: ModelContext) {
+        guard let date else { selectedDateSongs = []; return }
+        selectedDateSongs = session(for: date, context: context)?.songsPracticed ?? []
+    }
     
     func recordSongPlayed(song: Song, context: ModelContext) {
         let session = getOrCreateTodaysSession(context: context)
@@ -22,6 +64,7 @@ class PracticeHistoryViewModel : ObservableObject {
             session.songsPracticed?.append(practicedSong)
         }
         try? context.save()
+        loadPracticeDates(context: context)
         onPracticeRecorded?(context)
     }
     

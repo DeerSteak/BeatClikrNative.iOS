@@ -12,51 +12,21 @@ struct PracticeHistoryView: View {
     @EnvironmentObject private var model: PracticeHistoryViewModel
     @Environment(\.modelContext) private var modelContext
     @State private var selectedDate: Date? = Calendar.current.startOfDay(for: .now)
-    @State private var markedDates: Set<Date> = []
-    @State private var practicedSongs: [PracticedSong] = []
-    
-    private var currentStreak: Int { model.currentStreak(from: markedDates) }
-    private var longestStreak: Int { model.longestStreak(from: markedDates) }
-    
-    private var currentStreakSubtitle: String {
-        guard let start = model.currentStreakStartDate(from: markedDates) else { return String(localized: "Let's go!") }
-        return String(format: String(localized: "Since %@"), start.formatted(.dateTime.month().day().year()))
-    }
-    
-    private var longestStreakSubtitle: String {
-        guard let range = model.longestStreakRange(from: markedDates) else { return String(localized: "Let's go!") }
-        let fmt = Date.FormatStyle().month(.defaultDigits).day(.defaultDigits).year(.twoDigits)
-        if Calendar.current.isDate(range.start, inSameDayAs: range.end) {
-            return range.start.formatted(fmt)
-        }
-        return "\(range.start.formatted(fmt)) – \(range.end.formatted(fmt))"
-    }
-    
-    private var shareText: String {
-        let link = "https://apps.apple.com/app/id1512245974"
-        if currentStreak > 0 {
-            return "I'm on a \(currentStreak)-day streak with BeatClikr! 🎵 \nDownload it now: \(link)"
-        } else if longestStreak > 0 {
-            return "My longest BeatClikr practice streak is \(longestStreak) days! Try to break my record. 🎶 \nDownload it now: \(link)"
-        } else {
-            return "I've been practicing with BeatClikr! 🎼 \nDownload it now: \(link)"
-        }
-    }
-    
+
     var body: some View {
         NavigationStack {
             VStack(spacing: 0) {
                 HStack(spacing: 0) {
-                    StreakStatView(value: currentStreak, label: "Current Streak", icon: ImageConstants.streak, iconColor: .orange, subtitle: currentStreakSubtitle)
+                    StreakStatView(value: model.currentStreak, label: "Current Streak", icon: ImageConstants.streak, iconColor: .orange, subtitle: model.currentStreakSubtitle)
                     Divider().frame(height: 44)
-                    StreakStatView(value: longestStreak, label: "Longest Streak", icon: ImageConstants.trophy, iconColor: Color(red: 0.95, green: 0.73, blue: 0.1), subtitle: longestStreakSubtitle)
+                    StreakStatView(value: model.longestStreak, label: "Longest Streak", icon: ImageConstants.trophy, iconColor: Color(red: 0.95, green: 0.73, blue: 0.1), subtitle: model.longestStreakSubtitle)
                 }
                 .padding(.horizontal, 12)
                 .padding(.top, 12)
                 .padding(.bottom, 8)
                 .background(Color(UIColor.systemGroupedBackground))
-                
-                if model.practiceReminderNeeded(from: markedDates) {
+
+                if model.reminderNeeded {
                     HStack(spacing: 6) {
                         Image(systemName: ImageConstants.streak)
                             .foregroundStyle(.orange)
@@ -73,20 +43,20 @@ struct PracticeHistoryView: View {
                     .padding(.bottom, 8)
                     .background(Color(UIColor.systemGroupedBackground))
                 }
-                
-                CalendarView(markedDates: markedDates, selectedDate: $selectedDate)
+
+                CalendarView(markedDates: model.practiceDates, selectedDate: $selectedDate)
                     .padding(.horizontal, 12)
                     .padding(.bottom, 12)
                     .background(Color(UIColor.systemGroupedBackground))
-                
+
                 if let selectedDate {
                     List {
                         Section("Practice History for " + selectedDate.formatted(date: .long, time: .omitted)) {
-                            if practicedSongs.isEmpty {
+                            if model.selectedDateSongs.isEmpty {
                                 Text("No practice recorded")
                                     .foregroundStyle(.secondary)
                             } else {
-                                ForEach(practicedSongs) { song in
+                                ForEach(model.selectedDateSongs) { song in
                                     SongListItemView(song: song)
                                 }
                             }
@@ -107,7 +77,7 @@ struct PracticeHistoryView: View {
                         ShareLink(
                             item: Image(uiImage: image),
                             subject: Text("My Practice Streak"),
-                            message: Text(shareText),
+                            message: Text(model.shareText),
                             preview: SharePreview("Practice Streak", image: Image(uiImage: image))
                         ) {
                             Label("Share", systemImage: ImageConstants.share)
@@ -116,25 +86,18 @@ struct PracticeHistoryView: View {
                 }
             }
         }
-
         .onAppear {
-            markedDates = model.markedDates(context: modelContext)
-            if let date = selectedDate {
-                practicedSongs = model.session(for: date, context: modelContext)?.songsPracticed ?? []
-            }
+            model.loadPracticeDates(context: modelContext)
+            model.loadSongs(for: selectedDate, context: modelContext)
         }
         .onChange(of: selectedDate) { _, newDate in
-            guard let newDate else {
-                practicedSongs = []
-                return
-            }
-            practicedSongs = model.session(for: newDate, context: modelContext)?.songsPracticed ?? []
+            model.loadSongs(for: newDate, context: modelContext)
         }
     }
-    
+
     @MainActor
     func makeShareImage() -> UIImage? {
-        let card = SharableStreakCard(streakDays: String(longestStreak))
+        let card = SharableStreakCard(streakDays: String(model.longestStreak))
         let renderer = ImageRenderer(content: card)
         renderer.proposedSize = .init(width: 360, height: 360)
         renderer.scale = min(UIScreen.main.scale * 2, 3)
@@ -149,7 +112,7 @@ private struct StreakStatView: View {
     let icon: String
     let iconColor: Color
     let subtitle: String
-    
+
     var body: some View {
         VStack(spacing: 2) {
             HStack(spacing: 4) {
@@ -173,7 +136,7 @@ private struct StreakStatView: View {
 #Preview {
     let preview = PreviewContainer([Song.self, PracticeSession.self, PracticedSong.self])
     preview.addMockPracticeHistory()
-    
+
     return PracticeHistoryView()
         .modelContainer(preview.container)
         .environmentObject(PracticeHistoryViewModel())
