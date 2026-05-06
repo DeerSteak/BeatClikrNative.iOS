@@ -32,12 +32,12 @@ BeatClikr follows an MVVM architecture with a clean separation of concerns:
 
 ### ViewModels (EnvironmentObjects)
 - **MetronomePlaybackViewModel** - Orchestrates metronome playback, coordinates services, handles UI state (`iconScale`, `beatPulse`, `isPlaying`). Receives `metronomeBeatFired(isBeat:beatInterval:)` callbacks and animates the metronome icon and beat pulse over exactly `beatInterval` seconds — the engine-computed time to the next accented beat — so animations stay in sync with the actual rhythmic group length rather than always using a fixed quarter-note duration
-- **PolyrhythmViewModel** - Manages polyrhythm mode state: the M:N ratio (`beats` and `against`, each 1–9), BPM, sound selection, and per-row dot animations (`beatPulse`/`rhythmPulse`, `activeBeatIndex`/`activeRhythmIndex`). Receives `polyrhythmBeatFired` callbacks and fades each row's pulse over the appropriate interval: quarter-note duration for the beat row, rhythmInterval (`against × quarterNote / beats`) for the rhythm row
+- **PolyrhythmViewModel** - Manages polyrhythm mode state: the M:N ratio (`beats` and `against`, each 1–9), BPM (persisted to `UserDefaults` and synced via iCloud KV store), sound selection, and per-row dot animations (`beatPulse`/`rhythmPulse`, `activeBeatIndex`/`activeRhythmIndex`). Receives `polyrhythmBeatFired` callbacks and fades each row's pulse over the appropriate interval: quarter-note duration for the beat row, rhythmInterval (`against × quarterNote / beats`) for the rhythm row. Also publishes `cycleProgress` (0→1 animated over each full cycle) for the playhead row
 - **SettingsViewModel** - Manages user preferences and notification permission state. Maintains three separate permission states: `notificationsBlockedLocally` (system denied), `notificationsDeferredLocally` (user tapped "Not Now" on the cross-device pre-prompt), and `showCrossDeviceReminderPrompt` (undetermined, needs to ask). Delegates all scheduling to `ReminderNotificationService`; see *Cross-Device Notification Permissions* below
 - **SongLibraryViewModel** - Handles song library CRUD operations and playback
 - **PlaylistListViewModel** - Manages the list of playlists (create, delete)
 - **PlaylistDetailViewModel** - Manages playlist sequencing (next/previous/play), edit, reorder, and delete operations for a single playlist
-- **PracticeHistoryViewModel** - Records songs played per day (`recordSongPlayed`); computes current and longest streaks; generates personalized notification bodies projected across future days; exposes an `onPracticeRecorded` callback invoked after each save so the app can immediately reschedule notifications
+- **PracticeHistoryViewModel** - Records songs played per day (`recordSongPlayed`); publishes `practiceDates` (`Set<Date>`) and `selectedDateSongs` (`[PracticedSong]`) as observable state; exposes computed properties for current/longest streak values, subtitles, reminder flag, and share text so views contain no streak logic; generates personalized notification bodies projected across future days; exposes an `onPracticeRecorded` callback invoked after each save so the app can immediately reschedule notifications
 
 ### Views
 - **HomeView** - Root container; uses `TabView` on iPhone and `NavigationSplitView` on iPad/Mac; sections: Instant, Library, Playlists, History, Settings. Hosts root-level alerts for notification permission flows (`showPermissionDeniedAlert`, `showCrossDeviceReminderPrompt`) so they surface regardless of which tab is active
@@ -203,15 +203,18 @@ The engine fires `polyrhythmBeatFired(beatFired:rhythmFired:beatIndex:rhythmInde
 
 ### Visual dot rows
 
-`PolyrhythmView` shows two dot rows:
-- **Beat row** — N dots (one per `against` quarter note); the active dot lights up when the beat fires
-- **Rhythm row** — M dots (one per rhythm note); the active dot lights up when the rhythm fires
+`PolyrhythmView` shows three rows, each spanning the full cycle width as a proportional timeline:
+- **Beat row** — N dots spaced proportionally; the active dot lights up when the beat fires
+- **Rhythm row** — M dots spaced proportionally; the active dot lights up when the rhythm fires
+- **Playhead row** — a single orange dot that traverses the full cycle length from left to right, restarting at each downbeat, so the listener can see exactly where in the cycle they are
 
-Each row has a single pulse value (`beatPulse` / `rhythmPulse`) that snaps to 1.0 on a firing and fades linearly to 0.0 over the interval to the next firing in that row:
+Each dot row uses `HStack(spacing: 0)` with `Spacer(minLength: 0)` between dots (not after the last) so dot positions are proportional to their time in the cycle rather than equally spaced. Each dot sits centered on a `Capsule` background line to form a unified timeline metaphor.
+
+Each of the beat and rhythm rows has a single pulse value (`beatPulse` / `rhythmPulse`) that snaps to 1.0 on a firing and fades linearly to 0.0 over the interval to the next firing in that row:
 - Beat pulse fades over one quarter note: `60 / bpm`
 - Rhythm pulse fades over one rhythm interval: `against × (60 / bpm) / beats`
 
-The active dot index and the shared pulse are stored in `PolyrhythmViewModel` and observed by the view.
+The active dot index, shared pulses, and `cycleProgress` are all stored in `PolyrhythmViewModel` and observed by the view.
 
 ## Tap Tempo
 
