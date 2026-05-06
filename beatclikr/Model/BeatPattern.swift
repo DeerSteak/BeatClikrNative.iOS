@@ -34,19 +34,19 @@ enum BeatPattern: String, CaseIterable, Identifiable, Codable {
 
     var displayName: String {
         switch self {
-        case .fiveEightA: return "5 (3+2)"
-        case .fiveEightB: return "5 (2+3)"
-        case .sevenEightA: return "7 (3+2+2)"
-        case .sevenEightB: return "7 (2+2+3)"
-        case .sevenEightC: return "7 (2+3+2)"
-        case .nineEightA: return "9 (2+2+2+3)"
-        case .nineEightB: return "9 (3+3+3)"
-        case .elevenEightA: return "11 (2+2+3+2+2)"
-        case .elevenEightB: return "11 (3+3+2+3)"
-        case .thirteenEightA: return "13 (3+2+2+3+3)"
-        case .thirteenEightB: return "13 (2+3+2+3+3)"
-        case .fifteenEightA: return "15 (3+3+3+3+3)"
-        case .fifteenEightB: return "15 (2+3+2+3+2+3)"
+        case .fiveEightA: "5 (3+2)"
+        case .fiveEightB: "5 (2+3)"
+        case .sevenEightA: "7 (3+2+2)"
+        case .sevenEightB: "7 (2+2+3)"
+        case .sevenEightC: "7 (2+3+2)"
+        case .nineEightA: "9 (2+2+2+3)"
+        case .nineEightB: "9 (3+3+3)"
+        case .elevenEightA: "11 (2+2+3+2+2)"
+        case .elevenEightB: "11 (3+3+2+3)"
+        case .thirteenEightA: "13 (3+2+2+3+3)"
+        case .thirteenEightB: "13 (2+3+2+3+3)"
+        case .fifteenEightA: "15 (3+3+3+3+3)"
+        case .fifteenEightB: "15 (2+3+2+3+2+3)"
         }
     }
 

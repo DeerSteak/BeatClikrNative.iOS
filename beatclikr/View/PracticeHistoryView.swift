@@ -78,7 +78,7 @@ struct PracticeHistoryView: View {
                             item: Image(uiImage: image),
                             subject: Text("My Practice Streak"),
                             message: Text(model.shareText),
-                            preview: SharePreview("Practice Streak", image: Image(uiImage: image))
+                            preview: SharePreview("Practice Streak", image: Image(uiImage: image)),
                         ) {
                             Label("Share", systemImage: ImageConstants.share)
                         }

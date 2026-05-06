@@ -78,7 +78,7 @@ struct PlaylistDetailView: View {
                 Color(UIColor.systemBackground)
                 Color.appPrimary.opacity(tappedId == entry.id ? 0.25 : 0)
                     .animation(.easeOut(duration: 0.5), value: tappedId)
-            }
+            },
         )
     }
 
@@ -117,14 +117,14 @@ struct PlaylistDetailView: View {
                 }
             }
             .safeAreaInset(edge: .bottom) {
-                if !editMode.isEditing && !entries.isEmpty {
+                if !editMode.isEditing, !entries.isEmpty {
                     PlaylistTransportView(
                         currentTitle: model.currentSongTitle(in: entries),
                         onPlay: { model.playOrResume(items: entries, metronome: metronome) },
                         canGoPrevious: model.canGoPrevious(items: entries),
                         onPrevious: { model.playPrevious(items: entries, metronome: metronome) },
                         canGoNext: model.canGoNext(items: entries),
-                        onNext: { model.playNext(items: entries, metronome: metronome) }
+                        onNext: { model.playNext(items: entries, metronome: metronome) },
                     )
                 }
             }

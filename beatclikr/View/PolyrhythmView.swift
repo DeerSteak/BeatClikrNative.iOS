@@ -32,18 +32,18 @@ struct PolyrhythmView: View {
                                 count: model.against,
                                 activeIndex: model.activeBeatIndex,
                                 pulse: model.beatPulse,
-                                color: Color.appPrimary
+                                color: Color.appPrimary,
                             )
                             PolyrhythmDotRow(
                                 label: "Rhythm",
                                 count: model.beats,
                                 activeIndex: model.activeRhythmIndex,
                                 pulse: model.rhythmPulse,
-                                color: Color.secondary
+                                color: Color.secondary,
                             )
                             PolyrhythmPlayheadRow(
                                 progress: model.cycleProgress,
-                                isPlaying: model.isPlaying
+                                isPlaying: model.isPlaying,
                             )
                         }
                     }
@@ -69,7 +69,7 @@ struct PolyrhythmView: View {
                         }
                         BpmSliderControl(value: Binding(
                             get: { model.bpm },
-                            set: { newValue in withAnimation { model.bpm = newValue } }
+                            set: { newValue in withAnimation { model.bpm = newValue } },
                         ))
                     }
                     .padding(12)
@@ -135,7 +135,7 @@ struct PolyrhythmView: View {
                 Button(action: model.togglePlayPause) {
                     Label(
                         model.isPlaying ? String(localized: "Pause") : String(localized: "Play"),
-                        systemImage: model.isPlaying ? ImageConstants.pause : ImageConstants.play
+                        systemImage: model.isPlaying ? ImageConstants.pause : ImageConstants.play,
                     )
                     .font(.title2.bold())
                     .frame(maxWidth: .infinity)

@@ -24,6 +24,6 @@ public class FormatterHelper {
     }
 
     public static func formatDouble(_ num: Double) -> String {
-        return formatNumber(num as NSNumber)
+        formatNumber(num as NSNumber)
     }
 }

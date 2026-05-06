@@ -15,7 +15,7 @@ struct SharableStreakCard: View {
             LinearGradient(
                 gradient: Gradient(colors: [.black, .blue, .black]),
                 startPoint: .top,
-                endPoint: .bottom
+                endPoint: .bottom,
             )
             VStack(spacing: 12) {
                 ZStack {

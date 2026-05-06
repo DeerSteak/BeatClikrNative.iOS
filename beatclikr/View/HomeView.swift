@@ -15,23 +15,23 @@ private enum AppSection: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .instant: return "Instant Metronome"
-        case .polyrhythm: return "Polyrhythm"
-        case .library: return "Song Library"
-        case .playlist: return "All Playlists"
-        case .history: return "Practice History"
-        case .settings: return "Settings"
+        case .instant: "Instant Metronome"
+        case .polyrhythm: "Polyrhythm"
+        case .library: "Song Library"
+        case .playlist: "All Playlists"
+        case .history: "Practice History"
+        case .settings: "Settings"
         }
     }
 
     var icon: String {
         switch self {
-        case .instant: return ImageConstants.tabInstant
-        case .polyrhythm: return ImageConstants.tabPolyrhythm
-        case .library: return ImageConstants.tabLibrary
-        case .playlist: return ImageConstants.tabPlaylist
-        case .history: return ImageConstants.tabHistory
-        case .settings: return ImageConstants.tabSettings
+        case .instant: ImageConstants.tabInstant
+        case .polyrhythm: ImageConstants.tabPolyrhythm
+        case .library: ImageConstants.tabLibrary
+        case .playlist: ImageConstants.tabPlaylist
+        case .history: ImageConstants.tabHistory
+        case .settings: ImageConstants.tabSettings
         }
     }
 }

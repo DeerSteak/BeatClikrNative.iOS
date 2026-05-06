@@ -41,7 +41,7 @@ struct beatclikrApp: App {
                 Playlist.self,
                 PracticedSong.self,
                 PracticeSession.self,
-                configurations: config
+                configurations: config,
             )
         } catch {
             fatalError(error.localizedDescription)
@@ -56,7 +56,7 @@ struct beatclikrApp: App {
             if Self.uiTestNotificationState == "deferred" {
                 UserDefaults.standard.set(
                     Date.now.timeIntervalSinceReferenceDate,
-                    forKey: PreferenceKeys.remindersDeferredDate
+                    forKey: PreferenceKeys.remindersDeferredDate,
                 )
                 UserDefaults.standard.set(true, forKey: PreferenceKeys.sendReminders)
             }
@@ -64,7 +64,7 @@ struct beatclikrApp: App {
         } else {
             // Remove entries whose song was deleted
             let orphaned = (try? context.fetch(
-                FetchDescriptor<PlaylistEntry>(predicate: #Predicate { $0.song == nil })
+                FetchDescriptor<PlaylistEntry>(predicate: #Predicate { $0.song == nil }),
             )) ?? []
             if !orphaned.isEmpty {
                 orphaned.forEach { context.delete($0) }
@@ -74,11 +74,11 @@ struct beatclikrApp: App {
             // Migrate legacy entries (no playlist) into a default playlist (once per device)
             if !UserDefaults.standard.bool(forKey: PreferenceKeys.didMigrateToMultiplePlaylists) {
                 let legacyEntries = (try? context.fetch(
-                    FetchDescriptor<PlaylistEntry>(predicate: #Predicate { $0.playlist == nil })
+                    FetchDescriptor<PlaylistEntry>(predicate: #Predicate { $0.playlist == nil }),
                 )) ?? []
                 if !legacyEntries.isEmpty {
                     let existing = (try? context.fetch(
-                        FetchDescriptor<Playlist>(predicate: #Predicate { $0.name == "My Playlist" })
+                        FetchDescriptor<Playlist>(predicate: #Predicate { $0.name == "My Playlist" }),
                     ))?.first
                     let defaultPlaylist = existing ?? {
                         let p = Playlist(name: "My Playlist")
@@ -123,7 +123,7 @@ struct beatclikrApp: App {
                 .onReceive(
                     NotificationCenter.default
                         .publisher(for: .NSPersistentStoreRemoteChange)
-                        .receive(on: DispatchQueue.main)
+                        .receive(on: DispatchQueue.main),
                 ) { _ in
                     guard settingsViewModel.sendReminders else { return }
                     let dates = practiceHistoryViewModel.markedDates(context: container.mainContext)

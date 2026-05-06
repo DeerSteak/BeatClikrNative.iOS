@@ -45,12 +45,12 @@ class SongNavigationViewModel: ObservableObject {
 
     /// Derives the current position from identity rather than storing a raw index,
     /// so deletions and re-sorts can't cause drift.
-    func currentIndex<T: SongNavigatable>(in items: [T]) -> Int? {
+    func currentIndex(in items: [some SongNavigatable]) -> Int? {
         guard let id = currentSongId else { return nil }
         return items.firstIndex { $0.song?.id == id }
     }
 
-    func playNext<T: SongNavigatable>(items: [T], metronome: MetronomePlaybackViewModel) {
+    func playNext(items: [some SongNavigatable], metronome: MetronomePlaybackViewModel) {
         guard let current = currentIndex(in: items) else { return }
         if let nextIdx = ((current + 1) ..< items.count).first(where: { items[$0].song != nil }),
            let song = items[nextIdx].song
@@ -59,7 +59,7 @@ class SongNavigationViewModel: ObservableObject {
         }
     }
 
-    func playPrevious<T: SongNavigatable>(items: [T], metronome: MetronomePlaybackViewModel) {
+    func playPrevious(items: [some SongNavigatable], metronome: MetronomePlaybackViewModel) {
         guard let current = currentIndex(in: items), current > 0 else { return }
         if let prevIdx = (0 ..< current).reversed().first(where: { items[$0].song != nil }),
            let song = items[prevIdx].song
@@ -68,17 +68,17 @@ class SongNavigationViewModel: ObservableObject {
         }
     }
 
-    func canGoNext<T: SongNavigatable>(items: [T]) -> Bool {
+    func canGoNext(items: [some SongNavigatable]) -> Bool {
         guard let current = currentIndex(in: items) else { return false }
         return ((current + 1) ..< items.count).contains { items[$0].song != nil }
     }
 
-    func canGoPrevious<T: SongNavigatable>(items: [T]) -> Bool {
+    func canGoPrevious(items: [some SongNavigatable]) -> Bool {
         guard let current = currentIndex(in: items), current > 0 else { return false }
         return (0 ..< current).contains { items[$0].song != nil }
     }
 
-    func playOrResume<T: SongNavigatable>(items: [T], metronome: MetronomePlaybackViewModel) {
+    func playOrResume(items: [some SongNavigatable], metronome: MetronomePlaybackViewModel) {
         if let idx = currentIndex(in: items), let song = items[idx].song {
             playSong(song, metronome: metronome)
         } else if let firstIdx = items.indices.first(where: { items[$0].song != nil }),
@@ -88,7 +88,7 @@ class SongNavigationViewModel: ObservableObject {
         }
     }
 
-    func currentSongTitle<T: SongNavigatable>(in items: [T]) -> String? {
+    func currentSongTitle(in items: [some SongNavigatable]) -> String? {
         guard let idx = currentIndex(in: items) else { return nil }
         return items[idx].song?.title
     }

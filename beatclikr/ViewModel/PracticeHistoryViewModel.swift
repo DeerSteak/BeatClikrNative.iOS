@@ -83,7 +83,7 @@ class PracticeHistoryViewModel: ObservableObject {
         let descriptor = FetchDescriptor<PracticeSession>(
             predicate: #Predicate { session in
                 (session.date ?? distantPast) >= start && (session.date ?? distantPast) < end
-            }
+            },
         )
 
         if let existing = try? context.fetch(descriptor).first {
@@ -102,7 +102,7 @@ class PracticeHistoryViewModel: ObservableObject {
         let descriptor = FetchDescriptor<PracticeSession>(
             predicate: #Predicate { session in
                 (session.date ?? distantPast) >= start && (session.date ?? distantPast) < end
-            }
+            },
         )
         return try? context.fetch(descriptor).first
     }

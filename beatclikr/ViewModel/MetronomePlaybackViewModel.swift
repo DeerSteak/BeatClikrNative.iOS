@@ -100,7 +100,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         vibration: VibrationService = .instance,
         flashlight: FlashlightService = .instance,
         audio: AudioPlayerService = .instance,
-        defaults: UserDefaultsService = .instance
+        defaults: UserDefaultsService = .instance,
     ) {
         self.vibration = vibration
         self.flashlight = flashlight

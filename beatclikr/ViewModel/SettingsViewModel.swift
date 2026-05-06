@@ -168,7 +168,7 @@ class SettingsViewModel: ObservableObject {
     func declineRemindersFromOtherDevice() {
         UserDefaults.standard.set(
             Date.now.timeIntervalSinceReferenceDate,
-            forKey: PreferenceKeys.remindersDeferredDate
+            forKey: PreferenceKeys.remindersDeferredDate,
         )
         notificationsDeferredLocally = true
     }

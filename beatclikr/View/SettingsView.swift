@@ -242,6 +242,6 @@ struct SettingsView: View {
 }
 
 #Preview {
-    return SettingsView()
+    SettingsView()
         .environmentObject(SettingsViewModel())
 }

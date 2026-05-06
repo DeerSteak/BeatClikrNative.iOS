@@ -132,7 +132,7 @@ class UserDefaultsService: ObservableObject {
         NotificationCenter.default.addObserver(
             forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
             object: cloud,
-            queue: .main
+            queue: .main,
         ) { [weak self] _ in
             Swift.Task { @MainActor in
                 self?.syncWithCloud()

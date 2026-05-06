@@ -25,46 +25,46 @@ struct PracticeHistoryViewModelTests {
         let config = ModelConfiguration(isStoredInMemoryOnly: true)
         return try ModelContainer(
             for: Song.self, PracticeSession.self, PracticedSong.self,
-            configurations: config
+            configurations: config,
         )
     }
 
     // MARK: - currentStreak
 
-    @Test func currentStreakIsZeroForEmptyDates() {
+    @Test func `current streak is zero for empty dates`() {
         let vm = PracticeHistoryViewModel()
         #expect(vm.currentStreak(from: []) == 0)
     }
 
-    @Test func currentStreakIsTodayOnly() {
+    @Test func `current streak is today only`() {
         let vm = PracticeHistoryViewModel()
         #expect(vm.currentStreak(from: [today]) == 1)
     }
 
-    @Test func currentStreakCountsTodayAndYesterday() {
+    @Test func `current streak counts today and yesterday`() {
         let vm = PracticeHistoryViewModel()
         #expect(vm.currentStreak(from: [today, daysAgo(1)]) == 2)
     }
 
-    @Test func currentStreakCountsThreeConsecutiveDays() {
+    @Test func `current streak counts three consecutive days`() {
         let vm = PracticeHistoryViewModel()
         let dates: Set<Date> = [today, daysAgo(1), daysAgo(2)]
         #expect(vm.currentStreak(from: dates) == 3)
     }
 
-    @Test func currentStreakCountsFromYesterdayWhenTodayMissing() {
+    @Test func `current streak counts from yesterday when today missing`() {
         let vm = PracticeHistoryViewModel()
         let dates: Set<Date> = [daysAgo(1), daysAgo(2)]
         #expect(vm.currentStreak(from: dates) == 2)
     }
 
-    @Test func currentStreakIsZeroWhenGapBeforeYesterday() {
+    @Test func `current streak is zero when gap before yesterday`() {
         let vm = PracticeHistoryViewModel()
         let dates: Set<Date> = [daysAgo(3), daysAgo(4)]
         #expect(vm.currentStreak(from: dates) == 0)
     }
 
-    @Test func currentStreakNotExtendedByNonConsecutiveDate() {
+    @Test func `current streak not extended by non consecutive date`() {
         let vm = PracticeHistoryViewModel()
         let dates: Set<Date> = [today, daysAgo(3)]
         #expect(vm.currentStreak(from: dates) == 1)
@@ -72,28 +72,28 @@ struct PracticeHistoryViewModelTests {
 
     // MARK: - practiceReminderNeeded
 
-    @Test func practiceReminderNeededIsFalseForEmptyDates() {
+    @Test func `practice reminder needed is false for empty dates`() {
         let vm = PracticeHistoryViewModel()
         #expect(vm.practiceReminderNeeded(from: []) == false)
     }
 
-    @Test func practiceReminderNeededIsFalseWhenPracticedToday() {
+    @Test func `practice reminder needed is false when practiced today`() {
         let vm = PracticeHistoryViewModel()
         #expect(vm.practiceReminderNeeded(from: [today]) == false)
     }
 
-    @Test func practiceReminderNeededIsTrueWhenLastPracticeWasYesterday() {
+    @Test func `practice reminder needed is true when last practice was yesterday`() {
         let vm = PracticeHistoryViewModel()
         #expect(vm.practiceReminderNeeded(from: [daysAgo(1)]) == true)
     }
 
-    @Test func practiceReminderNeededIsTrueForMultiDayStreakEndingYesterday() {
+    @Test func `practice reminder needed is true for multi day streak ending yesterday`() {
         let vm = PracticeHistoryViewModel()
         let dates: Set<Date> = [daysAgo(1), daysAgo(2), daysAgo(3)]
         #expect(vm.practiceReminderNeeded(from: dates) == true)
     }
 
-    @Test func practiceReminderNeededIsFalseWhenNoActiveStreak() {
+    @Test func `practice reminder needed is false when no active streak`() {
         let vm = PracticeHistoryViewModel()
         let dates: Set<Date> = [daysAgo(3), daysAgo(4)]
         #expect(vm.practiceReminderNeeded(from: dates) == false)
@@ -101,26 +101,26 @@ struct PracticeHistoryViewModelTests {
 
     // MARK: - notificationBody
 
-    @Test func notificationBodyIsDefaultForEmptyDates() {
+    @Test func `notification body is default for empty dates`() {
         let vm = PracticeHistoryViewModel()
         let body = vm.notificationBody(from: [])
         #expect(body.contains("each day"))
     }
 
-    @Test func notificationBodyIsPracticedTodayWhenTodayInDates() {
+    @Test func `notification body is practiced today when today in dates`() {
         let vm = PracticeHistoryViewModel()
         let body = vm.notificationBody(from: [today])
         #expect(body.contains("reminder to play"))
     }
 
-    @Test func notificationBodyIsKeepStreakWhenLastPracticeWasYesterday() {
+    @Test func `notification body is keep streak when last practice was yesterday`() {
         let vm = PracticeHistoryViewModel()
         let body = vm.notificationBody(from: [daysAgo(1), daysAgo(2)])
         #expect(body.contains("2"))
         #expect(body.contains("streak alive"))
     }
 
-    @Test func notificationBodyIsStreakBrokenWhenLongestStreakJustBroke() {
+    @Test func `notification body is streak broken when longest streak just broke`() {
         let vm = PracticeHistoryViewModel()
         let dates: Set<Date> = [daysAgo(2), daysAgo(3), daysAgo(4)]
         let body = vm.notificationBody(from: dates)
@@ -128,7 +128,7 @@ struct PracticeHistoryViewModelTests {
         #expect(body.contains("was broken"))
     }
 
-    @Test func notificationBodyIsDefaultWhenBrokenStreakIsNotLongest() {
+    @Test func `notification body is default when broken streak is not longest`() {
         let vm = PracticeHistoryViewModel()
         // Short recent streak (3 days ending 2 days ago), plus longer old streak (5 days)
         let recentBroken: Set<Date> = [daysAgo(2), daysAgo(3), daysAgo(4)]
@@ -139,30 +139,30 @@ struct PracticeHistoryViewModelTests {
 
     // MARK: - scheduledNotificationBodies
 
-    @Test func scheduledNotificationBodiesReturnsRequestedCount() {
+    @Test func `scheduled notification bodies returns requested count`() {
         let vm = PracticeHistoryViewModel()
         #expect(vm.scheduledNotificationBodies(from: [], days: 7).count == 7)
     }
 
-    @Test func scheduledNotificationBodiesDay0MatchesNotificationBody() {
+    @Test func `scheduled notification bodies day 0 matches notification body`() {
         let vm = PracticeHistoryViewModel()
         let dates: Set<Date> = [today]
         #expect(vm.scheduledNotificationBodies(from: dates, days: 7)[0] == vm.notificationBody(from: dates))
     }
 
-    @Test func scheduledNotificationBodiesDay1IsKeepStreakWhenPracticedToday() {
+    @Test func `scheduled notification bodies day 1 is keep streak when practiced today`() {
         let vm = PracticeHistoryViewModel()
         let body = vm.scheduledNotificationBodies(from: [today], days: 2)[1]
         #expect(body.contains("streak alive"))
     }
 
-    @Test func scheduledNotificationBodiesDay2IsGenericWhenNoPractice() {
+    @Test func `scheduled notification bodies day 2 is generic when no practice`() {
         let vm = PracticeHistoryViewModel()
         let body = vm.scheduledNotificationBodies(from: [], days: 3)[2]
         #expect(body.contains("each day"))
     }
 
-    @Test func scheduledNotificationBodiesDay1IsStreakBrokenWhenLongestStreakEndsToday() {
+    @Test func `scheduled notification bodies day 1 is streak broken when longest streak ends today`() {
         let vm = PracticeHistoryViewModel()
         // Longest streak runs through today; tomorrow's notification should warn it's broken
         let dates: Set<Date> = [today, daysAgo(1), daysAgo(2)]
@@ -173,17 +173,17 @@ struct PracticeHistoryViewModelTests {
 
     // MARK: - currentStreakStartDate
 
-    @Test func currentStreakStartDateIsNilForEmptyDates() {
+    @Test func `current streak start date is nil for empty dates`() {
         let vm = PracticeHistoryViewModel()
         #expect(vm.currentStreakStartDate(from: []) == nil)
     }
 
-    @Test func currentStreakStartDateIsTodayForSingleDayStreak() {
+    @Test func `current streak start date is today for single day streak`() {
         let vm = PracticeHistoryViewModel()
         #expect(vm.currentStreakStartDate(from: [today]) == today)
     }
 
-    @Test func currentStreakStartDateIsCorrectForMultiDayStreak() {
+    @Test func `current streak start date is correct for multi day streak`() {
         let vm = PracticeHistoryViewModel()
         let dates: Set<Date> = [today, daysAgo(1), daysAgo(2)]
         #expect(vm.currentStreakStartDate(from: dates) == daysAgo(2))
@@ -191,29 +191,29 @@ struct PracticeHistoryViewModelTests {
 
     // MARK: - longestStreak
 
-    @Test func longestStreakIsZeroForEmptyDates() {
+    @Test func `longest streak is zero for empty dates`() {
         let vm = PracticeHistoryViewModel()
         #expect(vm.longestStreak(from: []) == 0)
     }
 
-    @Test func longestStreakIsOneForSingleDate() {
+    @Test func `longest streak is one for single date`() {
         let vm = PracticeHistoryViewModel()
         #expect(vm.longestStreak(from: [today]) == 1)
     }
 
-    @Test func longestStreakIsOneForNonConsecutiveDates() {
+    @Test func `longest streak is one for non consecutive dates`() {
         let vm = PracticeHistoryViewModel()
         let dates: Set<Date> = [today, daysAgo(5), daysAgo(10)]
         #expect(vm.longestStreak(from: dates) == 1)
     }
 
-    @Test func longestStreakCountsConsecutiveDays() {
+    @Test func `longest streak counts consecutive days`() {
         let vm = PracticeHistoryViewModel()
         let dates: Set<Date> = [daysAgo(1), daysAgo(2), daysAgo(3), daysAgo(4)]
         #expect(vm.longestStreak(from: dates) == 4)
     }
 
-    @Test func longestStreakPicksLongestRun() {
+    @Test func `longest streak picks longest run`() {
         let vm = PracticeHistoryViewModel()
         let shortRun: Set<Date> = [daysAgo(20), daysAgo(21)]
         let longRun: Set<Date> = [daysAgo(5), daysAgo(6), daysAgo(7), daysAgo(8)]
@@ -222,19 +222,19 @@ struct PracticeHistoryViewModelTests {
 
     // MARK: - longestStreakRange
 
-    @Test func longestStreakRangeIsNilForEmptyDates() {
+    @Test func `longest streak range is nil for empty dates`() {
         let vm = PracticeHistoryViewModel()
         #expect(vm.longestStreakRange(from: []) == nil)
     }
 
-    @Test func longestStreakRangeStartEqualsEndForSingleDate() {
+    @Test func `longest streak range start equals end for single date`() {
         let vm = PracticeHistoryViewModel()
         let result = vm.longestStreakRange(from: [today])
         #expect(result?.start == today)
         #expect(result?.end == today)
     }
 
-    @Test func longestStreakRangeReturnsCorrectBounds() {
+    @Test func `longest streak range returns correct bounds`() {
         let vm = PracticeHistoryViewModel()
         let dates: Set<Date> = [daysAgo(2), daysAgo(3), daysAgo(4)]
         let result = vm.longestStreakRange(from: dates)
@@ -244,14 +244,14 @@ struct PracticeHistoryViewModelTests {
 
     // MARK: - markedDates
 
-    @Test func markedDatesIsEmptyWithNoSessions() throws {
+    @Test func `marked dates is empty with no sessions`() throws {
         let container = try makeContainer()
         let context = container.mainContext
         let vm = PracticeHistoryViewModel()
         #expect(vm.markedDates(context: context).isEmpty)
     }
 
-    @Test func markedDatesContainsSessionDates() throws {
+    @Test func `marked dates contains session dates`() throws {
         let container = try makeContainer()
         let context = container.mainContext
         let session = PracticeSession(date: today)
@@ -262,7 +262,7 @@ struct PracticeHistoryViewModelTests {
         #expect(dates.count == 1)
     }
 
-    @Test func markedDatesNormalizesToStartOfDay() throws {
+    @Test func `marked dates normalizes to start of day`() throws {
         let container = try makeContainer()
         let context = container.mainContext
         let noon = try #require(cal.date(bySettingHour: 12, minute: 0, second: 0, of: today))
@@ -274,7 +274,7 @@ struct PracticeHistoryViewModelTests {
 
     // MARK: - session(for:context:)
 
-    @Test func sessionForDateReturnsMatchingSession() throws {
+    @Test func `session for date returns matching session`() throws {
         let container = try makeContainer()
         let context = container.mainContext
         let session = PracticeSession(date: today)
@@ -285,14 +285,14 @@ struct PracticeHistoryViewModelTests {
         #expect(found?.id == session.id)
     }
 
-    @Test func sessionForDateReturnsNilWhenNotFound() throws {
+    @Test func `session for date returns nil when not found`() throws {
         let container = try makeContainer()
         let context = container.mainContext
         let vm = PracticeHistoryViewModel()
         #expect(vm.session(for: today, context: context) == nil)
     }
 
-    @Test func sessionForDateDoesNotReturnWrongDaySession() throws {
+    @Test func `session for date does not return wrong day session`() throws {
         let container = try makeContainer()
         let context = container.mainContext
         let session = PracticeSession(date: daysAgo(1))
@@ -303,7 +303,7 @@ struct PracticeHistoryViewModelTests {
 
     // MARK: - getOrCreateTodaysSession
 
-    @Test func getOrCreateTodaysSessionCreatesNewSession() throws {
+    @Test func `get or create todays session creates new session`() throws {
         let container = try makeContainer()
         let context = container.mainContext
         let vm = PracticeHistoryViewModel()
@@ -312,7 +312,7 @@ struct PracticeHistoryViewModelTests {
         #expect(try cal.isDateInToday(#require(session.date)))
     }
 
-    @Test func getOrCreateTodaysSessionReturnsExistingSession() throws {
+    @Test func `get or create todays session returns existing session`() throws {
         let container = try makeContainer()
         let context = container.mainContext
         let vm = PracticeHistoryViewModel()
@@ -323,7 +323,7 @@ struct PracticeHistoryViewModelTests {
 
     // MARK: - recordSongPlayed
 
-    @Test func recordSongPlayedCreatesNewPracticedSong() throws {
+    @Test func `record song played creates new practiced song`() throws {
         let container = try makeContainer()
         let context = container.mainContext
         let song = Song(title: "Test Song", artist: "Test Artist", beatsPerMinute: 120, beatsPerMeasure: 4, groove: .quarter)
@@ -336,7 +336,7 @@ struct PracticeHistoryViewModelTests {
         #expect(practiced?.timesPracticed == 1)
     }
 
-    @Test func recordSongPlayedIncrementsTimesPlayedOnRepeat() throws {
+    @Test func `record song played increments times played on repeat`() throws {
         let container = try makeContainer()
         let context = container.mainContext
         let song = Song(title: "Test Song", artist: "Test Artist", beatsPerMinute: 120, beatsPerMeasure: 4, groove: .quarter)
@@ -349,7 +349,7 @@ struct PracticeHistoryViewModelTests {
         #expect(practiced?.timesPracticed == 2)
     }
 
-    @Test func recordSongPlayedCopiesSongMetadata() throws {
+    @Test func `record song played copies song metadata`() throws {
         let container = try makeContainer()
         let context = container.mainContext
         let song = Song(title: "My Song", artist: "My Artist", beatsPerMinute: 100, beatsPerMeasure: 4, groove: .quarter)

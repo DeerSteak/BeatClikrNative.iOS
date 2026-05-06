@@ -47,7 +47,7 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
         rhythmSound = sounds.first { $0.displayName == rhythmName }
 
         do {
-            let files = sounds.compactMap { $0.audioFile }
+            let files = sounds.compactMap(\.audioFile)
             if files.count != sounds.count {
                 print("Warning: Only loaded \(files.count) of \(sounds.count) sound files")
             }
@@ -99,7 +99,7 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
     // MARK: - Private helpers
 
     private func getSubdivisionDuration() -> Double {
-        return 60.0 / (currentBPM * Double(currentSubdivisions))
+        60.0 / (currentBPM * Double(currentSubdivisions))
     }
 
     private func startTimer() {
@@ -167,11 +167,11 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
 
         if !UserDefaultsService.instance.muteMetronome {
             if playBeatSound {
-                if let beatSound = beatSound {
+                if let beatSound {
                     sampler.play(noteNumber: MIDINoteNumber(beatSound.midiNote))
                 }
             } else {
-                if let rhythmSound = rhythmSound {
+                if let rhythmSound {
                     sampler.play(noteNumber: MIDINoteNumber(rhythmSound.midiNote))
                 }
             }

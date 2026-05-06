@@ -122,11 +122,11 @@ struct SongDetailsView: View {
     }
 
     func songIsValid() -> Bool {
-        return title != "" && artist != "" && bpm >= MetronomeConstants.minBPM && bpm <= MetronomeConstants.maxBPM
+        title != "" && artist != "" && bpm >= MetronomeConstants.minBPM && bpm <= MetronomeConstants.maxBPM
     }
 
     func navTitle() -> String {
-        return (song.title ?? "").isEmpty ? String(localized: "Add Song") : String(localized: "Song Details")
+        (song.title ?? "").isEmpty ? String(localized: "Add Song") : String(localized: "Song Details")
     }
 }
 

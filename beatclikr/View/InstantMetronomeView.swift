@@ -44,7 +44,7 @@ struct InstantMetronomeView: View {
                         }
                         BpmSliderControl(value: Binding(
                             get: { model.beatsPerMinute },
-                            set: { newValue in withAnimation { model.beatsPerMinute = newValue } }
+                            set: { newValue in withAnimation { model.beatsPerMinute = newValue } },
                         ))
                     }
                     .padding(12)
@@ -124,7 +124,7 @@ struct InstantMetronomeView: View {
                 Button(action: togglePlayPause) {
                     Label(
                         model.isPlaying ? String(localized: "Pause") : String(localized: "Play"),
-                        systemImage: model.isPlaying ? ImageConstants.pause : ImageConstants.play
+                        systemImage: model.isPlaying ? ImageConstants.pause : ImageConstants.play,
                     )
                     .font(.title2.bold())
                     .frame(maxWidth: .infinity)

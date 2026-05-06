@@ -29,7 +29,7 @@ class ReminderNotificationService: ReminderNotificationServicing {
         let center = UNUserNotificationCenter.current()
         let settings = await center.notificationSettings()
         if settings.authorizationStatus == .denied { return .denied }
-        let granted = (try? await center.requestAuthorization(options: [.alert, .sound])) ?? false
+        let granted = await (try? center.requestAuthorization(options: [.alert, .sound])) ?? false
         return granted ? .granted : .notGranted
     }
 
@@ -75,7 +75,7 @@ class ReminderNotificationService: ReminderNotificationServicing {
             let request = UNNotificationRequest(
                 identifier: "practiceReminder_\(offset)",
                 content: content,
-                trigger: trigger
+                trigger: trigger,
             )
             center.add(request)
         }

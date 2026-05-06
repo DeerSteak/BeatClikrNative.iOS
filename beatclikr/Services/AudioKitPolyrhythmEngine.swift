@@ -116,7 +116,7 @@ class AudioKitPolyrhythmEngine: PolyrhythmAudioEngine {
             beatFired: isBeatStep,
             rhythmFired: isRhythmStep,
             beatIndex: stepIndex / beatGridStep,
-            rhythmIndex: stepIndex / rhythmGridStep
+            rhythmIndex: stepIndex / rhythmGridStep,
         )
     }
 

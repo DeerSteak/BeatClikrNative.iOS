@@ -43,7 +43,7 @@ final class PracticeHistoryUITests: XCTestCase {
         launchApp()
         XCTAssertTrue(
             app.tabBars.buttons["History"].waitForExistence(timeout: 3),
-            "History tab should exist in the tab bar"
+            "History tab should exist in the tab bar",
         )
     }
 
@@ -52,7 +52,7 @@ final class PracticeHistoryUITests: XCTestCase {
         navigateToPracticeHistory()
         XCTAssertTrue(
             app.navigationBars["Practice History"].waitForExistence(timeout: 3),
-            "Practice History navigation bar title should be visible"
+            "Practice History navigation bar title should be visible",
         )
     }
 
@@ -63,7 +63,7 @@ final class PracticeHistoryUITests: XCTestCase {
         navigateToPracticeHistory()
         XCTAssertTrue(
             app.staticTexts["Current Streak"].waitForExistence(timeout: 3),
-            "Current Streak label should be visible"
+            "Current Streak label should be visible",
         )
     }
 
@@ -72,7 +72,7 @@ final class PracticeHistoryUITests: XCTestCase {
         navigateToPracticeHistory()
         XCTAssertTrue(
             app.staticTexts["Longest Streak"].waitForExistence(timeout: 3),
-            "Longest Streak label should be visible"
+            "Longest Streak label should be visible",
         )
     }
 
@@ -81,7 +81,7 @@ final class PracticeHistoryUITests: XCTestCase {
         navigateToPracticeHistory()
         XCTAssertTrue(
             app.staticTexts["Let's go!"].waitForExistence(timeout: 3),
-            "Let's go! subtitle should appear when there is no practice history"
+            "Let's go! subtitle should appear when there is no practice history",
         )
     }
 
@@ -90,7 +90,7 @@ final class PracticeHistoryUITests: XCTestCase {
         navigateToPracticeHistory()
         XCTAssertTrue(
             app.staticTexts["2 days"].waitForExistence(timeout: 3),
-            "Current streak should show 2 days for today + yesterday"
+            "Current streak should show 2 days for today + yesterday",
         )
     }
 
@@ -102,7 +102,7 @@ final class PracticeHistoryUITests: XCTestCase {
         _ = app.staticTexts["Current Streak"].waitForExistence(timeout: 3)
         XCTAssertFalse(
             app.staticTexts["Practice today to keep your streak going!"].exists,
-            "Reminder banner should not appear when there is no practice history"
+            "Reminder banner should not appear when there is no practice history",
         )
     }
 
@@ -111,7 +111,7 @@ final class PracticeHistoryUITests: XCTestCase {
         navigateToPracticeHistory()
         XCTAssertTrue(
             app.staticTexts["Practice today to keep your streak going!"].waitForExistence(timeout: 3),
-            "Reminder banner should appear when the active streak ends yesterday"
+            "Reminder banner should appear when the active streak ends yesterday",
         )
     }
 
@@ -121,7 +121,7 @@ final class PracticeHistoryUITests: XCTestCase {
         _ = app.staticTexts["Current Streak"].waitForExistence(timeout: 3)
         XCTAssertFalse(
             app.staticTexts["Practice today to keep your streak going!"].exists,
-            "Reminder banner should not appear when the user has already practiced today"
+            "Reminder banner should not appear when the user has already practiced today",
         )
     }
 
@@ -141,7 +141,7 @@ final class PracticeHistoryUITests: XCTestCase {
         navigateToPracticeHistory()
         XCTAssertTrue(
             app.staticTexts["No practice recorded"].waitForExistence(timeout: 3),
-            "No practice recorded should appear when no session exists for the selected date"
+            "No practice recorded should appear when no session exists for the selected date",
         )
     }
 
@@ -152,7 +152,7 @@ final class PracticeHistoryUITests: XCTestCase {
         navigateToPracticeHistory()
         XCTAssertTrue(
             app.staticTexts["1 day"].waitForExistence(timeout: 3),
-            "Current streak should show '1 day' (singular) when streak is exactly one day"
+            "Current streak should show '1 day' (singular) when streak is exactly one day",
         )
     }
 
@@ -163,7 +163,7 @@ final class PracticeHistoryUITests: XCTestCase {
         navigateToPracticeHistory()
         XCTAssertTrue(
             app.staticTexts["5 days"].waitForExistence(timeout: 3),
-            "Current streak should show '5 days' for a five-day streak"
+            "Current streak should show '5 days' for a five-day streak",
         )
     }
 
@@ -178,7 +178,7 @@ final class PracticeHistoryUITests: XCTestCase {
             .waitForExistence(timeout: 3)
         XCTAssertTrue(
             hasSinceLabel,
-            "Current streak subtitle should show a 'Since [date]' label when there is an active streak"
+            "Current streak subtitle should show a 'Since [date]' label when there is an active streak",
         )
     }
 
@@ -189,7 +189,7 @@ final class PracticeHistoryUITests: XCTestCase {
         navigateToPracticeHistory()
         XCTAssertTrue(
             app.buttons["Share"].waitForExistence(timeout: 3),
-            "Share button should be visible in the navigation bar when there is practice history"
+            "Share button should be visible in the navigation bar when there is practice history",
         )
     }
 }

@@ -86,7 +86,7 @@ struct CalendarView: View {
                                 day: day,
                                 isMarked: markedDates.contains(dayKey),
                                 isToday: calendar.isDateInToday(day),
-                                isSelected: selectedDate.map { calendar.isDate($0, inSameDayAs: day) } ?? false
+                                isSelected: selectedDate.map { calendar.isDate($0, inSameDayAs: day) } ?? false,
                             )
                             .onTapGesture {
                                 selectedDate = dayKey

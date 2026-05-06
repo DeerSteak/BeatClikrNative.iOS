@@ -33,78 +33,78 @@ enum FileConstants: String, CaseIterable, Identifiable, CustomStringConvertible,
     var description: String {
         switch self {
         case .ClickHi:
-            return "Click Hi"
+            "Click Hi"
         case .ClickLo:
-            return "Click Lo"
+            "Click Lo"
         case .Cowbell:
-            return "Cowbell"
+            "Cowbell"
         case .CrashL:
-            return "Crash (Left)"
+            "Crash (Left)"
         case .FileExt:
-            return ".wav"
+            ".wav"
         case .CrashR:
-            return "Crash (Right)"
+            "Crash (Right)"
         case .HatClosed:
-            return "Hi-Hat (Closed)"
+            "Hi-Hat (Closed)"
         case .HatOpen:
-            return "Hi-Hat (Open)"
+            "Hi-Hat (Open)"
         case .Kick:
-            return "Kick"
+            "Kick"
         case .RideEdge:
-            return "Ride (Edge)"
+            "Ride (Edge)"
         case .RideBell:
-            return "Ride (Bell)"
+            "Ride (Bell)"
         case .Silence:
-            return "Silence"
+            "Silence"
         case .Snare:
-            return "Snare"
+            "Snare"
         case .Tamb:
-            return "Tamourine"
+            "Tamourine"
         case .TomHi:
-            return "Tom (High)"
+            "Tom (High)"
         case .TomLo:
-            return "Tom (Low)"
+            "Tom (Low)"
         case .TomMid:
-            return "Tom (Mid)"
+            "Tom (Mid)"
         }
     }
 
     func getNoteNumber() -> Int {
         switch self {
         case .FileExt:
-            return 99
+            99
         case .ClickHi:
-            return 76 // E5
+            76 // E5
         case .ClickLo:
-            return 77 // F5
+            77 // F5
         case .Cowbell:
-            return 56 // G#3
+            56 // G#3
         case .CrashL:
-            return 49 // C#3
+            49 // C#3
         case .CrashR:
-            return 57 // A3
+            57 // A3
         case .HatClosed:
-            return 42 // F#2
+            42 // F#2
         case .HatOpen:
-            return 46 // A#2
+            46 // A#2
         case .Kick:
-            return 36 // C2
+            36 // C2
         case .RideEdge:
-            return 51 // D#3
+            51 // D#3
         case .RideBell:
-            return 53 // F3
+            53 // F3
         case .Silence:
-            return 98 // D7
+            98 // D7
         case .Snare:
-            return 38 // D2
+            38 // D2
         case .Tamb:
-            return 54 // F#3
+            54 // F#3
         case .TomHi:
-            return 50 // D3
+            50 // D3
         case .TomLo:
-            return 45 // A2
+            45 // A2
         case .TomMid:
-            return 47 // B2
+            47 // B2
         }
     }
 }

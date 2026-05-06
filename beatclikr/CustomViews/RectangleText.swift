@@ -25,13 +25,13 @@ struct RectangleText: View {
     var body: some View {
         ZStack {
             RoundedRectangle(cornerSize: CGSize(width: 5, height: 5))
-                .fill(self.backgroundColor)
+                .fill(backgroundColor)
                 .frame(height: 52)
                 .shadow(radius: 2)
                 .accessibilityHidden(true)
 
-            Text(self.text)
-                .foregroundColor(self.foregroundColor)
+            Text(text)
+                .foregroundColor(foregroundColor)
                 .bold()
         }
     }
