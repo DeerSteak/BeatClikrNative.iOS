@@ -20,8 +20,7 @@ struct InstantMetronomeView: View {
     }
     
     var body: some View {
-        NavigationStack {
-            ScrollView {
+        ScrollView {
                 VStack(spacing: 8) {
                     
                     // BPM card
@@ -145,9 +144,6 @@ struct InstantMetronomeView: View {
                 model.clickerType = .instant
                 UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
             }
-            .navigationTitle("Instant Metronome")
-            .navigationBarTitleDisplayMode(UIScreen.main.bounds.height < 700 ? .inline : .large)
-        }
     }
     
     private func togglePlayPause() {

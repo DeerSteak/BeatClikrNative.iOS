@@ -8,24 +8,26 @@
 import SwiftUI
 
 private enum AppSection: String, CaseIterable, Identifiable {
-    case instant, library, playlist, history, settings
+    case instant, polyrhythm, library, playlist, history, settings
     var id: String { rawValue }
     var title: String {
         switch self {
-        case .instant:  return "Instant Metronome"
-        case .library:  return "Song Library"
-        case .playlist: return "All Playlists"
-        case .history:  return "Practice History"
-        case .settings: return "Settings"
+        case .instant:     return "Instant Metronome"
+        case .polyrhythm:  return "Polyrhythm"
+        case .library:     return "Song Library"
+        case .playlist:    return "All Playlists"
+        case .history:     return "Practice History"
+        case .settings:    return "Settings"
         }
     }
     var icon: String {
         switch self {
-        case .instant:  return ImageConstants.tabInstant
-        case .library:  return ImageConstants.tabLibrary
-        case .playlist: return ImageConstants.tabPlaylist
-        case .history:  return ImageConstants.tabHistory
-        case .settings: return ImageConstants.tabSettings
+        case .instant:     return ImageConstants.tabInstant
+        case .polyrhythm:  return ImageConstants.tabPolyrhythm
+        case .library:     return ImageConstants.tabLibrary
+        case .playlist:    return ImageConstants.tabPlaylist
+        case .history:     return ImageConstants.tabHistory
+        case .settings:    return ImageConstants.tabSettings
         }
     }
 }
@@ -33,6 +35,7 @@ private enum AppSection: String, CaseIterable, Identifiable {
 struct HomeView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
     @EnvironmentObject private var settingsViewModel: SettingsViewModel
+    @EnvironmentObject private var polyrhythmViewModel: PolyrhythmViewModel
     @State private var selectedSection: AppSection? = .instant
     
     var body: some View {
@@ -50,12 +53,20 @@ struct HomeView: View {
                 } detail: {
                     Group {
                         switch selectedSection {
-                        case .instant:  InstantMetronomeView()
-                        case .library:  SongLibraryView()
-                        case .playlist: PlaylistListView()
-                        case .history:  PracticeHistoryView()
-                        case .settings: SettingsView()
-                        case nil:       InstantMetronomeView()
+                        case .instant:
+                            InstantMetronomeView()
+                                .navigationTitle("Instant Metronome")
+                        case .polyrhythm:
+                            PolyrhythmView()
+                                .environmentObject(polyrhythmViewModel)
+                                .navigationTitle("Polyrhythm")
+                        case .library:    SongLibraryView()
+                        case .playlist:   PlaylistListView()
+                        case .history:    PracticeHistoryView()
+                        case .settings:   SettingsView()
+                        case nil:
+                            InstantMetronomeView()
+                                .navigationTitle("Instant Metronome")
                         }
                     }
                     .frame(maxWidth: 500, alignment: .center)
@@ -74,8 +85,8 @@ struct HomeView: View {
 #endif
             } else {
                 TabView {
-                    InstantMetronomeView()
-                        .tabItem { Label("Instant", systemImage: ImageConstants.tabInstant) }
+                    MetronomeContainerView()
+                        .tabItem { Label("Metronome", systemImage: ImageConstants.tabInstant) }
                     SongLibraryView()
                         .tabItem { Label("Library", systemImage: ImageConstants.tabLibrary) }
                     PlaylistListView()
@@ -118,9 +129,9 @@ struct HomeView: View {
 }
 
 #Preview {
-    let metronome = MetronomePlaybackViewModel()
     HomeView()
-        .environmentObject(metronome)
+        .environmentObject(MetronomePlaybackViewModel())
+        .environmentObject(PolyrhythmViewModel())
         .environmentObject(SettingsViewModel())
         .environmentObject(SongLibraryViewModel())
         .environmentObject(PlaylistListViewModel())
