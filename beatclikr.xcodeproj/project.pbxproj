@@ -28,6 +28,8 @@
 		B537D34F2FA382B300CB2D7D /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = B537D34E2FA382B300CB2D7D /* Playlist.swift */; };
 		B537D3512FA383B400CB2D7D /* PlaylistListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B537D3502FA383B400CB2D7D /* PlaylistListViewModel.swift */; };
 		B537D3532FA383BD00CB2D7D /* PlaylistListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B537D3522FA383BD00CB2D7D /* PlaylistListView.swift */; };
+		B5900FC92FAB752B008416A1 /* SettingsCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5900FC82FAB752B008416A1 /* SettingsCard.swift */; };
+		B5900FCB2FAB770F008416A1 /* CardContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5900FCA2FAB770F008416A1 /* CardContainer.swift */; };
 		B59482B12FA3C88A00410C67 /* TapTempoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59482B02FA3C88A00410C67 /* TapTempoButton.swift */; };
 		B59482B32FA3C90B00410C67 /* SongNavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */; };
 		B59515C22FAA75DA0023CA41 /* BeatPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59515C12FAA75DA0023CA41 /* BeatPattern.swift */; };
@@ -137,6 +139,8 @@
 		B537D34E2FA382B300CB2D7D /* Playlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
 		B537D3502FA383B400CB2D7D /* PlaylistListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistListViewModel.swift; sourceTree = "<group>"; };
 		B537D3522FA383BD00CB2D7D /* PlaylistListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistListView.swift; sourceTree = "<group>"; };
+		B5900FC82FAB752B008416A1 /* SettingsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCard.swift; sourceTree = "<group>"; };
+		B5900FCA2FAB770F008416A1 /* CardContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardContainer.swift; sourceTree = "<group>"; };
 		B59482B02FA3C88A00410C67 /* TapTempoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapTempoButton.swift; sourceTree = "<group>"; };
 		B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongNavigationViewModel.swift; sourceTree = "<group>"; };
 		B59515C12FAA75DA0023CA41 /* BeatPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeatPattern.swift; sourceTree = "<group>"; };
@@ -252,6 +256,8 @@
 				EE8201842A81B20F00675A1C /* SongListItemView.swift */,
 				B53234772F8DD8D900BA7DE1 /* SongPickerView.swift */,
 				B59482B02FA3C88A00410C67 /* TapTempoButton.swift */,
+				B5900FC82FAB752B008416A1 /* SettingsCard.swift */,
+				B5900FCA2FAB770F008416A1 /* CardContainer.swift */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";
@@ -610,6 +616,7 @@
 				EE97D5A12A7E7EB900FA11A0 /* SongDetailsView.swift in Sources */,
 				EE04731B2AA39267004E958A /* ClickerType.swift in Sources */,
 				B524A0C62FA540110085E73C /* CalendarView.swift in Sources */,
+				B5900FCB2FAB770F008416A1 /* CardContainer.swift in Sources */,
 				B537D34F2FA382B300CB2D7D /* Playlist.swift in Sources */,
 				B59482B32FA3C90B00410C67 /* SongNavigationViewModel.swift in Sources */,
 				EE84F2F72A7C7A21009E2F23 /* SongLibraryView.swift in Sources */,
@@ -648,6 +655,7 @@
 				B537D3512FA383B400CB2D7D /* PlaylistListViewModel.swift in Sources */,
 				EE82F9A82A7FBD7000B873E7 /* UserDefaultsService.swift in Sources */,
 				B59482B12FA3C88A00410C67 /* TapTempoButton.swift in Sources */,
+				B5900FC92FAB752B008416A1 /* SettingsCard.swift in Sources */,
 				EE34F0762A7C7D8300CA5BD0 /* InstantMetronomeView.swift in Sources */,
 				EE6406BC2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift in Sources */,
 				B5F4E57E2FA65B90003FC6E6 /* ReminderNotificationService.swift in Sources */,

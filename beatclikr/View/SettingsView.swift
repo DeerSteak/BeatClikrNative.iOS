@@ -9,38 +9,26 @@ import SwiftUI
 
 struct SettingsView: View {
     @EnvironmentObject var model: SettingsViewModel
-    
+
     var body: some View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
-                    
+
                     // Practice Reminders card
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("PracticeRemindersTitle")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                            .tracking(1)
-                            .textCase(.uppercase)
-                            .padding(.horizontal, 4)
-                        
-                        VStack(spacing: 0) {
-                            Toggle(LocalizedStringKey("PracticeRemindersLabel"), isOn: $model.sendReminders)
+                    SettingsCard("PracticeRemindersTitle") {
+                        Toggle(LocalizedStringKey("PracticeRemindersLabel"), isOn: $model.sendReminders)
+                            .padding(12)
+                        if model.sendReminders {
+                            Divider().padding(.leading, 12)
+                            DatePicker("Reminder Time", selection: $model.reminderTime, displayedComponents: .hourAndMinute)
                                 .padding(12)
-                            if model.sendReminders {
-                                Divider().padding(.leading, 12)
-                                DatePicker("Reminder Time", selection: $model.reminderTime, displayedComponents: .hourAndMinute)
-                                    .padding(12)
-                            }
                         }
-                        .background(Color(UIColor.secondarySystemGroupedBackground))
-                        .cornerRadius(16)
-                        
+                    } footer: {
                         Text("PracticeRemindersDescription")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                             .padding(.horizontal, 4)
-                        
                         if model.sendReminders {
                             if model.notificationsBlockedLocally {
                                 HStack(spacing: 6) {
@@ -81,124 +69,91 @@ struct SettingsView: View {
                             }
                         }
                     }
-                    
+
                     // Metronome Playback card
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("MetronomePlaybackTitle")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                            .tracking(1)
-                            .textCase(.uppercase)
-                            .padding(.horizontal, 4)
-                        
-                        VStack(spacing: 0) {
-                            Toggle(LocalizedStringKey("MetronomePlaybackFlashlight"), isOn: $model.useFlashlight)
-                                .padding(12)
-                            Divider().padding(.leading, 12)
-                            Toggle(LocalizedStringKey("MetronomePlaybackVibration"), isOn: $model.useVibration)
-                                .padding(12)
-                            Divider().padding(.leading, 12)
-                            Toggle(LocalizedStringKey("MetronomePlaybackAlwaysMute"), isOn: $model.muteMetronome)
-                                .padding(12)
-                            Divider().padding(.leading, 12)
-                            Toggle(LocalizedStringKey("KeepAwake"), isOn: $model.keepAwake)
-                                .padding(12)
-                            Divider().padding(.leading, 12)
-                            Toggle(LocalizedStringKey("SixteenthAlternate"), isOn: $model.sixteenthAlternate)
-                                .padding(12)
-                        }
-                        .background(Color(UIColor.secondarySystemGroupedBackground))
-                        .cornerRadius(16)
-                        
+                    SettingsCard("MetronomePlaybackTitle") {
+                        Toggle(LocalizedStringKey("MetronomePlaybackFlashlight"), isOn: $model.useFlashlight)
+                            .padding(12)
+                        Divider().padding(.leading, 12)
+                        Toggle(LocalizedStringKey("MetronomePlaybackVibration"), isOn: $model.useVibration)
+                            .padding(12)
+                        Divider().padding(.leading, 12)
+                        Toggle(LocalizedStringKey("MetronomePlaybackAlwaysMute"), isOn: $model.muteMetronome)
+                            .padding(12)
+                        Divider().padding(.leading, 12)
+                        Toggle(LocalizedStringKey("KeepAwake"), isOn: $model.keepAwake)
+                            .padding(12)
+                        Divider().padding(.leading, 12)
+                        Toggle(LocalizedStringKey("SixteenthAlternate"), isOn: $model.sixteenthAlternate)
+                            .padding(12)
+                    } footer: {
                         Text("MetronomePlaybackDescription")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                             .padding(.horizontal, 4)
                     }
-                    
+
                     // Instant instruments card
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("PlaybackInstrumentsInstantTitle")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                            .tracking(1)
-                            .textCase(.uppercase)
-                            .padding(.horizontal, 4)
-                        
-                        VStack(spacing: 0) {
-                            menuRow(label: "Beat") {
-                                Menu {
-                                    Picker("Beat", selection: $model.instantBeat) {
-                                        ForEach(InstrumentLists.beat) { option in
-                                            Text(String(describing: option))
-                                        }
+                    SettingsCard("PlaybackInstrumentsInstantTitle") {
+                        menuRow(label: "Beat") {
+                            Menu {
+                                Picker("Beat", selection: $model.instantBeat) {
+                                    ForEach(InstrumentLists.beat) { option in
+                                        Text(String(describing: option))
                                     }
-                                    .pickerStyle(.inline)
-                                    .labelsHidden()
-                                } label: {
-                                    menuLabel(model.instantBeat.description)
                                 }
-                            }
-                            Divider().padding(.leading, 12)
-                            menuRow(label: "Rhythm") {
-                                Menu {
-                                    Picker("Rhythm", selection: $model.instantRhythm) {
-                                        ForEach(InstrumentLists.rhythm) { option in
-                                            Text(String(describing: option))
-                                        }
-                                    }
-                                    .pickerStyle(.inline)
-                                    .labelsHidden()
-                                } label: {
-                                    menuLabel(model.instantRhythm.description)
-                                }
+                                .pickerStyle(.inline)
+                                .labelsHidden()
+                            } label: {
+                                menuLabel(model.instantBeat.description)
                             }
                         }
-                        .background(Color(UIColor.secondarySystemGroupedBackground))
-                        .cornerRadius(16)
+                        Divider().padding(.leading, 12)
+                        menuRow(label: "Rhythm") {
+                            Menu {
+                                Picker("Rhythm", selection: $model.instantRhythm) {
+                                    ForEach(InstrumentLists.rhythm) { option in
+                                        Text(String(describing: option))
+                                    }
+                                }
+                                .pickerStyle(.inline)
+                                .labelsHidden()
+                            } label: {
+                                menuLabel(model.instantRhythm.description)
+                            }
+                        }
                     }
-                    
+
                     // Playlist instruments card
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("PlaybackInstrumentsPlaylistTitle")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                            .tracking(1)
-                            .textCase(.uppercase)
-                            .padding(.horizontal, 4)
-                        
-                        VStack(spacing: 0) {
-                            menuRow(label: "Beat") {
-                                Menu {
-                                    Picker("Beat", selection: $model.playlistBeat) {
-                                        ForEach(InstrumentLists.beat) { option in
-                                            Text(String(describing: option))
-                                        }
+                    SettingsCard("PlaybackInstrumentsPlaylistTitle") {
+                        menuRow(label: "Beat") {
+                            Menu {
+                                Picker("Beat", selection: $model.playlistBeat) {
+                                    ForEach(InstrumentLists.beat) { option in
+                                        Text(String(describing: option))
                                     }
-                                    .pickerStyle(.inline)
-                                    .labelsHidden()
-                                } label: {
-                                    menuLabel(model.playlistBeat.description)
                                 }
-                            }
-                            Divider().padding(.leading, 12)
-                            menuRow(label: "Rhythm") {
-                                Menu {
-                                    Picker("Rhythm", selection: $model.playlistRhythm) {
-                                        ForEach(InstrumentLists.rhythm) { option in
-                                            Text(String(describing: option))
-                                        }
-                                    }
-                                    .pickerStyle(.inline)
-                                    .labelsHidden()
-                                } label: {
-                                    menuLabel(model.playlistRhythm.description)
-                                }
+                                .pickerStyle(.inline)
+                                .labelsHidden()
+                            } label: {
+                                menuLabel(model.playlistBeat.description)
                             }
                         }
-                        .background(Color(UIColor.secondarySystemGroupedBackground))
-                        .cornerRadius(16)
-                        
+                        Divider().padding(.leading, 12)
+                        menuRow(label: "Rhythm") {
+                            Menu {
+                                Picker("Rhythm", selection: $model.playlistRhythm) {
+                                    ForEach(InstrumentLists.rhythm) { option in
+                                        Text(String(describing: option))
+                                    }
+                                }
+                                .pickerStyle(.inline)
+                                .labelsHidden()
+                            } label: {
+                                menuLabel(model.playlistRhythm.description)
+                            }
+                        }
+                    } footer: {
                         Text("PlaybackInstrumentsDescription")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
@@ -207,39 +162,61 @@ struct SettingsView: View {
                             .foregroundColor(Color(.clear))
                             .frame(height: 5)
                     }
-                    
-                    // About card
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("About")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                            .tracking(1)
-                            .textCase(.uppercase)
-                            .padding(.horizontal, 4)
-                        if let buildStr = Bundle.main.infoDictionary?["CFBundleVersion"] as? String, let verStr = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
-                            VStack(spacing: 0) {
-                                HStack {
-                                    Text("Version")
-                                        .foregroundStyle(.primary)
-                                    Spacer()
-                                    Text("\(verStr) (\(buildStr))")
-                                        .foregroundStyle(.secondary)
+
+                    // Polyrhythm instruments card
+                    SettingsCard("PlaybackInstrumentsPolyrhythmTitle") {
+                        menuRow(label: "Beat") {
+                            Menu {
+                                Picker("Beat", selection: $model.polyrhythmBeat) {
+                                    ForEach(InstrumentLists.beat) { option in
+                                        Text(String(describing: option))
+                                    }
                                 }
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 10)
-                                Divider().padding(.leading, 12)
-                                HStack {
-                                    Text("Copyright")
-                                        .foregroundStyle(.primary)
-                                    Spacer()
-                                    Text("© \(String(Calendar.current.component(.year, from: Date.now))) Benjamin Funk")
-                                        .foregroundStyle(.secondary)
-                                }
-                                .padding(.horizontal, 12)
-                                .padding(.vertical, 10)
+                                .pickerStyle(.inline)
+                                .labelsHidden()
+                            } label: {
+                                menuLabel(model.polyrhythmBeat.description)
                             }
-                            .background(Color(UIColor.secondarySystemGroupedBackground))
-                            .cornerRadius(16)
+                        }
+                        Divider().padding(.leading, 12)
+                        menuRow(label: "Rhythm") {
+                            Menu {
+                                Picker("Rhythm", selection: $model.polyrhythmRhythm) {
+                                    ForEach(InstrumentLists.rhythm) { option in
+                                        Text(String(describing: option))
+                                    }
+                                }
+                                .pickerStyle(.inline)
+                                .labelsHidden()
+                            } label: {
+                                menuLabel(model.polyrhythmRhythm.description)
+                            }
+                        }
+                    }
+
+                    // About card
+                    SettingsCard("About") {
+                        if let buildStr = Bundle.main.infoDictionary?["CFBundleVersion"] as? String,
+                           let verStr = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String {
+                            HStack {
+                                Text("Version")
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                Text("\(verStr) (\(buildStr))")
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 10)
+                            Divider().padding(.leading, 12)
+                            HStack {
+                                Text("Copyright")
+                                    .foregroundStyle(.primary)
+                                Spacer()
+                                Text("© \(String(Calendar.current.component(.year, from: Date.now))) Benjamin Funk")
+                                    .foregroundStyle(.secondary)
+                            }
+                            .padding(.horizontal, 12)
+                            .padding(.vertical, 10)
                         }
                     }
                 }
@@ -250,8 +227,7 @@ struct SettingsView: View {
             .navigationBarTitleDisplayMode(.automatic)
         }
     }
-    
-    
+
     @ViewBuilder
     private func menuRow(label: LocalizedStringKey, @ViewBuilder content: () -> some View) -> some View {
         HStack {
@@ -263,7 +239,7 @@ struct SettingsView: View {
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
     }
-    
+
     private func menuLabel(_ text: String) -> some View {
         HStack(spacing: 4) {
             Text(text)
