@@ -30,6 +30,7 @@
 		B537D3532FA383BD00CB2D7D /* PlaylistListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B537D3522FA383BD00CB2D7D /* PlaylistListView.swift */; };
 		B59482B12FA3C88A00410C67 /* TapTempoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59482B02FA3C88A00410C67 /* TapTempoButton.swift */; };
 		B59482B32FA3C90B00410C67 /* SongNavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */; };
+		B59515C22FAA75DA0023CA41 /* BeatPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59515C12FAA75DA0023CA41 /* BeatPattern.swift */; };
 		B59EE8512FA4DBC20021C335 /* SongNavigationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */; };
 		B5C6B8222FA937DD005DE6FD /* SettingsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C6B8212FA937DD005DE6FD /* SettingsViewModelTests.swift */; };
 		B5C6B8242FA937DD005DE6FD /* SettingsUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5C6B8232FA937DD005DE6FD /* SettingsUITests.swift */; };
@@ -133,6 +134,7 @@
 		B537D3522FA383BD00CB2D7D /* PlaylistListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistListView.swift; sourceTree = "<group>"; };
 		B59482B02FA3C88A00410C67 /* TapTempoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapTempoButton.swift; sourceTree = "<group>"; };
 		B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongNavigationViewModel.swift; sourceTree = "<group>"; };
+		B59515C12FAA75DA0023CA41 /* BeatPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeatPattern.swift; sourceTree = "<group>"; };
 		B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongNavigationViewModelTests.swift; sourceTree = "<group>"; };
 		B5C6B8212FA937DD005DE6FD /* SettingsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModelTests.swift; sourceTree = "<group>"; };
 		B5C6B8232FA937DD005DE6FD /* SettingsUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsUITests.swift; sourceTree = "<group>"; };
@@ -332,6 +334,7 @@
 				B524A0C32FA52BB60085E73C /* PracticedSong.swift */,
 				EE84F2F82A7C7A21009E2F23 /* Song.swift */,
 				EE207A3E2A89734F00D8E267 /* SoundFile.swift */,
+				B59515C12FAA75DA0023CA41 /* BeatPattern.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -612,6 +615,7 @@
 				B52B86522FA2743700B6FECE /* GrooveSelectorView.swift in Sources */,
 				EE5DFD7B2AD82CA600756566 /* PreviewContainer.swift in Sources */,
 				B524A0C02FA528E80085E73C /* PracticeHistoryViewModel.swift in Sources */,
+				B59515C22FAA75DA0023CA41 /* BeatPattern.swift in Sources */,
 				EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */,
 				EE478E8B2A879C51008337DB /* AudioPlayerService.swift in Sources */,
 				B53042152FA671A100A3CAE6 /* SharableStreakCard.swift in Sources */,
@@ -809,7 +813,7 @@
 				CODE_SIGN_ENTITLEMENTS = beatclikr/beatclikrDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_ASSET_PATHS = "\"beatclikr/Preview Content\"";
 				DEVELOPMENT_TEAM = 4C4LJCSB2Q;
 				ENABLE_PREVIEWS = YES;
@@ -851,7 +855,7 @@
 				CODE_SIGN_ENTITLEMENTS = beatclikr/beatclikr.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 16;
+				CURRENT_PROJECT_VERSION = 17;
 				DEVELOPMENT_ASSET_PATHS = "\"beatclikr/Preview Content\"";
 				DEVELOPMENT_TEAM = 4C4LJCSB2Q;
 				ENABLE_PREVIEWS = YES;
