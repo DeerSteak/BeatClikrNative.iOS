@@ -223,7 +223,10 @@ private struct PolyrhythmDotRow: View {
                 .lineLimit(1)
                 .frame(width: labelWidth, alignment: .leading)
             
-            VStack(spacing: 4) {
+            ZStack {
+                Capsule()
+                    .fill(color.opacity(0.2))
+                    .frame(height: 2)
                 HStack(spacing: 0) {
                     ForEach(0..<count, id: \.self) { i in
                         Circle()
@@ -234,9 +237,6 @@ private struct PolyrhythmDotRow: View {
                         Spacer(minLength: 0)
                     }
                 }
-                Capsule()
-                    .fill(color.opacity(0.2))
-                    .frame(height: 2)
             }
         }
     }
