@@ -10,187 +10,120 @@ import AVFoundation
 
 @MainActor
 class UserDefaultsService: ObservableObject {
-    @Published var useFlashlight: Bool {
-        didSet {
-            guard oldValue != useFlashlight else { return }
-            defaults.setValue(useFlashlight, forKey: PreferenceKeys.useFlashlight)
-            cloud.set(useFlashlight, forKey: PreferenceKeys.useFlashlight)
-        }
+
+    // MARK: - General settings
+
+    @Published var keepAwake: Bool {
+        didSet { syncSave(keepAwake, oldValue: oldValue, key: PreferenceKeys.keepAwake) }
     }
-    
-    @Published var useVibration: Bool {
-        didSet {
-            guard oldValue != useVibration else { return }
-            defaults.setValue(useVibration, forKey: PreferenceKeys.useHaptic)
-            cloud.set(useVibration, forKey: PreferenceKeys.useHaptic)
-        }
-    }
-    
+
     @Published var muteMetronome: Bool {
-        didSet {
-            guard oldValue != muteMetronome else { return }
-            defaults.setValue(muteMetronome, forKey: PreferenceKeys.muteMetronome)
-            cloud.set(muteMetronome, forKey: PreferenceKeys.muteMetronome)
-        }
-    }
-    
-    @Published var instantBeat: FileConstants {
-        didSet {
-            guard oldValue != instantBeat else { return }
-            defaults.setValue(instantBeat.rawValue, forKey: PreferenceKeys.instantBeat)
-            cloud.set(instantBeat.rawValue, forKey: PreferenceKeys.instantBeat)
-        }
-    }
-    
-    @Published var instantBpm: Double {
-        didSet {
-            guard oldValue != instantBpm else { return }
-            defaults.setValue(instantBpm, forKey: PreferenceKeys.instantBpm)
-            cloud.set(instantBpm, forKey: PreferenceKeys.instantBpm)
-        }
-    }
-    
-    @Published var instantGroove: Groove {
-        didSet {
-            guard oldValue != instantGroove else { return }
-            defaults.setValue(instantGroove.rawValue, forKey: PreferenceKeys.instantGroove)
-            cloud.set(instantGroove.rawValue, forKey: PreferenceKeys.instantGroove)
-        }
+        didSet { syncSave(muteMetronome, oldValue: oldValue, key: PreferenceKeys.muteMetronome) }
     }
 
-    @Published var instantBeatPattern: String? {
-        didSet {
-            guard oldValue != instantBeatPattern else { return }
-            defaults.setValue(instantBeatPattern ?? "", forKey: PreferenceKeys.instantBeatPattern)
-            cloud.set(instantBeatPattern ?? "", forKey: PreferenceKeys.instantBeatPattern)
-        }
-    }
-    
-    @Published var instantRhythm: FileConstants {
-        didSet {
-            guard oldValue != instantRhythm else { return }
-            defaults.setValue(instantRhythm.rawValue, forKey: PreferenceKeys.instantRhythm)
-            cloud.set(instantRhythm.rawValue, forKey: PreferenceKeys.instantRhythm)
-        }
-    }
-    
-    @Published var playlistBeat: FileConstants {
-        didSet {
-            guard oldValue != playlistBeat else { return }
-            defaults.setValue(playlistBeat.rawValue, forKey: PreferenceKeys.playlistBeat)
-            cloud.set(playlistBeat.rawValue, forKey: PreferenceKeys.playlistBeat)
-        }
-    }
-    
-    @Published var playlistRhythm: FileConstants {
-        didSet {
-            guard oldValue != playlistRhythm else { return }
-            defaults.setValue(playlistRhythm.rawValue, forKey: PreferenceKeys.playlistRhythm)
-            cloud.set(playlistRhythm.rawValue, forKey: PreferenceKeys.playlistRhythm)
-        }
+    @Published var sixteenthAlternate: Bool {
+        didSet { syncSave(sixteenthAlternate, oldValue: oldValue, key: PreferenceKeys.sixteenthAlternate) }
     }
 
-    @Published var polyrhythmBeat: FileConstants {
-        didSet {
-            guard oldValue != polyrhythmBeat else { return }
-            defaults.setValue(polyrhythmBeat.rawValue, forKey: PreferenceKeys.polyrhythmBeat)
-            cloud.set(polyrhythmBeat.rawValue, forKey: PreferenceKeys.polyrhythmBeat)
-        }
+    @Published var useFlashlight: Bool {
+        didSet { syncSave(useFlashlight, oldValue: oldValue, key: PreferenceKeys.useFlashlight) }
     }
 
-    @Published var polyrhythmRhythm: FileConstants {
-        didSet {
-            guard oldValue != polyrhythmRhythm else { return }
-            defaults.setValue(polyrhythmRhythm.rawValue, forKey: PreferenceKeys.polyrhythmRhythm)
-            cloud.set(polyrhythmRhythm.rawValue, forKey: PreferenceKeys.polyrhythmRhythm)
-        }
+    @Published var useVibration: Bool {
+        didSet { syncSave(useVibration, oldValue: oldValue, key: PreferenceKeys.useHaptic) }
     }
 
-    @Published var polyrhythmBeats: Int {
-        didSet {
-            guard oldValue != polyrhythmBeats else { return }
-            defaults.setValue(polyrhythmBeats, forKey: PreferenceKeys.polyrhythmBeats)
-            cloud.set(Int64(polyrhythmBeats), forKey: PreferenceKeys.polyrhythmBeats)
-        }
-    }
-
-    @Published var polyrhythmAgainst: Int {
-        didSet {
-            guard oldValue != polyrhythmAgainst else { return }
-            defaults.setValue(polyrhythmAgainst, forKey: PreferenceKeys.polyrhythmAgainst)
-            cloud.set(Int64(polyrhythmAgainst), forKey: PreferenceKeys.polyrhythmAgainst)
-        }
-    }
+    // MARK: - Reminders
 
     @Published var sendReminders: Bool {
-        didSet {
-            guard oldValue != sendReminders else { return }
-            defaults.setValue(sendReminders, forKey: PreferenceKeys.sendReminders)
-            cloud.set(sendReminders, forKey: PreferenceKeys.sendReminders)
-        }
+        didSet { syncSave(sendReminders, oldValue: oldValue, key: PreferenceKeys.sendReminders) }
     }
-    
+
     @Published var reminderTime: Date {
-        didSet {
-            guard oldValue != reminderTime else { return }
-            defaults.set(reminderTime.timeIntervalSinceReferenceDate, forKey: PreferenceKeys.reminderTime)
-            cloud.set(reminderTime.timeIntervalSinceReferenceDate, forKey: PreferenceKeys.reminderTime)
-        }
+        didSet { syncSave(reminderTime, oldValue: oldValue, key: PreferenceKeys.reminderTime) }
     }
-    
-    @Published var keepAwake: Bool {
-        didSet {
-            guard oldValue != keepAwake else { return }
-            defaults.set(keepAwake, forKey: PreferenceKeys.keepAwake)
-            cloud.set(keepAwake, forKey: PreferenceKeys.keepAwake)
-        }
-    }
-    
-    @Published var sixteenthAlternate: Bool {
-        didSet {
-            guard oldValue != sixteenthAlternate else { return }
-            defaults.set(sixteenthAlternate, forKey: PreferenceKeys.sixteenthAlternate)
-            cloud.set(sixteenthAlternate, forKey: PreferenceKeys.sixteenthAlternate)
-        }
-    }
-    
-    private let defaults = UserDefaults.standard
-    private let cloud = NSUbiquitousKeyValueStore.default
     
     // Called when sendReminders changed from false -> true via cloud sync.
     var onSendRemindersEnabled: (() -> Void)?
-    
+
+    // MARK: - Instant metronome
+
+    @Published var instantBeat: FileConstants {
+        didSet { syncSave(instantBeat, oldValue: oldValue, key: PreferenceKeys.instantBeat) }
+    }
+
+    @Published var instantBeatPattern: String? {
+        didSet { syncSave(instantBeatPattern, oldValue: oldValue, key: PreferenceKeys.instantBeatPattern) }
+    }
+
+    @Published var instantBpm: Double {
+        didSet { syncSave(instantBpm, oldValue: oldValue, key: PreferenceKeys.instantBpm) }
+    }
+
+    @Published var instantGroove: Groove {
+        didSet { syncSave(instantGroove, oldValue: oldValue, key: PreferenceKeys.instantGroove) }
+    }
+
+    @Published var instantRhythm: FileConstants {
+        didSet { syncSave(instantRhythm, oldValue: oldValue, key: PreferenceKeys.instantRhythm) }
+    }
+
+    // MARK: - Playlist
+
+    @Published var playlistBeat: FileConstants {
+        didSet { syncSave(playlistBeat, oldValue: oldValue, key: PreferenceKeys.playlistBeat) }
+    }
+
+    @Published var playlistRhythm: FileConstants {
+        didSet { syncSave(playlistRhythm, oldValue: oldValue, key: PreferenceKeys.playlistRhythm) }
+    }
+
+    // MARK: - Polyrhythm
+
+    @Published var polyrhythmAgainst: Int {
+        didSet { syncSave(polyrhythmAgainst, oldValue: oldValue, key: PreferenceKeys.polyrhythmAgainst) }
+    }
+
+    @Published var polyrhythmBeat: FileConstants {
+        didSet { syncSave(polyrhythmBeat, oldValue: oldValue, key: PreferenceKeys.polyrhythmBeat) }
+    }
+
+    @Published var polyrhythmBeats: Int {
+        didSet { syncSave(polyrhythmBeats, oldValue: oldValue, key: PreferenceKeys.polyrhythmBeats) }
+    }
+
+    @Published var polyrhythmRhythm: FileConstants {
+        didSet { syncSave(polyrhythmRhythm, oldValue: oldValue, key: PreferenceKeys.polyrhythmRhythm) }
+    }
+
+    private let defaults = UserDefaults.standard
+    private let cloud = NSUbiquitousKeyValueStore.default
     static let instance = UserDefaultsService()
-    
+
     init() {
         useFlashlight = defaults.bool(forKey: PreferenceKeys.useFlashlight)
         useVibration = defaults.bool(forKey: PreferenceKeys.useHaptic)
         muteMetronome = defaults.bool(forKey: PreferenceKeys.muteMetronome)
         keepAwake = defaults.bool(forKey: PreferenceKeys.keepAwake)
         sixteenthAlternate = defaults.bool(forKey: PreferenceKeys.sixteenthAlternate)
-        
-        instantBeat = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.instantBeat) ?? "") ?? .ClickHi
-        instantRhythm = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.instantRhythm) ?? "") ?? .ClickLo
-        let bpm = defaults.double(forKey: PreferenceKeys.instantBpm)
-        instantBpm = bpm == 0 ? 60 : bpm
-        instantGroove = Groove(rawValue: defaults.integer(forKey: PreferenceKeys.instantGroove)) ?? .quarter
-        let savedBeatPattern = defaults.string(forKey: PreferenceKeys.instantBeatPattern) ?? ""
-        instantBeatPattern = savedBeatPattern.isEmpty ? nil : savedBeatPattern
-        
-        playlistBeat = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.playlistBeat) ?? "") ?? .ClickHi
-        playlistRhythm = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.playlistRhythm) ?? "") ?? .ClickLo
 
-        polyrhythmBeat = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.polyrhythmBeat) ?? "") ?? .ClickHi
-        polyrhythmRhythm = FileConstants(rawValue: defaults.string(forKey: PreferenceKeys.polyrhythmRhythm) ?? "") ?? .ClickLo
-        let savedBeats = defaults.integer(forKey: PreferenceKeys.polyrhythmBeats)
-        polyrhythmBeats = savedBeats == 0 ? 3 : savedBeats
-        let savedAgainst = defaults.integer(forKey: PreferenceKeys.polyrhythmAgainst)
-        polyrhythmAgainst = savedAgainst == 0 ? 2 : savedAgainst
+        instantBeat = loadEnum(defaults, key: PreferenceKeys.instantBeat, default: .ClickHi)
+        instantRhythm = loadEnum(defaults, key: PreferenceKeys.instantRhythm, default: .ClickLo)
+        instantBpm = loadNonZeroDouble(defaults, key: PreferenceKeys.instantBpm, default: 60)
+        instantGroove = loadEnum(defaults, key: PreferenceKeys.instantGroove, default: .quarter)
+        instantBeatPattern = loadOptionalString(defaults, key: PreferenceKeys.instantBeatPattern)
+
+        playlistBeat = loadEnum(defaults, key: PreferenceKeys.playlistBeat, default: .ClickHi)
+        playlistRhythm = loadEnum(defaults, key: PreferenceKeys.playlistRhythm, default: .ClickLo)
+
+        polyrhythmBeat = loadEnum(defaults, key: PreferenceKeys.polyrhythmBeat, default: .ClickHi)
+        polyrhythmRhythm = loadEnum(defaults, key: PreferenceKeys.polyrhythmRhythm, default: .ClickLo)
+        polyrhythmBeats = loadNonZeroInt(defaults, key: PreferenceKeys.polyrhythmBeats, default: 3)
+        polyrhythmAgainst = loadNonZeroInt(defaults, key: PreferenceKeys.polyrhythmAgainst, default: 2)
 
         sendReminders = defaults.bool(forKey: PreferenceKeys.sendReminders)
-        let storedInterval = defaults.double(forKey: PreferenceKeys.reminderTime)
-        reminderTime = storedInterval == 0 ? Date.now : Date(timeIntervalSinceReferenceDate: storedInterval)
-        
+        reminderTime = loadNonZeroDate(defaults, key: PreferenceKeys.reminderTime, default: .now)
+
         NotificationCenter.default.addObserver(
             forName: NSUbiquitousKeyValueStore.didChangeExternallyNotification,
             object: cloud,
@@ -200,59 +133,143 @@ class UserDefaultsService: ObservableObject {
                 self?.syncWithCloud()
             }
         }
-        
+
         cloud.synchronize()
     }
-    
+
     // Ensure this is a private Swift function (No @objc)
     private func syncWithCloud() {
         cloud.synchronize()
-        
+
         // Explicit 'self' prevents namespace collisions with Swift types like 'Bool'
         self.useFlashlight = cloud.bool(forKey: PreferenceKeys.useFlashlight)
         self.useVibration = cloud.bool(forKey: PreferenceKeys.useHaptic)
         self.muteMetronome = cloud.bool(forKey: PreferenceKeys.muteMetronome)
         self.keepAwake = cloud.bool(forKey: PreferenceKeys.keepAwake)
         self.sixteenthAlternate = cloud.bool(forKey: PreferenceKeys.sixteenthAlternate)
-        
-        let beatStr = cloud.string(forKey: PreferenceKeys.instantBeat) ?? ""
-        self.instantBeat = FileConstants(rawValue: beatStr) ?? .ClickHi
-        
-        let rhythmStr = cloud.string(forKey: PreferenceKeys.instantRhythm) ?? ""
-        self.instantRhythm = FileConstants(rawValue: rhythmStr) ?? .ClickLo
-        
-        let cloudBpm = cloud.double(forKey: PreferenceKeys.instantBpm)
-        self.instantBpm = cloudBpm == 0 ? 60 : cloudBpm
-        
-        let grooveVal = Int(cloud.longLong(forKey: PreferenceKeys.instantGroove))
-        self.instantGroove = Groove(rawValue: grooveVal) ?? .quarter
-        let bpStr = cloud.string(forKey: PreferenceKeys.instantBeatPattern) ?? ""
-        self.instantBeatPattern = bpStr.isEmpty ? nil : bpStr
-        
-        let pBeatStr = cloud.string(forKey: PreferenceKeys.playlistBeat) ?? ""
-        self.playlistBeat = FileConstants(rawValue: pBeatStr) ?? .ClickHi
-        
-        let pRhythmStr = cloud.string(forKey: PreferenceKeys.playlistRhythm) ?? ""
-        self.playlistRhythm = FileConstants(rawValue: pRhythmStr) ?? .ClickLo
 
-        let polyBeatStr = cloud.string(forKey: PreferenceKeys.polyrhythmBeat) ?? ""
-        self.polyrhythmBeat = FileConstants(rawValue: polyBeatStr) ?? .ClickHi
-        let polyRhythmStr = cloud.string(forKey: PreferenceKeys.polyrhythmRhythm) ?? ""
-        self.polyrhythmRhythm = FileConstants(rawValue: polyRhythmStr) ?? .ClickLo
-        let cloudBeats = Int(cloud.longLong(forKey: PreferenceKeys.polyrhythmBeats))
-        self.polyrhythmBeats = cloudBeats == 0 ? 3 : cloudBeats
-        let cloudAgainst = Int(cloud.longLong(forKey: PreferenceKeys.polyrhythmAgainst))
-        self.polyrhythmAgainst = cloudAgainst == 0 ? 2 : cloudAgainst
+        self.instantBeat = cloudEnum(PreferenceKeys.instantBeat, default: .ClickHi)
+        self.instantRhythm = cloudEnum(PreferenceKeys.instantRhythm, default: .ClickLo)
+        self.instantBpm = cloudNonZeroDouble(PreferenceKeys.instantBpm, default: 60)
+        self.instantGroove = cloudEnum(PreferenceKeys.instantGroove, default: .quarter)
+        self.instantBeatPattern = cloudOptionalString(PreferenceKeys.instantBeatPattern)
+
+        self.playlistBeat = cloudEnum(PreferenceKeys.playlistBeat, default: .ClickHi)
+        self.playlistRhythm = cloudEnum(PreferenceKeys.playlistRhythm, default: .ClickLo)
+
+        self.polyrhythmBeat = cloudEnum(PreferenceKeys.polyrhythmBeat, default: .ClickHi)
+        self.polyrhythmRhythm = cloudEnum(PreferenceKeys.polyrhythmRhythm, default: .ClickLo)
+        self.polyrhythmBeats = cloudNonZeroInt(PreferenceKeys.polyrhythmBeats, default: 3)
+        self.polyrhythmAgainst = cloudNonZeroInt(PreferenceKeys.polyrhythmAgainst, default: 2)
 
         let wasSendingReminders = self.sendReminders
         self.sendReminders = cloud.bool(forKey: PreferenceKeys.sendReminders)
         if !wasSendingReminders && self.sendReminders {
             onSendRemindersEnabled?()
         }
-        
+
         let cloudInterval = cloud.double(forKey: PreferenceKeys.reminderTime)
         if cloudInterval != 0 {
             self.reminderTime = Date(timeIntervalSinceReferenceDate: cloudInterval)
         }
+    }
+
+    // MARK: - didSet sync helpers
+
+    private func syncSave<T: Equatable & RawRepresentable>(_ newValue: T, oldValue: T, key: String) where T.RawValue == String {
+        guard oldValue != newValue else { return }
+        defaults.setValue(newValue.rawValue, forKey: key)
+        cloud.set(newValue.rawValue, forKey: key)
+    }
+
+    private func syncSave<T: Equatable & RawRepresentable>(_ newValue: T, oldValue: T, key: String) where T.RawValue == Int {
+        guard oldValue != newValue else { return }
+        defaults.setValue(newValue.rawValue, forKey: key)
+        cloud.set(Int64(newValue.rawValue), forKey: key)
+    }
+
+    private func syncSave(_ newValue: Bool, oldValue: Bool, key: String) {
+        guard oldValue != newValue else { return }
+        defaults.setValue(newValue, forKey: key)
+        cloud.set(newValue, forKey: key)
+    }
+
+    private func syncSave(_ newValue: Double, oldValue: Double, key: String) {
+        guard oldValue != newValue else { return }
+        defaults.setValue(newValue, forKey: key)
+        cloud.set(newValue, forKey: key)
+    }
+
+    private func syncSave(_ newValue: Int, oldValue: Int, key: String) {
+        guard oldValue != newValue else { return }
+        defaults.setValue(newValue, forKey: key)
+        cloud.set(Int64(newValue), forKey: key)
+    }
+
+    private func syncSave(_ newValue: String?, oldValue: String?, key: String) {
+        guard oldValue != newValue else { return }
+        defaults.setValue(newValue ?? "", forKey: key)
+        cloud.set(newValue ?? "", forKey: key)
+    }
+
+    private func syncSave(_ newValue: Date, oldValue: Date, key: String) {
+        guard oldValue != newValue else { return }
+        defaults.set(newValue.timeIntervalSinceReferenceDate, forKey: key)
+        cloud.set(newValue.timeIntervalSinceReferenceDate, forKey: key)
+    }
+
+    // MARK: - Static load helpers (for init, before self is fully initialized)
+
+    private static func loadEnum<T: RawRepresentable>(_ defaults: UserDefaults, key: String, default fallback: T) -> T where T.RawValue == String {
+        T(rawValue: defaults.string(forKey: key) ?? "") ?? fallback
+    }
+
+    private static func loadEnum<T: RawRepresentable>(_ defaults: UserDefaults, key: String, default fallback: T) -> T where T.RawValue == Int {
+        T(rawValue: defaults.integer(forKey: key)) ?? fallback
+    }
+
+    private static func loadNonZeroDouble(_ defaults: UserDefaults, key: String, default fallback: Double) -> Double {
+        let v = defaults.double(forKey: key)
+        return v == 0 ? fallback : v
+    }
+
+    private static func loadNonZeroInt(_ defaults: UserDefaults, key: String, default fallback: Int) -> Int {
+        let v = defaults.integer(forKey: key)
+        return v == 0 ? fallback : v
+    }
+
+    private static func loadOptionalString(_ defaults: UserDefaults, key: String) -> String? {
+        let s = defaults.string(forKey: key) ?? ""
+        return s.isEmpty ? nil : s
+    }
+
+    private static func loadNonZeroDate(_ defaults: UserDefaults, key: String, default fallback: Date) -> Date {
+        let v = defaults.double(forKey: key)
+        return v == 0 ? fallback : Date(timeIntervalSinceReferenceDate: v)
+    }
+
+    // MARK: - Cloud load helpers (for syncWithCloud)
+
+    private func cloudEnum<T: RawRepresentable>(_ key: String, default fallback: T) -> T where T.RawValue == String {
+        T(rawValue: cloud.string(forKey: key) ?? "") ?? fallback
+    }
+
+    private func cloudEnum<T: RawRepresentable>(_ key: String, default fallback: T) -> T where T.RawValue == Int {
+        T(rawValue: Int(cloud.longLong(forKey: key))) ?? fallback
+    }
+
+    private func cloudNonZeroDouble(_ key: String, default fallback: Double) -> Double {
+        let v = cloud.double(forKey: key)
+        return v == 0 ? fallback : v
+    }
+
+    private func cloudNonZeroInt(_ key: String, default fallback: Int) -> Int {
+        let v = Int(cloud.longLong(forKey: key))
+        return v == 0 ? fallback : v
+    }
+
+    private func cloudOptionalString(_ key: String) -> String? {
+        let s = cloud.string(forKey: key) ?? ""
+        return s.isEmpty ? nil : s
     }
 }
