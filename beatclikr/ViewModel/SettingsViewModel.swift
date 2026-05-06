@@ -63,11 +63,19 @@ class SettingsViewModel: ObservableObject {
     @Published var playlistBeat: FileConstants {
         didSet { defaults.playlistBeat = playlistBeat }
     }
-    
+
     @Published var playlistRhythm: FileConstants {
         didSet { defaults.playlistRhythm = playlistRhythm }
     }
-    
+
+    @Published var polyrhythmBeat: FileConstants {
+        didSet { defaults.polyrhythmBeat = polyrhythmBeat }
+    }
+
+    @Published var polyrhythmRhythm: FileConstants {
+        didSet { defaults.polyrhythmRhythm = polyrhythmRhythm }
+    }
+
     @Published var keepAwake: Bool {
         didSet { defaults.keepAwake = keepAwake }
     }
@@ -87,6 +95,8 @@ class SettingsViewModel: ObservableObject {
         instantRhythm = defaults.instantRhythm
         playlistBeat = defaults.playlistBeat
         playlistRhythm = defaults.playlistRhythm
+        polyrhythmBeat = defaults.polyrhythmBeat
+        polyrhythmRhythm = defaults.polyrhythmRhythm
         keepAwake = defaults.keepAwake
         sixteenthAlternate = defaults.sixteenthAlternate
         notificationsDeferredLocally = UserDefaults.standard.object(forKey: PreferenceKeys.remindersDeferredDate) != nil

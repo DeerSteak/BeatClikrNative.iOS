@@ -39,6 +39,10 @@ struct PolyrhythmView: View {
                                 pulse: model.rhythmPulse,
                                 color: Color.secondary
                             )
+                            PolyrhythmPlayheadRow(
+                                progress: model.cycleProgress,
+                                isPlaying: model.isPlaying
+                            )
                         }
                     }
                     .padding(12)
@@ -217,17 +221,55 @@ private struct PolyrhythmDotRow: View {
                 .tracking(1)
                 .textCase(.uppercase)
                 .lineLimit(1)
-                .frame(width: labelWidth, alignment: .trailing)
+                .frame(width: labelWidth, alignment: .leading)
 
-            HStack(spacing: 8) {
-                ForEach(0..<count, id: \.self) { i in
-                    Circle()
-                        .fill(color)
-                        .frame(width: 18, height: 18)
-                        .opacity(i == activeIndex ? (0.25 + 0.75 * pulse) : 0.25)
-                        .scaleEffect(i == activeIndex ? (0.85 + 0.15 * pulse) : 0.85)
+            VStack(spacing: 4) {
+                HStack(spacing: 0) {
+                    ForEach(0..<count, id: \.self) { i in
+                        Circle()
+                            .fill(color)
+                            .frame(width: 18, height: 18)
+                            .opacity(i == activeIndex ? (0.25 + 0.75 * pulse) : 0.25)
+                            .scaleEffect(i == activeIndex ? (0.85 + 0.15 * pulse) : 0.85)
+                        Spacer(minLength: 0)
+                    }
                 }
+                Capsule()
+                    .fill(color.opacity(0.2))
+                    .frame(height: 2)
             }
+        }
+    }
+}
+
+private struct PolyrhythmPlayheadRow: View {
+    let progress: Double
+    let isPlaying: Bool
+
+    @ScaledMetric private var labelWidth: CGFloat = 68
+
+    var body: some View {
+        HStack(spacing: 8) {
+            Color.clear
+                .frame(width: labelWidth, height: 14)
+
+            GeometryReader { geo in
+                let dotSize: CGFloat = 14
+                let midY = geo.size.height / 2
+                let dotX = dotSize / 2 + (geo.size.width - dotSize) * CGFloat(progress)
+
+                Capsule()
+                    .fill(Color.orange.opacity(0.25))
+                    .frame(width: geo.size.width, height: 2)
+                    .position(x: geo.size.width / 2, y: midY)
+
+                Circle()
+                    .fill(Color.orange)
+                    .frame(width: dotSize, height: dotSize)
+                    .position(x: dotX, y: midY)
+                    .opacity(isPlaying ? 1.0 : 0.3)
+            }
+            .frame(height: 14)
         }
     }
 }

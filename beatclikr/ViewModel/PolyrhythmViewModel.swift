@@ -55,6 +55,8 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
     @Published var activeBeatIndex: Int = 0
     /// Which rhythm dot (0..<beats) is currently active
     @Published var activeRhythmIndex: Int = 0
+    /// 0–1 progress through one full cycle, animates smoothly for the playhead
+    @Published var cycleProgress: Double = 0
 
     // MARK: - Private
 
@@ -84,6 +86,13 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
             Task { @MainActor in
                 withAnimation(.linear(duration: quarterDuration)) { self.beatPulse = 0.0 }
             }
+            if beatIndex == 0 {
+                let cycleDuration = Double(against) * quarterDuration
+                withAnimation(.none) { cycleProgress = 0.0 }
+                Task { @MainActor in
+                    withAnimation(.linear(duration: cycleDuration)) { self.cycleProgress = 1.0 }
+                }
+            }
         }
 
         if rhythmFired {
@@ -111,5 +120,6 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
     func stop() {
         audio.stopPolyrhythm()
         isPlaying = false
+        cycleProgress = 0
     }
 }
