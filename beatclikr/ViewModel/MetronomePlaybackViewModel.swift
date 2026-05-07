@@ -23,6 +23,8 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
     private var isBeat: Bool = false
     private var activeBpm: Double = 120.0
+    private var rampBeatCount: Int = -1
+    private var applyingRamp: Bool = false
 
     // MARK: Published properties
 
@@ -33,11 +35,35 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
     @Published var beatsPerMinute: Double = UserDefaultsService.instance.instantBpm {
         didSet {
-            if clickerType == .instant {
+            if clickerType == .instant, !applyingRamp {
                 defaults.instantBpm = beatsPerMinute
             }
-            if isPlaying {
+            if isPlaying, !applyingRamp {
                 audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.subdivisions, accentPattern: computeAccentPattern())
+            }
+        }
+    }
+
+    @Published var rampEnabled: Bool = UserDefaultsService.instance.rampEnabled {
+        didSet {
+            if clickerType == .instant {
+                defaults.rampEnabled = rampEnabled
+            }
+        }
+    }
+
+    @Published var rampIncrement: Int = UserDefaultsService.instance.rampIncrement {
+        didSet {
+            if clickerType == .instant {
+                defaults.rampIncrement = rampIncrement
+            }
+        }
+    }
+
+    @Published var rampInterval: Int = UserDefaultsService.instance.rampInterval {
+        didSet {
+            if clickerType == .instant {
+                defaults.rampInterval = rampInterval
             }
         }
     }
@@ -212,9 +238,13 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     }
 
     func stop() {
+        rampBeatCount = -1
         audio.stopMetronome()
         flashlight.turnFlashlightOff()
         isPlaying = false
+        if rampEnabled, clickerType == .instant {
+            beatsPerMinute = activeBpm
+        }
     }
 
     func resetMetronome() {
@@ -256,6 +286,19 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         }
         if defaults.useFlashlight {
             flashlight.turnFlashlightOn()
+        }
+        guard rampEnabled, clickerType == .instant else { return }
+        rampBeatCount += 1
+        if rampBeatCount % rampInterval == 0, rampBeatCount > 0 {
+            let newBpm = min(beatsPerMinute + Double(rampIncrement), MetronomeConstants.maxBPM)
+            guard newBpm != beatsPerMinute else { return }
+            applyingRamp = true
+            beatsPerMinute = newBpm
+            applyingRamp = false
+            let subdivisions = selectedGroove.subdivisions
+            Task { @MainActor in
+                self.audio.updateTempo(bpm: newBpm, subdivisions: subdivisions)
+            }
         }
     }
 

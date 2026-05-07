@@ -46,6 +46,7 @@ struct InstantMetronomeView: View {
                             get: { model.beatsPerMinute },
                             set: { newValue in withAnimation { model.beatsPerMinute = newValue } },
                         ))
+                        .disabled(model.rampEnabled && model.isPlaying)
                     }
                     .padding(12)
                 }
@@ -64,6 +65,71 @@ struct InstantMetronomeView: View {
                     .padding(12)
                 }
 
+                // Tempo Ramp card
+                CardContainer {
+                    VStack(spacing: 0) {
+                        Toggle(isOn: $model.rampEnabled) {
+                            Text("Tempo Ramp")
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 10)
+                        if model.rampEnabled {
+                            VStack(spacing: 0) {
+                                Divider()
+                                    .padding(.leading, 12)
+                                HStack {
+                                    Text("Increase by")
+                                        .foregroundStyle(.primary)
+                                    Spacer()
+                                    Menu {
+                                        Picker("Increase by", selection: $model.rampIncrement) {
+                                            ForEach([1, 2, 5, 10], id: \.self) { value in
+                                                Text("\(value) BPM").tag(value)
+                                            }
+                                        }
+                                        .pickerStyle(.inline)
+                                        .labelsHidden()
+                                    } label: {
+                                        HStack(spacing: 4) {
+                                            Text("\(model.rampIncrement) BPM")
+                                            Image(systemName: ImageConstants.chevronUpDown)
+                                                .font(.caption2)
+                                        }
+                                        .foregroundStyle(Color.accent)
+                                    }
+                                }
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 10)
+                                Divider()
+                                    .padding(.leading, 12)
+                                HStack {
+                                    Text("Every")
+                                        .foregroundStyle(.primary)
+                                    Spacer()
+                                    Menu {
+                                        Picker("Every", selection: $model.rampInterval) {
+                                            ForEach([4, 8, 16, 32, 48, 64], id: \.self) { value in
+                                                Text("\(value) beats").tag(value)
+                                            }
+                                        }
+                                        .pickerStyle(.inline)
+                                        .labelsHidden()
+                                    } label: {
+                                        HStack(spacing: 4) {
+                                            Text("\(model.rampInterval) beats")
+                                            Image(systemName: ImageConstants.chevronUpDown)
+                                                .font(.caption2)
+                                        }
+                                        .foregroundStyle(Color.accent)
+                                    }
+                                }
+                                .padding(.horizontal, 12)
+                                .padding(.vertical, 10)
+                            }
+                            .transition(.move(edge: .top).combined(with: .opacity))
+                        }
+                    }
+                }
                 // Beat & Rhythm card
                 CardContainer {
                     VStack(spacing: 0) {
@@ -134,6 +200,7 @@ struct InstantMetronomeView: View {
                 .controlSize(.large)
                 .tint(Color.appPrimary)
             }
+            .animation(.easeInOut(duration: 0.25), value: model.rampEnabled)
             .padding()
         }
         .background(Color(UIColor.systemGroupedBackground))

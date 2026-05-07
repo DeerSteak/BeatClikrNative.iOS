@@ -67,6 +67,18 @@ class UserDefaultsService: ObservableObject {
         didSet { syncSave(instantRhythm, oldValue: oldValue, key: PreferenceKeys.instantRhythm) }
     }
 
+    @Published var rampEnabled: Bool {
+        didSet { syncSave(rampEnabled, oldValue: oldValue, key: PreferenceKeys.rampEnabled) }
+    }
+
+    @Published var rampIncrement: Int {
+        didSet { syncSave(rampIncrement, oldValue: oldValue, key: PreferenceKeys.rampIncrement) }
+    }
+
+    @Published var rampInterval: Int {
+        didSet { syncSave(rampInterval, oldValue: oldValue, key: PreferenceKeys.rampInterval) }
+    }
+
     // MARK: - Playlist
 
     @Published var playlistBeat: FileConstants {
@@ -117,6 +129,10 @@ class UserDefaultsService: ObservableObject {
         instantGroove = Self.loadEnum(defaults, key: PreferenceKeys.instantGroove, default: .quarter)
         instantBeatPattern = Self.loadOptionalString(defaults, key: PreferenceKeys.instantBeatPattern)
 
+        rampEnabled = defaults.bool(forKey: PreferenceKeys.rampEnabled)
+        rampIncrement = Self.loadNonZeroInt(defaults, key: PreferenceKeys.rampIncrement, default: 2)
+        rampInterval = Self.loadNonZeroInt(defaults, key: PreferenceKeys.rampInterval, default: 8)
+
         playlistBeat = Self.loadEnum(defaults, key: PreferenceKeys.playlistBeat, default: .ClickHi)
         playlistRhythm = Self.loadEnum(defaults, key: PreferenceKeys.playlistRhythm, default: .ClickLo)
 
@@ -158,6 +174,10 @@ class UserDefaultsService: ObservableObject {
         instantBpm = cloudNonZeroDouble(PreferenceKeys.instantBpm, default: 60)
         instantGroove = cloudEnum(PreferenceKeys.instantGroove, default: .quarter)
         instantBeatPattern = cloudOptionalString(PreferenceKeys.instantBeatPattern)
+
+        rampEnabled = cloud.bool(forKey: PreferenceKeys.rampEnabled)
+        rampIncrement = cloudNonZeroInt(PreferenceKeys.rampIncrement, default: 2)
+        rampInterval = cloudNonZeroInt(PreferenceKeys.rampInterval, default: 8)
 
         playlistBeat = cloudEnum(PreferenceKeys.playlistBeat, default: .ClickHi)
         playlistRhythm = cloudEnum(PreferenceKeys.playlistRhythm, default: .ClickLo)

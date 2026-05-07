@@ -25,6 +25,10 @@ enum PreferenceKeys {
     static let sendReminders = "SendReminders"
     static let reminderTime = "ReminderTime"
 
+    static let rampEnabled = "RampEnabled"
+    static let rampIncrement = "RampIncrement"
+    static let rampInterval = "RampInterval"
+
     static let polyrhythmBeat = "PolyrhythmBeat"
     static let polyrhythmRhythm = "PolyrhythmRhythm"
     static let polyrhythmBeats = "PolyrhythmBeats"
