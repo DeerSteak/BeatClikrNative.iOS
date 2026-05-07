@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct MetronomeContainerView: View {
-    private enum Mode: Hashable { case instant, polyrhythm }
+    private enum Mode: Hashable { case metronome, polyrhythm }
 
-    @State private var selectedMode: Mode = .instant
+    @State private var selectedMode: Mode = .metronome
     @EnvironmentObject private var metronomeModel: MetronomePlaybackViewModel
     @EnvironmentObject private var polyrhythmModel: PolyrhythmViewModel
 
@@ -18,18 +18,18 @@ struct MetronomeContainerView: View {
         NavigationStack {
             GeometryReader { geo in
                 HStack(spacing: 0) {
-                    InstantMetronomeView()
+                    MetronomeView()
                         .frame(width: geo.size.width)
                     PolyrhythmView()
                         .frame(width: geo.size.width)
                 }
-                .offset(x: selectedMode == .instant ? 0 : -geo.size.width)
+                .offset(x: selectedMode == .metronome ? 0 : -geo.size.width)
                 .animation(.easeInOut(duration: 0.3), value: selectedMode)
             }
             .clipped()
             .onChange(of: selectedMode) { _, newMode in
                 switch newMode {
-                case .instant: polyrhythmModel.stop()
+                case .metronome: polyrhythmModel.stop()
                 case .polyrhythm: metronomeModel.stop()
                 }
             }
@@ -39,7 +39,7 @@ struct MetronomeContainerView: View {
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Picker("Mode", selection: $selectedMode) {
-                        Text("Instant").tag(Mode.instant)
+                        Text("Metronome").tag(Mode.metronome)
                         Text("Polyrhythm").tag(Mode.polyrhythm)
                     }
                     .pickerStyle(.segmented)

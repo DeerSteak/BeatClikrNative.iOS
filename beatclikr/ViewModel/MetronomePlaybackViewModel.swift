@@ -23,6 +23,8 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
     private var isBeat: Bool = false
     private var activeBpm: Double = 120.0
+    private var rampBeatCount: Int = -1
+    private var applyingRamp: Bool = false
 
     // MARK: Published properties
 
@@ -31,10 +33,45 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     @Published var isPlaying: Bool = false
     @Published var currentSongTitle: String? = nil
 
-    @Published var beatsPerMinute: Double = UserDefaultsService.instance.instantBpm {
+    @Published var beatsPerMinute: Double = UserDefaultsService.instance.metronomeBpm {
         didSet {
-            if clickerType == .instant {
-                defaults.instantBpm = beatsPerMinute
+            if clickerType == .metronome, !applyingRamp {
+                defaults.metronomeBpm = beatsPerMinute
+            }
+            if isPlaying, !applyingRamp {
+                audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.subdivisions, accentPattern: computeAccentPattern())
+            }
+        }
+    }
+
+    @Published var rampEnabled: Bool = UserDefaultsService.instance.rampEnabled {
+        didSet {
+            if clickerType == .metronome {
+                defaults.rampEnabled = rampEnabled
+            }
+        }
+    }
+
+    @Published var rampIncrement: Int = UserDefaultsService.instance.rampIncrement {
+        didSet {
+            if clickerType == .metronome {
+                defaults.rampIncrement = rampIncrement
+            }
+        }
+    }
+
+    @Published var rampInterval: Int = UserDefaultsService.instance.rampInterval {
+        didSet {
+            if clickerType == .metronome {
+                defaults.rampInterval = rampInterval
+            }
+        }
+    }
+
+    @Published var selectedGroove: Groove = UserDefaultsService.instance.metronomeGroove {
+        didSet {
+            if clickerType == .metronome {
+                defaults.metronomeGroove = selectedGroove
             }
             if isPlaying {
                 audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.subdivisions, accentPattern: computeAccentPattern())
@@ -42,21 +79,10 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         }
     }
 
-    @Published var selectedGroove: Groove = UserDefaultsService.instance.instantGroove {
+    @Published var beat: FileConstants = UserDefaultsService.instance.metronomeBeat {
         didSet {
-            if clickerType == .instant {
-                defaults.instantGroove = selectedGroove
-            }
-            if isPlaying {
-                audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.subdivisions, accentPattern: computeAccentPattern())
-            }
-        }
-    }
-
-    @Published var beat: FileConstants = UserDefaultsService.instance.instantBeat {
-        didSet {
-            if clickerType == .instant {
-                defaults.instantBeat = beat
+            if clickerType == .metronome {
+                defaults.metronomeBeat = beat
             } else {
                 defaults.playlistBeat = beat
             }
@@ -64,10 +90,10 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         }
     }
 
-    @Published var rhythm: FileConstants = UserDefaultsService.instance.instantRhythm {
+    @Published var rhythm: FileConstants = UserDefaultsService.instance.metronomeRhythm {
         didSet {
-            if clickerType == .instant {
-                defaults.instantRhythm = rhythm
+            if clickerType == .metronome {
+                defaults.metronomeRhythm = rhythm
             } else {
                 defaults.playlistRhythm = rhythm
             }
@@ -77,8 +103,8 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
     @Published var selectedBeatPattern: BeatPattern? = nil {
         didSet {
-            if clickerType == .instant {
-                defaults.instantBeatPattern = selectedBeatPattern?.rawValue
+            if clickerType == .metronome {
+                defaults.metronomeBeatPattern = selectedBeatPattern?.rawValue
             }
             if isPlaying {
                 audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.subdivisions, accentPattern: computeAccentPattern())
@@ -86,7 +112,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         }
     }
 
-    @Published var clickerType: ClickerType = .instant {
+    @Published var clickerType: ClickerType = .metronome {
         didSet {
             if !isPlaying {
                 resetMetronome()
@@ -107,13 +133,13 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         self.audio = audio
         self.defaults = defaults
 
-        song = Song.instantSong
-        song.groove = defaults.instantGroove
-        song.beatsPerMinute = defaults.instantBpm
-        beat = defaults.instantBeat
-        rhythm = defaults.instantRhythm
-        selectedBeatPattern = defaults.instantBeatPattern.flatMap { BeatPattern(rawValue: $0) }
-        clickerType = .instant
+        song = Song.metronomeSong
+        song.groove = defaults.metronomeGroove
+        song.beatsPerMinute = defaults.metronomeBpm
+        beat = defaults.metronomeBeat
+        rhythm = defaults.metronomeRhythm
+        selectedBeatPattern = defaults.metronomeBeatPattern.flatMap { BeatPattern(rawValue: $0) }
+        clickerType = .metronome
         isBeat = false
 
         // Set self as delegate for audio callbacks
@@ -153,9 +179,9 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         currentSongTitle = song.title
 
         // Reload beat/rhythm from defaults in case they changed in settings
-        if clickerType == .instant {
-            beat = defaults.instantBeat
-            rhythm = defaults.instantRhythm
+        if clickerType == .metronome {
+            beat = defaults.metronomeBeat
+            rhythm = defaults.metronomeRhythm
         } else {
             beat = defaults.playlistBeat
             rhythm = defaults.playlistRhythm
@@ -183,7 +209,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     }
 
     func onAppear() {
-        clickerType = .instant
+        clickerType = .metronome
         UIApplication.shared.isIdleTimerDisabled = defaults.keepAwake
     }
 
@@ -197,8 +223,8 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     }
 
     func start() {
-        if clickerType == .instant {
-            song = Song.instantSong
+        if clickerType == .metronome {
+            song = Song.metronomeSong
             song.beatsPerMinute = beatsPerMinute
             song.groove = selectedGroove
             currentSongTitle = nil
@@ -212,22 +238,26 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     }
 
     func stop() {
+        rampBeatCount = -1
         audio.stopMetronome()
         flashlight.turnFlashlightOff()
         isPlaying = false
+        if rampEnabled, clickerType == .metronome {
+            beatsPerMinute = activeBpm
+        }
     }
 
     func resetMetronome() {
         let wasPlaying = isPlaying
         stop()
 
-        if clickerType == .instant {
-            song = Song.instantSong
+        if clickerType == .metronome {
+            song = Song.metronomeSong
             song.groove = selectedGroove
             song.beatsPerMinute = beatsPerMinute
-            beat = defaults.instantBeat
-            rhythm = defaults.instantRhythm
-            selectedBeatPattern = defaults.instantBeatPattern.flatMap { BeatPattern(rawValue: $0) }
+            beat = defaults.metronomeBeat
+            rhythm = defaults.metronomeRhythm
+            selectedBeatPattern = defaults.metronomeBeatPattern.flatMap { BeatPattern(rawValue: $0) }
         } else {
             beat = defaults.playlistBeat
             rhythm = defaults.playlistRhythm
@@ -241,9 +271,9 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     // MARK: Private helpers
 
     private func computeAccentPattern() -> [Bool]? {
-        let groove = clickerType == .instant ? selectedGroove : (song.groove ?? .quarter)
+        let groove = clickerType == .metronome ? selectedGroove : (song.groove ?? .quarter)
         guard groove.isOddMeter else { return nil }
-        if clickerType == .instant {
+        if clickerType == .metronome {
             return (selectedBeatPattern ?? .sevenEightA).accentArray
         } else {
             return (BeatPattern(rawValue: song.beatPattern ?? "") ?? .sevenEightA).accentArray
@@ -256,6 +286,19 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         }
         if defaults.useFlashlight {
             flashlight.turnFlashlightOn()
+        }
+        guard rampEnabled, clickerType == .metronome else { return }
+        rampBeatCount += 1
+        if rampBeatCount % rampInterval == 0, rampBeatCount > 0 {
+            let newBpm = min(beatsPerMinute + Double(rampIncrement), MetronomeConstants.maxBPM)
+            guard newBpm != beatsPerMinute else { return }
+            applyingRamp = true
+            beatsPerMinute = newBpm
+            applyingRamp = false
+            let subdivisions = selectedGroove.subdivisions
+            Task { @MainActor in
+                self.audio.updateTempo(bpm: newBpm, subdivisions: subdivisions)
+            }
         }
     }
 
