@@ -8,14 +8,14 @@
 import SwiftUI
 
 private enum AppSection: String, CaseIterable, Identifiable {
-    case instant, polyrhythm, library, playlist, history, settings
+    case metronome, polyrhythm, library, playlist, history, settings
     var id: String {
         rawValue
     }
 
     var title: String {
         switch self {
-        case .instant: "Instant Metronome"
+        case .metronome: "Metronome"
         case .polyrhythm: "Polyrhythm"
         case .library: "Song Library"
         case .playlist: "All Playlists"
@@ -26,7 +26,7 @@ private enum AppSection: String, CaseIterable, Identifiable {
 
     var icon: String {
         switch self {
-        case .instant: ImageConstants.tabInstant
+        case .metronome: ImageConstants.tabMetronome
         case .polyrhythm: ImageConstants.tabPolyrhythm
         case .library: ImageConstants.tabLibrary
         case .playlist: ImageConstants.tabPlaylist
@@ -40,7 +40,7 @@ struct HomeView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
     @EnvironmentObject private var settingsViewModel: SettingsViewModel
     @EnvironmentObject private var polyrhythmViewModel: PolyrhythmViewModel
-    @State private var selectedSection: AppSection? = .instant
+    @State private var selectedSection: AppSection? = .metronome
 
     var body: some View {
         Group {
@@ -57,9 +57,9 @@ struct HomeView: View {
                 } detail: {
                     Group {
                         switch selectedSection {
-                        case .instant:
-                            InstantMetronomeView()
-                                .navigationTitle("Instant Metronome")
+                        case .metronome:
+                            MetronomeView()
+                                .navigationTitle("Metronome")
                         case .polyrhythm:
                             PolyrhythmView()
                                 .environmentObject(polyrhythmViewModel)
@@ -69,8 +69,8 @@ struct HomeView: View {
                         case .history: PracticeHistoryView()
                         case .settings: SettingsView()
                         case nil:
-                            InstantMetronomeView()
-                                .navigationTitle("Instant Metronome")
+                            MetronomeView()
+                                .navigationTitle("Metronome")
                         }
                     }
                     .frame(maxWidth: 700, alignment: .center)
@@ -90,7 +90,7 @@ struct HomeView: View {
             } else {
                 TabView {
                     MetronomeContainerView()
-                        .tabItem { Label("Metronome", systemImage: ImageConstants.tabInstant) }
+                        .tabItem { Label("Metronome", systemImage: ImageConstants.tabMetronome) }
                     SongLibraryView()
                         .tabItem { Label("Library", systemImage: ImageConstants.tabLibrary) }
                     PlaylistListView()

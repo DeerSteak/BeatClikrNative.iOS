@@ -1,5 +1,5 @@
 //
-//  InstantMetronomeView.swift
+//  MetronomeView.swift
 //  beatclikr
 //
 //  Created by Ben Funk on 8/3/23.
@@ -8,7 +8,7 @@
 import SwiftData
 import SwiftUI
 
-struct InstantMetronomeView: View {
+struct MetronomeView: View {
     @State var showAlert: Bool
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: MetronomePlaybackViewModel
@@ -213,14 +213,14 @@ struct InstantMetronomeView: View {
             model.stop()
         } else {
             model.start()
-            practiceHistory.recordSongPlayed(song: Song.instantSong, context: modelContext)
+            practiceHistory.recordSongPlayed(song: Song.metronomeSong, context: modelContext)
         }
     }
 }
 
 #Preview {
     let previewContainer = PreviewContainer([Song.self])
-    return InstantMetronomeView()
+    return MetronomeView()
         .modelContainer(previewContainer.container)
         .environmentObject(MetronomePlaybackViewModel())
 }

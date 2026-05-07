@@ -84,11 +84,11 @@ struct SettingsView: View {
                             .padding(.horizontal, 4)
                     }
 
-                    // Instant instruments card
-                    SettingsCard("PlaybackInstrumentsInstantTitle") {
+                    // Metronome instruments card
+                    SettingsCard("PlaybackInstrumentsMetronomeTitle") {
                         menuRow(label: "Beat") {
                             Menu {
-                                Picker("Beat", selection: $model.instantBeat) {
+                                Picker("Beat", selection: $model.metronomeBeat) {
                                     ForEach(InstrumentLists.beat) { option in
                                         Text(String(describing: option))
                                     }
@@ -96,13 +96,13 @@ struct SettingsView: View {
                                 .pickerStyle(.inline)
                                 .labelsHidden()
                             } label: {
-                                menuLabel(model.instantBeat.description)
+                                menuLabel(model.metronomeBeat.description)
                             }
                         }
                         Divider().padding(.leading, 12)
                         menuRow(label: "Rhythm") {
                             Menu {
-                                Picker("Rhythm", selection: $model.instantRhythm) {
+                                Picker("Rhythm", selection: $model.metronomeRhythm) {
                                     ForEach(InstrumentLists.rhythm) { option in
                                         Text(String(describing: option))
                                     }
@@ -110,7 +110,7 @@ struct SettingsView: View {
                                 .pickerStyle(.inline)
                                 .labelsHidden()
                             } label: {
-                                menuLabel(model.instantRhythm.description)
+                                menuLabel(model.metronomeRhythm.description)
                             }
                         }
                     }

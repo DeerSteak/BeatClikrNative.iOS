@@ -45,26 +45,26 @@ class UserDefaultsService: ObservableObject {
     /// Called when sendReminders changed from false -> true via cloud sync.
     var onSendRemindersEnabled: (() -> Void)?
 
-    // MARK: - Instant metronome
+    // MARK: - Metronome
 
-    @Published var instantBeat: FileConstants {
-        didSet { syncSave(instantBeat, oldValue: oldValue, key: PreferenceKeys.instantBeat) }
+    @Published var metronomeBeat: FileConstants {
+        didSet { syncSave(metronomeBeat, oldValue: oldValue, key: PreferenceKeys.metronomeBeat) }
     }
 
-    @Published var instantBeatPattern: String? {
-        didSet { syncSave(instantBeatPattern, oldValue: oldValue, key: PreferenceKeys.instantBeatPattern) }
+    @Published var metronomeBeatPattern: String? {
+        didSet { syncSave(metronomeBeatPattern, oldValue: oldValue, key: PreferenceKeys.metronomeBeatPattern) }
     }
 
-    @Published var instantBpm: Double {
-        didSet { syncSave(instantBpm, oldValue: oldValue, key: PreferenceKeys.instantBpm) }
+    @Published var metronomeBpm: Double {
+        didSet { syncSave(metronomeBpm, oldValue: oldValue, key: PreferenceKeys.metronomeBpm) }
     }
 
-    @Published var instantGroove: Groove {
-        didSet { syncSave(instantGroove, oldValue: oldValue, key: PreferenceKeys.instantGroove) }
+    @Published var metronomeGroove: Groove {
+        didSet { syncSave(metronomeGroove, oldValue: oldValue, key: PreferenceKeys.metronomeGroove) }
     }
 
-    @Published var instantRhythm: FileConstants {
-        didSet { syncSave(instantRhythm, oldValue: oldValue, key: PreferenceKeys.instantRhythm) }
+    @Published var metronomeRhythm: FileConstants {
+        didSet { syncSave(metronomeRhythm, oldValue: oldValue, key: PreferenceKeys.metronomeRhythm) }
     }
 
     @Published var rampEnabled: Bool {
@@ -123,11 +123,11 @@ class UserDefaultsService: ObservableObject {
         keepAwake = defaults.bool(forKey: PreferenceKeys.keepAwake)
         sixteenthAlternate = defaults.bool(forKey: PreferenceKeys.sixteenthAlternate)
 
-        instantBeat = Self.loadEnum(defaults, key: PreferenceKeys.instantBeat, default: .ClickHi)
-        instantRhythm = Self.loadEnum(defaults, key: PreferenceKeys.instantRhythm, default: .ClickLo)
-        instantBpm = Self.loadNonZeroDouble(defaults, key: PreferenceKeys.instantBpm, default: 60)
-        instantGroove = Self.loadEnum(defaults, key: PreferenceKeys.instantGroove, default: .quarter)
-        instantBeatPattern = Self.loadOptionalString(defaults, key: PreferenceKeys.instantBeatPattern)
+        metronomeBeat = Self.loadEnum(defaults, key: PreferenceKeys.metronomeBeat, default: .ClickHi)
+        metronomeRhythm = Self.loadEnum(defaults, key: PreferenceKeys.metronomeRhythm, default: .ClickLo)
+        metronomeBpm = Self.loadNonZeroDouble(defaults, key: PreferenceKeys.metronomeBpm, default: 60)
+        metronomeGroove = Self.loadEnum(defaults, key: PreferenceKeys.metronomeGroove, default: .quarter)
+        metronomeBeatPattern = Self.loadOptionalString(defaults, key: PreferenceKeys.metronomeBeatPattern)
 
         rampEnabled = defaults.bool(forKey: PreferenceKeys.rampEnabled)
         rampIncrement = Self.loadNonZeroInt(defaults, key: PreferenceKeys.rampIncrement, default: 2)
@@ -169,11 +169,11 @@ class UserDefaultsService: ObservableObject {
         keepAwake = cloud.bool(forKey: PreferenceKeys.keepAwake)
         sixteenthAlternate = cloud.bool(forKey: PreferenceKeys.sixteenthAlternate)
 
-        instantBeat = cloudEnum(PreferenceKeys.instantBeat, default: .ClickHi)
-        instantRhythm = cloudEnum(PreferenceKeys.instantRhythm, default: .ClickLo)
-        instantBpm = cloudNonZeroDouble(PreferenceKeys.instantBpm, default: 60)
-        instantGroove = cloudEnum(PreferenceKeys.instantGroove, default: .quarter)
-        instantBeatPattern = cloudOptionalString(PreferenceKeys.instantBeatPattern)
+        metronomeBeat = cloudEnum(PreferenceKeys.metronomeBeat, default: .ClickHi)
+        metronomeRhythm = cloudEnum(PreferenceKeys.metronomeRhythm, default: .ClickLo)
+        metronomeBpm = cloudNonZeroDouble(PreferenceKeys.metronomeBpm, default: 60)
+        metronomeGroove = cloudEnum(PreferenceKeys.metronomeGroove, default: .quarter)
+        metronomeBeatPattern = cloudOptionalString(PreferenceKeys.metronomeBeatPattern)
 
         rampEnabled = cloud.bool(forKey: PreferenceKeys.rampEnabled)
         rampIncrement = cloudNonZeroInt(PreferenceKeys.rampIncrement, default: 2)
