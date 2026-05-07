@@ -80,6 +80,11 @@
 		EE6406F12A7EF6B900DEDED2 /* hatopen_A#2.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406E12A7EF6B900DEDED2 /* hatopen_A#2.wav */; };
 		EE6D2F532F8A64DA00A1D4B7 /* PlaylistDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6D2F522F8A64D200A1D4B7 /* PlaylistDetailViewModel.swift */; };
 		EE738F442FABE7A8002642C3 /* PlaylistFocusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE738F432FABE7A8002642C3 /* PlaylistFocusView.swift */; };
+		EE7774232FAD137B00B87244 /* PolyrhythmViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7774222FAD137B00B87244 /* PolyrhythmViewModelTests.swift */; };
+		EE7774252FAD140400B87244 /* GrooveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7774242FAD140400B87244 /* GrooveTests.swift */; };
+		EE7774272FAD141900B87244 /* BeatPatternTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7774262FAD141900B87244 /* BeatPatternTests.swift */; };
+		EE7774292FAD142400B87244 /* FormatterHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7774282FAD142400B87244 /* FormatterHelperTests.swift */; };
+		EE77742B2FAD14BA00B87244 /* MetronomeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE77742A2FAD14BA00B87244 /* MetronomeUITests.swift */; };
 		EE8201832A81B1E900675A1C /* PlaylistDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8201822A81B1E900675A1C /* PlaylistDetailView.swift */; };
 		EE8201852A81B20F00675A1C /* SongListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8201842A81B20F00675A1C /* SongListItemView.swift */; };
 		EE82F9A82A7FBD7000B873E7 /* UserDefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */; };
@@ -192,6 +197,11 @@
 		EE6406E12A7EF6B900DEDED2 /* hatopen_A#2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "hatopen_A#2.wav"; sourceTree = "<group>"; };
 		EE6D2F522F8A64D200A1D4B7 /* PlaylistDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistDetailViewModel.swift; sourceTree = "<group>"; };
 		EE738F432FABE7A8002642C3 /* PlaylistFocusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistFocusView.swift; sourceTree = "<group>"; };
+		EE7774222FAD137B00B87244 /* PolyrhythmViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolyrhythmViewModelTests.swift; sourceTree = "<group>"; };
+		EE7774242FAD140400B87244 /* GrooveTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GrooveTests.swift; sourceTree = "<group>"; };
+		EE7774262FAD141900B87244 /* BeatPatternTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeatPatternTests.swift; sourceTree = "<group>"; };
+		EE7774282FAD142400B87244 /* FormatterHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterHelperTests.swift; sourceTree = "<group>"; };
+		EE77742A2FAD14BA00B87244 /* MetronomeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeUITests.swift; sourceTree = "<group>"; };
 		EE8201822A81B1E900675A1C /* PlaylistDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistDetailView.swift; sourceTree = "<group>"; };
 		EE8201842A81B20F00675A1C /* SongListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongListItemView.swift; sourceTree = "<group>"; };
 		EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsService.swift; sourceTree = "<group>"; };
@@ -320,14 +330,18 @@
 		EE84F3082A7C7A23009E2F23 /* beatclikrTests */ = {
 			isa = PBXGroup;
 			children = (
+				EE84F3092A7C7A23009E2F23 /* beatclikrTests.swift */,
 				28363D552F898A110066C665 /* ImageConstantsTests.swift */,
+				28363D532F8989430066C665 /* MetronomeConstantsTests.swift */,
 				28363D562F898A110066C665 /* MetronomePlaybackViewModelTests.swift */,
 				28363D572F898A110066C665 /* MetronomeTimingTests.swift */,
-				28363D532F8989430066C665 /* MetronomeConstantsTests.swift */,
-				EE84F3092A7C7A23009E2F23 /* beatclikrTests.swift */,
-				B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */,
+				EE7774222FAD137B00B87244 /* PolyrhythmViewModelTests.swift */,
 				B5F4E5792FA5B5BD003FC6E6 /* PracticeHistoryViewModelTests.swift */,
 				B5C6B8212FA937DD005DE6FD /* SettingsViewModelTests.swift */,
+				B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */,
+				EE7774242FAD140400B87244 /* GrooveTests.swift */,
+				EE7774262FAD141900B87244 /* BeatPatternTests.swift */,
+				EE7774282FAD142400B87244 /* FormatterHelperTests.swift */,
 			);
 			path = beatclikrTests;
 			sourceTree = "<group>";
@@ -339,6 +353,7 @@
 				EE84F3152A7C7A24009E2F23 /* beatclikrUITestsLaunchTests.swift */,
 				B5F4E57B2FA5B5BD003FC6E6 /* PracticeHistoryUITests.swift */,
 				B5C6B8232FA937DD005DE6FD /* SettingsUITests.swift */,
+				EE77742A2FAD14BA00B87244 /* MetronomeUITests.swift */,
 			);
 			path = beatclikrUITests;
 			sourceTree = "<group>";
@@ -706,10 +721,14 @@
 				28363D542F8989430066C665 /* MetronomeConstantsTests.swift in Sources */,
 				EE84F30A2A7C7A23009E2F23 /* beatclikrTests.swift in Sources */,
 				28363D582F898A110066C665 /* ImageConstantsTests.swift in Sources */,
+				EE7774292FAD142400B87244 /* FormatterHelperTests.swift in Sources */,
+				EE7774272FAD141900B87244 /* BeatPatternTests.swift in Sources */,
 				28363D592F898A110066C665 /* MetronomePlaybackViewModelTests.swift in Sources */,
 				28363D5A2F898A110066C665 /* MetronomeTimingTests.swift in Sources */,
 				B59EE8512FA4DBC20021C335 /* SongNavigationViewModelTests.swift in Sources */,
+				EE7774252FAD140400B87244 /* GrooveTests.swift in Sources */,
 				B5C6B8222FA937DD005DE6FD /* SettingsViewModelTests.swift in Sources */,
+				EE7774232FAD137B00B87244 /* PolyrhythmViewModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -719,6 +738,7 @@
 			files = (
 				EE84F3162A7C7A24009E2F23 /* beatclikrUITestsLaunchTests.swift in Sources */,
 				B5F4E57C2FA5B5BD003FC6E6 /* PracticeHistoryUITests.swift in Sources */,
+				EE77742B2FAD14BA00B87244 /* MetronomeUITests.swift in Sources */,
 				B5C6B8242FA937DD005DE6FD /* SettingsUITests.swift in Sources */,
 				EE84F3142A7C7A24009E2F23 /* beatclikrUITests.swift in Sources */,
 			);
