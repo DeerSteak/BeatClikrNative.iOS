@@ -3,6 +3,12 @@ BeatClikr's reimplementation for iOS 18+ with SwiftUI, SwiftData, AudioKit, and 
 
 ## What's New
 
+### Tempo Ramp
+The Metronome now includes an optional **Tempo Ramp** card. When enabled, BPM automatically increases by a configurable increment (default 1 BPM) every N beats. The starting BPM is restored when playback stops, so the next session begins at the original tempo. Settings persist via `UserDefaults`.
+
+### Focus Mode
+Playlist playback now has a **Focus Mode** sheet (`PlaylistFocusView`): a full-screen always-dark overlay with a large pulsing circle synchronized to the beat, the current song title, and Previous / Play-Pause / Next transport controls. Designed for distraction-free practice sessions.
+
 ### Polyrhythm improvements
 - BPM is now persisted across launches and synced via iCloud KV store
 - The dot rows are laid out as a proportional timeline (piano-roll style) with a `Capsule` background line

@@ -48,8 +48,21 @@ struct HomeView: View {
                 NavigationSplitView {
                     List(selection: $selectedSection) {
                         ForEach(AppSection.allCases) { section in
-                            Label(section.title, systemImage: section.icon)
-                                .tag(section)
+                            Group {
+                                if section == .metronome {
+                                    Label {
+                                        Text(section.title)
+                                    } icon: {
+                                        Image(ImageConstants.tabMetronome)
+                                            .resizable()
+                                            .scaledToFit()
+                                            .frame(width: 22, height: 22)
+                                    }
+                                } else {
+                                    Label(section.title, systemImage: section.icon)
+                                }
+                            }
+                            .tag(section)
                         }
                     }
                     .navigationTitle("BeatClikr")
@@ -90,7 +103,7 @@ struct HomeView: View {
             } else {
                 TabView {
                     MetronomeContainerView()
-                        .tabItem { Label("Metronome", systemImage: ImageConstants.tabMetronome) }
+                        .tabItem { Label("Metronome", image: ImageConstants.tabMetronome) }
                     SongLibraryView()
                         .tabItem { Label("Library", systemImage: ImageConstants.tabLibrary) }
                     PlaylistListView()
