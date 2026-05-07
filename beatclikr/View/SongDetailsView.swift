@@ -41,7 +41,7 @@ struct SongDetailsView: View {
         _bpm = State(initialValue: song.beatsPerMinute ?? 60)
         _beats = State(initialValue: song.beatsPerMeasure ?? 4)
         _showAlert = State(initialValue: false)
-        _selectedGroove = State(initialValue: song.groove ?? .eighth)
+        _selectedGroove = State(initialValue: song.groove ?? .quarter)
         _selectedBeatPattern = State(initialValue: BeatPattern(rawValue: song.beatPattern ?? ""))
     }
 
