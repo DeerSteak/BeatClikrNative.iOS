@@ -79,6 +79,7 @@
 		EE6406F02A7EF6B900DEDED2 /* rideedge_D#3.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406E02A7EF6B900DEDED2 /* rideedge_D#3.wav */; };
 		EE6406F12A7EF6B900DEDED2 /* hatopen_A#2.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406E12A7EF6B900DEDED2 /* hatopen_A#2.wav */; };
 		EE6D2F532F8A64DA00A1D4B7 /* PlaylistDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6D2F522F8A64D200A1D4B7 /* PlaylistDetailViewModel.swift */; };
+		EE738F442FABE7A8002642C3 /* PlaylistFocusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE738F432FABE7A8002642C3 /* PlaylistFocusView.swift */; };
 		EE8201832A81B1E900675A1C /* PlaylistDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8201822A81B1E900675A1C /* PlaylistDetailView.swift */; };
 		EE8201852A81B20F00675A1C /* SongListItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE8201842A81B20F00675A1C /* SongListItemView.swift */; };
 		EE82F9A82A7FBD7000B873E7 /* UserDefaultsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */; };
@@ -190,6 +191,7 @@
 		EE6406E02A7EF6B900DEDED2 /* rideedge_D#3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "rideedge_D#3.wav"; sourceTree = "<group>"; };
 		EE6406E12A7EF6B900DEDED2 /* hatopen_A#2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "hatopen_A#2.wav"; sourceTree = "<group>"; };
 		EE6D2F522F8A64D200A1D4B7 /* PlaylistDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistDetailViewModel.swift; sourceTree = "<group>"; };
+		EE738F432FABE7A8002642C3 /* PlaylistFocusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistFocusView.swift; sourceTree = "<group>"; };
 		EE8201822A81B1E900675A1C /* PlaylistDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistDetailView.swift; sourceTree = "<group>"; };
 		EE8201842A81B20F00675A1C /* SongListItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongListItemView.swift; sourceTree = "<group>"; };
 		EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsService.swift; sourceTree = "<group>"; };
@@ -258,6 +260,7 @@
 				EE8201842A81B20F00675A1C /* SongListItemView.swift */,
 				B53234772F8DD8D900BA7DE1 /* SongPickerView.swift */,
 				B59482B02FA3C88A00410C67 /* TapTempoButton.swift */,
+				EE738F432FABE7A8002642C3 /* PlaylistFocusView.swift */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";
@@ -668,6 +671,7 @@
 				B5B638B62FAAD8C300675060 /* PolyrhythmAudioEngine.swift in Sources */,
 				B53042152FA671A100A3CAE6 /* SharableStreakCard.swift in Sources */,
 				EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */,
+				EE738F442FABE7A8002642C3 /* PlaylistFocusView.swift in Sources */,
 				EE0939E72A7EA838005491BB /* RectangleText.swift in Sources */,
 				EE3BEF3C2A83B476004B0C97 /* Groove.swift in Sources */,
 				EE84F2F92A7C7A21009E2F23 /* Song.swift in Sources */,
@@ -863,7 +867,7 @@
 				CODE_SIGN_ENTITLEMENTS = beatclikr/beatclikrDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 19;
 				DEVELOPMENT_ASSET_PATHS = "\"beatclikr/Preview Content\"";
 				DEVELOPMENT_TEAM = 4C4LJCSB2Q;
 				ENABLE_PREVIEWS = YES;
@@ -905,7 +909,7 @@
 				CODE_SIGN_ENTITLEMENTS = beatclikr/beatclikr.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 18;
+				CURRENT_PROJECT_VERSION = 19;
 				DEVELOPMENT_ASSET_PATHS = "\"beatclikr/Preview Content\"";
 				DEVELOPMENT_TEAM = 4C4LJCSB2Q;
 				ENABLE_PREVIEWS = YES;

@@ -73,7 +73,7 @@ struct HomeView: View {
                                 .navigationTitle("Instant Metronome")
                         }
                     }
-                    .frame(maxWidth: 500, alignment: .center)
+                    .frame(maxWidth: 700, alignment: .center)
                     .frame(maxWidth: .infinity)
                     .background(Color(UIColor.systemGroupedBackground))
                 }
@@ -81,8 +81,8 @@ struct HomeView: View {
                 .onAppear {
                     if let scene = UIApplication.shared.connectedScenes.first as? UIWindowScene {
                         scene.titlebar?.titleVisibility = .hidden
-                        scene.sizeRestrictions?.minimumSize = CGSize(width: 820, height: 680)
-                        scene.sizeRestrictions?.maximumSize = CGSize(width: 820, height: 2000)
+                        scene.sizeRestrictions?.minimumSize = CGSize(width: 1020, height: 680)
+                        scene.sizeRestrictions?.maximumSize = CGSize(width: 1020, height: 2000)
                         scene.sizeRestrictions?.allowsFullScreen = false
                     }
                 }

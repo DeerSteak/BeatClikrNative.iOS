@@ -18,6 +18,7 @@ struct PlaylistDetailView: View {
 
     @State private var editMode: EditMode = .inactive
     @State private var showingSongPicker = false
+    @State private var showingFocusView = false
     @State private var editingSong: Song?
     @State private var tappedId: String?
 
@@ -130,6 +131,16 @@ struct PlaylistDetailView: View {
             }
             .navigationTitle(playlist.name ?? "Playlist")
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    Button {
+                        showingFocusView = true
+                    } label: {
+                        Image(systemName: "arrow.up.left.and.arrow.down.right")
+                    }
+                    .accessibilityLabel("Focus View")
+                    .opacity(editMode.isEditing || entries.isEmpty ? 0 : 1)
+                    .disabled(editMode.isEditing || entries.isEmpty)
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button(editMode.isEditing ? "Done" : "Edit") {
                         withAnimation(.easeInOut(duration: 0.2)) {
@@ -149,6 +160,14 @@ struct PlaylistDetailView: View {
             .navigationBarTitleDisplayMode(.automatic)
             .sheet(item: $editingSong) { song in
                 SongDetailsView(song: song)
+            }
+            .fullScreenCover(isPresented: $showingFocusView) {
+                PlaylistFocusView(
+                    model: model,
+                    entries: entries,
+                    onDismiss: { showingFocusView = false },
+                )
+                .environmentObject(metronome)
             }
             .sheet(isPresented: $showingSongPicker) {
                 SongPickerView(playlist: playlist)
