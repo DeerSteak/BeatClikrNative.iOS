@@ -14,6 +14,7 @@ final class MetronomeUITests: XCTestCase {
     override func setUp() async throws {
         continueAfterFailure = false
         app = XCUIApplication()
+        app.launchEnvironment = ["UI_TESTING_METRONOME_RESET": "1"]
         app.launch()
     }
 
@@ -61,7 +62,7 @@ final class MetronomeUITests: XCTestCase {
 
     func testTappingPlayShowsPauseButton() {
         navigateToMetronome()
-        app.buttons["Play"].tap()
+        app.buttons["Play"].firstMatch.tap()
         XCTAssertTrue(
             app.buttons["Pause"].waitForExistence(timeout: 3),
             "Pause button should appear after tapping Play",
@@ -70,7 +71,7 @@ final class MetronomeUITests: XCTestCase {
 
     func testTappingPauseShowsPlayButton() {
         navigateToMetronome()
-        app.buttons["Play"].tap()
+        app.buttons["Play"].firstMatch.tap()
         _ = app.buttons["Pause"].waitForExistence(timeout: 3)
         app.buttons["Pause"].tap()
         XCTAssertTrue(

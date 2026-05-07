@@ -13,6 +13,8 @@ final class MetronomePlaybackViewModelTests: XCTestCase {
     var viewModel: MetronomePlaybackViewModel!
 
     override func setUp() async throws {
+        // Reset singleton so persisted UserDefaults from previous test runs don't bleed in
+        UserDefaultsService.instance.rampEnabled = false
         viewModel = MetronomePlaybackViewModel()
     }
 

@@ -27,6 +27,8 @@ struct beatclikrApp: App {
         ProcessInfo.processInfo.environment["UI_TESTING_PRACTICE_STATE"]
     private static let uiTestNotificationState: String? =
         ProcessInfo.processInfo.environment["UI_TESTING_NOTIFICATION_STATE"]
+    private static let uiTestMetronomeReset: Bool =
+        ProcessInfo.processInfo.environment["UI_TESTING_METRONOME_RESET"] != nil
 
     init() {
         let isUITesting = Self.uiTestPracticeState != nil
@@ -92,6 +94,10 @@ struct beatclikrApp: App {
                 }
                 UserDefaults.standard.set(true, forKey: PreferenceKeys.didMigrateToMultiplePlaylists)
             }
+        }
+
+        if Self.uiTestMetronomeReset {
+            UserDefaults.standard.set(false, forKey: PreferenceKeys.rampEnabled)
         }
 
         let metronome = MetronomePlaybackViewModel()
