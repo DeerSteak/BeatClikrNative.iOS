@@ -21,11 +21,11 @@ final class Song: Identifiable, SongDisplayable {
     @Relationship(deleteRule: .cascade)
     var playlistEntries: [PlaylistEntry]? = []
 
-    @MainActor static let instantSong: Song = Song()
+    @MainActor static let metronomeSong: Song = Song()
 
     init() {
         id = UUID().uuidString
-        title = "Instant"
+        title = "Metronome"
         artist = "Song"
         beatsPerMinute = 60
         beatsPerMeasure = 4

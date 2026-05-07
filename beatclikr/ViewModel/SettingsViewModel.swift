@@ -53,12 +53,12 @@ class SettingsViewModel: ObservableObject {
         didSet { defaults.muteMetronome = muteMetronome }
     }
 
-    @Published var instantBeat: FileConstants {
-        didSet { defaults.instantBeat = instantBeat }
+    @Published var metronomeBeat: FileConstants {
+        didSet { defaults.metronomeBeat = metronomeBeat }
     }
 
-    @Published var instantRhythm: FileConstants {
-        didSet { defaults.instantRhythm = instantRhythm }
+    @Published var metronomeRhythm: FileConstants {
+        didSet { defaults.metronomeRhythm = metronomeRhythm }
     }
 
     @Published var playlistBeat: FileConstants {
@@ -92,8 +92,8 @@ class SettingsViewModel: ObservableObject {
         useFlashlight = defaults.useFlashlight
         useVibration = defaults.useVibration
         muteMetronome = defaults.muteMetronome
-        instantBeat = defaults.instantBeat
-        instantRhythm = defaults.instantRhythm
+        metronomeBeat = defaults.metronomeBeat
+        metronomeRhythm = defaults.metronomeRhythm
         playlistBeat = defaults.playlistBeat
         playlistRhythm = defaults.playlistRhythm
         polyrhythmBeat = defaults.polyrhythmBeat

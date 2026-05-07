@@ -10,11 +10,11 @@ import Foundation
 enum PreferenceKeys {
     // MARK: - Synced (UserDefaults + NSUbiquitousKeyValueStore)
 
-    static let instantBeat = "InstantBeat"
-    static let instantRhythm = "InstantRhythm"
-    static let instantGroove = "InstantGroove"
-    static let instantBeatPattern = "InstantBeatPattern"
-    static let instantBpm = "InstantBpm"
+    static let metronomeBeat = "InstantBeat"
+    static let metronomeRhythm = "InstantRhythm"
+    static let metronomeGroove = "InstantGroove"
+    static let metronomeBeatPattern = "InstantBeatPattern"
+    static let metronomeBpm = "InstantBpm"
     static let playlistBeat = "RehearsalBeat"
     static let playlistRhythm = "RehearsalRhythm"
     static let muteMetronome = "MuteMetronome"
@@ -24,6 +24,10 @@ enum PreferenceKeys {
     static let sixteenthAlternate = "SixteenthAlternate"
     static let sendReminders = "SendReminders"
     static let reminderTime = "ReminderTime"
+
+    static let rampEnabled = "RampEnabled"
+    static let rampIncrement = "RampIncrement"
+    static let rampInterval = "RampInterval"
 
     static let polyrhythmBeat = "PolyrhythmBeat"
     static let polyrhythmRhythm = "PolyrhythmRhythm"

@@ -8,5 +8,5 @@
 import Foundation
 
 enum ClickerType {
-    case instant, playlist
+    case metronome, playlist
 }

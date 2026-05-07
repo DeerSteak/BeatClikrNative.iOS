@@ -27,7 +27,7 @@ enum ImageConstants {
     static let share = "square.and.arrow.up"
 
     // Tab bar
-    static let tabInstant = "metronome"
+    static let tabMetronome = "MetronomeTabIcon"
     static let tabPolyrhythm = "waveform"
     static let tabLibrary = "list.bullet.rectangle"
     static let tabPlaylist = "music.note.list"

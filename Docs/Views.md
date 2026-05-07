@@ -2,11 +2,11 @@
 
 ## Main Views
 
-- **HomeView** - Root container; uses `TabView` on iPhone and `NavigationSplitView` on iPad/Mac; sections: Instant, Library, Playlists, History, Settings. Hosts root-level alerts for notification permission flows (`showPermissionDeniedAlert`, `showCrossDeviceReminderPrompt`) so they surface regardless of which tab is active
+- **HomeView** - Root container; uses `TabView` on iPhone and `NavigationSplitView` on iPad/Mac. iPhone sections: Metronome (contains both Metronome and Polyrhythm), Library, Playlists, History, Settings. iPad/Mac sidebar adds Polyrhythm as its own top-level section. Hosts root-level alerts for notification permission flows (`showPermissionDeniedAlert`, `showCrossDeviceReminderPrompt`) so they surface regardless of which tab is active
 
-- **MetronomeContainerView** - iPhone-only container that hosts Instant and Polyrhythm as a segmented-control top tab inside a single `NavigationStack`, so both modes share one bottom tab
+- **MetronomeContainerView** - iPhone-only container that hosts `MetronomeView` and `PolyrhythmView` side by side inside a single `NavigationStack`; a segmented control in the navigation bar slides between them horizontally. Switching modes stops the other mode's playback automatically
 
-- **InstantMetronomeView** - Standalone metronome with live BPM/groove controls and tap tempo; when an odd meter groove is selected, also shows a `BeatPattern` picker
+- **MetronomeView** - Standalone metronome with live BPM/groove controls and tap tempo; when an odd meter groove is selected, also shows a `BeatPattern` picker; includes the Tempo Ramp card
 
 - **PolyrhythmView** - Polyrhythm mode showing the M:N ratio controls, BPM slider, and three timeline dot rows (beat, rhythm, playhead); see [Services.md](Services.md) for how the engine drives the view
 
@@ -41,6 +41,8 @@
 - **TapTempoButton** - Circle button that derives BPM from average tap intervals; resets history after 2 seconds of silence
 
 - **GrooveSelectorView** - Segmented picker for groove/subdivision selection; shows `BeatPattern` picker when an odd meter groove is active
+
+- **PlaylistFocusView** - Immersive full-screen playback overlay for playlists; always-black background with a large pulsing circle that scales and brightens on each beat, a "Now Playing" label showing the current song title, and Previous / Play-Pause / Next transport controls. Presented as a sheet from `PlaylistDetailView`
 
 - **SettingsCard** - Styled card container used throughout `SettingsView`
 

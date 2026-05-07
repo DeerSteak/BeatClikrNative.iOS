@@ -4,7 +4,7 @@
 
 - **MetronomeConstants** - Timing parameters, BPM ranges, animation values, and lookahead tolerance thresholds used by the audio engine and ViewModels
 
-- **ImageConstants** - String constants for SF Symbol names and asset catalog keys used throughout the UI
+- **ImageConstants** - String constants for SF Symbol names and asset catalog image keys used throughout the UI. Note: `tabMetronome` references a custom SVG asset (`MetronomeTabIcon`) rather than an SF Symbol; all other tab icon constants are SF Symbol names
 
 - **PreferenceKeys** - String constants for all `UserDefaults` and `NSUbiquitousKeyValueStore` keys, divided into two groups:
   - *Synced* — written to both `UserDefaults.standard` and `NSUbiquitousKeyValueStore` (e.g. instrument choices, reminder settings)
