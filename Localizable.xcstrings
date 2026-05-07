@@ -71,7 +71,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Acerca"
+            "value" : "Acerca de"
           }
         }
       }
@@ -192,7 +192,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Propiedad Literaria"
+            "value" : "Derechos de Autor"
           }
         }
       }
@@ -227,7 +227,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "día racha"
+            "value" : "racha de días"
           }
         }
       }
@@ -740,7 +740,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "En cada área, selecciona el sonido principal que suena en cada tiempo y el sonido rítmico o *groove* que suena en las subdivisiones."
+            "value" : "En cada área, selecciona el sonido principal que suena en cada tiempo y el sonido rítmico o groove que suena en las subdivisiones."
           }
         }
       }
@@ -1136,7 +1136,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Requerida"
+            "value" : "Requerido"
           }
         }
       }
@@ -1211,7 +1211,7 @@
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "Alternar Dieciseisavos"
+            "value" : "Semicorcheas Alternadas"
           }
         }
       }
