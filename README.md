@@ -9,6 +9,9 @@ The Metronome now includes an optional **Tempo Ramp** card. When enabled, BPM au
 ### Focus Mode
 Playlist playback now has a **Focus Mode** sheet (`PlaylistFocusView`): a full-screen always-dark overlay with a large pulsing circle synchronized to the beat, the current song title, and Previous / Play-Pause / Next transport controls. Designed for distraction-free practice sessions.
 
+### Custom metronome tab icon
+The generic SF Symbol `metronome` has been replaced with a custom SVG icon (`MetronomeTabIcon`) derived from the BeatClikr app icon artwork — the same trapezoid body, pendulum rod, and weight seen in `BeatClikrAppIcon.icon`. The SVG lives in `Assets.xcassets` as a template image with `preserves-vector-representation: true` so it scales cleanly at all sizes and respects system tint in both tab bar and sidebar contexts.
+
 ### Polyrhythm improvements
 - BPM is now persisted across launches and synced via iCloud KV store
 - The dot rows are laid out as a proportional timeline (piano-roll style) with a `Capsule` background line

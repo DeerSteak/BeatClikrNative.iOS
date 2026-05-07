@@ -41,6 +41,10 @@ struct HomeView: View {
     @EnvironmentObject private var settingsViewModel: SettingsViewModel
     @EnvironmentObject private var polyrhythmViewModel: PolyrhythmViewModel
     @State private var selectedSection: AppSection? = .metronome
+    @State private var splashVisible = true
+    @State private var splashOpacity: Double = 1
+    @State private var logoOpacity: Double = 0
+    @State private var logoScale: Double = 0.85
 
     var body: some View {
         Group {
@@ -142,6 +146,46 @@ struct HomeView: View {
         } message: {
             Text("Practice reminders require notification permissions. Please enable them in Settings.")
         }
+        .overlay {
+            if splashVisible {
+                splashOverlay
+            }
+        }
+        .onAppear {
+            guard splashVisible else { return }
+            withAnimation(.easeOut(duration: 0.25).delay(0.15)) {
+                logoOpacity = 1
+                logoScale = 1.0
+            }
+            withAnimation(.easeIn(duration: 0.4).delay(0.65)) {
+                splashOpacity = 0
+                logoScale = 1.1
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.1) {
+                splashVisible = false
+            }
+        }
+    }
+
+    private var splashOverlay: some View {
+        ZStack {
+            Color(UIColor.systemGroupedBackground)
+                .ignoresSafeArea()
+            VStack(spacing: 20) {
+                Image("SplashIcon")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 100, height: 100)
+                    .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                    .scaleEffect(logoScale)
+                    .opacity(logoOpacity)
+                Text("BeatClikr")
+                    .font(.title)
+                    .fontWeight(.semibold)
+                    .opacity(logoOpacity)
+            }
+        }
+        .opacity(splashOpacity)
     }
 }
 
