@@ -887,7 +887,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.4.0;
+				MARKETING_VERSION = 4.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bfunkstudios.beatclikr;
 				PRODUCT_NAME = BeatClikr;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -929,7 +929,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 3.4.0;
+				MARKETING_VERSION = 4.0.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bfunkstudios.beatclikr;
 				PRODUCT_NAME = BeatClikr;
 				PROVISIONING_PROFILE_SPECIFIER = "";
