@@ -21,6 +21,7 @@ enum PreferenceKeys {
     static let useFlashlight = "UseFlashlight"
     static let useHaptic = "UseHaptic"
     static let keepAwake = "KeepAwake"
+    static let alwaysUseDarkTheme = "AlwaysUseDarkTheme"
     static let sixteenthAlternate = "SixteenthAlternate"
     static let sendReminders = "SendReminders"
     static let reminderTime = "ReminderTime"

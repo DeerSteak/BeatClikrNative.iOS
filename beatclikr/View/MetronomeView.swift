@@ -204,6 +204,7 @@ struct MetronomeView: View {
             .padding()
         }
         .background(Color(UIColor.systemGroupedBackground))
+        .themeTransitionMask()
         .onDisappear(perform: model.stop)
         .onAppear(perform: model.onAppear)
     }

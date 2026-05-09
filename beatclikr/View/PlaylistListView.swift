@@ -119,6 +119,7 @@ struct PlaylistListView: View {
                 Button("Cancel", role: .cancel) {}
             }
         }
+        .themeTransitionMask()
         .onAppear { path = NavigationPath() }
     }
 }

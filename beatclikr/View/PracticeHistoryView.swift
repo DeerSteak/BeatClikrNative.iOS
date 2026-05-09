@@ -86,6 +86,7 @@ struct PracticeHistoryView: View {
                 }
             }
         }
+        .themeTransitionMask()
         .onAppear {
             model.loadPracticeDates(context: modelContext)
             model.loadSongs(for: selectedDate, context: modelContext)

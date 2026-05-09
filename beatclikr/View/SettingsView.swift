@@ -14,6 +14,12 @@ struct SettingsView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 20) {
+                    // Appearance card
+                    SettingsCard("AppearanceTitle") {
+                        Toggle(LocalizedStringKey("AlwaysUseDarkTheme"), isOn: alwaysUseDarkThemeBinding)
+                            .padding(12)
+                    }
+
                     // Practice Reminders card
                     SettingsCard("PracticeRemindersTitle") {
                         Toggle(LocalizedStringKey("PracticeRemindersLabel"), isOn: $model.sendReminders)
@@ -215,9 +221,21 @@ struct SettingsView: View {
                 .padding()
             }
             .background(Color(UIColor.systemGroupedBackground))
+            .themeTransitionMask()
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.automatic)
         }
+    }
+
+    private var alwaysUseDarkThemeBinding: Binding<Bool> {
+        Binding(
+            get: { model.alwaysUseDarkTheme },
+            set: { newValue in
+                withAnimation(.easeInOut(duration: 0.35)) {
+                    model.alwaysUseDarkTheme = newValue
+                }
+            },
+        )
     }
 
     private func menuRow(label: LocalizedStringKey, @ViewBuilder content: () -> some View) -> some View {

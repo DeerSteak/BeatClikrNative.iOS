@@ -174,6 +174,7 @@ struct PlaylistDetailView: View {
                     .environmentObject(model)
             }
         }
+        .themeTransitionMask()
         .onDisappear(perform: metronome.stop)
         .onAppear {
             model.onAppear()

@@ -379,6 +379,42 @@
         }
       }
     },
+    "AlwaysUseDarkTheme" : {
+      "comment" : "A setting that forces the app to use dark appearance instead of following the system.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Always Use Dark Theme"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Usar siempre el tema oscuro"
+          }
+        }
+      }
+    },
+    "AppearanceTitle" : {
+      "comment" : "Settings section title for appearance options.",
+      "extractionState" : "manual",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Appearance"
+          }
+        },
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Apariencia"
+          }
+        }
+      }
+    },
 
     "KeepAwake" : {
       "comment" : "A description for a setting to keep the device screen on.",
