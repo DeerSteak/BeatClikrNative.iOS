@@ -57,7 +57,20 @@ struct PracticeHistoryView: View {
                                     .foregroundStyle(.secondary)
                             } else {
                                 ForEach(model.selectedDateSongs) { song in
-                                    SongListItemView(song: song)
+                                    HStack(spacing: 12) {
+                                        SongListItemView(song: song)
+                                        Spacer()
+                                        if let count = song.timesPracticed, count > 1 {
+                                            Text("×\(count)")
+                                                .font(.subheadline.bold())
+                                                .monospacedDigit()
+                                                .foregroundStyle(.secondary)
+                                                .padding(.horizontal, 8)
+                                                .padding(.vertical, 4)
+                                                .background(Color(UIColor.tertiarySystemFill), in: Capsule())
+                                                .accessibilityLabel("\(count) times practiced")
+                                        }
+                                    }
                                 }
                             }
                         }

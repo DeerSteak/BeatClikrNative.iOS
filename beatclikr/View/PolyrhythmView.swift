@@ -5,10 +5,13 @@
 //  Created by Ben Funk on 5/4/26.
 //
 
+import SwiftData
 import SwiftUI
 
 struct PolyrhythmView: View {
+    @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: PolyrhythmViewModel
+    @EnvironmentObject var practiceHistory: PracticeHistoryViewModel
 
     var body: some View {
         ScrollView {
@@ -132,7 +135,7 @@ struct PolyrhythmView: View {
                 }
 
                 // Play / Pause
-                Button(action: model.togglePlayPause) {
+                Button(action: togglePlayPause) {
                     Label(
                         model.isPlaying ? String(localized: "Pause") : String(localized: "Play"),
                         systemImage: model.isPlaying ? ImageConstants.pause : ImageConstants.play,
@@ -150,6 +153,15 @@ struct PolyrhythmView: View {
         .background(Color(UIColor.systemGroupedBackground))
         .onDisappear(perform: model.stop)
         .onAppear(perform: model.onAppear)
+    }
+
+    private func togglePlayPause() {
+        if model.isPlaying {
+            model.stop()
+        } else {
+            model.start()
+            practiceHistory.recordPolyrhythmPractice(context: modelContext)
+        }
     }
 }
 
@@ -274,6 +286,9 @@ private struct PolyrhythmPlayheadRow: View {
 }
 
 #Preview {
-    PolyrhythmView()
+    let previewContainer = PreviewContainer([PracticeSession.self, PracticedSong.self])
+    return PolyrhythmView()
+        .modelContainer(previewContainer.container)
         .environmentObject(PolyrhythmViewModel())
+        .environmentObject(PracticeHistoryViewModel())
 }

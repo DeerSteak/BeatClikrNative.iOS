@@ -362,4 +362,42 @@ struct PracticeHistoryViewModelTests {
         #expect(practiced?.artist == "My Artist")
         #expect(practiced?.beatsPerMinute == 100)
     }
+
+    @Test func `record metronome practice creates one built in item per day`() throws {
+        let container = try makeContainer()
+        let context = container.mainContext
+        let vm = PracticeHistoryViewModel()
+        vm.recordMetronomePractice(context: context)
+        vm.recordMetronomePractice(context: context)
+        let session = vm.getOrCreateTodaysSession(context: context)
+        let practiced = session.songsPracticed?.filter { $0.songId == "beatclikr.metronome" } ?? []
+        #expect(practiced.count == 1)
+        #expect(practiced.first?.title == "Metronome")
+        #expect(practiced.first?.timesPracticed == 1)
+    }
+
+    @Test func `record polyrhythm practice creates one built in item per day`() throws {
+        let container = try makeContainer()
+        let context = container.mainContext
+        let vm = PracticeHistoryViewModel()
+        vm.recordPolyrhythmPractice(context: context)
+        vm.recordPolyrhythmPractice(context: context)
+        let session = vm.getOrCreateTodaysSession(context: context)
+        let practiced = session.songsPracticed?.filter { $0.songId == "beatclikr.polyrhythm" } ?? []
+        #expect(practiced.count == 1)
+        #expect(practiced.first?.title == "Polyrhythm")
+        #expect(practiced.first?.timesPracticed == 1)
+    }
+
+    @Test func `metronome and polyrhythm practice are separate history items`() throws {
+        let container = try makeContainer()
+        let context = container.mainContext
+        let vm = PracticeHistoryViewModel()
+        vm.recordMetronomePractice(context: context)
+        vm.recordPolyrhythmPractice(context: context)
+        let session = vm.getOrCreateTodaysSession(context: context)
+        let ids = Set(session.songsPracticed?.compactMap(\.songId) ?? [])
+        #expect(ids.contains("beatclikr.metronome"))
+        #expect(ids.contains("beatclikr.polyrhythm"))
+    }
 }

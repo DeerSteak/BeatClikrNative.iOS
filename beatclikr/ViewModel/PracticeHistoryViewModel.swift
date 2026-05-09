@@ -63,17 +63,23 @@ class PracticeHistoryViewModel: ObservableObject {
     }
 
     func recordSongPlayed(song: Song, context: ModelContext) {
-        let session = getOrCreateTodaysSession(context: context)
-        let existing = session.songsPracticed?.first(where: { $0.songId == song.id })
-        if let existing {
-            existing.timesPracticed = (existing.timesPracticed ?? 0) + 1
-        } else {
-            let practicedSong = PracticedSong(from: song)
-            session.songsPracticed?.append(practicedSong)
-        }
-        try? context.save()
-        loadPracticeDates(context: context)
-        onPracticeRecorded?(context)
+        recordPracticeItem(PracticedSong(from: song), context: context, incrementsExisting: true)
+    }
+
+    func recordMetronomePractice(context: ModelContext) {
+        recordPracticeItem(
+            PracticedSong(title: "Metronome", artist: "BeatClikr", songId: "beatclikr.metronome"),
+            context: context,
+            incrementsExisting: false,
+        )
+    }
+
+    func recordPolyrhythmPractice(context: ModelContext) {
+        recordPracticeItem(
+            PracticedSong(title: "Polyrhythm", artist: "BeatClikr", songId: "beatclikr.polyrhythm"),
+            context: context,
+            incrementsExisting: false,
+        )
     }
 
     func getOrCreateTodaysSession(context: ModelContext) -> PracticeSession {
@@ -182,6 +188,20 @@ class PracticeHistoryViewModel: ObservableObject {
     }
 
     // MARK: - Private helpers
+
+    private func recordPracticeItem(_ practicedSong: PracticedSong, context: ModelContext, incrementsExisting: Bool) {
+        let session = getOrCreateTodaysSession(context: context)
+        if let existing = session.songsPracticed?.first(where: { $0.songId == practicedSong.songId }) {
+            if incrementsExisting {
+                existing.timesPracticed = (existing.timesPracticed ?? 0) + 1
+            }
+        } else {
+            session.songsPracticed?.append(practicedSong)
+        }
+        try? context.save()
+        loadPracticeDates(context: context)
+        onPracticeRecorded?(context)
+    }
 
     private func currentStreakInfo(from dates: Set<Date>) -> (length: Int, start: Date?) {
         let cal = Calendar.current

@@ -213,14 +213,15 @@ struct MetronomeView: View {
             model.stop()
         } else {
             model.start()
-            practiceHistory.recordSongPlayed(song: Song.metronomeSong, context: modelContext)
+            practiceHistory.recordMetronomePractice(context: modelContext)
         }
     }
 }
 
 #Preview {
-    let previewContainer = PreviewContainer([Song.self])
+    let previewContainer = PreviewContainer([Song.self, PracticeSession.self, PracticedSong.self])
     return MetronomeView()
         .modelContainer(previewContainer.container)
         .environmentObject(MetronomePlaybackViewModel())
+        .environmentObject(PracticeHistoryViewModel())
 }

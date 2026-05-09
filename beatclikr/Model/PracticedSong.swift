@@ -32,4 +32,15 @@ final class PracticedSong: Identifiable, SongDisplayable {
         timesPracticed = 1
         songId = song.id
     }
+
+    init(title: String, artist: String, songId: String) {
+        id = UUID().uuidString
+        self.title = title
+        self.artist = artist
+        beatsPerMinute = nil
+        beatsPerMeasure = nil
+        groove = nil
+        timesPracticed = 1
+        self.songId = songId
+    }
 }
