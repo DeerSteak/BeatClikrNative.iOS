@@ -43,13 +43,11 @@ struct SharableStreakCard: View {
                     .foregroundColor(.white.opacity(0.2))
                     .padding(.horizontal, 80)
                 HStack(spacing: 8) {
-                    if let uiImage = UIImage(named: "appicondisplay") {
-                        Image(uiImage: uiImage)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(width: 20, height: 20)
-                            .clipShape(RoundedRectangle(cornerRadius: 8))
-                    }
+                    Image("appicondisplay")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 20, height: 20)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
                     Text("BeatClikr")
                         .foregroundColor(.white.opacity(0.85))
                         .font(Font.system(size: 14, weight: .medium))
