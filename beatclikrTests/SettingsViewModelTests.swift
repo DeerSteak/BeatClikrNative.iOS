@@ -46,12 +46,21 @@ struct SettingsViewModelTests {
         // Reset shared state before each test; done before UserDefaultsService.instance is accessed
         UserDefaults.standard.removeObject(forKey: PreferenceKeys.remindersDeferredDate)
         UserDefaultsService.instance.sendReminders = false
+        UserDefaultsService.instance.alwaysUseDarkTheme = false
     }
 
     private func makeVM(
         notificationService: MockReminderNotificationService = MockReminderNotificationService(),
     ) -> SettingsViewModel {
         SettingsViewModel(notificationService: notificationService)
+    }
+
+    // MARK: - Appearance
+
+    @Test func `always use dark theme persists when toggled`() {
+        let vm = makeVM()
+        vm.alwaysUseDarkTheme = true
+        #expect(UserDefaultsService.instance.alwaysUseDarkTheme == true)
     }
 
     // MARK: - Deferral persistence at init

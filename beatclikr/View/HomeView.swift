@@ -7,7 +7,7 @@
 
 import SwiftUI
 
-private enum AppSection: String, CaseIterable, Identifiable {
+enum AppSection: String, CaseIterable, Identifiable {
     case metronome, polyrhythm, library, playlist, history, settings
     var id: String {
         rawValue
@@ -40,11 +40,15 @@ struct HomeView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
     @EnvironmentObject private var settingsViewModel: SettingsViewModel
     @EnvironmentObject private var polyrhythmViewModel: PolyrhythmViewModel
-    @State private var selectedSection: AppSection? = .metronome
+    @Binding private var selectedSection: AppSection?
     @State private var splashVisible = true
     @State private var splashOpacity: Double = 1
     @State private var logoOpacity: Double = 0
     @State private var logoScale: Double = 0.85
+
+    init(selectedSection: Binding<AppSection?>) {
+        _selectedSection = selectedSection
+    }
 
     var body: some View {
         Group {
@@ -105,17 +109,22 @@ struct HomeView: View {
                 }
                 #endif
             } else {
-                TabView {
+                TabView(selection: compactSelectedSection) {
                     MetronomeContainerView()
                         .tabItem { Label("Metronome", image: ImageConstants.tabMetronome) }
+                        .tag(AppSection.metronome)
                     SongLibraryView()
                         .tabItem { Label("Library", systemImage: ImageConstants.tabLibrary) }
+                        .tag(AppSection.library)
                     PlaylistListView()
                         .tabItem { Label("Playlist", systemImage: ImageConstants.tabPlaylist) }
+                        .tag(AppSection.playlist)
                     PracticeHistoryView()
                         .tabItem { Label("History", systemImage: ImageConstants.tabHistory) }
+                        .tag(AppSection.history)
                     SettingsView()
                         .tabItem { Label("Settings", systemImage: ImageConstants.tabSettings) }
+                        .tag(AppSection.settings)
                 }
                 .tint(Color.appPrimary)
             }
@@ -147,10 +156,26 @@ struct HomeView: View {
             Text("Practice reminders require notification permissions. Please enable them in Settings.")
         }
     }
+
+    private var compactSelectedSection: Binding<AppSection> {
+        Binding(
+            get: {
+                switch selectedSection {
+                case .library, .playlist, .history, .settings:
+                    selectedSection ?? .metronome
+                case .metronome, .polyrhythm, nil:
+                    .metronome
+                }
+            },
+            set: { selectedSection = $0 },
+        )
+    }
 }
 
 #Preview {
-    HomeView()
+    @Previewable @State var selectedSection: AppSection? = .metronome
+
+    HomeView(selectedSection: $selectedSection)
         .environmentObject(MetronomePlaybackViewModel())
         .environmentObject(PolyrhythmViewModel())
         .environmentObject(SettingsViewModel())

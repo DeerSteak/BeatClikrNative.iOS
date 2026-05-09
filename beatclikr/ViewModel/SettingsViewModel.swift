@@ -81,6 +81,10 @@ class SettingsViewModel: ObservableObject {
         didSet { defaults.keepAwake = keepAwake }
     }
 
+    @Published var alwaysUseDarkTheme: Bool {
+        didSet { defaults.alwaysUseDarkTheme = alwaysUseDarkTheme }
+    }
+
     @Published var sixteenthAlternate: Bool {
         didSet { defaults.sixteenthAlternate = sixteenthAlternate }
     }
@@ -99,6 +103,7 @@ class SettingsViewModel: ObservableObject {
         polyrhythmBeat = defaults.polyrhythmBeat
         polyrhythmRhythm = defaults.polyrhythmRhythm
         keepAwake = defaults.keepAwake
+        alwaysUseDarkTheme = defaults.alwaysUseDarkTheme
         sixteenthAlternate = defaults.sixteenthAlternate
         notificationsDeferredLocally = UserDefaults.standard.object(forKey: PreferenceKeys.remindersDeferredDate) != nil
 
@@ -109,6 +114,11 @@ class SettingsViewModel: ObservableObject {
         defaults.onSendRemindersEnabled = { [weak self] in
             Task { @MainActor [weak self] in
                 self?.checkPermissionsFromExternalTrigger()
+            }
+        }
+        defaults.onAlwaysUseDarkThemeChanged = { [weak self] newValue in
+            Task { @MainActor [weak self] in
+                self?.alwaysUseDarkTheme = newValue
             }
         }
     }

@@ -141,6 +141,7 @@ struct SongLibraryView: View {
                 }
             }
         }
+        .themeTransitionMask()
         .onDisappear(perform: metronomeViewModel.stop)
         .onAppear {
             model.onAppear()

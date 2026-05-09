@@ -16,6 +16,8 @@ struct beatclikrApp: App {
 
     let container: ModelContainer
 
+    @StateObject private var defaults = UserDefaultsService.instance
+    @State private var selectedSection: AppSection? = .metronome
     @StateObject private var metronomeViewModel: MetronomePlaybackViewModel
     @StateObject private var polyrhythmViewModel: PolyrhythmViewModel
     @StateObject private var songLibraryViewModel: SongLibraryViewModel
@@ -119,13 +121,8 @@ struct beatclikrApp: App {
 
     var body: some Scene {
         WindowGroup {
-            HomeView()
-                .environmentObject(songLibraryViewModel)
-                .environmentObject(playlistListViewModel)
-                .environmentObject(metronomeViewModel)
-                .environmentObject(polyrhythmViewModel)
-                .environmentObject(settingsViewModel)
-                .environmentObject(practiceHistoryViewModel)
+            appContent
+                .preferredColorScheme(defaults.alwaysUseDarkTheme ? .dark : nil)
                 .onReceive(
                     NotificationCenter.default
                         .publisher(for: .NSPersistentStoreRemoteChange)
@@ -145,6 +142,16 @@ struct beatclikrApp: App {
             settingsViewModel.rescheduleReminder(bodies: bodies)
             settingsViewModel.refreshNotificationStatus()
         }
+    }
+
+    private var appContent: some View {
+        HomeView(selectedSection: $selectedSection)
+            .environmentObject(songLibraryViewModel)
+            .environmentObject(playlistListViewModel)
+            .environmentObject(metronomeViewModel)
+            .environmentObject(polyrhythmViewModel)
+            .environmentObject(settingsViewModel)
+            .environmentObject(practiceHistoryViewModel)
     }
 
     private static func seedUITestData(state: String, context: ModelContext) {

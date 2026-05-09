@@ -16,6 +16,10 @@ class UserDefaultsService: ObservableObject {
         didSet { syncSave(keepAwake, oldValue: oldValue, key: PreferenceKeys.keepAwake) }
     }
 
+    @Published var alwaysUseDarkTheme: Bool {
+        didSet { syncSave(alwaysUseDarkTheme, oldValue: oldValue, key: PreferenceKeys.alwaysUseDarkTheme) }
+    }
+
     @Published var muteMetronome: Bool {
         didSet { syncSave(muteMetronome, oldValue: oldValue, key: PreferenceKeys.muteMetronome) }
     }
@@ -44,6 +48,7 @@ class UserDefaultsService: ObservableObject {
 
     /// Called when sendReminders changed from false -> true via cloud sync.
     var onSendRemindersEnabled: (() -> Void)?
+    var onAlwaysUseDarkThemeChanged: ((Bool) -> Void)?
 
     // MARK: - Metronome
 
@@ -121,6 +126,7 @@ class UserDefaultsService: ObservableObject {
         useVibration = defaults.bool(forKey: PreferenceKeys.useHaptic)
         muteMetronome = defaults.bool(forKey: PreferenceKeys.muteMetronome)
         keepAwake = defaults.bool(forKey: PreferenceKeys.keepAwake)
+        alwaysUseDarkTheme = defaults.bool(forKey: PreferenceKeys.alwaysUseDarkTheme)
         sixteenthAlternate = defaults.bool(forKey: PreferenceKeys.sixteenthAlternate)
 
         metronomeBeat = Self.loadEnum(defaults, key: PreferenceKeys.metronomeBeat, default: .ClickHi)
@@ -166,7 +172,12 @@ class UserDefaultsService: ObservableObject {
         useFlashlight = cloud.bool(forKey: PreferenceKeys.useFlashlight)
         useVibration = cloud.bool(forKey: PreferenceKeys.useHaptic)
         muteMetronome = cloud.bool(forKey: PreferenceKeys.muteMetronome)
+        let oldAlwaysUseDarkTheme = alwaysUseDarkTheme
         keepAwake = cloud.bool(forKey: PreferenceKeys.keepAwake)
+        alwaysUseDarkTheme = cloud.bool(forKey: PreferenceKeys.alwaysUseDarkTheme)
+        if oldAlwaysUseDarkTheme != alwaysUseDarkTheme {
+            onAlwaysUseDarkThemeChanged?(alwaysUseDarkTheme)
+        }
         sixteenthAlternate = cloud.bool(forKey: PreferenceKeys.sixteenthAlternate)
 
         metronomeBeat = cloudEnum(PreferenceKeys.metronomeBeat, default: .ClickHi)
