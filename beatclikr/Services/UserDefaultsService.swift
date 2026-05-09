@@ -126,7 +126,7 @@ class UserDefaultsService: ObservableObject {
         useVibration = defaults.bool(forKey: PreferenceKeys.useHaptic)
         muteMetronome = defaults.bool(forKey: PreferenceKeys.muteMetronome)
         keepAwake = defaults.bool(forKey: PreferenceKeys.keepAwake)
-        alwaysUseDarkTheme = defaults.bool(forKey: PreferenceKeys.alwaysUseDarkTheme)
+        alwaysUseDarkTheme = Self.loadBool(defaults, key: PreferenceKeys.alwaysUseDarkTheme, default: true)
         sixteenthAlternate = defaults.bool(forKey: PreferenceKeys.sixteenthAlternate)
 
         metronomeBeat = Self.loadEnum(defaults, key: PreferenceKeys.metronomeBeat, default: .ClickHi)
@@ -174,7 +174,9 @@ class UserDefaultsService: ObservableObject {
         muteMetronome = cloud.bool(forKey: PreferenceKeys.muteMetronome)
         let oldAlwaysUseDarkTheme = alwaysUseDarkTheme
         keepAwake = cloud.bool(forKey: PreferenceKeys.keepAwake)
-        alwaysUseDarkTheme = cloud.bool(forKey: PreferenceKeys.alwaysUseDarkTheme)
+        if cloud.object(forKey: PreferenceKeys.alwaysUseDarkTheme) != nil {
+            alwaysUseDarkTheme = cloud.bool(forKey: PreferenceKeys.alwaysUseDarkTheme)
+        }
         if oldAlwaysUseDarkTheme != alwaysUseDarkTheme {
             onAlwaysUseDarkThemeChanged?(alwaysUseDarkTheme)
         }
@@ -263,6 +265,10 @@ class UserDefaultsService: ObservableObject {
 
     private static func loadEnum<T: RawRepresentable>(_ defaults: UserDefaults, key: String, default fallback: T) -> T where T.RawValue == Int {
         T(rawValue: defaults.integer(forKey: key)) ?? fallback
+    }
+
+    private static func loadBool(_ defaults: UserDefaults, key: String, default fallback: Bool) -> Bool {
+        defaults.object(forKey: key) == nil ? fallback : defaults.bool(forKey: key)
     }
 
     private static func loadNonZeroDouble(_ defaults: UserDefaults, key: String, default fallback: Double) -> Double {

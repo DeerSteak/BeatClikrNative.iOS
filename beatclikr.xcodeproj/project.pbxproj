@@ -48,7 +48,6 @@
 		EE04731B2AA39267004E958A /* ClickerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE04731A2AA39267004E958A /* ClickerType.swift */; };
 		EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07558E2A7E84D400E34D29 /* FormatterHelper.swift */; };
 		EE0939E72A7EA838005491BB /* RectangleText.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0939E62A7EA838005491BB /* RectangleText.swift */; };
-		EE10F0082FAFA792004631C4 /* ThemeTransitionMask.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE10F0072FAFA792004631C4 /* ThemeTransitionMask.swift */; };
 		EE207A3D2A89723F00D8E267 /* AudioKit in Frameworks */ = {isa = PBXBuildFile; productRef = EE207A3C2A89723F00D8E267 /* AudioKit */; };
 		EE207A3F2A89734F00D8E267 /* SoundFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE207A3E2A89734F00D8E267 /* SoundFile.swift */; };
 		EE34F0762A7C7D8300CA5BD0 /* MetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE34F0752A7C7D8300CA5BD0 /* MetronomeView.swift */; };
@@ -165,7 +164,6 @@
 		EE04731A2AA39267004E958A /* ClickerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickerType.swift; sourceTree = "<group>"; };
 		EE07558E2A7E84D400E34D29 /* FormatterHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FormatterHelper.swift; sourceTree = "<group>"; };
 		EE0939E62A7EA838005491BB /* RectangleText.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RectangleText.swift; sourceTree = "<group>"; };
-		EE10F0072FAFA792004631C4 /* ThemeTransitionMask.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeTransitionMask.swift; sourceTree = "<group>"; };
 		EE207A3E2A89734F00D8E267 /* SoundFile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundFile.swift; sourceTree = "<group>"; };
 		EE34F0752A7C7D8300CA5BD0 /* MetronomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeView.swift; sourceTree = "<group>"; };
 		EE3BEF3B2A83B476004B0C97 /* Groove.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Groove.swift; sourceTree = "<group>"; };
@@ -263,6 +261,7 @@
 				B52B86502FA2743700B6FECE /* GrooveSelectorView.swift */,
 				B5B638BD2FAADB6300675060 /* MetronomeContainerView.swift */,
 				EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */,
+				EE738F432FABE7A8002642C3 /* PlaylistFocusView.swift */,
 				B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */,
 				EE0939E62A7EA838005491BB /* RectangleText.swift */,
 				B5900FC82FAB752B008416A1 /* SettingsCard.swift */,
@@ -270,8 +269,6 @@
 				EE8201842A81B20F00675A1C /* SongListItemView.swift */,
 				B53234772F8DD8D900BA7DE1 /* SongPickerView.swift */,
 				B59482B02FA3C88A00410C67 /* TapTempoButton.swift */,
-				EE738F432FABE7A8002642C3 /* PlaylistFocusView.swift */,
-				EE10F0072FAFA792004631C4 /* ThemeTransitionMask.swift */,
 			);
 			path = CustomViews;
 			sourceTree = "<group>";
@@ -686,7 +683,6 @@
 				B53042152FA671A100A3CAE6 /* SharableStreakCard.swift in Sources */,
 				EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */,
 				EE738F442FABE7A8002642C3 /* PlaylistFocusView.swift in Sources */,
-				EE10F0082FAFA792004631C4 /* ThemeTransitionMask.swift in Sources */,
 				EE0939E72A7EA838005491BB /* RectangleText.swift in Sources */,
 				EE3BEF3C2A83B476004B0C97 /* Groove.swift in Sources */,
 				EE84F2F92A7C7A21009E2F23 /* Song.swift in Sources */,
@@ -887,7 +883,7 @@
 				CODE_SIGN_ENTITLEMENTS = beatclikr/beatclikrDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 26;
 				DEVELOPMENT_ASSET_PATHS = "\"beatclikr/Preview Content\"";
 				DEVELOPMENT_TEAM = 4C4LJCSB2Q;
 				ENABLE_PREVIEWS = YES;
@@ -929,7 +925,7 @@
 				CODE_SIGN_ENTITLEMENTS = beatclikr/beatclikr.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 25;
+				CURRENT_PROJECT_VERSION = 26;
 				DEVELOPMENT_ASSET_PATHS = "\"beatclikr/Preview Content\"";
 				DEVELOPMENT_TEAM = 4C4LJCSB2Q;
 				ENABLE_PREVIEWS = YES;

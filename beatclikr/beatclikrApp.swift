@@ -123,6 +123,9 @@ struct beatclikrApp: App {
         WindowGroup {
             appContent
                 .preferredColorScheme(defaults.alwaysUseDarkTheme ? .dark : nil)
+                .transaction { transaction in
+                    transaction.disablesAnimations = true
+                }
                 .onReceive(
                     NotificationCenter.default
                         .publisher(for: .NSPersistentStoreRemoteChange)

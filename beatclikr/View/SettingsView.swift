@@ -221,7 +221,6 @@ struct SettingsView: View {
                 .padding()
             }
             .background(Color(UIColor.systemGroupedBackground))
-            .themeTransitionMask()
             .navigationTitle("Settings")
             .navigationBarTitleDisplayMode(.automatic)
         }
@@ -231,7 +230,9 @@ struct SettingsView: View {
         Binding(
             get: { model.alwaysUseDarkTheme },
             set: { newValue in
-                withAnimation(.easeInOut(duration: 0.35)) {
+                var transaction = Transaction()
+                transaction.disablesAnimations = true
+                withTransaction(transaction) {
                     model.alwaysUseDarkTheme = newValue
                 }
             },

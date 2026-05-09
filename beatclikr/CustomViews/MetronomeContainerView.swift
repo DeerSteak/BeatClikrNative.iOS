@@ -36,7 +36,6 @@ struct MetronomeContainerView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbarBackground(Color(UIColor.systemGroupedBackground), for: .navigationBar)
             .toolbarBackground(.visible, for: .navigationBar)
-            .themeTransitionMask()
             .toolbar {
                 ToolbarItem(placement: .principal) {
                     Picker("Mode", selection: $selectedMode) {
