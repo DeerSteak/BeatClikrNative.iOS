@@ -24,13 +24,13 @@ struct SongDetailsView: View {
     var song: Song
 
     init() {
-        song = Song(title: "", artist: "", beatsPerMinute: 60, beatsPerMeasure: 4, groove: .eighth)
+        song = Song(title: "", artist: "", beatsPerMinute: 60, beatsPerMeasure: 4, groove: .quarter)
         _title = State(initialValue: "")
         _artist = State(initialValue: "")
         _bpm = State(initialValue: 60)
         _beats = State(initialValue: 4)
         _showAlert = State(initialValue: false)
-        _selectedGroove = State(initialValue: .eighth)
+        _selectedGroove = State(initialValue: .quarter)
         _selectedBeatPattern = State(initialValue: nil)
     }
 
