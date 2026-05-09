@@ -267,18 +267,30 @@ private struct PolyrhythmPlayheadRow: View {
             GeometryReader { geo in
                 let dotSize: CGFloat = 14
                 let midY = geo.size.height / 2
-                let dotX = dotSize / 2 + (geo.size.width - dotSize) * CGFloat(progress)
+                let animatedDotX = dotSize / 2 + (geo.size.width - dotSize) * CGFloat(progress)
+                let pausedDotX = dotSize / 2
 
                 Capsule()
                     .fill(Color.orange.opacity(0.25))
                     .frame(width: geo.size.width, height: 2)
                     .position(x: geo.size.width / 2, y: midY)
 
-                Circle()
-                    .fill(Color.orange)
-                    .frame(width: dotSize, height: dotSize)
-                    .position(x: dotX, y: midY)
-                    .opacity(isPlaying ? 1.0 : 0.3)
+                if isPlaying {
+                    Circle()
+                        .fill(Color.orange)
+                        .frame(width: dotSize, height: dotSize)
+                        .position(x: animatedDotX, y: midY)
+                } else {
+                    Circle()
+                        .fill(Color.orange)
+                        .frame(width: dotSize, height: dotSize)
+                        .position(x: pausedDotX, y: midY)
+                }
+            }
+            .transaction { transaction in
+                if !isPlaying {
+                    transaction.disablesAnimations = true
+                }
             }
             .frame(height: 14)
         }

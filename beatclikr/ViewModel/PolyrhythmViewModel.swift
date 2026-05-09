@@ -64,6 +64,7 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
 
     private let audio: AudioPlayerService
     private let defaults: UserDefaultsService
+    private var playbackGeneration = 0
 
     // MARK: - Init
 
@@ -91,9 +92,11 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
             }
             if beatIndex == 0 {
                 let cycleDuration = Double(against) * quarterDuration
+                let generation = playbackGeneration
                 resetCycleProgress()
                 Task { @MainActor in
-                    await Task.yield()
+                    try? await Task.sleep(for: .milliseconds(16))
+                    guard self.isPlaying, self.playbackGeneration == generation else { return }
                     withAnimation(.linear(duration: cycleDuration)) { self.cycleProgress = 1.0 }
                 }
             }
@@ -120,6 +123,7 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
     }
 
     func start() {
+        playbackGeneration += 1
         resetCycleProgress()
         audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         audio.startPolyrhythm(bpm: bpm, beats: beats, against: against)
@@ -127,6 +131,7 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
     }
 
     func stop() {
+        playbackGeneration += 1
         audio.stopPolyrhythm()
         isPlaying = false
         resetCycleProgress()
