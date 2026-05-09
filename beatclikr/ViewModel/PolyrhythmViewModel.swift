@@ -59,6 +59,8 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
     @Published var activeRhythmIndex: Int = 0
     /// 0–1 progress through one full cycle, animates smoothly for the playhead
     @Published var cycleProgress: Double = 0
+    /// Forces the playhead view to discard stale in-flight animations after restarts.
+    @Published private(set) var playheadResetID = 0
 
     // MARK: - Private
 
@@ -124,6 +126,7 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
 
     func start() {
         playbackGeneration += 1
+        playheadResetID += 1
         resetCycleProgress()
         audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         audio.startPolyrhythm(bpm: bpm, beats: beats, against: against)
@@ -132,6 +135,7 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
 
     func stop() {
         playbackGeneration += 1
+        playheadResetID += 1
         audio.stopPolyrhythm()
         isPlaying = false
         resetCycleProgress()

@@ -67,6 +67,19 @@ final class PolyrhythmViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.cycleProgress, 0, "Cycle progress should reset to 0 on stop")
     }
 
+    func testStartAdvancesPlayheadResetID() {
+        let initialID = viewModel.playheadResetID
+        viewModel.start()
+        XCTAssertEqual(viewModel.playheadResetID, initialID + 1, "Starting playback should force a fresh playhead identity")
+    }
+
+    func testChangingCountsWhilePlayingAdvancesPlayheadResetID() {
+        viewModel.start()
+        let playingID = viewModel.playheadResetID
+        viewModel.beats += 1
+        XCTAssertEqual(viewModel.playheadResetID, playingID + 1, "Restarting after count changes should force a fresh playhead identity")
+    }
+
     // MARK: - Delegate: Active Index Updates
 
     func testBeatFiredUpdatesBeatIndex() {

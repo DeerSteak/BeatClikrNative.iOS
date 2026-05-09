@@ -20,6 +20,9 @@ enum InstrumentLists {
             .RideEdge,
             .Snare,
             .Tamb,
+            .TomHi,
+            .TomMid,
+            .TomLo,
         ]
 
     static let beat: [FileConstants] =

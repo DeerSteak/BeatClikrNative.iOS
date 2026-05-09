@@ -20,12 +20,12 @@ struct PolyrhythmView: View {
                 CardContainer {
                     VStack(spacing: 16) {
                         HStack(alignment: .center, spacing: 0) {
-                            PolyrhythmCountSelector(label: "Rhythm", value: $model.beats, range: 1 ... 9)
+                            PolyrhythmCountSelector(label: "Rhythm", value: $model.beats, range: 1 ... 15)
                             Text(":")
                                 .font(.system(size: 48, weight: .thin))
                                 .foregroundStyle(.secondary)
                                 .frame(width: 32)
-                            PolyrhythmCountSelector(label: "Beat", value: $model.against, range: 1 ... 9)
+                            PolyrhythmCountSelector(label: "Beat", value: $model.against, range: 1 ... 15)
                         }
 
                         // Visual dot indicators
@@ -48,6 +48,7 @@ struct PolyrhythmView: View {
                                 progress: model.cycleProgress,
                                 isPlaying: model.isPlaying,
                             )
+                            .id(model.playheadResetID)
                         }
                     }
                     .padding(12)
@@ -194,9 +195,10 @@ private struct PolyrhythmCountSelector: View {
                 .disabled(value <= range.lowerBound)
 
                 Text("\(value)")
-                    .font(.system(size: 48, weight: .thin, design: .rounded))
+                    .font(.system(size: 40, weight: .thin, design: .rounded))
                     .monospacedDigit()
                     .frame(minWidth: 44)
+                    .lineLimit(1)
 
                 Button {
                     if value < range.upperBound { value += 1 }
