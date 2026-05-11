@@ -10,10 +10,10 @@ import AVFoundation
 import Foundation
 
 @MainActor
-class AudioPlayerService: HasAudioEngine, MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDelegate {
+class AudioPlayerService: MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDelegate {
     static let instance = AudioPlayerService()
 
-    nonisolated(unsafe) let engine = AudioEngine()
+    let engine = AudioEngine()
     private let sampler = AppleSampler()
 
     private let audioEngine: MetronomeAudioEngine

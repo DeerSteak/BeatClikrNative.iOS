@@ -152,7 +152,7 @@ struct PolyrhythmView: View {
             .padding()
         }
         .background(Color(UIColor.systemGroupedBackground))
-        .onDisappear(perform: model.stop)
+        .onDisappear(perform: model.onDisappear)
         .onAppear(perform: model.onAppear)
     }
 

@@ -141,7 +141,10 @@ struct SongLibraryView: View {
                 }
             }
         }
-        .onDisappear(perform: metronomeViewModel.stop)
+        .onDisappear {
+            metronomeViewModel.stop()
+            model.onDisappear()
+        }
         .onAppear {
             model.onAppear()
             model.onSongPlayed = { song in

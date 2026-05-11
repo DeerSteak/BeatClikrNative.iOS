@@ -120,11 +120,21 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
         UIApplication.shared.isIdleTimerDisabled = defaults.keepAwake
     }
 
+    func onDisappear() {
+        stop()
+        UIApplication.shared.isIdleTimerDisabled = false
+    }
+
     func togglePlayPause() {
         if isPlaying { stop() } else { start() }
     }
 
     func start() {
+        guard beats >= 1, against >= 1, bpm > 0 else {
+            stop()
+            return
+        }
+
         playbackGeneration += 1
         playheadResetID += 1
         resetCycleProgress()

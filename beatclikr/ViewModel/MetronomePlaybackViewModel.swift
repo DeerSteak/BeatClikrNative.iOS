@@ -39,7 +39,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
                 defaults.metronomeBpm = beatsPerMinute
             }
             if isPlaying, !applyingRamp {
-                audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.subdivisions, accentPattern: computeAccentPattern())
+                audio.updateTempo(bpm: beatsPerMinute, subdivisions: selectedGroove.subdivisions)
             }
         }
     }
@@ -133,7 +133,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         self.audio = audio
         self.defaults = defaults
 
-        song = Song.metronomeSong
+        song = Song.metronomeSong()
         song.groove = defaults.metronomeGroove
         song.beatsPerMinute = defaults.metronomeBpm
         beat = defaults.metronomeBeat
@@ -213,6 +213,11 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         UIApplication.shared.isIdleTimerDisabled = defaults.keepAwake
     }
 
+    func onDisappear() {
+        stop()
+        UIApplication.shared.isIdleTimerDisabled = false
+    }
+
     func togglePlayPause() {
         isPlaying.toggle()
         if isPlaying {
@@ -224,7 +229,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
     func start() {
         if clickerType == .metronome {
-            song = Song.metronomeSong
+            song = Song.metronomeSong()
             song.beatsPerMinute = beatsPerMinute
             song.groove = selectedGroove
             currentSongTitle = nil
@@ -252,7 +257,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         stop()
 
         if clickerType == .metronome {
-            song = Song.metronomeSong
+            song = Song.metronomeSong()
             song.groove = selectedGroove
             song.beatsPerMinute = beatsPerMinute
             beat = defaults.metronomeBeat

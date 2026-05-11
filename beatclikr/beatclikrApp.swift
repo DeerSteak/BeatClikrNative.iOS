@@ -139,7 +139,10 @@ struct beatclikrApp: App {
         }
         .modelContainer(container)
         .onChange(of: scenePhase) { _, newPhase in
-            guard newPhase == .active else { return }
+            guard newPhase == .active else {
+                UIApplication.shared.isIdleTimerDisabled = false
+                return
+            }
             let dates = practiceHistoryViewModel.markedDates(context: container.mainContext)
             let bodies = practiceHistoryViewModel.scheduledNotificationBodies(from: dates, days: 7)
             settingsViewModel.rescheduleReminder(bodies: bodies)
