@@ -13,6 +13,7 @@
 		28363D5A2F898A110066C665 /* MetronomeTimingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28363D572F898A110066C665 /* MetronomeTimingTests.swift */; };
 		283672342F8988AB0090EE63 /* MetronomeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283672332F8988AB0090EE63 /* MetronomeConstants.swift */; };
 		30DEB7A2263835E813BCF3F4 /* MetronomeAudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */; };
+		74DC6A76FA4044E1B3794662 /* ScheduledMetronomeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDC2C69A4354FB6AE1E388B /* ScheduledMetronomeEngine.swift */; };
 		B524A0BE2FA528BF0085E73C /* PracticeHistoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524A0BD2FA528BF0085E73C /* PracticeHistoryView.swift */; };
 		B524A0C02FA528E80085E73C /* PracticeHistoryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524A0BF2FA528E80085E73C /* PracticeHistoryViewModel.swift */; };
 		B524A0C22FA529E00085E73C /* PracticeSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = B524A0C12FA529E00085E73C /* PracticeSession.swift */; };
@@ -43,7 +44,6 @@
 		B5F4E57A2FA5B5BD003FC6E6 /* PracticeHistoryViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F4E5792FA5B5BD003FC6E6 /* PracticeHistoryViewModelTests.swift */; };
 		B5F4E57C2FA5B5BD003FC6E6 /* PracticeHistoryUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F4E57B2FA5B5BD003FC6E6 /* PracticeHistoryUITests.swift */; };
 		B5F4E57E2FA65B90003FC6E6 /* ReminderNotificationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F4E57D2FA65B90003FC6E6 /* ReminderNotificationService.swift */; };
-		74DC6A76FA4044E1B3794662 /* ScheduledMetronomeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDC2C69A4354FB6AE1E388B /* ScheduledMetronomeEngine.swift */; };
 		DFB72E0FB4B1DD3A4397382B /* AudioKitMetronomeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AAB43FBDA8DD0BBF30036A0 /* AudioKitMetronomeEngine.swift */; };
 		EE0473192AA388EB004E958A /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0473182AA388EB004E958A /* HomeView.swift */; };
 		EE04731B2AA39267004E958A /* ClickerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE04731A2AA39267004E958A /* ClickerType.swift */; };
@@ -125,7 +125,6 @@
 
 /* Begin PBXFileReference section */
 		1AAB43FBDA8DD0BBF30036A0 /* AudioKitMetronomeEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AudioKitMetronomeEngine.swift; sourceTree = "<group>"; };
-		CBDC2C69A4354FB6AE1E388B /* ScheduledMetronomeEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledMetronomeEngine.swift; sourceTree = "<group>"; };
 		28363D532F8989430066C665 /* MetronomeConstantsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeConstantsTests.swift; sourceTree = "<group>"; };
 		28363D552F898A110066C665 /* ImageConstantsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConstantsTests.swift; sourceTree = "<group>"; };
 		28363D562F898A110066C665 /* MetronomePlaybackViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlaybackViewModelTests.swift; sourceTree = "<group>"; };
@@ -161,6 +160,7 @@
 		B5F4E5792FA5B5BD003FC6E6 /* PracticeHistoryViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeHistoryViewModelTests.swift; sourceTree = "<group>"; };
 		B5F4E57B2FA5B5BD003FC6E6 /* PracticeHistoryUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeHistoryUITests.swift; sourceTree = "<group>"; };
 		B5F4E57D2FA65B90003FC6E6 /* ReminderNotificationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReminderNotificationService.swift; sourceTree = "<group>"; };
+		CBDC2C69A4354FB6AE1E388B /* ScheduledMetronomeEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledMetronomeEngine.swift; sourceTree = "<group>"; };
 		CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = MetronomeAudioEngine.swift; sourceTree = "<group>"; };
 		EE0473182AA388EB004E958A /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		EE04731A2AA39267004E958A /* ClickerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClickerType.swift; sourceTree = "<group>"; };
@@ -331,6 +331,9 @@
 			isa = PBXGroup;
 			children = (
 				EE84F3092A7C7A23009E2F23 /* beatclikrTests.swift */,
+				EE7774262FAD141900B87244 /* BeatPatternTests.swift */,
+				EE7774282FAD142400B87244 /* FormatterHelperTests.swift */,
+				EE7774242FAD140400B87244 /* GrooveTests.swift */,
 				28363D552F898A110066C665 /* ImageConstantsTests.swift */,
 				28363D532F8989430066C665 /* MetronomeConstantsTests.swift */,
 				28363D562F898A110066C665 /* MetronomePlaybackViewModelTests.swift */,
@@ -339,9 +342,6 @@
 				B5F4E5792FA5B5BD003FC6E6 /* PracticeHistoryViewModelTests.swift */,
 				B5C6B8212FA937DD005DE6FD /* SettingsViewModelTests.swift */,
 				B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */,
-				EE7774242FAD140400B87244 /* GrooveTests.swift */,
-				EE7774262FAD141900B87244 /* BeatPatternTests.swift */,
-				EE7774282FAD142400B87244 /* FormatterHelperTests.swift */,
 			);
 			path = beatclikrTests;
 			sourceTree = "<group>";
@@ -411,11 +411,11 @@
 				1AAB43FBDA8DD0BBF30036A0 /* AudioKitMetronomeEngine.swift */,
 				B5B638B72FAAD8DC00675060 /* AudioKitPolyrhythmEngine.swift */,
 				EE478E8A2A879C51008337DB /* AudioPlayerService.swift */,
-				CBDC2C69A4354FB6AE1E388B /* ScheduledMetronomeEngine.swift */,
 				EE82F9A92A7FBFE100B873E7 /* FlashlightService.swift */,
 				CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */,
 				B5B638B52FAAD8C300675060 /* PolyrhythmAudioEngine.swift */,
 				B5F4E57D2FA65B90003FC6E6 /* ReminderNotificationService.swift */,
+				CBDC2C69A4354FB6AE1E388B /* ScheduledMetronomeEngine.swift */,
 				EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */,
 				EE82F9AB2A7FC98200B873E7 /* VibrationService.swift */,
 			);
@@ -887,7 +887,7 @@
 				CODE_SIGN_ENTITLEMENTS = beatclikr/beatclikrDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_ASSET_PATHS = "\"beatclikr/Preview Content\"";
 				DEVELOPMENT_TEAM = 4C4LJCSB2Q;
 				ENABLE_PREVIEWS = YES;
@@ -907,7 +907,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.0.0;
+				MARKETING_VERSION = 4.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bfunkstudios.beatclikr;
 				PRODUCT_NAME = BeatClikr;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -929,7 +929,7 @@
 				CODE_SIGN_ENTITLEMENTS = beatclikr/beatclikr.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 26;
+				CURRENT_PROJECT_VERSION = 27;
 				DEVELOPMENT_ASSET_PATHS = "\"beatclikr/Preview Content\"";
 				DEVELOPMENT_TEAM = 4C4LJCSB2Q;
 				ENABLE_PREVIEWS = YES;
@@ -949,7 +949,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.0.0;
+				MARKETING_VERSION = 4.1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bfunkstudios.beatclikr;
 				PRODUCT_NAME = BeatClikr;
 				PROVISIONING_PROFILE_SPECIFIER = "";
