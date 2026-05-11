@@ -7,6 +7,7 @@
 
 import Combine
 import Foundation
+import QuartzCore
 import SwiftUI
 
 @MainActor
@@ -18,6 +19,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     private let audio: AudioPlayerService
     private let settings: SettingsViewModel
     private var settingsCancellables: Set<AnyCancellable> = []
+    private let visualAnimator = MetronomeVisualAnimator()
 
     private var isLiveMode: Bool = false
     private var liveModeStarted: Bool = false
@@ -156,6 +158,10 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
         // Set self as delegate for audio callbacks
         audio.delegate = self
+        visualAnimator.onUpdate = { [weak self] scale, pulse in
+            self?.iconScale = scale
+            self?.beatPulse = pulse
+        }
         observeSettings()
     }
 
@@ -165,20 +171,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         self.isBeat = isBeat
 
         if isBeat {
-            // Snap to max instantly with no animation
-            withAnimation(.none) {
-                iconScale = MetronomeConstants.iconScaleMax
-                beatPulse = 1.0
-            }
-
-            // Fade out over the exact interval to the next beat, matching each rhythmic group
-            Task { @MainActor in
-                withAnimation(.linear(duration: beatInterval)) {
-                    self.iconScale = MetronomeConstants.iconScaleMin
-                    self.beatPulse = 0.0
-                }
-            }
-
+            visualAnimator.notifyBeat(interval: beatInterval)
             handleBeat()
         } else {
             handleRhythm()
@@ -242,12 +235,14 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         activeBpm = bpm
         let groove = song.groove ?? selectedGroove
         audio.startMetronome(bpm: bpm, subdivisions: groove.subdivisions, accentPattern: computeAccentPattern())
+        visualAnimator.start()
         isPlaying = true
     }
 
     func stop() {
         rampBeatCount = -1
         audio.stopMetronome()
+        visualAnimator.stop()
         flashlight.turnFlashlightOff()
         isPlaying = false
         if rampEnabled, clickerType == .metronome {
@@ -407,5 +402,55 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         applyingSettingsChange = true
         update()
         applyingSettingsChange = false
+    }
+}
+
+private final class MetronomeVisualAnimator: NSObject {
+    private var displayLink: CADisplayLink?
+    private var lastBeatTime: CFTimeInterval = CACurrentMediaTime()
+    private var beatInterval: TimeInterval = 0.5
+    private var isAnimating = false
+
+    var onUpdate: ((CGFloat, Double) -> Void)?
+
+    func start() {
+        guard displayLink == nil else {
+            isAnimating = true
+            return
+        }
+        isAnimating = true
+        let link = CADisplayLink(target: self, selector: #selector(tick(_:)))
+        link.add(to: .main, forMode: .common)
+        displayLink = link
+    }
+
+    func stop() {
+        displayLink?.invalidate()
+        displayLink = nil
+        isAnimating = false
+        lastBeatTime = CACurrentMediaTime()
+        onUpdate?(MetronomeConstants.iconScaleMin, 0)
+    }
+
+    func notifyBeat(interval: TimeInterval) {
+        lastBeatTime = CACurrentMediaTime()
+        beatInterval = max(interval, 0.001)
+        onUpdate?(MetronomeConstants.iconScaleMax, 1.0)
+    }
+
+    @objc private func tick(_ displayLink: CADisplayLink) {
+        guard isAnimating else { return }
+        let elapsed = displayLink.timestamp - lastBeatTime
+        let progress = min(1.0, max(0.0, elapsed / beatInterval))
+        let scale = lerp(
+            from: MetronomeConstants.iconScaleMax,
+            to: MetronomeConstants.iconScaleMin,
+            progress: progress,
+        )
+        onUpdate?(scale, 1.0 - progress)
+    }
+
+    private func lerp(from: CGFloat, to: CGFloat, progress: Double) -> CGFloat {
+        from + (to - from) * CGFloat(progress)
     }
 }
