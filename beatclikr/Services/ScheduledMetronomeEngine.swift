@@ -14,7 +14,8 @@ import Foundation
 @MainActor
 class ScheduledMetronomeEngine: MetronomeAudioEngine {
     private let engine = AVAudioEngine()
-    private let playerNode = AVAudioPlayerNode()
+    private let beatNode = AVAudioPlayerNode()
+    private let rhythmNode = AVAudioPlayerNode()
 
     private var beatBuffer: AVAudioPCMBuffer?
     private var rhythmBuffer: AVAudioPCMBuffer?
@@ -54,8 +55,10 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
 
     func startMetronome(bpm: Double, subdivisions: Int, accentPattern: [Bool]?, delegate: MetronomeAudioEngineDelegate) {
         sessionID += 1
-        playerNode.stop()
-        playerNode.play()
+        beatNode.stop()
+        rhythmNode.stop()
+        beatNode.play()
+        rhythmNode.play()
 
         currentBPM = bpm
         currentSubdivisions = subdivisions
@@ -77,7 +80,8 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
     func stopMetronome() {
         sessionID += 1
         isPlaying = false
-        playerNode.stop()
+        beatNode.stop()
+        rhythmNode.stop()
         scheduledCount = 0
         currentSubdivision = 0
         patternIndex = 0
@@ -98,13 +102,16 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
     }
 
     func start() throws {
-        engine.attach(playerNode)
-        engine.connect(playerNode, to: engine.mainMixerNode, format: nil)
+        engine.attach(beatNode)
+        engine.attach(rhythmNode)
+        engine.connect(beatNode, to: engine.mainMixerNode, format: nil)
+        engine.connect(rhythmNode, to: engine.mainMixerNode, format: nil)
         try engine.start()
     }
 
     func stop() {
-        playerNode.stop()
+        beatNode.stop()
+        rhythmNode.stop()
         engine.stop()
     }
 
@@ -188,7 +195,9 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
         let outputFormat = engine.mainMixerNode.outputFormat(forBus: 0)
         let sampleRate = outputFormat.sampleRate
 
-        playerNode.volume = UserDefaultsService.instance.muteMetronome ? 0 : 1
+        let muted = UserDefaultsService.instance.muteMetronome
+        beatNode.volume = muted ? 0 : 1
+        rhythmNode.volume = muted ? 0 : 1
 
         let capturedSession = sessionID
 
@@ -203,9 +212,10 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
             let capturedIsBeat = beat.isBeat
             let capturedInterval = beat.beatInterval
             let capturedRampedBpm = beat.rampedBpm
+            let node = beat.isBeat ? beatNode : rhythmNode
             let when = AVAudioTime(sampleTime: nextBeatSampleTime, atRate: sampleRate)
 
-            playerNode.scheduleBuffer(beat.buffer, at: when, options: []) { [weak self] in
+            node.scheduleBuffer(beat.buffer, at: when, options: []) { [weak self] in
                 DispatchQueue.main.async {
                     guard let self, self.sessionID == capturedSession else { return }
                     if let newBpm = capturedRampedBpm {
