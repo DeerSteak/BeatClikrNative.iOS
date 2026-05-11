@@ -10,11 +10,10 @@ import AVFoundation
 import Foundation
 
 @MainActor
-class AudioPlayerService: HasAudioEngine, MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDelegate {
+class AudioPlayerService: MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDelegate {
     static let instance = AudioPlayerService()
 
-    // AudioKit engine kept for polyrhythm and as fallback for the legacy metronome engine
-    nonisolated(unsafe) let engine = AudioEngine()
+    let engine = AudioEngine()
     private let sampler = AppleSampler()
 
     /// Scheduled engine: sample-accurate, no timer polling (Phase 2)

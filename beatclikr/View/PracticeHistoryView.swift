@@ -11,6 +11,8 @@ import SwiftUI
 struct PracticeHistoryView: View {
     @EnvironmentObject private var model: PracticeHistoryViewModel
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.displayScale) private var displayScale
+    @Environment(\.verticalSizeClass) private var verticalSizeClass
     @State private var selectedDate: Date? = Calendar.current.startOfDay(for: .now)
 
     var body: some View {
@@ -83,7 +85,7 @@ struct PracticeHistoryView: View {
             }
             .background(Color(UIColor.systemGroupedBackground))
             .navigationTitle("Practice History")
-            .navigationBarTitleDisplayMode(UIScreen.main.bounds.height < 700 ? .inline : .large)
+            .navigationBarTitleDisplayMode(verticalSizeClass == .compact ? .inline : .large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     if let image = makeShareImage() {
@@ -113,7 +115,7 @@ struct PracticeHistoryView: View {
         let card = SharableStreakCard(streakDays: String(model.longestStreak))
         let renderer = ImageRenderer(content: card)
         renderer.proposedSize = .init(width: 360, height: 360)
-        renderer.scale = min(UIScreen.main.scale * 2, 3)
+        renderer.scale = min(displayScale * 2, 3)
         renderer.isOpaque = false
         return renderer.uiImage
     }

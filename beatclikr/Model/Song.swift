@@ -10,6 +10,8 @@ import SwiftData
 
 @Model
 final class Song: Identifiable, SongDisplayable {
+    static let metronomeSongId = "beatclikr.metronome"
+
     var id: String?
     var title: String?
     var artist: String?
@@ -21,7 +23,11 @@ final class Song: Identifiable, SongDisplayable {
     @Relationship(deleteRule: .cascade)
     var playlistEntries: [PlaylistEntry]? = []
 
-    @MainActor static let metronomeSong: Song = Song()
+    @MainActor static func metronomeSong() -> Song {
+        let song = Song()
+        song.id = metronomeSongId
+        return song
+    }
 
     init() {
         id = UUID().uuidString

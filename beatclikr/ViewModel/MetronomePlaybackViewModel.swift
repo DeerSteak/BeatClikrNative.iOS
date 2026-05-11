@@ -5,6 +5,7 @@
 //  Created by Ben Funk on 8/5/23.
 //
 
+import Combine
 import Foundation
 import SwiftUI
 
@@ -15,7 +16,8 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     private let vibration: VibrationService
     private let flashlight: FlashlightService
     private let audio: AudioPlayerService
-    private let defaults: UserDefaultsService
+    private let settings: SettingsViewModel
+    private var settingsCancellables: Set<AnyCancellable> = []
 
     private var isLiveMode: Bool = false
     private var liveModeStarted: Bool = false
@@ -25,6 +27,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     private var activeBpm: Double = 120.0
     private var rampBeatCount: Int = -1
     private var applyingRamp: Bool = false
+    private var applyingSettingsChange: Bool = false
 
     // MARK: Published properties
 
@@ -35,43 +38,43 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
     @Published var beatsPerMinute: Double = UserDefaultsService.instance.metronomeBpm {
         didSet {
-            if clickerType == .metronome, !applyingRamp {
-                defaults.metronomeBpm = beatsPerMinute
+            if clickerType == .metronome, !applyingRamp, !applyingSettingsChange {
+                settings.updateMetronomeBpm(beatsPerMinute)
             }
             if isPlaying, !applyingRamp {
-                audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.subdivisions, accentPattern: computeAccentPattern())
+                audio.updateTempo(bpm: beatsPerMinute, subdivisions: selectedGroove.subdivisions)
             }
         }
     }
 
     @Published var rampEnabled: Bool = UserDefaultsService.instance.rampEnabled {
         didSet {
-            if clickerType == .metronome {
-                defaults.rampEnabled = rampEnabled
+            if clickerType == .metronome, !applyingSettingsChange {
+                settings.updateRampEnabled(rampEnabled)
             }
         }
     }
 
     @Published var rampIncrement: Int = UserDefaultsService.instance.rampIncrement {
         didSet {
-            if clickerType == .metronome {
-                defaults.rampIncrement = rampIncrement
+            if clickerType == .metronome, !applyingSettingsChange {
+                settings.updateRampIncrement(rampIncrement)
             }
         }
     }
 
     @Published var rampInterval: Int = UserDefaultsService.instance.rampInterval {
         didSet {
-            if clickerType == .metronome {
-                defaults.rampInterval = rampInterval
+            if clickerType == .metronome, !applyingSettingsChange {
+                settings.updateRampInterval(rampInterval)
             }
         }
     }
 
     @Published var selectedGroove: Groove = UserDefaultsService.instance.metronomeGroove {
         didSet {
-            if clickerType == .metronome {
-                defaults.metronomeGroove = selectedGroove
+            if clickerType == .metronome, !applyingSettingsChange {
+                settings.updateMetronomeGroove(selectedGroove)
             }
             if isPlaying {
                 audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.subdivisions, accentPattern: computeAccentPattern())
@@ -81,10 +84,12 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
     @Published var beat: FileConstants = UserDefaultsService.instance.metronomeBeat {
         didSet {
-            if clickerType == .metronome {
-                defaults.metronomeBeat = beat
-            } else {
-                defaults.playlistBeat = beat
+            if !applyingSettingsChange {
+                if clickerType == .metronome {
+                    settings.updateMetronomeBeat(beat)
+                } else {
+                    settings.updatePlaylistBeat(beat)
+                }
             }
             audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         }
@@ -92,10 +97,12 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
     @Published var rhythm: FileConstants = UserDefaultsService.instance.metronomeRhythm {
         didSet {
-            if clickerType == .metronome {
-                defaults.metronomeRhythm = rhythm
-            } else {
-                defaults.playlistRhythm = rhythm
+            if !applyingSettingsChange {
+                if clickerType == .metronome {
+                    settings.updateMetronomeRhythm(rhythm)
+                } else {
+                    settings.updatePlaylistRhythm(rhythm)
+                }
             }
             audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         }
@@ -103,8 +110,8 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
     @Published var selectedBeatPattern: BeatPattern? = nil {
         didSet {
-            if clickerType == .metronome {
-                defaults.metronomeBeatPattern = selectedBeatPattern?.rawValue
+            if clickerType == .metronome, !applyingSettingsChange {
+                settings.updateMetronomeBeatPattern(selectedBeatPattern)
             }
             if isPlaying {
                 audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.subdivisions, accentPattern: computeAccentPattern())
@@ -126,24 +133,30 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         vibration: VibrationService = .instance,
         flashlight: FlashlightService = .instance,
         audio: AudioPlayerService = .instance,
-        defaults: UserDefaultsService = .instance,
+        settings: SettingsViewModel = SettingsViewModel(),
     ) {
         self.vibration = vibration
         self.flashlight = flashlight
         self.audio = audio
-        self.defaults = defaults
+        self.settings = settings
 
-        song = Song.metronomeSong
-        song.groove = defaults.metronomeGroove
-        song.beatsPerMinute = defaults.metronomeBpm
-        beat = defaults.metronomeBeat
-        rhythm = defaults.metronomeRhythm
-        selectedBeatPattern = defaults.metronomeBeatPattern.flatMap { BeatPattern(rawValue: $0) }
+        song = Song.metronomeSong()
+        song.groove = settings.metronomeGroove
+        song.beatsPerMinute = settings.metronomeBpm
+        beatsPerMinute = settings.metronomeBpm
+        rampEnabled = settings.rampEnabled
+        rampIncrement = settings.rampIncrement
+        rampInterval = settings.rampInterval
+        selectedGroove = settings.metronomeGroove
+        beat = settings.metronomeBeat
+        rhythm = settings.metronomeRhythm
+        selectedBeatPattern = settings.metronomeBeatPattern.flatMap { BeatPattern(rawValue: $0) }
         clickerType = .metronome
         isBeat = false
 
         // Set self as delegate for audio callbacks
         audio.delegate = self
+        observeSettings()
     }
 
     // MARK: MetronomeAudioEngineDelegate
@@ -180,11 +193,11 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
         // Reload beat/rhythm from defaults in case they changed in settings
         if clickerType == .metronome {
-            beat = defaults.metronomeBeat
-            rhythm = defaults.metronomeRhythm
+            beat = settings.metronomeBeat
+            rhythm = settings.metronomeRhythm
         } else {
-            beat = defaults.playlistBeat
-            rhythm = defaults.playlistRhythm
+            beat = settings.playlistBeat
+            rhythm = settings.playlistRhythm
         }
 
         setupMetronome()
@@ -208,16 +221,6 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
     }
 
-    func onAppear() {
-        clickerType = .metronome
-        UIApplication.shared.isIdleTimerDisabled = defaults.keepAwake
-        audio.setupAudioPlayer(beatName: defaults.metronomeBeat.rawValue, rhythmName: defaults.metronomeRhythm.rawValue)
-    }
-
-    func reloadPlaylistSounds() {
-        audio.setupAudioPlayer(beatName: defaults.playlistBeat.rawValue, rhythmName: defaults.playlistRhythm.rawValue)
-    }
-
     func togglePlayPause() {
         isPlaying.toggle()
         if isPlaying {
@@ -229,7 +232,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
     func start() {
         if clickerType == .metronome {
-            song = Song.metronomeSong
+            song = Song.metronomeSong()
             song.beatsPerMinute = beatsPerMinute
             song.groove = selectedGroove
             currentSongTitle = nil
@@ -257,15 +260,15 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         stop()
 
         if clickerType == .metronome {
-            song = Song.metronomeSong
+            song = Song.metronomeSong()
             song.groove = selectedGroove
             song.beatsPerMinute = beatsPerMinute
-            beat = defaults.metronomeBeat
-            rhythm = defaults.metronomeRhythm
-            selectedBeatPattern = defaults.metronomeBeatPattern.flatMap { BeatPattern(rawValue: $0) }
+            beat = settings.metronomeBeat
+            rhythm = settings.metronomeRhythm
+            selectedBeatPattern = settings.metronomeBeatPattern.flatMap { BeatPattern(rawValue: $0) }
         } else {
-            beat = defaults.playlistBeat
-            rhythm = defaults.playlistRhythm
+            beat = settings.playlistBeat
+            rhythm = settings.playlistRhythm
         }
         setupMetronome()
         if wasPlaying {
@@ -286,10 +289,10 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     }
 
     private func handleBeat() {
-        if defaults.useVibration {
+        if settings.useVibration {
             vibration.vibrateBeat()
         }
-        if defaults.useFlashlight {
+        if settings.useFlashlight {
             flashlight.turnFlashlightOn()
         }
         guard rampEnabled, clickerType == .metronome else { return }
@@ -308,11 +311,101 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     }
 
     private func handleRhythm() {
-        if defaults.useVibration {
+        if settings.useVibration {
             vibration.vibrateRhythm()
         }
-        if defaults.useFlashlight {
+        if settings.useFlashlight {
             flashlight.turnFlashlightOff()
         }
+    }
+
+    private func observeSettings() {
+        settings.$metronomeBpm
+            .dropFirst()
+            .sink { [weak self] bpm in
+                guard let self, clickerType == .metronome, beatsPerMinute != bpm else { return }
+                applySettingsChange { self.beatsPerMinute = bpm }
+            }
+            .store(in: &settingsCancellables)
+
+        settings.$metronomeGroove
+            .dropFirst()
+            .sink { [weak self] groove in
+                guard let self, clickerType == .metronome, selectedGroove != groove else { return }
+                applySettingsChange { self.selectedGroove = groove }
+            }
+            .store(in: &settingsCancellables)
+
+        settings.$metronomeBeat
+            .dropFirst()
+            .sink { [weak self] beat in
+                guard let self, clickerType == .metronome, self.beat != beat else { return }
+                applySettingsChange { self.beat = beat }
+            }
+            .store(in: &settingsCancellables)
+
+        settings.$metronomeRhythm
+            .dropFirst()
+            .sink { [weak self] rhythm in
+                guard let self, clickerType == .metronome, self.rhythm != rhythm else { return }
+                applySettingsChange { self.rhythm = rhythm }
+            }
+            .store(in: &settingsCancellables)
+
+        settings.$metronomeBeatPattern
+            .dropFirst()
+            .sink { [weak self] rawValue in
+                guard let self, clickerType == .metronome else { return }
+                let beatPattern = rawValue.flatMap { BeatPattern(rawValue: $0) }
+                guard selectedBeatPattern != beatPattern else { return }
+                applySettingsChange { self.selectedBeatPattern = beatPattern }
+            }
+            .store(in: &settingsCancellables)
+
+        settings.$rampEnabled
+            .dropFirst()
+            .sink { [weak self] enabled in
+                guard let self, rampEnabled != enabled else { return }
+                applySettingsChange { self.rampEnabled = enabled }
+            }
+            .store(in: &settingsCancellables)
+
+        settings.$rampIncrement
+            .dropFirst()
+            .sink { [weak self] increment in
+                guard let self, rampIncrement != increment else { return }
+                applySettingsChange { self.rampIncrement = increment }
+            }
+            .store(in: &settingsCancellables)
+
+        settings.$rampInterval
+            .dropFirst()
+            .sink { [weak self] interval in
+                guard let self, rampInterval != interval else { return }
+                applySettingsChange { self.rampInterval = interval }
+            }
+            .store(in: &settingsCancellables)
+
+        settings.$playlistBeat
+            .dropFirst()
+            .sink { [weak self] beat in
+                guard let self, clickerType != .metronome, self.beat != beat else { return }
+                applySettingsChange { self.beat = beat }
+            }
+            .store(in: &settingsCancellables)
+
+        settings.$playlistRhythm
+            .dropFirst()
+            .sink { [weak self] rhythm in
+                guard let self, clickerType != .metronome, self.rhythm != rhythm else { return }
+                applySettingsChange { self.rhythm = rhythm }
+            }
+            .store(in: &settingsCancellables)
+    }
+
+    private func applySettingsChange(_ update: () -> Void) {
+        applyingSettingsChange = true
+        update()
+        applyingSettingsChange = false
     }
 }

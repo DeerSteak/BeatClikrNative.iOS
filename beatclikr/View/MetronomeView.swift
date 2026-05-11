@@ -9,14 +9,9 @@ import SwiftData
 import SwiftUI
 
 struct MetronomeView: View {
-    @State var showAlert: Bool
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: MetronomePlaybackViewModel
     @EnvironmentObject var practiceHistory: PracticeHistoryViewModel
-
-    init() {
-        _showAlert = State(initialValue: false)
-    }
 
     var body: some View {
         ScrollView {
@@ -150,7 +145,9 @@ struct MetronomeView: View {
         }
         .background(Color(UIColor.systemGroupedBackground))
         .onDisappear(perform: model.stop)
-        .onAppear(perform: model.onAppear)
+        .onAppear {
+            model.clickerType = .metronome
+        }
     }
 
     private func togglePlayPause() {

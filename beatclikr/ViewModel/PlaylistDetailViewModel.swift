@@ -26,12 +26,14 @@ class PlaylistDetailViewModel: SongNavigationViewModel {
 
     func deleteEntries(offsets: IndexSet, entries: [PlaylistEntry], context: ModelContext) {
         withAnimation {
+            let remaining = entries.enumerated()
+                .filter { !offsets.contains($0.offset) }
+                .map(\.element)
             for index in offsets {
                 context.delete(entries[index])
             }
-            let remaining = entries.enumerated().filter { !offsets.contains($0.offset) }
-            for (newIndex, element) in remaining.enumerated() {
-                element.element.sequence = newIndex
+            for (newIndex, entry) in remaining.enumerated() {
+                entry.sequence = newIndex
             }
             do {
                 try context.save()

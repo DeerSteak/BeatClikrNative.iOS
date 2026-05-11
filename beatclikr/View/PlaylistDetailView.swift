@@ -174,9 +174,10 @@ struct PlaylistDetailView: View {
                     .environmentObject(model)
             }
         }
-        .onDisappear(perform: metronome.stop)
+        .onDisappear {
+            metronome.stop()
+        }
         .onAppear {
-            model.onAppear(metronome: metronome)
             model.onSongPlayed = { song in
                 practiceHistory.recordSongPlayed(song: song, context: modelContext)
             }

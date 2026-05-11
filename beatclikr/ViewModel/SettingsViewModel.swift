@@ -53,12 +53,36 @@ class SettingsViewModel: ObservableObject {
         didSet { defaults.muteMetronome = muteMetronome }
     }
 
+    @Published var metronomeBpm: Double {
+        didSet { defaults.metronomeBpm = metronomeBpm }
+    }
+
+    @Published var metronomeGroove: Groove {
+        didSet { defaults.metronomeGroove = metronomeGroove }
+    }
+
     @Published var metronomeBeat: FileConstants {
         didSet { defaults.metronomeBeat = metronomeBeat }
     }
 
     @Published var metronomeRhythm: FileConstants {
         didSet { defaults.metronomeRhythm = metronomeRhythm }
+    }
+
+    @Published var metronomeBeatPattern: String? {
+        didSet { defaults.metronomeBeatPattern = metronomeBeatPattern }
+    }
+
+    @Published var rampEnabled: Bool {
+        didSet { defaults.rampEnabled = rampEnabled }
+    }
+
+    @Published var rampIncrement: Int {
+        didSet { defaults.rampIncrement = rampIncrement }
+    }
+
+    @Published var rampInterval: Int {
+        didSet { defaults.rampInterval = rampInterval }
     }
 
     @Published var playlistBeat: FileConstants {
@@ -77,6 +101,18 @@ class SettingsViewModel: ObservableObject {
         didSet { defaults.polyrhythmRhythm = polyrhythmRhythm }
     }
 
+    @Published var polyrhythmBeats: Int {
+        didSet { defaults.polyrhythmBeats = polyrhythmBeats }
+    }
+
+    @Published var polyrhythmAgainst: Int {
+        didSet { defaults.polyrhythmAgainst = polyrhythmAgainst }
+    }
+
+    @Published var polyrhythmBpm: Double {
+        didSet { defaults.polyrhythmBpm = polyrhythmBpm }
+    }
+
     @Published var keepAwake: Bool {
         didSet { defaults.keepAwake = keepAwake }
     }
@@ -89,6 +125,10 @@ class SettingsViewModel: ObservableObject {
         didSet { defaults.sixteenthAlternate = sixteenthAlternate }
     }
 
+    @Published var playlistSortAscending: Bool {
+        didSet { UserDefaults.standard.set(playlistSortAscending, forKey: PreferenceKeys.playlistSortAscending) }
+    }
+
     init(notificationService: any ReminderNotificationServicing = ReminderNotificationService()) {
         self.notificationService = notificationService
         sendReminders = defaults.sendReminders
@@ -96,15 +136,25 @@ class SettingsViewModel: ObservableObject {
         useFlashlight = defaults.useFlashlight
         useVibration = defaults.useVibration
         muteMetronome = defaults.muteMetronome
+        metronomeBpm = defaults.metronomeBpm
+        metronomeGroove = defaults.metronomeGroove
         metronomeBeat = defaults.metronomeBeat
         metronomeRhythm = defaults.metronomeRhythm
+        metronomeBeatPattern = defaults.metronomeBeatPattern
+        rampEnabled = defaults.rampEnabled
+        rampIncrement = defaults.rampIncrement
+        rampInterval = defaults.rampInterval
         playlistBeat = defaults.playlistBeat
         playlistRhythm = defaults.playlistRhythm
         polyrhythmBeat = defaults.polyrhythmBeat
         polyrhythmRhythm = defaults.polyrhythmRhythm
+        polyrhythmBeats = defaults.polyrhythmBeats
+        polyrhythmAgainst = defaults.polyrhythmAgainst
+        polyrhythmBpm = defaults.polyrhythmBpm
         keepAwake = defaults.keepAwake
         alwaysUseDarkTheme = defaults.alwaysUseDarkTheme
         sixteenthAlternate = defaults.sixteenthAlternate
+        playlistSortAscending = UserDefaults.standard.object(forKey: PreferenceKeys.playlistSortAscending) as? Bool ?? true
         notificationsDeferredLocally = UserDefaults.standard.object(forKey: PreferenceKeys.remindersDeferredDate) != nil
 
         if sendReminders {
@@ -121,6 +171,86 @@ class SettingsViewModel: ObservableObject {
                 self?.alwaysUseDarkTheme = newValue
             }
         }
+    }
+
+    func updateMetronomeBpm(_ bpm: Double) {
+        metronomeBpm = bpm
+    }
+
+    func updateMetronomeGroove(_ groove: Groove) {
+        metronomeGroove = groove
+    }
+
+    func updateMetronomeBeat(_ beat: FileConstants) {
+        metronomeBeat = beat
+    }
+
+    func updateMetronomeRhythm(_ rhythm: FileConstants) {
+        metronomeRhythm = rhythm
+    }
+
+    func updateMetronomeBeatPattern(_ beatPattern: BeatPattern?) {
+        metronomeBeatPattern = beatPattern?.rawValue
+    }
+
+    func updateRampEnabled(_ enabled: Bool) {
+        rampEnabled = enabled
+    }
+
+    func updateRampIncrement(_ increment: Int) {
+        rampIncrement = increment
+    }
+
+    func updateRampInterval(_ interval: Int) {
+        rampInterval = interval
+    }
+
+    func updatePlaylistBeat(_ beat: FileConstants) {
+        playlistBeat = beat
+    }
+
+    func updatePlaylistRhythm(_ rhythm: FileConstants) {
+        playlistRhythm = rhythm
+    }
+
+    func updatePolyrhythmBeats(_ beats: Int) {
+        polyrhythmBeats = beats
+    }
+
+    func updatePolyrhythmAgainst(_ against: Int) {
+        polyrhythmAgainst = against
+    }
+
+    func updatePolyrhythmBpm(_ bpm: Double) {
+        polyrhythmBpm = bpm
+    }
+
+    func updatePolyrhythmBeat(_ beat: FileConstants) {
+        polyrhythmBeat = beat
+    }
+
+    func updatePolyrhythmRhythm(_ rhythm: FileConstants) {
+        polyrhythmRhythm = rhythm
+    }
+
+    func updatePlaylistSortAscending(_ ascending: Bool) {
+        playlistSortAscending = ascending
+    }
+
+    static func configureUITestNotificationState(_ state: String?) {
+        UserDefaults.standard.removeObject(forKey: PreferenceKeys.remindersDeferredDate)
+        UserDefaults.standard.set(false, forKey: PreferenceKeys.sendReminders)
+        if state == "deferred" {
+            UserDefaults.standard.set(
+                Date.now.timeIntervalSinceReferenceDate,
+                forKey: PreferenceKeys.remindersDeferredDate,
+            )
+            UserDefaults.standard.set(true, forKey: PreferenceKeys.sendReminders)
+        }
+    }
+
+    static func configureUITestMetronomeReset() {
+        UserDefaults.standard.set(false, forKey: PreferenceKeys.rampEnabled)
     }
 
     private func requestPermissionAndSchedule() {

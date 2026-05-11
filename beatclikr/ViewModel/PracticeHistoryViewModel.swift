@@ -63,12 +63,16 @@ class PracticeHistoryViewModel: ObservableObject {
     }
 
     func recordSongPlayed(song: Song, context: ModelContext) {
+        if song.id == Song.metronomeSongId {
+            recordMetronomePractice(context: context)
+            return
+        }
         recordPracticeItem(PracticedSong(from: song), context: context, incrementsExisting: true)
     }
 
     func recordMetronomePractice(context: ModelContext) {
         recordPracticeItem(
-            PracticedSong(title: "Metronome", artist: "BeatClikr", songId: "beatclikr.metronome"),
+            PracticedSong(title: "Metronome", artist: "BeatClikr", songId: Song.metronomeSongId),
             context: context,
             incrementsExisting: false,
         )

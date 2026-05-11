@@ -376,6 +376,19 @@ struct PracticeHistoryViewModelTests {
         #expect(practiced.first?.timesPracticed == 1)
     }
 
+    @Test func `record song played with transient metronome still creates one built in item per day`() throws {
+        let container = try makeContainer()
+        let context = container.mainContext
+        let vm = PracticeHistoryViewModel()
+        vm.recordSongPlayed(song: Song.metronomeSong(), context: context)
+        vm.recordSongPlayed(song: Song.metronomeSong(), context: context)
+        let session = vm.getOrCreateTodaysSession(context: context)
+        let practiced = session.songsPracticed?.filter { $0.songId == Song.metronomeSongId } ?? []
+        #expect(practiced.count == 1)
+        #expect(practiced.first?.title == "Metronome")
+        #expect(practiced.first?.timesPracticed == 1)
+    }
+
     @Test func `record polyrhythm practice creates one built in item per day`() throws {
         let container = try makeContainer()
         let context = container.mainContext
