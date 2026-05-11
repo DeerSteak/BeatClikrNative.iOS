@@ -13,10 +13,20 @@ import Foundation
 class AudioPlayerService: HasAudioEngine, MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDelegate {
     static let instance = AudioPlayerService()
 
+    // AudioKit engine kept for polyrhythm and as fallback for the legacy metronome engine
     nonisolated(unsafe) let engine = AudioEngine()
     private let sampler = AppleSampler()
 
-    private let audioEngine: MetronomeAudioEngine
+    /// Scheduled engine: sample-accurate, no timer polling (Phase 2)
+    private let scheduledMetronomeEngine = ScheduledMetronomeEngine()
+    /// Legacy engine: timer-based fallback (Phase 1); kept for future settings toggle
+    private let legacyMetronomeEngine: AudioKitMetronomeEngine
+
+    // Future: switch between engines via a user setting
+    private var audioEngine: MetronomeAudioEngine {
+        scheduledMetronomeEngine
+    }
+
     private let polyEngine: PolyrhythmAudioEngine
 
     var sounds: [SoundFile]
@@ -26,7 +36,7 @@ class AudioPlayerService: HasAudioEngine, MetronomeAudioEngineDelegate, Polyrhyt
 
     init() {
         engine.output = sampler
-        audioEngine = AudioKitMetronomeEngine(engine: engine, sampler: sampler)
+        legacyMetronomeEngine = AudioKitMetronomeEngine(engine: engine, sampler: sampler)
         polyEngine = AudioKitPolyrhythmEngine(sampler: sampler)
 
         // Configure audio session
@@ -47,19 +57,27 @@ class AudioPlayerService: HasAudioEngine, MetronomeAudioEngineDelegate, Polyrhyt
             }
         }
 
-        // Start the audio engine
+        // Start the scheduled metronome engine (native AVAudioEngine)
         do {
-            try audioEngine.start()
+            try scheduledMetronomeEngine.start()
         } catch {
-            print("Can't start engine: \(error)")
+            print("Can't start scheduled engine: \(error)")
+        }
+
+        // Start the AudioKit engine for polyrhythm
+        do {
+            try engine.start()
+        } catch {
+            print("Can't start AudioKit engine: \(error)")
         }
     }
 
     // MARK: - Public API
 
-    /// Load the beat and rhythm sounds for both engines (they share the same sampler)
     func setupAudioPlayer(beatName: String, rhythmName: String) {
-        audioEngine.loadSounds(beatName: beatName, rhythmName: rhythmName, from: sounds)
+        scheduledMetronomeEngine.loadSounds(beatName: beatName, rhythmName: rhythmName, from: sounds)
+        // Load the legacy engine's sampler so polyrhythm (which shares it) has sounds ready
+        legacyMetronomeEngine.loadSounds(beatName: beatName, rhythmName: rhythmName, from: sounds)
         polyEngine.loadSounds(beatName: beatName, rhythmName: rhythmName, from: sounds)
     }
 
