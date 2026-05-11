@@ -143,10 +143,8 @@ struct SongLibraryView: View {
         }
         .onDisappear {
             metronomeViewModel.stop()
-            model.onDisappear()
         }
         .onAppear {
-            model.onAppear()
             model.onSongPlayed = { song in
                 practiceHistory.recordSongPlayed(song: song, context: modelContext)
             }

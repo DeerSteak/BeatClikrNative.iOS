@@ -152,8 +152,7 @@ struct PolyrhythmView: View {
             .padding()
         }
         .background(Color(UIColor.systemGroupedBackground))
-        .onDisappear(perform: model.onDisappear)
-        .onAppear(perform: model.onAppear)
+        .onDisappear(perform: model.stop)
     }
 
     private func togglePlayPause() {

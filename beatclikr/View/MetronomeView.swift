@@ -199,8 +199,10 @@ struct MetronomeView: View {
             .padding()
         }
         .background(Color(UIColor.systemGroupedBackground))
-        .onDisappear(perform: model.onDisappear)
-        .onAppear(perform: model.onAppear)
+        .onDisappear(perform: model.stop)
+        .onAppear {
+            model.clickerType = .metronome
+        }
     }
 
     private func togglePlayPause() {

@@ -126,6 +126,12 @@ struct beatclikrApp: App {
                 .transaction { transaction in
                     transaction.disablesAnimations = true
                 }
+                .onAppear {
+                    updateIdleTimer(for: scenePhase)
+                }
+                .onChange(of: defaults.keepAwake) { _, _ in
+                    updateIdleTimer(for: scenePhase)
+                }
                 .onReceive(
                     NotificationCenter.default
                         .publisher(for: .NSPersistentStoreRemoteChange)
@@ -140,9 +146,10 @@ struct beatclikrApp: App {
         .modelContainer(container)
         .onChange(of: scenePhase) { _, newPhase in
             guard newPhase == .active else {
-                UIApplication.shared.isIdleTimerDisabled = false
+                updateIdleTimer(for: newPhase)
                 return
             }
+            updateIdleTimer(for: newPhase)
             let dates = practiceHistoryViewModel.markedDates(context: container.mainContext)
             let bodies = practiceHistoryViewModel.scheduledNotificationBodies(from: dates, days: 7)
             settingsViewModel.rescheduleReminder(bodies: bodies)
@@ -158,6 +165,10 @@ struct beatclikrApp: App {
             .environmentObject(polyrhythmViewModel)
             .environmentObject(settingsViewModel)
             .environmentObject(practiceHistoryViewModel)
+    }
+
+    private func updateIdleTimer(for phase: ScenePhase) {
+        UIApplication.shared.isIdleTimerDisabled = phase == .active && defaults.keepAwake
     }
 
     private static func seedUITestData(state: String, context: ModelContext) {
