@@ -95,6 +95,11 @@ class AudioPlayerService: MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDel
         audioEngine.updateTempo(bpm: bpm, subdivisions: subdivisions)
     }
 
+    /// Configure ramp parameters on the active engine
+    func setRamp(enabled: Bool, increment: Int, interval: Int) {
+        audioEngine.setRamp(enabled: enabled, increment: increment, interval: interval)
+    }
+
     /// Start the polyrhythm engine
     func startPolyrhythm(bpm: Double, beats: Int, against: Int) {
         polyEngine.startPolyrhythm(bpm: bpm, beats: beats, against: against, delegate: self)
@@ -109,6 +114,10 @@ class AudioPlayerService: MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDel
 
     func metronomeBeatFired(isBeat: Bool, beatInterval: TimeInterval) {
         delegate?.metronomeBeatFired(isBeat: isBeat, beatInterval: beatInterval)
+    }
+
+    func metronomeRampStepped(newBpm: Double) {
+        delegate?.metronomeRampStepped(newBpm: newBpm)
     }
 
     // MARK: - PolyrhythmAudioEngineDelegate

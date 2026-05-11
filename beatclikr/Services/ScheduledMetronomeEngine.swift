@@ -33,6 +33,12 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
     private var accentPattern: [Bool]?
     private var patternIndex = 0
 
+    // Ramp state — precomputed into the scheduling lookahead
+    private var rampEnabled = false
+    private var rampIncrement: Double = 0
+    private var rampInterval: Int = 1
+    private var rampBeatCount: Int = -1
+
     private weak var delegate: MetronomeAudioEngineDelegate?
 
     // MARK: - MetronomeAudioEngine
@@ -59,6 +65,7 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
         currentSubdivision = 0
         patternIndex = 0
         scheduledCount = 0
+        rampBeatCount = -1
         isPlaying = true
 
         let sampleRate = engine.mainMixerNode.outputFormat(forBus: 0).sampleRate
@@ -74,6 +81,7 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
         scheduledCount = 0
         currentSubdivision = 0
         patternIndex = 0
+        rampBeatCount = -1
     }
 
     func updateTempo(bpm: Double, subdivisions: Int) {
@@ -81,6 +89,12 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
         currentSubdivisions = subdivisions
         useAlternateSixteenth = UserDefaultsService.instance.sixteenthAlternate && subdivisions == 4
         // Already-scheduled buffers drain naturally; new ones use the updated tempo
+    }
+
+    func setRamp(enabled: Bool, increment: Int, interval: Int) {
+        rampEnabled = enabled
+        rampIncrement = Double(increment)
+        rampInterval = max(1, interval)
     }
 
     func start() throws {
@@ -110,11 +124,35 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
         let buffer: AVAudioPCMBuffer
         let isBeat: Bool
         let beatInterval: TimeInterval
+        let samplesPerSubdivision: Double
+        let rampedBpm: Double?
     }
 
-    private func nextBeat() -> ScheduledBeat? {
+    private func nextBeat(sampleRate: Double) -> ScheduledBeat? {
+        // Determine whether this slot is a downbeat before mutating any state
+        let willBeBeat: Bool = if let pattern = accentPattern {
+            pattern[patternIndex]
+        } else {
+            currentSubdivision == 0
+        }
+
+        // Apply ramp step before computing spacing so the new BPM is baked into
+        // this beat's samplesPerSubdivision and all subsequent scheduled beats.
+        var rampedBpm: Double? = nil
+        if rampEnabled, willBeBeat {
+            rampBeatCount += 1
+            if rampBeatCount > 0, rampBeatCount % rampInterval == 0 {
+                let newBpm = min(currentBPM + rampIncrement, MetronomeConstants.maxBPM)
+                if newBpm != currentBPM {
+                    currentBPM = newBpm
+                    rampedBpm = newBpm
+                }
+            }
+        }
+
         let subdivisionsPerSecond = (currentBPM / 60.0) * Double(currentSubdivisions)
         let subdivisionDuration = 1.0 / subdivisionsPerSecond
+        let samplesPerSubdivision = sampleRate / subdivisionsPerSecond
 
         if let pattern = accentPattern {
             let isBeat = pattern[patternIndex]
@@ -133,14 +171,14 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
                 beatInterval = subdivisionDuration
             }
             patternIndex = (patternIndex + 1) % pattern.count
-            return ScheduledBeat(buffer: audio, isBeat: isBeat, beatInterval: beatInterval)
+            return ScheduledBeat(buffer: audio, isBeat: isBeat, beatInterval: beatInterval, samplesPerSubdivision: samplesPerSubdivision, rampedBpm: rampedBpm)
         } else {
             let isBeat = currentSubdivision == 0
             let playBeat = useAlternateSixteenth ? currentSubdivision % 2 == 0 : currentSubdivision == 0
             guard let audio = playBeat ? beatBuffer : rhythmBuffer else { return nil }
             let beatInterval = 60.0 / currentBPM
             currentSubdivision = (currentSubdivision + 1) % currentSubdivisions
-            return ScheduledBeat(buffer: audio, isBeat: isBeat, beatInterval: beatInterval)
+            return ScheduledBeat(buffer: audio, isBeat: isBeat, beatInterval: beatInterval, samplesPerSubdivision: samplesPerSubdivision, rampedBpm: rampedBpm)
         }
     }
 
@@ -149,36 +187,37 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
 
         let outputFormat = engine.mainMixerNode.outputFormat(forBus: 0)
         let sampleRate = outputFormat.sampleRate
-        let subdivisionsPerSecond = (currentBPM / 60.0) * Double(currentSubdivisions)
-        let samplesPerSubdivision = sampleRate / subdivisionsPerSecond
 
         playerNode.volume = UserDefaultsService.instance.muteMetronome ? 0 : 1
-
-        // Cap buffer playback length to the interval so callbacks fire on schedule.
-        // frameCapacity is the full sample length; frameLength is what the player reads.
-        let framesPerInterval = AVAudioFrameCount(samplesPerSubdivision)
-        if let buf = beatBuffer { buf.frameLength = min(buf.frameCapacity, framesPerInterval) }
-        if let buf = rhythmBuffer { buf.frameLength = min(buf.frameCapacity, framesPerInterval) }
 
         let capturedSession = sessionID
 
         while scheduledCount < scheduleAheadCount {
-            guard let beat = nextBeat() else { break }
+            guard let beat = nextBeat(sampleRate: sampleRate) else { break }
+
+            // Cap buffer playback length to this beat's interval so the completion
+            // callback fires at the beat boundary rather than at sample end.
+            let framesPerInterval = AVAudioFrameCount(beat.samplesPerSubdivision)
+            beat.buffer.frameLength = min(beat.buffer.frameCapacity, framesPerInterval)
 
             let capturedIsBeat = beat.isBeat
             let capturedInterval = beat.beatInterval
+            let capturedRampedBpm = beat.rampedBpm
             let when = AVAudioTime(sampleTime: nextBeatSampleTime, atRate: sampleRate)
 
             playerNode.scheduleBuffer(beat.buffer, at: when, options: []) { [weak self] in
                 DispatchQueue.main.async {
                     guard let self, self.sessionID == capturedSession else { return }
+                    if let newBpm = capturedRampedBpm {
+                        self.delegate?.metronomeRampStepped(newBpm: newBpm)
+                    }
                     self.delegate?.metronomeBeatFired(isBeat: capturedIsBeat, beatInterval: capturedInterval)
                     self.scheduledCount -= 1
                     self.scheduleNextBeats()
                 }
             }
 
-            nextBeatSampleTime += AVAudioFramePosition(samplesPerSubdivision)
+            nextBeatSampleTime += AVAudioFramePosition(beat.samplesPerSubdivision)
             scheduledCount += 1
         }
     }

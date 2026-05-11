@@ -88,6 +88,10 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
         currentSubdivisions = subdivisions
     }
 
+    func setRamp(enabled _: Bool, increment _: Int, interval _: Int) {
+        // Ramp is handled by the caller for the legacy timer-based engine
+    }
+
     func start() throws {
         try engine.start()
     }

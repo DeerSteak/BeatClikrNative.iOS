@@ -27,7 +27,6 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
     private var isBeat: Bool = false
     private var activeBpm: Double = 120.0
-    private var rampBeatCount: Int = -1
     private var applyingRamp: Bool = false
     private var applyingSettingsChange: Bool = false
 
@@ -54,6 +53,9 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             if clickerType == .metronome, !applyingSettingsChange {
                 settings.updateRampEnabled(rampEnabled)
             }
+            if isPlaying {
+                audio.setRamp(enabled: rampEnabled && clickerType == .metronome, increment: rampIncrement, interval: rampInterval)
+            }
         }
     }
 
@@ -62,6 +64,9 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             if clickerType == .metronome, !applyingSettingsChange {
                 settings.updateRampIncrement(rampIncrement)
             }
+            if isPlaying {
+                audio.setRamp(enabled: rampEnabled && clickerType == .metronome, increment: rampIncrement, interval: rampInterval)
+            }
         }
     }
 
@@ -69,6 +74,9 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         didSet {
             if clickerType == .metronome, !applyingSettingsChange {
                 settings.updateRampInterval(rampInterval)
+            }
+            if isPlaying {
+                audio.setRamp(enabled: rampEnabled && clickerType == .metronome, increment: rampIncrement, interval: rampInterval)
             }
         }
     }
@@ -178,6 +186,12 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         }
     }
 
+    func metronomeRampStepped(newBpm: Double) {
+        applyingRamp = true
+        beatsPerMinute = newBpm
+        applyingRamp = false
+    }
+
     // MARK: Public functions
 
     func switchSong(_ song: Song) {
@@ -234,13 +248,13 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         let bpm = song.beatsPerMinute ?? beatsPerMinute
         activeBpm = bpm
         let groove = song.groove ?? selectedGroove
+        audio.setRamp(enabled: rampEnabled && clickerType == .metronome, increment: rampIncrement, interval: rampInterval)
         audio.startMetronome(bpm: bpm, subdivisions: groove.subdivisions, accentPattern: computeAccentPattern())
         visualAnimator.start()
         isPlaying = true
     }
 
     func stop() {
-        rampBeatCount = -1
         audio.stopMetronome()
         visualAnimator.stop()
         flashlight.turnFlashlightOff()
@@ -289,19 +303,6 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         }
         if settings.useFlashlight {
             flashlight.turnFlashlightOn()
-        }
-        guard rampEnabled, clickerType == .metronome else { return }
-        rampBeatCount += 1
-        if rampBeatCount % rampInterval == 0, rampBeatCount > 0 {
-            let newBpm = min(beatsPerMinute + Double(rampIncrement), MetronomeConstants.maxBPM)
-            guard newBpm != beatsPerMinute else { return }
-            applyingRamp = true
-            beatsPerMinute = newBpm
-            applyingRamp = false
-            let subdivisions = selectedGroove.subdivisions
-            Task { @MainActor in
-                self.audio.updateTempo(bpm: newBpm, subdivisions: subdivisions)
-            }
         }
     }
 
