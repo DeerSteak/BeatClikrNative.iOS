@@ -118,6 +118,7 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
 
     func onAppear() {
         UIApplication.shared.isIdleTimerDisabled = defaults.keepAwake
+        audio.setupAudioPlayer(beatName: defaults.polyrhythmBeat.rawValue, rhythmName: defaults.polyrhythmRhythm.rawValue)
     }
 
     func togglePlayPause() {

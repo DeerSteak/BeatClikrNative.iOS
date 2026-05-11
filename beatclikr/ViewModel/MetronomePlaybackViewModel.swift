@@ -211,6 +211,11 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     func onAppear() {
         clickerType = .metronome
         UIApplication.shared.isIdleTimerDisabled = defaults.keepAwake
+        audio.setupAudioPlayer(beatName: defaults.metronomeBeat.rawValue, rhythmName: defaults.metronomeRhythm.rawValue)
+    }
+
+    func reloadPlaylistSounds() {
+        audio.setupAudioPlayer(beatName: defaults.playlistBeat.rawValue, rhythmName: defaults.playlistRhythm.rawValue)
     }
 
     func togglePlayPause() {
