@@ -23,8 +23,14 @@ struct CalendarView: View {
         calendar.date(from: calendar.dateComponents([.year, .month], from: displayedMonth))!
     }
 
+    private var weekdaySymbols: [String] {
+        let zeroBasedStart = calendar.firstWeekday - 1
+        let symbols = calendar.veryShortWeekdaySymbols
+        return Array(symbols[zeroBasedStart ..< symbols.count] + symbols[0 ..< zeroBasedStart])
+    }
+
     private var daysGrid: [Date?] {
-        let leadingBlanks = calendar.component(.weekday, from: firstOfMonth) - 1
+        let leadingBlanks = (calendar.component(.weekday, from: firstOfMonth) - calendar.firstWeekday + 7) % 7
         let daysInMonth = calendar.range(of: .day, in: .month, for: firstOfMonth)!.count
         var days: [Date?] = Array(repeating: nil, count: leadingBlanks)
         for i in 0 ..< daysInMonth {
@@ -69,7 +75,7 @@ struct CalendarView: View {
                 .padding(.bottom, 4)
 
                 LazyVGrid(columns: gridColumns, spacing: 0) {
-                    ForEach(Array(calendar.veryShortWeekdaySymbols.enumerated()), id: \.offset) { _, symbol in
+                    ForEach(Array(weekdaySymbols.enumerated()), id: \.offset) { _, symbol in
                         Text(symbol)
                             .font(.caption)
                             .foregroundStyle(.secondary)

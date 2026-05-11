@@ -105,12 +105,14 @@ class AudioKitMetronomeEngine: MetronomeAudioEngine {
     private func startTimer() {
         timer?.invalidate()
 
-        timer = Timer.scheduledTimer(withTimeInterval: checkInterval, repeats: true) { [weak self] _ in
-            Task { @MainActor in
+        timer = Timer(timeInterval: checkInterval, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated {
                 self?.checkAndPlayBeat()
             }
         }
-        RunLoop.main.add(timer!, forMode: .common)
+        if let timer {
+            RunLoop.main.add(timer, forMode: .common)
+        }
     }
 
     private func checkAndPlayBeat() {

@@ -66,7 +66,9 @@ class ReminderNotificationService: ReminderNotificationServicing {
             content.body = body
             content.sound = .default
 
-            let fireDay = cal.date(byAdding: .day, value: offset, to: today)!
+            guard let fireDay = cal.date(byAdding: .day, value: offset, to: today) else {
+                continue
+            }
             var components = cal.dateComponents([.year, .month, .day], from: fireDay)
             components.hour = hourMinute.hour
             components.minute = hourMinute.minute

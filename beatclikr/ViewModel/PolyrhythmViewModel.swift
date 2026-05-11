@@ -5,6 +5,7 @@
 //  Created by Ben Funk on 5/3/26.
 //
 
+import Combine
 import Foundation
 import SwiftUI
 
@@ -14,21 +15,27 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
 
     @Published var beats: Int {
         didSet {
-            defaults.polyrhythmBeats = beats
+            if !applyingSettingsChange {
+                settings.updatePolyrhythmBeats(beats)
+            }
             if isPlaying { start() }
         }
     }
 
     @Published var against: Int {
         didSet {
-            defaults.polyrhythmAgainst = against
+            if !applyingSettingsChange {
+                settings.updatePolyrhythmAgainst(against)
+            }
             if isPlaying { start() }
         }
     }
 
     @Published var bpm: Double {
         didSet {
-            defaults.polyrhythmBpm = bpm
+            if !applyingSettingsChange {
+                settings.updatePolyrhythmBpm(bpm)
+            }
             if isPlaying { start() }
         }
     }
@@ -37,14 +44,18 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
 
     @Published var beat: FileConstants {
         didSet {
-            defaults.polyrhythmBeat = beat
+            if !applyingSettingsChange {
+                settings.updatePolyrhythmBeat(beat)
+            }
             audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         }
     }
 
     @Published var rhythm: FileConstants {
         didSet {
-            defaults.polyrhythmRhythm = rhythm
+            if !applyingSettingsChange {
+                settings.updatePolyrhythmRhythm(rhythm)
+            }
             audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         }
     }
@@ -65,20 +76,23 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
     // MARK: - Private
 
     private let audio: AudioPlayerService
-    private let defaults: UserDefaultsService
+    private let settings: SettingsViewModel
+    private var settingsCancellables: Set<AnyCancellable> = []
     private var playbackGeneration = 0
+    private var applyingSettingsChange = false
 
     // MARK: - Init
 
-    init(audio: AudioPlayerService = .instance, defaults: UserDefaultsService = .instance) {
+    init(audio: AudioPlayerService = .instance, settings: SettingsViewModel = SettingsViewModel()) {
         self.audio = audio
-        self.defaults = defaults
-        beats = defaults.polyrhythmBeats
-        against = defaults.polyrhythmAgainst
-        bpm = defaults.polyrhythmBpm
-        beat = defaults.polyrhythmBeat
-        rhythm = defaults.polyrhythmRhythm
+        self.settings = settings
+        beats = settings.polyrhythmBeats
+        against = settings.polyrhythmAgainst
+        bpm = settings.polyrhythmBpm
+        beat = settings.polyrhythmBeat
+        rhythm = settings.polyrhythmRhythm
         audio.polyrhythmDelegate = self
+        observeSettings()
     }
 
     // MARK: - PolyrhythmAudioEngineDelegate
@@ -116,15 +130,16 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
 
     // MARK: - Playback control
 
-    func onAppear() {
-        UIApplication.shared.isIdleTimerDisabled = defaults.keepAwake
-    }
-
     func togglePlayPause() {
         if isPlaying { stop() } else { start() }
     }
 
     func start() {
+        guard beats >= 1, against >= 1, bpm > 0 else {
+            stop()
+            return
+        }
+
         playbackGeneration += 1
         playheadResetID += 1
         resetCycleProgress()
@@ -147,5 +162,53 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
         withTransaction(transaction) {
             cycleProgress = 0
         }
+    }
+
+    private func observeSettings() {
+        settings.$polyrhythmBeats
+            .dropFirst()
+            .sink { [weak self] beats in
+                guard let self, self.beats != beats else { return }
+                applySettingsChange { self.beats = beats }
+            }
+            .store(in: &settingsCancellables)
+
+        settings.$polyrhythmAgainst
+            .dropFirst()
+            .sink { [weak self] against in
+                guard let self, self.against != against else { return }
+                applySettingsChange { self.against = against }
+            }
+            .store(in: &settingsCancellables)
+
+        settings.$polyrhythmBpm
+            .dropFirst()
+            .sink { [weak self] bpm in
+                guard let self, self.bpm != bpm else { return }
+                applySettingsChange { self.bpm = bpm }
+            }
+            .store(in: &settingsCancellables)
+
+        settings.$polyrhythmBeat
+            .dropFirst()
+            .sink { [weak self] beat in
+                guard let self, self.beat != beat else { return }
+                applySettingsChange { self.beat = beat }
+            }
+            .store(in: &settingsCancellables)
+
+        settings.$polyrhythmRhythm
+            .dropFirst()
+            .sink { [weak self] rhythm in
+                guard let self, self.rhythm != rhythm else { return }
+                applySettingsChange { self.rhythm = rhythm }
+            }
+            .store(in: &settingsCancellables)
+    }
+
+    private func applySettingsChange(_ update: () -> Void) {
+        applyingSettingsChange = true
+        update()
+        applyingSettingsChange = false
     }
 }

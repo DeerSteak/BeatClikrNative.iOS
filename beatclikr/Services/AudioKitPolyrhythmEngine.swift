@@ -49,6 +49,8 @@ class AudioKitPolyrhythmEngine: PolyrhythmAudioEngine {
         timer?.invalidate()
         timer = nil
 
+        guard bpm > 0, beats >= 1, against >= 1 else { return }
+
         self.delegate = delegate
 
         let lc = computeLCM(beats, against)
@@ -74,12 +76,14 @@ class AudioKitPolyrhythmEngine: PolyrhythmAudioEngine {
     // MARK: - Private helpers
 
     private func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: checkInterval, repeats: true) { [weak self] _ in
-            Task { @MainActor in
+        timer = Timer(timeInterval: checkInterval, repeats: true) { [weak self] _ in
+            MainActor.assumeIsolated {
                 self?.checkAndPlayStep()
             }
         }
-        RunLoop.main.add(timer!, forMode: .common)
+        if let timer {
+            RunLoop.main.add(timer, forMode: .common)
+        }
     }
 
     private func checkAndPlayStep() {
@@ -121,10 +125,15 @@ class AudioKitPolyrhythmEngine: PolyrhythmAudioEngine {
     }
 
     private func computeLCM(_ a: Int, _ b: Int) -> Int {
-        a / computeGCD(a, b) * b
+        let a = max(a, 1)
+        let b = max(b, 1)
+        return a / computeGCD(a, b) * b
     }
 
     private func computeGCD(_ a: Int, _ b: Int) -> Int {
+        if a == 0 || b == 0 {
+            return max(abs(a), abs(b), 1)
+        }
         var a = a, b = b
         while b != 0 {
             (a, b) = (b, a % b)

@@ -14,7 +14,9 @@ import SwiftUI
 struct beatclikrApp: App {
     @Environment(\.scenePhase) private var scenePhase
 
-    let container: ModelContainer
+    @State private var container: ModelContainer
+    @State private var databaseRecoveryAlert: DatabaseRecoveryAlert?
+    @State private var showTemporaryStoreNotice = false
 
     @StateObject private var defaults = UserDefaultsService.instance
     @State private var selectedSection: AppSection? = .metronome
@@ -34,80 +36,29 @@ struct beatclikrApp: App {
 
     init() {
         let isUITesting = Self.uiTestPracticeState != nil
-        let config: ModelConfiguration = isUITesting
-            ? ModelConfiguration(isStoredInMemoryOnly: true)
-            : ModelConfiguration(cloudKitDatabase: .private("iCloud.com.bfunkstudios.beatclikr"))
+        let startup = Self.makeStartupContainer(isUITesting: isUITesting)
+        _container = State(initialValue: startup.container)
+        _databaseRecoveryAlert = State(initialValue: startup.recoveryAlert)
 
-        do {
-            container = try ModelContainer(
-                for: Song.self,
-                PlaylistEntry.self,
-                Playlist.self,
-                PracticedSong.self,
-                PracticeSession.self,
-                configurations: config,
-            )
-        } catch {
-            fatalError(error.localizedDescription)
-        }
-
-        let context = container.mainContext
+        let context = startup.container.mainContext
 
         if let state = Self.uiTestPracticeState {
-            // Reset notification-related defaults to a known clean baseline for each UI test
-            UserDefaults.standard.removeObject(forKey: PreferenceKeys.remindersDeferredDate)
-            UserDefaults.standard.set(false, forKey: PreferenceKeys.sendReminders)
-            if Self.uiTestNotificationState == "deferred" {
-                UserDefaults.standard.set(
-                    Date.now.timeIntervalSinceReferenceDate,
-                    forKey: PreferenceKeys.remindersDeferredDate,
-                )
-                UserDefaults.standard.set(true, forKey: PreferenceKeys.sendReminders)
-            }
+            SettingsViewModel.configureUITestNotificationState(Self.uiTestNotificationState)
             Self.seedUITestData(state: state, context: context)
-        } else {
-            // Remove entries whose song was deleted
-            let orphaned = (try? context.fetch(
-                FetchDescriptor<PlaylistEntry>(predicate: #Predicate { $0.song == nil }),
-            )) ?? []
-            if !orphaned.isEmpty {
-                orphaned.forEach { context.delete($0) }
-                try? context.save()
-            }
-
-            // Migrate legacy entries (no playlist) into a default playlist (once per device)
-            if !UserDefaults.standard.bool(forKey: PreferenceKeys.didMigrateToMultiplePlaylists) {
-                let legacyEntries = (try? context.fetch(
-                    FetchDescriptor<PlaylistEntry>(predicate: #Predicate { $0.playlist == nil }),
-                )) ?? []
-                if !legacyEntries.isEmpty {
-                    let existing = (try? context.fetch(
-                        FetchDescriptor<Playlist>(predicate: #Predicate { $0.name == "My Playlist" }),
-                    ))?.first
-                    let defaultPlaylist = existing ?? {
-                        let p = Playlist(name: "My Playlist")
-                        context.insert(p)
-                        return p
-                    }()
-                    for entry in legacyEntries {
-                        entry.playlist = defaultPlaylist
-                    }
-                    try? context.save()
-                }
-                UserDefaults.standard.set(true, forKey: PreferenceKeys.didMigrateToMultiplePlaylists)
-            }
+        } else if startup.recoveryAlert == nil {
+            Self.performStartupMaintenance(context: context)
         }
 
         if Self.uiTestMetronomeReset {
-            UserDefaults.standard.set(false, forKey: PreferenceKeys.rampEnabled)
+            SettingsViewModel.configureUITestMetronomeReset()
         }
 
-        let metronome = MetronomePlaybackViewModel()
+        let settingsVM = SettingsViewModel()
+        let metronome = MetronomePlaybackViewModel(settings: settingsVM)
         _metronomeViewModel = StateObject(wrappedValue: metronome)
-        _polyrhythmViewModel = StateObject(wrappedValue: PolyrhythmViewModel())
+        _polyrhythmViewModel = StateObject(wrappedValue: PolyrhythmViewModel(settings: settingsVM))
         _songLibraryViewModel = StateObject(wrappedValue: SongLibraryViewModel())
         _playlistListViewModel = StateObject(wrappedValue: PlaylistListViewModel())
-        let settingsVM = SettingsViewModel()
         let practiceVM = PracticeHistoryViewModel()
         practiceVM.onPracticeRecorded = { [weak practiceVM, weak settingsVM] context in
             guard let vm = practiceVM, let settings = settingsVM else { return }
@@ -126,6 +77,29 @@ struct beatclikrApp: App {
                 .transaction { transaction in
                     transaction.disablesAnimations = true
                 }
+                .onAppear {
+                    updateIdleTimer(for: scenePhase)
+                }
+                .alert(item: $databaseRecoveryAlert) { alert in
+                    Alert(
+                        title: Text("Database Needs Attention"),
+                        message: Text(alert.message),
+                        primaryButton: .destructive(Text("Reset Local Database")) {
+                            resetPersistentDatabase()
+                        },
+                        secondaryButton: .cancel(Text("Use Temporary Store")) {
+                            showTemporaryStoreNotice = true
+                        },
+                    )
+                }
+                .alert("Temporary Store Active", isPresented: $showTemporaryStoreNotice) {
+                    Button("OK", role: .cancel) {}
+                } message: {
+                    Text("Changes you make on this device will not be preserved until BeatClikr can reopen a local database. Your synced data may still be recoverable from another device.")
+                }
+                .onChange(of: defaults.keepAwake) { _, _ in
+                    updateIdleTimer(for: scenePhase)
+                }
                 .onReceive(
                     NotificationCenter.default
                         .publisher(for: .NSPersistentStoreRemoteChange)
@@ -139,7 +113,11 @@ struct beatclikrApp: App {
         }
         .modelContainer(container)
         .onChange(of: scenePhase) { _, newPhase in
-            guard newPhase == .active else { return }
+            guard newPhase == .active else {
+                updateIdleTimer(for: newPhase)
+                return
+            }
+            updateIdleTimer(for: newPhase)
             let dates = practiceHistoryViewModel.markedDates(context: container.mainContext)
             let bodies = practiceHistoryViewModel.scheduledNotificationBodies(from: dates, days: 7)
             settingsViewModel.rescheduleReminder(bodies: bodies)
@@ -155,6 +133,104 @@ struct beatclikrApp: App {
             .environmentObject(polyrhythmViewModel)
             .environmentObject(settingsViewModel)
             .environmentObject(practiceHistoryViewModel)
+    }
+
+    private func updateIdleTimer(for phase: ScenePhase) {
+        UIApplication.shared.isIdleTimerDisabled = phase == .active && defaults.keepAwake
+    }
+
+    private func resetPersistentDatabase() {
+        do {
+            try Self.deletePersistentStoreFiles()
+            let newContainer = try Self.makePersistentContainer()
+            Self.performStartupMaintenance(context: newContainer.mainContext)
+            container = newContainer
+            databaseRecoveryAlert = nil
+        } catch {
+            databaseRecoveryAlert = nil
+            showTemporaryStoreNotice = true
+        }
+    }
+
+    private static func makeStartupContainer(isUITesting: Bool) -> (container: ModelContainer, recoveryAlert: DatabaseRecoveryAlert?) {
+        do {
+            let container = try isUITesting ? makeInMemoryContainer() : makePersistentContainer()
+            return (container, nil)
+        } catch {
+            do {
+                let container = try makeInMemoryContainer()
+                return (container, DatabaseRecoveryAlert(error: error))
+            } catch {
+                preconditionFailure("BeatClikr could not create either a persistent or temporary database: \(error)")
+            }
+        }
+    }
+
+    private static func makePersistentContainer() throws -> ModelContainer {
+        let config = ModelConfiguration(cloudKitDatabase: .private("iCloud.com.bfunkstudios.beatclikr"))
+        return try makeContainer(config: config)
+    }
+
+    private static func makeInMemoryContainer() throws -> ModelContainer {
+        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        return try makeContainer(config: config)
+    }
+
+    private static func makeContainer(config: ModelConfiguration) throws -> ModelContainer {
+        try ModelContainer(
+            for: Song.self,
+            PlaylistEntry.self,
+            Playlist.self,
+            PracticedSong.self,
+            PracticeSession.self,
+            configurations: config,
+        )
+    }
+
+    private static func performStartupMaintenance(context: ModelContext) {
+        let orphaned = (try? context.fetch(
+            FetchDescriptor<PlaylistEntry>(predicate: #Predicate { $0.song == nil }),
+        )) ?? []
+        if !orphaned.isEmpty {
+            orphaned.forEach { context.delete($0) }
+            try? context.save()
+        }
+
+        guard !UserDefaults.standard.bool(forKey: PreferenceKeys.didMigrateToMultiplePlaylists) else { return }
+
+        let legacyEntries = (try? context.fetch(
+            FetchDescriptor<PlaylistEntry>(predicate: #Predicate { $0.playlist == nil }),
+        )) ?? []
+        if !legacyEntries.isEmpty {
+            let existing = (try? context.fetch(
+                FetchDescriptor<Playlist>(predicate: #Predicate { $0.name == "My Playlist" }),
+            ))?.first
+            let defaultPlaylist = existing ?? {
+                let p = Playlist(name: "My Playlist")
+                context.insert(p)
+                return p
+            }()
+            for entry in legacyEntries {
+                entry.playlist = defaultPlaylist
+            }
+            try? context.save()
+        }
+        UserDefaults.standard.set(true, forKey: PreferenceKeys.didMigrateToMultiplePlaylists)
+    }
+
+    private static func deletePersistentStoreFiles() throws {
+        let fileManager = FileManager.default
+        guard let applicationSupport = fileManager.urls(for: .applicationSupportDirectory, in: .userDomainMask).first else {
+            return
+        }
+        let store = applicationSupport.appendingPathComponent("default.store")
+        for suffix in ["", "-shm", "-wal"] {
+            let url = URL(fileURLWithPath: store.path + suffix)
+            if fileManager.fileExists(atPath: url.path) {
+                try fileManager.removeItem(at: url)
+            }
+        }
+        UserDefaults.standard.set(false, forKey: PreferenceKeys.didMigrateToMultiplePlaylists)
     }
 
     private static func seedUITestData(state: String, context: ModelContext) {
@@ -174,5 +250,14 @@ struct beatclikrApp: App {
             break
         }
         try? context.save()
+    }
+}
+
+private struct DatabaseRecoveryAlert: Identifiable {
+    let id = UUID()
+    let message: String
+
+    init(error: Error) {
+        message = "BeatClikr could not open its local database. You can reset the local database on this device and let iCloud sync restore what it can, or continue with a temporary store so you can recover from another device. Original error: \(error.localizedDescription)"
     }
 }

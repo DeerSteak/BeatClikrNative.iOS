@@ -118,6 +118,7 @@ class UserDefaultsService: ObservableObject {
 
     private let defaults = UserDefaults.standard
     private let cloud = NSUbiquitousKeyValueStore.default
+    private var isSyncingFromCloud = false
 
     static let instance = UserDefaultsService()
 
@@ -167,6 +168,18 @@ class UserDefaultsService: ObservableObject {
     /// Ensure this is a private Swift function (No @objc)
     private func syncWithCloud() {
         cloud.synchronize()
+        isSyncingFromCloud = true
+        var didEnableRemindersFromCloud = false
+        var didChangeAlwaysUseDarkTheme = false
+        defer {
+            isSyncingFromCloud = false
+            if didChangeAlwaysUseDarkTheme {
+                onAlwaysUseDarkThemeChanged?(alwaysUseDarkTheme)
+            }
+            if didEnableRemindersFromCloud {
+                onSendRemindersEnabled?()
+            }
+        }
 
         // Explicit 'self' prevents namespace collisions with Swift types like 'Bool'
         useFlashlight = cloud.bool(forKey: PreferenceKeys.useFlashlight)
@@ -178,7 +191,7 @@ class UserDefaultsService: ObservableObject {
             alwaysUseDarkTheme = cloud.bool(forKey: PreferenceKeys.alwaysUseDarkTheme)
         }
         if oldAlwaysUseDarkTheme != alwaysUseDarkTheme {
-            onAlwaysUseDarkThemeChanged?(alwaysUseDarkTheme)
+            didChangeAlwaysUseDarkTheme = true
         }
         sixteenthAlternate = cloud.bool(forKey: PreferenceKeys.sixteenthAlternate)
 
@@ -204,7 +217,7 @@ class UserDefaultsService: ObservableObject {
         let wasSendingReminders = sendReminders
         sendReminders = cloud.bool(forKey: PreferenceKeys.sendReminders)
         if !wasSendingReminders, sendReminders {
-            onSendRemindersEnabled?()
+            didEnableRemindersFromCloud = true
         }
 
         let cloudInterval = cloud.double(forKey: PreferenceKeys.reminderTime)
@@ -218,42 +231,49 @@ class UserDefaultsService: ObservableObject {
     private func syncSave<T: Equatable & RawRepresentable>(_ newValue: T, oldValue: T, key: String) where T.RawValue == String {
         guard oldValue != newValue else { return }
         defaults.setValue(newValue.rawValue, forKey: key)
+        guard !isSyncingFromCloud else { return }
         cloud.set(newValue.rawValue, forKey: key)
     }
 
     private func syncSave<T: Equatable & RawRepresentable>(_ newValue: T, oldValue: T, key: String) where T.RawValue == Int {
         guard oldValue != newValue else { return }
         defaults.setValue(newValue.rawValue, forKey: key)
+        guard !isSyncingFromCloud else { return }
         cloud.set(Int64(newValue.rawValue), forKey: key)
     }
 
     private func syncSave(_ newValue: Bool, oldValue: Bool, key: String) {
         guard oldValue != newValue else { return }
         defaults.setValue(newValue, forKey: key)
+        guard !isSyncingFromCloud else { return }
         cloud.set(newValue, forKey: key)
     }
 
     private func syncSave(_ newValue: Double, oldValue: Double, key: String) {
         guard oldValue != newValue else { return }
         defaults.setValue(newValue, forKey: key)
+        guard !isSyncingFromCloud else { return }
         cloud.set(newValue, forKey: key)
     }
 
     private func syncSave(_ newValue: Int, oldValue: Int, key: String) {
         guard oldValue != newValue else { return }
         defaults.setValue(newValue, forKey: key)
+        guard !isSyncingFromCloud else { return }
         cloud.set(Int64(newValue), forKey: key)
     }
 
     private func syncSave(_ newValue: String?, oldValue: String?, key: String) {
         guard oldValue != newValue else { return }
         defaults.setValue(newValue ?? "", forKey: key)
+        guard !isSyncingFromCloud else { return }
         cloud.set(newValue ?? "", forKey: key)
     }
 
     private func syncSave(_ newValue: Date, oldValue: Date, key: String) {
         guard oldValue != newValue else { return }
         defaults.set(newValue.timeIntervalSinceReferenceDate, forKey: key)
+        guard !isSyncingFromCloud else { return }
         cloud.set(newValue.timeIntervalSinceReferenceDate, forKey: key)
     }
 

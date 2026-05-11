@@ -30,10 +30,6 @@ class SongNavigationViewModel: ObservableObject {
 
     var onSongPlayed: ((Song) -> Void)?
 
-    func onAppear() {
-        UIApplication.shared.isIdleTimerDisabled = UserDefaultsService.instance.keepAwake
-    }
-
     func playSong(_ song: Song, metronome: MetronomePlaybackViewModel) {
         metronome.clickerType = .playlist
         metronome.switchSong(song)
