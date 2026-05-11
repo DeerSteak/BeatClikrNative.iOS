@@ -14,21 +14,21 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
 
     @Published var beats: Int {
         didSet {
-            defaults.polyrhythmBeats = beats
+            settings.updatePolyrhythmBeats(beats)
             if isPlaying { start() }
         }
     }
 
     @Published var against: Int {
         didSet {
-            defaults.polyrhythmAgainst = against
+            settings.updatePolyrhythmAgainst(against)
             if isPlaying { start() }
         }
     }
 
     @Published var bpm: Double {
         didSet {
-            defaults.polyrhythmBpm = bpm
+            settings.updatePolyrhythmBpm(bpm)
             if isPlaying { start() }
         }
     }
@@ -37,14 +37,14 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
 
     @Published var beat: FileConstants {
         didSet {
-            defaults.polyrhythmBeat = beat
+            settings.updatePolyrhythmBeat(beat)
             audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         }
     }
 
     @Published var rhythm: FileConstants {
         didSet {
-            defaults.polyrhythmRhythm = rhythm
+            settings.updatePolyrhythmRhythm(rhythm)
             audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         }
     }
@@ -65,19 +65,19 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
     // MARK: - Private
 
     private let audio: AudioPlayerService
-    private let defaults: UserDefaultsService
+    private let settings: SettingsViewModel
     private var playbackGeneration = 0
 
     // MARK: - Init
 
-    init(audio: AudioPlayerService = .instance, defaults: UserDefaultsService = .instance) {
+    init(audio: AudioPlayerService = .instance, settings: SettingsViewModel = SettingsViewModel()) {
         self.audio = audio
-        self.defaults = defaults
-        beats = defaults.polyrhythmBeats
-        against = defaults.polyrhythmAgainst
-        bpm = defaults.polyrhythmBpm
-        beat = defaults.polyrhythmBeat
-        rhythm = defaults.polyrhythmRhythm
+        self.settings = settings
+        beats = settings.polyrhythmBeats
+        against = settings.polyrhythmAgainst
+        bpm = settings.polyrhythmBpm
+        beat = settings.polyrhythmBeat
+        rhythm = settings.polyrhythmRhythm
         audio.polyrhythmDelegate = self
     }
 

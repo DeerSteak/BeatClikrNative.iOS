@@ -54,16 +54,7 @@ struct beatclikrApp: App {
         let context = container.mainContext
 
         if let state = Self.uiTestPracticeState {
-            // Reset notification-related defaults to a known clean baseline for each UI test
-            UserDefaults.standard.removeObject(forKey: PreferenceKeys.remindersDeferredDate)
-            UserDefaults.standard.set(false, forKey: PreferenceKeys.sendReminders)
-            if Self.uiTestNotificationState == "deferred" {
-                UserDefaults.standard.set(
-                    Date.now.timeIntervalSinceReferenceDate,
-                    forKey: PreferenceKeys.remindersDeferredDate,
-                )
-                UserDefaults.standard.set(true, forKey: PreferenceKeys.sendReminders)
-            }
+            SettingsViewModel.configureUITestNotificationState(Self.uiTestNotificationState)
             Self.seedUITestData(state: state, context: context)
         } else {
             // Remove entries whose song was deleted
@@ -99,15 +90,15 @@ struct beatclikrApp: App {
         }
 
         if Self.uiTestMetronomeReset {
-            UserDefaults.standard.set(false, forKey: PreferenceKeys.rampEnabled)
+            SettingsViewModel.configureUITestMetronomeReset()
         }
 
-        let metronome = MetronomePlaybackViewModel()
+        let settingsVM = SettingsViewModel()
+        let metronome = MetronomePlaybackViewModel(settings: settingsVM)
         _metronomeViewModel = StateObject(wrappedValue: metronome)
-        _polyrhythmViewModel = StateObject(wrappedValue: PolyrhythmViewModel())
+        _polyrhythmViewModel = StateObject(wrappedValue: PolyrhythmViewModel(settings: settingsVM))
         _songLibraryViewModel = StateObject(wrappedValue: SongLibraryViewModel())
         _playlistListViewModel = StateObject(wrappedValue: PlaylistListViewModel())
-        let settingsVM = SettingsViewModel()
         let practiceVM = PracticeHistoryViewModel()
         practiceVM.onPracticeRecorded = { [weak practiceVM, weak settingsVM] context in
             guard let vm = practiceVM, let settings = settingsVM else { return }
