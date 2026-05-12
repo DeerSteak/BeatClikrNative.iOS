@@ -5,7 +5,6 @@
 //  Created by Ben Funk on 4/10/26.
 //
 
-import AudioKit
 import Foundation
 
 /// Protocol for metronome audio playback engines.
@@ -24,6 +23,9 @@ protocol MetronomeAudioEngine {
     /// Update the tempo while playing
     func updateTempo(bpm: Double, subdivisions: Int)
 
+    /// Configure ramp parameters. Call before startMetronome or while playing.
+    func setRamp(enabled: Bool, increment: Int, interval: Int)
+
     /// Start the audio engine
     func start() throws
 
@@ -37,4 +39,7 @@ protocol MetronomeAudioEngineDelegate: AnyObject {
     /// `beatInterval` is the time (in seconds) until the next accented beat fires,
     /// so animations can match the actual rhythmic group length.
     func metronomeBeatFired(isBeat: Bool, beatInterval: TimeInterval)
+
+    /// Fired when the engine applies a ramp step during scheduling, carrying the new BPM.
+    func metronomeRampStepped(newBpm: Double)
 }

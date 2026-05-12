@@ -246,8 +246,8 @@ struct SettingsView: View {
             Spacer()
             content()
         }
-        .padding(.horizontal, 12)
-        .padding(.vertical, 10)
+        .frame(minHeight: 31)
+        .padding(12)
     }
 
     private func menuLabel(_ text: String) -> some View {

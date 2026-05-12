@@ -52,12 +52,12 @@ struct SongDetailsView: View {
                     LabeledContent("Title") {
                         TextField("Required", text: $title)
                             .multilineTextAlignment(.trailing)
-                            .autocapitalization(.words)
+                            .textInputAutocapitalization(.words)
                     }
                     LabeledContent("Artist") {
                         TextField("Required", text: $artist)
                             .multilineTextAlignment(.trailing)
-                            .autocapitalization(.words)
+                            .textInputAutocapitalization(.words)
                     }
                 }
                 Section("Tempo") {
@@ -112,7 +112,9 @@ struct SongDetailsView: View {
         if song.title?.isEmpty ?? true || song.artist?.isEmpty ?? true {
             return false
         }
-        modelContext.insert(song)
+        if song.modelContext == nil {
+            modelContext.insert(song)
+        }
         do {
             try modelContext.save()
             return true

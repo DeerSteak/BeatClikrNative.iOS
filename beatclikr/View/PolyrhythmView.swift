@@ -79,62 +79,6 @@ struct PolyrhythmView: View {
                     .padding(12)
                 }
 
-                // Sound pickers card
-                CardContainer {
-                    VStack(spacing: 0) {
-                        HStack {
-                            Text("Beat")
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Menu {
-                                Picker("Beat", selection: $model.beat) {
-                                    ForEach(InstrumentLists.beat) { option in
-                                        Text(String(describing: option))
-                                    }
-                                }
-                                .pickerStyle(.inline)
-                                .labelsHidden()
-                            } label: {
-                                HStack(spacing: 4) {
-                                    Text(model.beat.description)
-                                    Image(systemName: ImageConstants.chevronUpDown)
-                                        .font(.caption2)
-                                }
-                                .foregroundStyle(Color.accent)
-                            }
-                        }
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 10)
-
-                        Divider()
-                            .padding(.leading, 12)
-
-                        HStack {
-                            Text("Rhythm")
-                                .foregroundStyle(.primary)
-                            Spacer()
-                            Menu {
-                                Picker("Rhythm", selection: $model.rhythm) {
-                                    ForEach(InstrumentLists.rhythm) { option in
-                                        Text(String(describing: option))
-                                    }
-                                }
-                                .pickerStyle(.inline)
-                                .labelsHidden()
-                            } label: {
-                                HStack(spacing: 4) {
-                                    Text(model.rhythm.description)
-                                    Image(systemName: ImageConstants.chevronUpDown)
-                                        .font(.caption2)
-                                }
-                                .foregroundStyle(Color.accent)
-                            }
-                        }
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 10)
-                    }
-                }
-
                 // Play / Pause
                 Button(action: togglePlayPause) {
                     Label(
@@ -153,7 +97,6 @@ struct PolyrhythmView: View {
         }
         .background(Color(UIColor.systemGroupedBackground))
         .onDisappear(perform: model.stop)
-        .onAppear(perform: model.onAppear)
     }
 
     private func togglePlayPause() {

@@ -11,11 +11,11 @@ import SwiftUI
 struct PlaylistListView: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: PlaylistListViewModel
+    @EnvironmentObject var settings: SettingsViewModel
     @Query(sort: \Playlist.name) private var playlists: [Playlist]
 
     @State private var path = NavigationPath()
     @State private var editMode: EditMode = .inactive
-    @AppStorage(PreferenceKeys.playlistSortAscending) private var sortAscending = true
     @State private var showingNewPlaylistAlert = false
     @State private var newPlaylistName = ""
     @State private var showingRenameAlert = false
@@ -23,7 +23,7 @@ struct PlaylistListView: View {
     @State private var playlistToRename: Playlist?
 
     private var sortedPlaylists: [Playlist] {
-        sortAscending ? playlists : playlists.reversed()
+        settings.playlistSortAscending ? playlists : playlists.reversed()
     }
 
     var body: some View {
@@ -56,7 +56,7 @@ struct PlaylistListView: View {
             }
             .scrollContentBackground(.hidden)
             .background(Color(UIColor.systemGroupedBackground))
-            .animation(.spring(duration: 0.4), value: sortAscending)
+            .animation(.spring(duration: 0.4), value: settings.playlistSortAscending)
             .environment(\.editMode, $editMode)
             .overlay {
                 if sortedPlaylists.isEmpty {
@@ -80,15 +80,15 @@ struct PlaylistListView: View {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
                         withAnimation(.spring(duration: 0.4)) {
-                            sortAscending.toggle()
+                            settings.updatePlaylistSortAscending(!settings.playlistSortAscending)
                         }
                     } label: {
                         Image(systemName: "arrow.up.circle.fill")
-                            .foregroundStyle(sortAscending ? Color.appPrimary : .orange)
+                            .foregroundStyle(settings.playlistSortAscending ? Color.appPrimary : .orange)
                             .symbolRenderingMode(.hierarchical)
-                            .rotationEffect(.degrees(sortAscending ? 0 : 180))
+                            .rotationEffect(.degrees(settings.playlistSortAscending ? 0 : 180))
                     }
-                    .accessibilityLabel(sortAscending ? "Sorted A to Z" : "Sorted Z to A")
+                    .accessibilityLabel(settings.playlistSortAscending ? "Sorted A to Z" : "Sorted Z to A")
                     .disabled(playlists.isEmpty)
                 }
                 ToolbarItem {
@@ -133,4 +133,5 @@ struct PlaylistListView: View {
         .modelContainer(preview.container)
         .environmentObject(PlaylistListViewModel())
         .environmentObject(MetronomePlaybackViewModel())
+        .environmentObject(SettingsViewModel())
 }
