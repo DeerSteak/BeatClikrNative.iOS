@@ -5,7 +5,6 @@
 //  Created by Ben Funk on 8/12/23.
 //
 
-import AudioKit
 import AVFoundation
 import Foundation
 
@@ -13,11 +12,8 @@ import Foundation
 class AudioPlayerService: MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDelegate {
     static let instance = AudioPlayerService()
 
-    let engine = AudioEngine()
-    private let sampler = AppleSampler()
-
-    private let audioEngine: MetronomeAudioEngine
-    private let polyEngine: PolyrhythmAudioEngine
+    private let metronomeEngine = ScheduledMetronomeEngine()
+    private let polyEngine = ScheduledPolyrhythmEngine()
 
     var sounds: [SoundFile]
 
@@ -25,10 +21,6 @@ class AudioPlayerService: MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDel
     weak var polyrhythmDelegate: PolyrhythmAudioEngineDelegate?
 
     init() {
-        engine.output = sampler
-        audioEngine = AudioKitMetronomeEngine(engine: engine, sampler: sampler)
-        polyEngine = AudioKitPolyrhythmEngine(sampler: sampler)
-
         // Configure audio session
         do {
             let session = AVAudioSession.sharedInstance()
@@ -39,51 +31,51 @@ class AudioPlayerService: MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDel
         }
 
         // Load all sound files
-        sounds = [SoundFile]()
-        for file in FileConstants.allCases {
-            if file != FileConstants.Silence, file != FileConstants.FileExt {
-                let sound = SoundFile(file.rawValue, file: "\(file.rawValue).\(FileConstants.FileExt.rawValue)", note: file.getNoteNumber())
-                sounds.append(sound)
-            }
+        sounds = FileConstants.allCases.compactMap { file in
+            guard file != .Silence, file != .FileExt else { return nil }
+            return SoundFile(file.rawValue, file: "\(file.rawValue).\(FileConstants.FileExt.rawValue)", note: file.getNoteNumber())
         }
 
-        // Start the audio engine
         do {
-            try audioEngine.start()
+            try metronomeEngine.start()
         } catch {
-            print("Can't start engine: \(error)")
+            print("Can't start metronome engine: \(error)")
+        }
+
+        do {
+            try polyEngine.start()
+        } catch {
+            print("Can't start polyrhythm engine: \(error)")
         }
     }
 
     // MARK: - Public API
 
-    /// Load the beat and rhythm sounds for both engines (they share the same sampler)
     func setupAudioPlayer(beatName: String, rhythmName: String) {
-        audioEngine.loadSounds(beatName: beatName, rhythmName: rhythmName, from: sounds)
+        metronomeEngine.loadSounds(beatName: beatName, rhythmName: rhythmName, from: sounds)
         polyEngine.loadSounds(beatName: beatName, rhythmName: rhythmName, from: sounds)
     }
 
-    /// Start the metronome with the given tempo, subdivisions, and optional accent pattern
     func startMetronome(bpm: Double, subdivisions: Int, accentPattern: [Bool]? = nil) {
-        audioEngine.startMetronome(bpm: bpm, subdivisions: subdivisions, accentPattern: accentPattern, delegate: self)
+        metronomeEngine.startMetronome(bpm: bpm, subdivisions: subdivisions, accentPattern: accentPattern, delegate: self)
     }
 
-    /// Stop the metronome
     func stopMetronome() {
-        audioEngine.stopMetronome()
+        metronomeEngine.stopMetronome()
     }
 
-    /// Update the tempo while playing
     func updateTempo(bpm: Double, subdivisions: Int) {
-        audioEngine.updateTempo(bpm: bpm, subdivisions: subdivisions)
+        metronomeEngine.updateTempo(bpm: bpm, subdivisions: subdivisions)
     }
 
-    /// Start the polyrhythm engine
+    func setRamp(enabled: Bool, increment: Int, interval: Int) {
+        metronomeEngine.setRamp(enabled: enabled, increment: increment, interval: interval)
+    }
+
     func startPolyrhythm(bpm: Double, beats: Int, against: Int) {
         polyEngine.startPolyrhythm(bpm: bpm, beats: beats, against: against, delegate: self)
     }
 
-    /// Stop the polyrhythm engine
     func stopPolyrhythm() {
         polyEngine.stopPolyrhythm()
     }
@@ -92,6 +84,10 @@ class AudioPlayerService: MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDel
 
     func metronomeBeatFired(isBeat: Bool, beatInterval: TimeInterval) {
         delegate?.metronomeBeatFired(isBeat: isBeat, beatInterval: beatInterval)
+    }
+
+    func metronomeRampStepped(newBpm: Double) {
+        delegate?.metronomeRampStepped(newBpm: newBpm)
     }
 
     // MARK: - PolyrhythmAudioEngineDelegate
