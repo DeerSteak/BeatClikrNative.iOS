@@ -5,7 +5,6 @@
 //  Created by Ben Funk on 4/10/26.
 //
 
-import AudioKit
 import Foundation
 
 /// Protocol for metronome audio playback engines.

@@ -13,6 +13,8 @@ protocol PolyrhythmAudioEngine {
     func loadSounds(beatName: String, rhythmName: String, from sounds: [SoundFile])
     func startPolyrhythm(bpm: Double, beats: Int, against: Int, delegate: PolyrhythmAudioEngineDelegate)
     func stopPolyrhythm()
+    func start() throws
+    func stop()
 }
 
 /// Delegate for polyrhythm beat callbacks.

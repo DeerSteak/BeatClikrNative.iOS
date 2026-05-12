@@ -5,7 +5,6 @@
 //  Created by Ben Funk on 8/12/23.
 //
 
-import AudioKit
 import AVFoundation
 import Foundation
 
@@ -13,20 +12,8 @@ import Foundation
 class AudioPlayerService: MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDelegate {
     static let instance = AudioPlayerService()
 
-    let engine = AudioEngine()
-    private let sampler = AppleSampler()
-
-    /// Scheduled engine: sample-accurate, no timer polling (Phase 2)
-    private let scheduledMetronomeEngine = ScheduledMetronomeEngine()
-    /// Legacy engine: timer-based fallback (Phase 1); kept for future settings toggle
-    private let legacyMetronomeEngine: AudioKitMetronomeEngine
-
-    // Future: switch between engines via a user setting
-    private var audioEngine: MetronomeAudioEngine {
-        scheduledMetronomeEngine
-    }
-
-    private let polyEngine: PolyrhythmAudioEngine
+    private let metronomeEngine = ScheduledMetronomeEngine()
+    private let polyEngine = ScheduledPolyrhythmEngine()
 
     var sounds: [SoundFile]
 
@@ -34,10 +21,6 @@ class AudioPlayerService: MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDel
     weak var polyrhythmDelegate: PolyrhythmAudioEngineDelegate?
 
     init() {
-        engine.output = sampler
-        legacyMetronomeEngine = AudioKitMetronomeEngine(engine: engine, sampler: sampler)
-        polyEngine = AudioKitPolyrhythmEngine(sampler: sampler)
-
         // Configure audio session
         do {
             let session = AVAudioSession.sharedInstance()
@@ -48,64 +31,51 @@ class AudioPlayerService: MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDel
         }
 
         // Load all sound files
-        sounds = [SoundFile]()
-        for file in FileConstants.allCases {
-            if file != FileConstants.Silence, file != FileConstants.FileExt {
-                let sound = SoundFile(file.rawValue, file: "\(file.rawValue).\(FileConstants.FileExt.rawValue)", note: file.getNoteNumber())
-                sounds.append(sound)
-            }
+        sounds = FileConstants.allCases.compactMap { file in
+            guard file != .Silence, file != .FileExt else { return nil }
+            return SoundFile(file.rawValue, file: "\(file.rawValue).\(FileConstants.FileExt.rawValue)", note: file.getNoteNumber())
         }
 
-        // Start the scheduled metronome engine (native AVAudioEngine)
         do {
-            try scheduledMetronomeEngine.start()
+            try metronomeEngine.start()
         } catch {
-            print("Can't start scheduled engine: \(error)")
+            print("Can't start metronome engine: \(error)")
         }
 
-        // Start the AudioKit engine for polyrhythm
         do {
-            try engine.start()
+            try polyEngine.start()
         } catch {
-            print("Can't start AudioKit engine: \(error)")
+            print("Can't start polyrhythm engine: \(error)")
         }
     }
 
     // MARK: - Public API
 
     func setupAudioPlayer(beatName: String, rhythmName: String) {
-        scheduledMetronomeEngine.loadSounds(beatName: beatName, rhythmName: rhythmName, from: sounds)
-        // Load the legacy engine's sampler so polyrhythm (which shares it) has sounds ready
-        legacyMetronomeEngine.loadSounds(beatName: beatName, rhythmName: rhythmName, from: sounds)
+        metronomeEngine.loadSounds(beatName: beatName, rhythmName: rhythmName, from: sounds)
         polyEngine.loadSounds(beatName: beatName, rhythmName: rhythmName, from: sounds)
     }
 
-    /// Start the metronome with the given tempo, subdivisions, and optional accent pattern
     func startMetronome(bpm: Double, subdivisions: Int, accentPattern: [Bool]? = nil) {
-        audioEngine.startMetronome(bpm: bpm, subdivisions: subdivisions, accentPattern: accentPattern, delegate: self)
+        metronomeEngine.startMetronome(bpm: bpm, subdivisions: subdivisions, accentPattern: accentPattern, delegate: self)
     }
 
-    /// Stop the metronome
     func stopMetronome() {
-        audioEngine.stopMetronome()
+        metronomeEngine.stopMetronome()
     }
 
-    /// Update the tempo while playing
     func updateTempo(bpm: Double, subdivisions: Int) {
-        audioEngine.updateTempo(bpm: bpm, subdivisions: subdivisions)
+        metronomeEngine.updateTempo(bpm: bpm, subdivisions: subdivisions)
     }
 
-    /// Configure ramp parameters on the active engine
     func setRamp(enabled: Bool, increment: Int, interval: Int) {
-        audioEngine.setRamp(enabled: enabled, increment: increment, interval: interval)
+        metronomeEngine.setRamp(enabled: enabled, increment: increment, interval: interval)
     }
 
-    /// Start the polyrhythm engine
     func startPolyrhythm(bpm: Double, beats: Int, against: Int) {
         polyEngine.startPolyrhythm(bpm: bpm, beats: beats, against: against, delegate: self)
     }
 
-    /// Stop the polyrhythm engine
     func stopPolyrhythm() {
         polyEngine.stopPolyrhythm()
     }
