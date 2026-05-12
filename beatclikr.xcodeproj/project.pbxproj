@@ -48,7 +48,6 @@
 		EE04731B2AA39267004E958A /* ClickerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE04731A2AA39267004E958A /* ClickerType.swift */; };
 		EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE07558E2A7E84D400E34D29 /* FormatterHelper.swift */; };
 		EE0939E72A7EA838005491BB /* RectangleText.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE0939E62A7EA838005491BB /* RectangleText.swift */; };
-
 		EE207A3F2A89734F00D8E267 /* SoundFile.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE207A3E2A89734F00D8E267 /* SoundFile.swift */; };
 		EE34F0762A7C7D8300CA5BD0 /* MetronomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE34F0752A7C7D8300CA5BD0 /* MetronomeView.swift */; };
 		EE3BEF3C2A83B476004B0C97 /* Groove.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3BEF3B2A83B476004B0C97 /* Groove.swift */; };
@@ -101,6 +100,12 @@
 		EE97D5A12A7E7EB900FA11A0 /* SongDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE97D5A02A7E7EB900FA11A0 /* SongDetailsView.swift */; };
 		EE9BD3DD2F89A555007F91FA /* PlaylistEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9BD3DC2F89A555007F91FA /* PlaylistEntry.swift */; };
 		EEC392172AA5FA3000F4AAB4 /* ImageConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC392162AA5FA3000F4AAB4 /* ImageConstants.swift */; };
+		EECFF58E2FB2E70D0075222A /* Models.md in Resources */ = {isa = PBXBuildFile; fileRef = EECFF5892FB2E70D0075222A /* Models.md */; };
+		EECFF58F2FB2E70D0075222A /* SongLibrary.md in Resources */ = {isa = PBXBuildFile; fileRef = EECFF58B2FB2E70D0075222A /* SongLibrary.md */; };
+		EECFF5902FB2E70D0075222A /* Services.md in Resources */ = {isa = PBXBuildFile; fileRef = EECFF58A2FB2E70D0075222A /* Services.md */; };
+		EECFF5912FB2E70D0075222A /* ViewModels.md in Resources */ = {isa = PBXBuildFile; fileRef = EECFF58C2FB2E70D0075222A /* ViewModels.md */; };
+		EECFF5922FB2E70D0075222A /* Views.md in Resources */ = {isa = PBXBuildFile; fileRef = EECFF58D2FB2E70D0075222A /* Views.md */; };
+		EECFF5932FB2E70D0075222A /* Constants.md in Resources */ = {isa = PBXBuildFile; fileRef = EECFF5882FB2E70D0075222A /* Constants.md */; };
 		EEE911532A7EDE07008DFDED /* FileConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE911522A7EDE07008DFDED /* FileConstants.swift */; };
 		EEE911552A7EDEDC008DFDED /* PreferenceKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE911542A7EDEDC008DFDED /* PreferenceKeys.swift */; };
 /* End PBXBuildFile section */
@@ -222,6 +227,12 @@
 		EE97D5A02A7E7EB900FA11A0 /* SongDetailsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongDetailsView.swift; sourceTree = "<group>"; };
 		EE9BD3DC2F89A555007F91FA /* PlaylistEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistEntry.swift; sourceTree = "<group>"; };
 		EEC392162AA5FA3000F4AAB4 /* ImageConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConstants.swift; sourceTree = "<group>"; };
+		EECFF5882FB2E70D0075222A /* Constants.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Constants.md; sourceTree = "<group>"; };
+		EECFF5892FB2E70D0075222A /* Models.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Models.md; sourceTree = "<group>"; };
+		EECFF58A2FB2E70D0075222A /* Services.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Services.md; sourceTree = "<group>"; };
+		EECFF58B2FB2E70D0075222A /* SongLibrary.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = SongLibrary.md; sourceTree = "<group>"; };
+		EECFF58C2FB2E70D0075222A /* ViewModels.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = ViewModels.md; sourceTree = "<group>"; };
+		EECFF58D2FB2E70D0075222A /* Views.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Views.md; sourceTree = "<group>"; };
 		EEE911522A7EDE07008DFDED /* FileConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileConstants.swift; sourceTree = "<group>"; };
 		EEE911542A7EDEDC008DFDED /* PreferenceKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreferenceKeys.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -278,6 +289,7 @@
 				B530421C2FA68ECE00A3CAE6 /* BeatClikrAppIcon.icon */,
 				EE5DFD752AD8253300756566 /* Localizable.xcstrings */,
 				EE5DFD712AD81FA900756566 /* README.md */,
+				EECFF57B2FB2E6DF0075222A /* Docs */,
 				EE84F2F32A7C7A21009E2F23 /* beatclikr */,
 				EE84F3082A7C7A23009E2F23 /* beatclikrTests */,
 				EE84F3122A7C7A24009E2F23 /* beatclikrUITests */,
@@ -425,6 +437,19 @@
 				EE5DFD7A2AD82CA500756566 /* PreviewContainer.swift */,
 			);
 			path = Helpers;
+			sourceTree = "<group>";
+		};
+		EECFF57B2FB2E6DF0075222A /* Docs */ = {
+			isa = PBXGroup;
+			children = (
+				EECFF5882FB2E70D0075222A /* Constants.md */,
+				EECFF5892FB2E70D0075222A /* Models.md */,
+				EECFF58A2FB2E70D0075222A /* Services.md */,
+				EECFF58B2FB2E70D0075222A /* SongLibrary.md */,
+				EECFF58C2FB2E70D0075222A /* ViewModels.md */,
+				EECFF58D2FB2E70D0075222A /* Views.md */,
+			);
+			path = Docs;
 			sourceTree = "<group>";
 		};
 		EEE9112F2A7EDC89008DFDED /* Resources */ = {
@@ -595,6 +620,12 @@
 				EE6406EA2A7EF6B900DEDED2 /* cowbell_G#3.wav in Resources */,
 				B530421D2FA68ECF00A3CAE6 /* BeatClikrAppIcon.icon in Resources */,
 				EE6406E92A7EF6B900DEDED2 /* kick_C2.wav in Resources */,
+				EECFF58E2FB2E70D0075222A /* Models.md in Resources */,
+				EECFF58F2FB2E70D0075222A /* SongLibrary.md in Resources */,
+				EECFF5902FB2E70D0075222A /* Services.md in Resources */,
+				EECFF5912FB2E70D0075222A /* ViewModels.md in Resources */,
+				EECFF5922FB2E70D0075222A /* Views.md in Resources */,
+				EECFF5932FB2E70D0075222A /* Constants.md in Resources */,
 				EE5DFD722AD81FA900756566 /* README.md in Resources */,
 				EE6406ED2A7EF6B900DEDED2 /* silence_D7.wav in Resources */,
 				EE6406EB2A7EF6B900DEDED2 /* ridebell_F3.wav in Resources */,
@@ -1072,7 +1103,6 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-
 	};
 	rootObject = EE84F2E92A7C7A21009E2F23 /* Project object */;
 }

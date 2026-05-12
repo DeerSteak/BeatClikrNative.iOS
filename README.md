@@ -1,5 +1,5 @@
 # BeatClikrNative.iOS
-BeatClikr's reimplementation for iOS 18+ with SwiftUI, SwiftData, AudioKit, and iCloud sync. Available on the App Store.
+BeatClikr's reimplementation for iOS 18+ with SwiftUI, SwiftData, AVFoundation audio scheduling, and iCloud sync. Available on the App Store.
 
 ## New for version 4.0
 
@@ -14,7 +14,7 @@ The generic SF Symbol `metronome` has been replaced with a custom SVG icon (`Met
 
 ### Polyrhythm
 A new **Polyrhythm** mode layers two independent rhythms at the same tempo: M beats against N (each 1–9, selectable via steppers). Both complete one cycle in N quarter notes. The view shows three proportional timeline rows — beat, rhythm, and a traversing playhead dot — so you can see and hear exactly how the two patterns align. BPM persists across launches and syncs via iCloud KV store.
-- Beat and rhythm rows use an LCM grid for sample-accurate alignment
+- Beat and rhythm playback uses independent scheduled audio tracks with a shared cycle origin
 - Each dot row is laid out as a proportional timeline (piano-roll style) with a `Capsule` background line
 - A third **playhead row** shows a single dot traversing the full cycle
 
