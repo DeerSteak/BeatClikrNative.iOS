@@ -11,7 +11,9 @@ import Foundation
 /// Sample-accurate polyrhythm engine using two independent AVAudioPlayerNode tracks.
 ///
 /// Beat and rhythm run as completely separate scheduling loops so they can fire at the
-/// same sample time without any buffer-mixing code — AVAudioEngine handles the mix.
+/// same sample time without any buffer-mixing code; AVAudioEngine handles the mix.
+/// Delegate notifications are scheduled from the same sample timeline as playback
+/// instead of using buffer completion as a proxy for beat onset.
 ///
 /// For M against N:
 ///   - Beat track fires every quarter note (60/bpm seconds)
@@ -43,6 +45,7 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
 
     // Incremented on every start/stop so stale callbacks self-discard
     private var sessionID = 0
+    private var eventStartTime: DispatchTime = .now()
     private var isPlaying = false
 
     private weak var delegate: PolyrhythmAudioEngineDelegate?
@@ -64,6 +67,7 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
         sessionID += 1
         beatNode.stop()
         rhythmNode.stop()
+        eventStartTime = .now()
         beatNode.play()
         rhythmNode.play()
 
@@ -133,17 +137,22 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
 
         while beatScheduledCount < scheduleAheadCount {
             let capturedIndex = currentBeatIndex
-            let when = AVAudioTime(sampleTime: beatNextSampleTime, atRate: sampleRate)
+            let scheduledSampleTime = beatNextSampleTime
+            let when = AVAudioTime(sampleTime: scheduledSampleTime, atRate: sampleRate)
 
-            beatNode.scheduleBuffer(buffer, at: when, options: []) { [weak self] in
+            scheduleDelegateEvent(
+                beatFired: true,
+                rhythmFired: false,
+                beatIndex: capturedIndex,
+                rhythmIndex: 0,
+                sampleTime: scheduledSampleTime,
+                sampleRate: sampleRate,
+                sessionID: capturedSession,
+            )
+
+            beatNode.scheduleBuffer(buffer, at: when, options: [], completionCallbackType: .dataConsumed) { [weak self] _ in
                 DispatchQueue.main.async {
                     guard let self, self.sessionID == capturedSession else { return }
-                    self.delegate?.polyrhythmBeatFired(
-                        beatFired: true,
-                        rhythmFired: false,
-                        beatIndex: capturedIndex,
-                        rhythmIndex: 0,
-                    )
                     self.beatScheduledCount -= 1
                     self.scheduleBeatBuffers()
                 }
@@ -165,17 +174,22 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
 
         while rhythmScheduledCount < scheduleAheadCount {
             let capturedIndex = currentRhythmIndex
-            let when = AVAudioTime(sampleTime: rhythmNextSampleTime, atRate: sampleRate)
+            let scheduledSampleTime = rhythmNextSampleTime
+            let when = AVAudioTime(sampleTime: scheduledSampleTime, atRate: sampleRate)
 
-            rhythmNode.scheduleBuffer(buffer, at: when, options: []) { [weak self] in
+            scheduleDelegateEvent(
+                beatFired: false,
+                rhythmFired: true,
+                beatIndex: 0,
+                rhythmIndex: capturedIndex,
+                sampleTime: scheduledSampleTime,
+                sampleRate: sampleRate,
+                sessionID: capturedSession,
+            )
+
+            rhythmNode.scheduleBuffer(buffer, at: when, options: [], completionCallbackType: .dataConsumed) { [weak self] _ in
                 DispatchQueue.main.async {
                     guard let self, self.sessionID == capturedSession else { return }
-                    self.delegate?.polyrhythmBeatFired(
-                        beatFired: false,
-                        rhythmFired: true,
-                        beatIndex: 0,
-                        rhythmIndex: capturedIndex,
-                    )
                     self.rhythmScheduledCount -= 1
                     self.scheduleRhythmBuffers()
                 }
@@ -184,6 +198,28 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
             rhythmNextSampleTime += AVAudioFramePosition(samplesPerRhythm)
             currentRhythmIndex = (currentRhythmIndex + 1) % rhythmCount
             rhythmScheduledCount += 1
+        }
+    }
+
+    private func scheduleDelegateEvent(
+        beatFired: Bool,
+        rhythmFired: Bool,
+        beatIndex: Int,
+        rhythmIndex: Int,
+        sampleTime: AVAudioFramePosition,
+        sampleRate: Double,
+        sessionID capturedSession: Int,
+    ) {
+        let secondsFromStart = Double(sampleTime) / sampleRate
+        let nanoseconds = Int(secondsFromStart * 1_000_000_000)
+        DispatchQueue.main.asyncAfter(deadline: eventStartTime + .nanoseconds(nanoseconds)) { [weak self] in
+            guard let self, sessionID == capturedSession else { return }
+            delegate?.polyrhythmBeatFired(
+                beatFired: beatFired,
+                rhythmFired: rhythmFired,
+                beatIndex: beatIndex,
+                rhythmIndex: rhythmIndex,
+            )
         }
     }
 }

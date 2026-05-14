@@ -48,7 +48,7 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
             if !applyingSettingsChange {
                 settings.updatePolyrhythmBeat(beat)
             }
-            audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
+            audio.setupPolyrhythmAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         }
     }
 
@@ -57,7 +57,7 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
             if !applyingSettingsChange {
                 settings.updatePolyrhythmRhythm(rhythm)
             }
-            audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
+            audio.setupPolyrhythmAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         }
     }
 
@@ -137,7 +137,7 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
         playheadResetID += 1
         resetCycleProgress()
         visualAnimator.start()
-        audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
+        audio.setupPolyrhythmAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         audio.startPolyrhythm(bpm: bpm, beats: beats, against: against)
         isPlaying = true
     }

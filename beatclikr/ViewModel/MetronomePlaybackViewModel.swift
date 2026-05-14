@@ -101,7 +101,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
                     settings.updatePlaylistBeat(beat)
                 }
             }
-            audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
+            audio.setupMetronomeAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         }
     }
 
@@ -114,7 +114,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
                     settings.updatePlaylistRhythm(rhythm)
                 }
             }
-            audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
+            audio.setupMetronomeAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         }
     }
 
@@ -165,7 +165,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         isBeat = false
 
         // Set self as delegate for audio callbacks
-        audio.delegate = self
+        audio.metronomeDelegate = self
         visualAnimator.onUpdate = { [weak self] scale, pulse in
             self?.iconScale = scale
             self?.beatPulse = pulse
@@ -225,7 +225,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             song.groove = .quarter
         }
 
-        audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
+        audio.setupMetronomeAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
     }
 
     func togglePlayPause() {

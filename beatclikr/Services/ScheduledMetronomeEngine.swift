@@ -9,8 +9,9 @@ import AVFoundation
 import Foundation
 
 /// Sample-accurate metronome engine using AVAudioPlayerNode scheduled buffers.
-/// Eliminates timer polling by pre-scheduling audio buffers on the audio thread,
-/// achieving hardware-level timing precision with no main-thread jitter.
+/// Pre-schedules audio buffers on the audio thread for sample-accurate playback.
+/// UI, haptic, flashlight, and ramp notifications are scheduled separately from
+/// the same sample timeline so buffer completion does not masquerade as beat onset.
 @MainActor
 class ScheduledMetronomeEngine: MetronomeAudioEngine {
     private let engine = AVAudioEngine()
@@ -24,8 +25,9 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
     private var nextBeatSampleTime: AVAudioFramePosition = 0
     private let scheduleAheadCount = 4
 
-    // Incremented on every start/stop so completion callbacks from prior sessions self-discard
+    // Incremented on every start/stop so callbacks from prior sessions self-discard
     private var sessionID = 0
+    private var eventStartTime: DispatchTime = .now()
     private var isPlaying = false
     private var currentBPM: Double = 60
     private var currentSubdivisions: Int = 1
@@ -34,7 +36,7 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
     private var accentPattern: [Bool]?
     private var patternIndex = 0
 
-    // Ramp state — precomputed into the scheduling lookahead
+    // Ramp state - precomputed into the scheduling lookahead
     private var rampEnabled = false
     private var rampIncrement: Double = 0
     private var rampInterval: Int = 1
@@ -57,6 +59,7 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
         sessionID += 1
         beatNode.stop()
         rhythmNode.stop()
+        eventStartTime = .now()
         beatNode.play()
         rhythmNode.play()
 
@@ -204,24 +207,27 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
         while scheduledCount < scheduleAheadCount {
             guard let beat = nextBeat(sampleRate: sampleRate) else { break }
 
-            // Cap buffer playback length to this beat's interval so the completion
-            // callback fires at the beat boundary rather than at sample end.
+            // Cap buffer playback length to this beat's interval so long samples
+            // do not overlap the next scheduled tick.
             let framesPerInterval = AVAudioFrameCount(beat.samplesPerSubdivision)
             beat.buffer.frameLength = min(beat.buffer.frameCapacity, framesPerInterval)
 
-            let capturedIsBeat = beat.isBeat
-            let capturedInterval = beat.beatInterval
-            let capturedRampedBpm = beat.rampedBpm
             let node = beat.isBeat ? beatNode : rhythmNode
-            let when = AVAudioTime(sampleTime: nextBeatSampleTime, atRate: sampleRate)
+            let scheduledSampleTime = nextBeatSampleTime
+            let when = AVAudioTime(sampleTime: scheduledSampleTime, atRate: sampleRate)
 
-            node.scheduleBuffer(beat.buffer, at: when, options: []) { [weak self] in
+            scheduleDelegateEvent(
+                isBeat: beat.isBeat,
+                beatInterval: beat.beatInterval,
+                rampedBpm: beat.rampedBpm,
+                sampleTime: scheduledSampleTime,
+                sampleRate: sampleRate,
+                sessionID: capturedSession,
+            )
+
+            node.scheduleBuffer(beat.buffer, at: when, options: [], completionCallbackType: .dataConsumed) { [weak self] _ in
                 DispatchQueue.main.async {
                     guard let self, self.sessionID == capturedSession else { return }
-                    if let newBpm = capturedRampedBpm {
-                        self.delegate?.metronomeRampStepped(newBpm: newBpm)
-                    }
-                    self.delegate?.metronomeBeatFired(isBeat: capturedIsBeat, beatInterval: capturedInterval)
                     self.scheduledCount -= 1
                     self.scheduleNextBeats()
                 }
@@ -229,6 +235,25 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
 
             nextBeatSampleTime += AVAudioFramePosition(beat.samplesPerSubdivision)
             scheduledCount += 1
+        }
+    }
+
+    private func scheduleDelegateEvent(
+        isBeat: Bool,
+        beatInterval: TimeInterval,
+        rampedBpm: Double?,
+        sampleTime: AVAudioFramePosition,
+        sampleRate: Double,
+        sessionID capturedSession: Int,
+    ) {
+        let secondsFromStart = Double(sampleTime) / sampleRate
+        let nanoseconds = Int(secondsFromStart * 1_000_000_000)
+        DispatchQueue.main.asyncAfter(deadline: eventStartTime + .nanoseconds(nanoseconds)) { [weak self] in
+            guard let self, sessionID == capturedSession else { return }
+            if let newBpm = rampedBpm {
+                delegate?.metronomeRampStepped(newBpm: newBpm)
+            }
+            delegate?.metronomeBeatFired(isBeat: isBeat, beatInterval: beatInterval)
         }
     }
 }

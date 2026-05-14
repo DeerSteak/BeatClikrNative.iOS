@@ -2,11 +2,11 @@
 
 ## Service Classes
 
-- **ScheduledMetronomeEngine** - Sample-accurate metronome using `AVAudioEngine` and scheduled `AVAudioPlayerNode` buffers. For odd meter grooves, steps through a `[Bool]` accent pattern on every subdivision tick and computes `beatInterval` (time to the next `true` entry) so the delegate can animate each group correctly
+- **ScheduledMetronomeEngine** - Sample-accurate metronome using `AVAudioEngine` and scheduled `AVAudioPlayerNode` buffers. It keeps a small audio lookahead window on the AVAudioEngine sample timeline, then schedules delegate callbacks from the same sample positions so visual animation, haptics, flashlight pulses, and ramp updates line up with beat onset instead of buffer completion. For odd meter grooves, steps through a `[Bool]` accent pattern on every subdivision tick and computes `beatInterval` (time to the next `true` entry) so the delegate can animate each group correctly
 
-- **ScheduledPolyrhythmEngine** - Polyrhythm engine using two independent scheduled `AVAudioPlayerNode` tracks. For M beats against N: the beat track fires every quarter note, the rhythm track fires every `N × 60 / (bpm × M)` seconds, and both tracks start from the same scheduled origin. Fires `polyrhythmBeatFired` callbacks with the active beat/rhythm index so the view can animate individual dots independently
+- **ScheduledPolyrhythmEngine** - Polyrhythm engine using two independent scheduled `AVAudioPlayerNode` tracks. For M beats against N: the beat track fires every quarter note, the rhythm track fires every `N × 60 / (bpm × M)` seconds, and both tracks start from the same scheduled origin. Schedules `polyrhythmBeatFired` callbacks from each track's sample timeline position with the active beat/rhythm index so the view can animate individual dots independently
 
-- **AudioPlayerService** - Singleton wrapper that owns the scheduled metronome and polyrhythm engines. Forwards delegate callbacks to `MetronomePlaybackViewModel` (via `delegate`) and `PolyrhythmViewModel` (via `polyrhythmDelegate`). Manages loading WAV files, configuring the audio engines, mapping user instrument preferences to sound files, and real-time tempo/subdivision updates
+- **AudioPlayerService** - `@MainActor` singleton wrapper that owns one `ScheduledMetronomeEngine` and one `ScheduledPolyrhythmEngine`. It configures the shared audio session, builds the app's sound catalog, starts both engines, and forwards callbacks to `MetronomePlaybackViewModel` via `metronomeDelegate` and `PolyrhythmViewModel` via `polyrhythmDelegate`. Metronome and polyrhythm sound loading are intentionally separate (`setupMetronomeAudio` and `setupPolyrhythmAudio`) so each mode can keep its own selected instruments without reloading the other engine. Real-time tempo/subdivision and ramp updates apply to the metronome engine.
 
 - **FlashlightService** - Controls device flashlight for visual beat accessibility
 
@@ -24,7 +24,7 @@ Sample-accurate timing is critical for a metronome. The current implementation u
 
 ### How it works
 
-`ScheduledMetronomeEngine` pre-schedules a small lookahead window of audio buffers:
+`ScheduledMetronomeEngine` pre-schedules a small lookahead window of audio buffers and a matching set of delegate events:
 
 ```
 First Beat Delay:   67ms (gives the scheduler time to queue initial buffers)
@@ -36,12 +36,14 @@ Clock Source:       AVAudioTime sampleTime on the engine output sample rate
 - Subdivision duration: 60 / (100 BPM × 2 subdivisions) = 300 ms
 - The engine converts that duration to samples at the current output sample rate
 - Beat and rhythm buffers are scheduled at exact `AVAudioTime(sampleTime:atRate:)` positions
-- Completion callbacks notify the delegate and queue the next buffer in the lookahead window
+- Delegate callbacks are scheduled with `DispatchQueue.main.asyncAfter` from the same sample-time positions as playback
+- Buffer completion callbacks only refill the audio lookahead window
 
 This approach provides:
 - **Hardware-timeline timing** — beats are scheduled on the audio engine sample clock
 - **No main-thread polling jitter** — playback does not depend on a 1 ms timer
 - **No drift** — future buffers are placed by sample time
+- **Onset-aligned UI events** — visuals, haptics, flashlight pulses, and ramp callbacks are timed to the scheduled beat position rather than the end of a buffer
 - **Real-time tempo changes** — newly scheduled buffers use updated BPM/subdivision settings
 - **Simulator & device support** — works reliably on all platforms
 
@@ -51,19 +53,23 @@ This approach provides:
 - Triggers visual animations (icon scale, beat pulse for transport bar)
 - Fires haptic feedback via `VibrationService`
 - Controls flashlight via `FlashlightService`
-- All synchronized to the audio engine's timing
+- Applies ramped BPM updates when `metronomeRampStepped(newBpm:)` fires
+- All synchronized to the scheduled audio sample timeline
+
+`PolyrhythmViewModel` implements `PolyrhythmAudioEngineDelegate` through `AudioPlayerService.polyrhythmDelegate`. The service keeps this separate from `metronomeDelegate` so metronome and polyrhythm screens do not overwrite each other's callback target.
 
 ---
 
 ## About Audio Playback
 
-BeatClikrNative.iOS uses **AVFoundation** for sound playback. WAV files are read into `AVAudioPCMBuffer`s and played through `AVAudioPlayerNode`s connected to an `AVAudioEngine` mixer.
+BeatClikrNative.iOS uses **AVFoundation** for sound playback. WAV files are read into `AVAudioPCMBuffer`s and played through `AVAudioPlayerNode`s connected to an `AVAudioEngine` mixer. The metronome and polyrhythm engines are separate instances, but both use the same scheduled-buffer approach.
 
 ### Sound Architecture
 - WAV files are loaded as `AVAudioFile`s and converted into reusable `AVAudioPCMBuffer`s
 - Beat and rhythm sounds are scheduled on separate player nodes
 - Beat vs. rhythm buffers are selected based on the subdivision counter or accent pattern
-- Supports instant sound switching without interrupting playback (Instant Metronome only)
+- Metronome and polyrhythm sound choices are loaded independently through `AudioPlayerService`
+- Supports instant sound switching without interrupting playback for the metronome path
 
 ### Alternate Sixteenth Notes
 
@@ -94,7 +100,7 @@ A `BeatPattern` raw value is a comma-separated list of group sizes, e.g. `"3,2,2
 "3,2,2"  →  [true, false, false, true, false, true, false]
 ```
 
-This array is passed to `ScheduledMetronomeEngine` as the `accentPattern`. The engine steps through it on every subdivision tick: a `true` entry schedules the beat buffer and fires `isBeat: true`; a `false` entry schedules the rhythm buffer and fires `isBeat: false`.
+This array is passed to `ScheduledMetronomeEngine` as the `accentPattern`. The engine steps through it on every subdivision tick: a `true` entry schedules the beat buffer and schedules an `isBeat: true` delegate event; a `false` entry schedules the rhythm buffer and schedules an `isBeat: false` delegate event.
 
 ### Subdivision rate
 
@@ -103,7 +109,7 @@ This array is passed to `ScheduledMetronomeEngine` as the `accentPattern`. The e
 
 ### Beat interval and animation
 
-When the engine fires an accented beat (`isBeat: true`), it looks ahead in the pattern to compute how long until the *next* accented beat and passes that as `beatInterval` to the delegate:
+When the engine schedules an accented beat (`isBeat: true`), it looks ahead in the pattern to compute how long until the *next* accented beat and passes that as `beatInterval` to the delegate:
 
 ```
 beatInterval = ticksToNextBeat × subdivisionDuration
@@ -140,7 +146,7 @@ Shared origin         = firstBeatDelay on the AVAudioEngine sample timeline
 - Rhythm track fires every 2.0 / 3 ≈ 666.7 ms → 3 times per cycle
 - Both tracks schedule their first buffer at the same sample-time origin
 
-The engine fires `polyrhythmBeatFired(beatFired:rhythmFired:beatIndex:rhythmIndex:)` from each track's completion callback. Because both tracks are scheduled on the same audio sample timeline, simultaneous hits (for example, the downbeat) remain aligned without buffer-mixing code.
+The engine schedules `polyrhythmBeatFired(beatFired:rhythmFired:beatIndex:rhythmIndex:)` from the same sample-time positions used for each track's audio buffers. Buffer completion callbacks are only used to refill each track's lookahead window. Because both tracks are scheduled on the same audio sample timeline, simultaneous hits (for example, the downbeat) remain aligned without buffer-mixing code.
 
 ### Visual dot rows
 

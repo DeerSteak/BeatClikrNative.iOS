@@ -20,8 +20,6 @@ enum MetronomeConstants {
     static let iconScaleMin: CGFloat = 0.5
     static let iconScaleMax: CGFloat = 1.0
 
-    // Timing (in seconds)
-    static let timerCheckInterval: TimeInterval = 0.005 // 5ms for high-precision checks
-    static let firstBeatDelay: TimeInterval = 0.067 // 67ms delay to ensure timer starts before first beat
-    static let lookaheadTolerance: TimeInterval = 0.003 // 3ms lookahead for beat firing
+    /// Timing (in seconds)
+    static let firstBeatDelay: TimeInterval = 0.067 // Delay before first scheduled audio event
 }

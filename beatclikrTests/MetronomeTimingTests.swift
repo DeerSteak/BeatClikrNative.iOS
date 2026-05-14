@@ -58,29 +58,14 @@ final class MetronomeTimingTests: XCTestCase {
         XCTAssertEqual(beatMax, 0.25, accuracy: 0.001, "240 BPM beat should last 0.25 seconds")
     }
 
-    // MARK: - Timing Precision Tests
-
-    func testTimerCheckIntervalIsSufficientlySmall() {
-        // Timer check interval should be much smaller than the fastest possible subdivision
-        let fastestSubdivision = 60.0 / (MetronomeConstants.maxBPM * 4.0) // 240 BPM with 4 subdivisions
-        XCTAssertLessThan(MetronomeConstants.timerCheckInterval, fastestSubdivision / 10,
-                          "Timer check interval should be at least 10x faster than the fastest subdivision")
-    }
+    // MARK: - Scheduled Audio Timing Tests
 
     func testFirstBeatDelayIsReasonable() {
-        // First beat delay should be longer than timer check interval but shorter than slowest beat
-        XCTAssertGreaterThan(MetronomeConstants.firstBeatDelay, MetronomeConstants.timerCheckInterval,
-                             "First beat delay should be longer than timer check interval")
-
+        XCTAssertGreaterThan(MetronomeConstants.firstBeatDelay, 0,
+                             "First beat delay should be positive")
         let slowestBeat = 60.0 / MetronomeConstants.minBPM
         XCTAssertLessThan(MetronomeConstants.firstBeatDelay, slowestBeat,
                           "First beat delay should be shorter than the slowest possible beat")
-    }
-
-    func testLookaheadToleranceIsSmall() {
-        // Lookahead tolerance should be small enough to not cause noticeable timing drift
-        XCTAssertLessThan(MetronomeConstants.lookaheadTolerance, 0.01,
-                          "Lookahead tolerance should be less than 10ms to avoid timing drift")
     }
 
     // MARK: - Edge Case Tests
@@ -96,7 +81,7 @@ final class MetronomeTimingTests: XCTestCase {
         // Test maximum BPM with maximum subdivisions
         let duration = 60.0 / (MetronomeConstants.maxBPM * 4.0)
         XCTAssertGreaterThan(duration, 0, "Duration should be positive even at maximum speed")
-        XCTAssertGreaterThan(duration, MetronomeConstants.timerCheckInterval * 5,
-                             "Duration should be detectable by timer even at maximum speed")
+        XCTAssertGreaterThan(duration, 0.01,
+                             "Duration should remain practical for scheduled audio events")
     }
 }
