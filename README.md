@@ -48,7 +48,7 @@ Practice reminder settings sync via iCloud KV store, so enabling reminders on on
 
 This project relies on WAV files that are not in git. You will need to supply your own:
 
-- Place files with the correct names in `beatclikr/Resources/Sounds/`
+- Place files with the correct names in `beatclikr/Resources/Sounds/Acoustic/` and `beatclikr/Resources/Sounds/Synth/`
 - See `Constants/FileConstants.swift` for the required filenames and MIDI note mappings
 
 The WAV files are proprietary recordings. You're free to use this code, but you'll need your own media files.

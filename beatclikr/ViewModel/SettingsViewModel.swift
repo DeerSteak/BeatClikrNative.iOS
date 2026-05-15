@@ -69,6 +69,10 @@ class SettingsViewModel: ObservableObject {
         didSet { defaults.metronomeRhythm = metronomeRhythm }
     }
 
+    @Published var soundBank: SoundBank {
+        didSet { defaults.soundBank = soundBank }
+    }
+
     @Published var metronomeBeatPattern: String? {
         didSet { defaults.metronomeBeatPattern = metronomeBeatPattern }
     }
@@ -140,6 +144,7 @@ class SettingsViewModel: ObservableObject {
         metronomeGroove = defaults.metronomeGroove
         metronomeBeat = defaults.metronomeBeat
         metronomeRhythm = defaults.metronomeRhythm
+        soundBank = defaults.soundBank
         metronomeBeatPattern = defaults.metronomeBeatPattern
         rampEnabled = defaults.rampEnabled
         rampIncrement = defaults.rampIncrement
@@ -187,6 +192,10 @@ class SettingsViewModel: ObservableObject {
 
     func updateMetronomeRhythm(_ rhythm: FileConstants) {
         metronomeRhythm = rhythm
+    }
+
+    func updateSoundBank(_ bank: SoundBank) {
+        soundBank = bank
     }
 
     func updateMetronomeBeatPattern(_ beatPattern: BeatPattern?) {

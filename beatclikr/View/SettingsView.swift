@@ -83,6 +83,20 @@ struct SettingsView: View {
                         Divider().padding(.leading, 12)
                         Toggle(LocalizedStringKey("SixteenthAlternate"), isOn: $model.sixteenthAlternate)
                             .padding(12)
+                        Divider().padding(.leading, 12)
+                        menuRow(label: "Sound bank") {
+                            Menu {
+                                Picker("Sound bank", selection: $model.soundBank) {
+                                    ForEach(SoundBank.allCases) { option in
+                                        Text(option.description)
+                                    }
+                                }
+                                .pickerStyle(.inline)
+                                .labelsHidden()
+                            } label: {
+                                menuLabel(model.soundBank.description)
+                            }
+                        }
                     } footer: {
                         Text("MetronomePlaybackDescription")
                             .font(.footnote)
@@ -256,7 +270,7 @@ struct SettingsView: View {
             Image(systemName: ImageConstants.chevronUpDown)
                 .font(.caption2)
         }
-        .foregroundStyle(Color.accentColor)
+        .foregroundStyle(Color.accent)
     }
 }
 

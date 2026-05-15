@@ -10,7 +10,9 @@
   - *Synced* — written to both `UserDefaults.standard` and `NSUbiquitousKeyValueStore` (e.g. instrument choices, reminder settings)
   - *Local only* — never synced to cloud (e.g. `RemindersDeferredDate`)
 
-- **FileConstants** - Enum mapping sound names to WAV filenames and MIDI note numbers. The WAV files in `Resources/Sounds/` must match these names exactly
+- **SoundBank** - Enum for the available sound folders under `Resources/Sounds/`; currently `Acoustic` and `Synth`
+
+- **FileConstants** - Enum mapping sound names to WAV filenames and MIDI note numbers. Each sound bank folder under `Resources/Sounds/` uses the same filenames
 
 - **InstrumentLists** - Filtered lists of `FileConstants` cases for beat and rhythm instrument pickers in Settings
 

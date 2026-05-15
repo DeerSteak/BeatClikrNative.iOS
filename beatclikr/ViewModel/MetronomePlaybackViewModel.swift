@@ -348,6 +348,15 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             }
             .store(in: &settingsCancellables)
 
+        settings.$soundBank
+            .dropFirst()
+            .sink { [weak self] bank in
+                guard let self else { return }
+                audio.setSoundBank(bank)
+                audio.setupMetronomeAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
+            }
+            .store(in: &settingsCancellables)
+
         settings.$metronomeBeatPattern
             .dropFirst()
             .sink { [weak self] rawValue in

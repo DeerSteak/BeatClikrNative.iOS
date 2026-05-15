@@ -1331,6 +1331,9 @@
         }
       }
     },
+    "Sound bank" : {
+
+    },
     "TAP\nTEMPO" : {
       "comment" : "A label for a button to tap the tempo",
       "localizations" : {

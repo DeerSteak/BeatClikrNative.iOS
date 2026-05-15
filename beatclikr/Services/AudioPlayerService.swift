@@ -16,6 +16,7 @@ class AudioPlayerService: MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDel
     private let polyrhythmEngine = ScheduledPolyrhythmEngine()
 
     var sounds: [SoundFile]
+    private var activeSoundBank: SoundBank
 
     weak var metronomeDelegate: MetronomeAudioEngineDelegate?
     weak var polyrhythmDelegate: PolyrhythmAudioEngineDelegate?
@@ -30,11 +31,8 @@ class AudioPlayerService: MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDel
             print("Failed to configure audio session: \(error)")
         }
 
-        // Load all sound files
-        sounds = FileConstants.allCases.compactMap { file in
-            guard file != .Silence, file != .FileExt else { return nil }
-            return SoundFile(file.rawValue, file: "\(file.rawValue).\(FileConstants.FileExt.rawValue)", note: file.getNoteNumber())
-        }
+        activeSoundBank = UserDefaultsService.instance.soundBank
+        sounds = Self.loadSounds(bank: activeSoundBank)
 
         do {
             try metronomeEngine.start()
@@ -52,11 +50,19 @@ class AudioPlayerService: MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDel
     // MARK: - Public API
 
     func setupMetronomeAudio(beatName: String, rhythmName: String) {
+        reloadSoundsIfNeeded()
         metronomeEngine.loadSounds(beatName: beatName, rhythmName: rhythmName, from: sounds)
     }
 
     func setupPolyrhythmAudio(beatName: String, rhythmName: String) {
+        reloadSoundsIfNeeded()
         polyrhythmEngine.loadSounds(beatName: beatName, rhythmName: rhythmName, from: sounds)
+    }
+
+    func setSoundBank(_ bank: SoundBank) {
+        guard activeSoundBank != bank else { return }
+        activeSoundBank = bank
+        sounds = Self.loadSounds(bank: bank)
     }
 
     func startMetronome(bpm: Double, subdivisions: Int, accentPattern: [Bool]? = nil) {
@@ -97,5 +103,18 @@ class AudioPlayerService: MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDel
 
     func polyrhythmBeatFired(beatFired: Bool, rhythmFired: Bool, beatIndex: Int, rhythmIndex: Int) {
         polyrhythmDelegate?.polyrhythmBeatFired(beatFired: beatFired, rhythmFired: rhythmFired, beatIndex: beatIndex, rhythmIndex: rhythmIndex)
+    }
+
+    // MARK: - Private
+
+    private static func loadSounds(bank: SoundBank) -> [SoundFile] {
+        FileConstants.allCases.compactMap { file in
+            guard file != .Silence, file != .FileExt else { return nil }
+            return SoundFile(file.rawValue, file: "\(file.rawValue).\(FileConstants.FileExt.rawValue)", note: file.getNoteNumber(), bank: bank)
+        }
+    }
+
+    private func reloadSoundsIfNeeded() {
+        setSoundBank(UserDefaultsService.instance.soundBank)
     }
 }

@@ -198,6 +198,15 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
                 applySettingsChange { self.rhythm = rhythm }
             }
             .store(in: &settingsCancellables)
+
+        settings.$soundBank
+            .dropFirst()
+            .sink { [weak self] bank in
+                guard let self else { return }
+                audio.setSoundBank(bank)
+                audio.setupPolyrhythmAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
+            }
+            .store(in: &settingsCancellables)
     }
 
     private func applySettingsChange(_ update: () -> Void) {

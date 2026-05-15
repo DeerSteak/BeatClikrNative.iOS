@@ -58,24 +58,9 @@
 		EE5DFD762AD8253300756566 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = EE5DFD752AD8253300756566 /* Localizable.xcstrings */; };
 		EE5DFD782AD82B5A00756566 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5DFD772AD82B5A00756566 /* SettingsViewModel.swift */; };
 		EE5DFD7B2AD82CA600756566 /* PreviewContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5DFD7A2AD82CA500756566 /* PreviewContainer.swift */; };
+		EE5F00012FB4D00000100001 /* Sounds Folder in Resources */ = {isa = PBXBuildFile; fileRef = EE5F00002FB4D00000100001 /* Sounds Folder */; };
 		EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */; };
 		EE6406BC2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */; };
-		EE6406E22A7EF6B900DEDED2 /* crashr_A3.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406D22A7EF6B800DEDED2 /* crashr_A3.wav */; };
-		EE6406E32A7EF6B900DEDED2 /* tamb_F#3.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406D32A7EF6B800DEDED2 /* tamb_F#3.wav */; };
-		EE6406E42A7EF6B900DEDED2 /* hatclosed_F#2.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406D42A7EF6B900DEDED2 /* hatclosed_F#2.wav */; };
-		EE6406E52A7EF6B900DEDED2 /* clickhi_E5.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406D52A7EF6B900DEDED2 /* clickhi_E5.wav */; };
-		EE6406E62A7EF6B900DEDED2 /* crashl_C#3.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406D62A7EF6B900DEDED2 /* crashl_C#3.wav */; };
-		EE6406E72A7EF6B900DEDED2 /* tomlow_A2.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406D72A7EF6B900DEDED2 /* tomlow_A2.wav */; };
-		EE6406E82A7EF6B900DEDED2 /* tommid_B2.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406D82A7EF6B900DEDED2 /* tommid_B2.wav */; };
-		EE6406E92A7EF6B900DEDED2 /* kick_C2.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406D92A7EF6B900DEDED2 /* kick_C2.wav */; };
-		EE6406EA2A7EF6B900DEDED2 /* cowbell_G#3.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406DA2A7EF6B900DEDED2 /* cowbell_G#3.wav */; };
-		EE6406EB2A7EF6B900DEDED2 /* ridebell_F3.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406DB2A7EF6B900DEDED2 /* ridebell_F3.wav */; };
-		EE6406EC2A7EF6B900DEDED2 /* tomhi_D3.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406DC2A7EF6B900DEDED2 /* tomhi_D3.wav */; };
-		EE6406ED2A7EF6B900DEDED2 /* silence_D7.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406DD2A7EF6B900DEDED2 /* silence_D7.wav */; };
-		EE6406EE2A7EF6B900DEDED2 /* snare_D2.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406DE2A7EF6B900DEDED2 /* snare_D2.wav */; };
-		EE6406EF2A7EF6B900DEDED2 /* clicklo_F5.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406DF2A7EF6B900DEDED2 /* clicklo_F5.wav */; };
-		EE6406F02A7EF6B900DEDED2 /* rideedge_D#3.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406E02A7EF6B900DEDED2 /* rideedge_D#3.wav */; };
-		EE6406F12A7EF6B900DEDED2 /* hatopen_A#2.wav in Resources */ = {isa = PBXBuildFile; fileRef = EE6406E12A7EF6B900DEDED2 /* hatopen_A#2.wav */; };
 		EE6D2F532F8A64DA00A1D4B7 /* PlaylistDetailViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE6D2F522F8A64D200A1D4B7 /* PlaylistDetailViewModel.swift */; };
 		EE738F442FABE7A8002642C3 /* PlaylistFocusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE738F432FABE7A8002642C3 /* PlaylistFocusView.swift */; };
 		EE7774232FAD137B00B87244 /* PolyrhythmViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE7774222FAD137B00B87244 /* PolyrhythmViewModelTests.swift */; };
@@ -179,25 +164,10 @@
 		EE5DFD752AD8253300756566 /* Localizable.xcstrings */ = {isa = PBXFileReference; lastKnownFileType = text.json.xcstrings; path = Localizable.xcstrings; sourceTree = "<group>"; };
 		EE5DFD772AD82B5A00756566 /* SettingsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsViewModel.swift; sourceTree = "<group>"; };
 		EE5DFD7A2AD82CA500756566 /* PreviewContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewContainer.swift; sourceTree = "<group>"; };
+		EE5F00002FB4D00000100001 /* Sounds Folder */ = {isa = PBXFileReference; lastKnownFileType = folder; name = "Sounds Folder"; path = Sounds; sourceTree = "<group>"; };
 		EE60CA7E2F89CC4F007C2459 /* beatclikrDebug.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = beatclikrDebug.entitlements; sourceTree = "<group>"; };
 		EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlayerView.swift; sourceTree = "<group>"; };
 		EE6406BB2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlaybackViewModel.swift; sourceTree = "<group>"; };
-		EE6406D22A7EF6B800DEDED2 /* crashr_A3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = crashr_A3.wav; sourceTree = "<group>"; };
-		EE6406D32A7EF6B800DEDED2 /* tamb_F#3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "tamb_F#3.wav"; sourceTree = "<group>"; };
-		EE6406D42A7EF6B900DEDED2 /* hatclosed_F#2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "hatclosed_F#2.wav"; sourceTree = "<group>"; };
-		EE6406D52A7EF6B900DEDED2 /* clickhi_E5.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = clickhi_E5.wav; sourceTree = "<group>"; };
-		EE6406D62A7EF6B900DEDED2 /* crashl_C#3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "crashl_C#3.wav"; sourceTree = "<group>"; };
-		EE6406D72A7EF6B900DEDED2 /* tomlow_A2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = tomlow_A2.wav; sourceTree = "<group>"; };
-		EE6406D82A7EF6B900DEDED2 /* tommid_B2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = tommid_B2.wav; sourceTree = "<group>"; };
-		EE6406D92A7EF6B900DEDED2 /* kick_C2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = kick_C2.wav; sourceTree = "<group>"; };
-		EE6406DA2A7EF6B900DEDED2 /* cowbell_G#3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "cowbell_G#3.wav"; sourceTree = "<group>"; };
-		EE6406DB2A7EF6B900DEDED2 /* ridebell_F3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = ridebell_F3.wav; sourceTree = "<group>"; };
-		EE6406DC2A7EF6B900DEDED2 /* tomhi_D3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = tomhi_D3.wav; sourceTree = "<group>"; };
-		EE6406DD2A7EF6B900DEDED2 /* silence_D7.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = silence_D7.wav; sourceTree = "<group>"; };
-		EE6406DE2A7EF6B900DEDED2 /* snare_D2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = snare_D2.wav; sourceTree = "<group>"; };
-		EE6406DF2A7EF6B900DEDED2 /* clicklo_F5.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = clicklo_F5.wav; sourceTree = "<group>"; };
-		EE6406E02A7EF6B900DEDED2 /* rideedge_D#3.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "rideedge_D#3.wav"; sourceTree = "<group>"; };
-		EE6406E12A7EF6B900DEDED2 /* hatopen_A#2.wav */ = {isa = PBXFileReference; lastKnownFileType = audio.wav; path = "hatopen_A#2.wav"; sourceTree = "<group>"; };
 		EE6D2F522F8A64D200A1D4B7 /* PlaylistDetailViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistDetailViewModel.swift; sourceTree = "<group>"; };
 		EE738F432FABE7A8002642C3 /* PlaylistFocusView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistFocusView.swift; sourceTree = "<group>"; };
 		EE7774222FAD137B00B87244 /* PolyrhythmViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolyrhythmViewModelTests.swift; sourceTree = "<group>"; };
@@ -455,32 +425,9 @@
 		EEE9112F2A7EDC89008DFDED /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				EEE911302A7EDC94008DFDED /* Sounds */,
+				EE5F00002FB4D00000100001 /* Sounds Folder */,
 			);
 			path = Resources;
-			sourceTree = "<group>";
-		};
-		EEE911302A7EDC94008DFDED /* Sounds */ = {
-			isa = PBXGroup;
-			children = (
-				EE6406D52A7EF6B900DEDED2 /* clickhi_E5.wav */,
-				EE6406DF2A7EF6B900DEDED2 /* clicklo_F5.wav */,
-				EE6406DA2A7EF6B900DEDED2 /* cowbell_G#3.wav */,
-				EE6406D62A7EF6B900DEDED2 /* crashl_C#3.wav */,
-				EE6406D22A7EF6B800DEDED2 /* crashr_A3.wav */,
-				EE6406D42A7EF6B900DEDED2 /* hatclosed_F#2.wav */,
-				EE6406E12A7EF6B900DEDED2 /* hatopen_A#2.wav */,
-				EE6406D92A7EF6B900DEDED2 /* kick_C2.wav */,
-				EE6406DB2A7EF6B900DEDED2 /* ridebell_F3.wav */,
-				EE6406E02A7EF6B900DEDED2 /* rideedge_D#3.wav */,
-				EE6406DD2A7EF6B900DEDED2 /* silence_D7.wav */,
-				EE6406DE2A7EF6B900DEDED2 /* snare_D2.wav */,
-				EE6406D32A7EF6B800DEDED2 /* tamb_F#3.wav */,
-				EE6406DC2A7EF6B900DEDED2 /* tomhi_D3.wav */,
-				EE6406D72A7EF6B900DEDED2 /* tomlow_A2.wav */,
-				EE6406D82A7EF6B900DEDED2 /* tommid_B2.wav */,
-			);
-			path = Sounds;
 			sourceTree = "<group>";
 		};
 		EEE911512A7EDDF5008DFDED /* Constants */ = {
@@ -605,21 +552,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE6406F02A7EF6B900DEDED2 /* rideedge_D#3.wav in Resources */,
-				EE6406E82A7EF6B900DEDED2 /* tommid_B2.wav in Resources */,
-				EE6406E72A7EF6B900DEDED2 /* tomlow_A2.wav in Resources */,
-				EE6406EC2A7EF6B900DEDED2 /* tomhi_D3.wav in Resources */,
-				EE6406E42A7EF6B900DEDED2 /* hatclosed_F#2.wav in Resources */,
-				EE6406E22A7EF6B900DEDED2 /* crashr_A3.wav in Resources */,
 				EE5DFD762AD8253300756566 /* Localizable.xcstrings in Resources */,
-				EE6406E62A7EF6B900DEDED2 /* crashl_C#3.wav in Resources */,
-				EE6406F12A7EF6B900DEDED2 /* hatopen_A#2.wav in Resources */,
-				EE6406EE2A7EF6B900DEDED2 /* snare_D2.wav in Resources */,
-				EE6406E52A7EF6B900DEDED2 /* clickhi_E5.wav in Resources */,
-				EE6406EF2A7EF6B900DEDED2 /* clicklo_F5.wav in Resources */,
-				EE6406EA2A7EF6B900DEDED2 /* cowbell_G#3.wav in Resources */,
 				B530421D2FA68ECF00A3CAE6 /* BeatClikrAppIcon.icon in Resources */,
-				EE6406E92A7EF6B900DEDED2 /* kick_C2.wav in Resources */,
+				EE5F00012FB4D00000100001 /* Sounds Folder in Resources */,
 				EECFF58E2FB2E70D0075222A /* Models.md in Resources */,
 				EECFF58F2FB2E70D0075222A /* SongLibrary.md in Resources */,
 				EECFF5902FB2E70D0075222A /* Services.md in Resources */,
@@ -627,10 +562,7 @@
 				EECFF5922FB2E70D0075222A /* Views.md in Resources */,
 				EECFF5932FB2E70D0075222A /* Constants.md in Resources */,
 				EE5DFD722AD81FA900756566 /* README.md in Resources */,
-				EE6406ED2A7EF6B900DEDED2 /* silence_D7.wav in Resources */,
-				EE6406EB2A7EF6B900DEDED2 /* ridebell_F3.wav in Resources */,
 				EE84F2FE2A7C7A23009E2F23 /* Preview Assets.xcassets in Resources */,
-				EE6406E32A7EF6B900DEDED2 /* tamb_F#3.wav in Resources */,
 				EE84F2FB2A7C7A23009E2F23 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

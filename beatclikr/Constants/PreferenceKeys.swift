@@ -12,6 +12,7 @@ enum PreferenceKeys {
 
     static let metronomeBeat = "InstantBeat"
     static let metronomeRhythm = "InstantRhythm"
+    static let soundBank = "SoundBank"
     static let metronomeGroove = "InstantGroove"
     static let metronomeBeatPattern = "InstantBeatPattern"
     static let metronomeBpm = "InstantBpm"
