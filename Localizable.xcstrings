@@ -582,13 +582,13 @@
         "en" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "BeatClikr will always animate the metronome, and it plays audio by default. Choose other playback settings here."
+            "value" : "BeatClikr will always animate the metronome, and it plays audio by default. Flashlight and vibration apply to Metronome and Playlist modes on iOS and iPadOS only. Choose other playback settings here."
           }
         },
         "es" : {
           "stringUnit" : {
             "state" : "translated",
-            "value" : "BeatClikr siempre animará el metrónomo y reproducirá audio de forma predeterminada. Seleccione otras opciones de reproducción aquí."
+            "value" : "BeatClikr siempre animará el metrónomo y reproducirá audio de forma predeterminada. La linterna y la vibración solo se aplican a los modos Metrónomo y Playlist en iOS e iPadOS. Seleccione otras opciones de reproducción aquí."
           }
         }
       }

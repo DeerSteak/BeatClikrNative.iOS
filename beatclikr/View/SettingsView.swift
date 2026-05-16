@@ -164,14 +164,6 @@ struct SettingsView: View {
                                 menuLabel(model.playlistRhythm.description)
                             }
                         }
-                    } footer: {
-                        Text("PlaybackInstrumentsDescription")
-                            .font(.footnote)
-                            .foregroundStyle(.secondary)
-                            .padding(.horizontal, 4)
-                        Rectangle()
-                            .foregroundColor(Color(.clear))
-                            .frame(height: 5)
                     }
 
                     // Polyrhythm instruments card
@@ -203,6 +195,14 @@ struct SettingsView: View {
                                 menuLabel(model.polyrhythmRhythm.description)
                             }
                         }
+                    } footer: {
+                        Text("PlaybackInstrumentsDescription")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .padding(.horizontal, 4)
+                        Rectangle()
+                            .foregroundColor(Color(.clear))
+                            .frame(height: 5)
                     }
 
                     // About card
