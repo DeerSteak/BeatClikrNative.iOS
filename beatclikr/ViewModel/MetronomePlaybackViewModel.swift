@@ -180,7 +180,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
         if isBeat {
             visualAnimator.notifyBeat(interval: beatInterval)
-            handleBeat()
+            handleBeat(beatInterval: beatInterval)
         } else {
             handleRhythm()
         }
@@ -249,6 +249,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         activeBpm = bpm
         let groove = song.groove ?? selectedGroove
         audio.setRamp(enabled: rampEnabled && clickerType == .metronome, increment: rampIncrement, interval: rampInterval)
+        vibration.prepare()
         audio.startMetronome(bpm: bpm, subdivisions: groove.subdivisions, accentPattern: computeAccentPattern())
         visualAnimator.start()
         isPlaying = true
@@ -297,12 +298,20 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         }
     }
 
-    private func handleBeat() {
+    private func handleBeat(beatInterval: TimeInterval) {
         if settings.useVibration {
             vibration.vibrateBeat()
         }
         if settings.useFlashlight {
             flashlight.turnFlashlightOn()
+            let groove = clickerType == .metronome ? selectedGroove : (song.groove ?? .quarter)
+            if groove.subdivisions == 1 {
+                // Quarter groove fires no rhythm event, so schedule the flashlight off at the half-beat point.
+                DispatchQueue.main.asyncAfter(deadline: .now() + beatInterval / 2) { [weak self] in
+                    guard let self, isPlaying else { return }
+                    flashlight.turnFlashlightOff()
+                }
+            }
         }
     }
 
