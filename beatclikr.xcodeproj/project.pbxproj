@@ -29,6 +29,9 @@
 		B537D34F2FA382B300CB2D7D /* Playlist.swift in Sources */ = {isa = PBXBuildFile; fileRef = B537D34E2FA382B300CB2D7D /* Playlist.swift */; };
 		B537D3512FA383B400CB2D7D /* PlaylistListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B537D3502FA383B400CB2D7D /* PlaylistListViewModel.swift */; };
 		B537D3532FA383BD00CB2D7D /* PlaylistListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B537D3522FA383BD00CB2D7D /* PlaylistListView.swift */; };
+		B56F98C12FE5B22600E09E52 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56F98C02FE5B22600E09E52 /* Sequence.swift */; };
+		B56F98C32FE5BEBF00E09E52 /* SequencerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56F98C22FE5BEBF00E09E52 /* SequencerConfiguration.swift */; };
+		B56F98C52FE5BEE700E09E52 /* SequencePattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56F98C42FE5BEE700E09E52 /* SequencePattern.swift */; };
 		B5900FC92FAB752B008416A1 /* SettingsCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5900FC82FAB752B008416A1 /* SettingsCard.swift */; };
 		B5900FCB2FAB770F008416A1 /* CardContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5900FCA2FAB770F008416A1 /* CardContainer.swift */; };
 		B59482B12FA3C88A00410C67 /* TapTempoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59482B02FA3C88A00410C67 /* TapTempoButton.swift */; };
@@ -133,6 +136,9 @@
 		B537D34E2FA382B300CB2D7D /* Playlist.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Playlist.swift; sourceTree = "<group>"; };
 		B537D3502FA383B400CB2D7D /* PlaylistListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistListViewModel.swift; sourceTree = "<group>"; };
 		B537D3522FA383BD00CB2D7D /* PlaylistListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistListView.swift; sourceTree = "<group>"; };
+		B56F98C02FE5B22600E09E52 /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
+		B56F98C22FE5BEBF00E09E52 /* SequencerConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequencerConfiguration.swift; sourceTree = "<group>"; };
+		B56F98C42FE5BEE700E09E52 /* SequencePattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequencePattern.swift; sourceTree = "<group>"; };
 		B5900FC82FAB752B008416A1 /* SettingsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCard.swift; sourceTree = "<group>"; };
 		B5900FCA2FAB770F008416A1 /* CardContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardContainer.swift; sourceTree = "<group>"; };
 		B59482B02FA3C88A00410C67 /* TapTempoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapTempoButton.swift; sourceTree = "<group>"; };
@@ -347,6 +353,9 @@
 				EE9BD3DC2F89A555007F91FA /* PlaylistEntry.swift */,
 				B524A0C32FA52BB60085E73C /* PracticedSong.swift */,
 				B524A0C12FA529E00085E73C /* PracticeSession.swift */,
+				B56F98C02FE5B22600E09E52 /* Sequence.swift */,
+				B56F98C42FE5BEE700E09E52 /* SequencePattern.swift */,
+				B56F98C22FE5BEBF00E09E52 /* SequencerConfiguration.swift */,
 				EE84F2F82A7C7A21009E2F23 /* Song.swift */,
 				EE207A3E2A89734F00D8E267 /* SoundFile.swift */,
 			);
@@ -621,6 +630,7 @@
 				EE0473192AA388EB004E958A /* HomeView.swift in Sources */,
 				B5B638BE2FAADB6300675060 /* MetronomeContainerView.swift in Sources */,
 				EE82F9AC2A7FC98200B873E7 /* VibrationService.swift in Sources */,
+				B56F98C12FE5B22600E09E52 /* Sequence.swift in Sources */,
 				EEE911552A7EDEDC008DFDED /* PreferenceKeys.swift in Sources */,
 				EEC392172AA5FA3000F4AAB4 /* ImageConstants.swift in Sources */,
 				EE97D59C2A7E7C3200FA11A0 /* SongLibraryViewModel.swift in Sources */,
@@ -659,11 +669,13 @@
 				EE8201832A81B1E900675A1C /* PlaylistDetailView.swift in Sources */,
 				EE9BD3DD2F89A555007F91FA /* PlaylistEntry.swift in Sources */,
 				EE5DFD742AD8201C00756566 /* SettingsView.swift in Sources */,
+				B56F98C52FE5BEE700E09E52 /* SequencePattern.swift in Sources */,
 				EE5DFD782AD82B5A00756566 /* SettingsViewModel.swift in Sources */,
 				283672342F8988AB0090EE63 /* MetronomeConstants.swift in Sources */,
 				30DEB7A2263835E813BCF3F4 /* MetronomeAudioEngine.swift in Sources */,
 				B524A0C42FA52BB60085E73C /* PracticedSong.swift in Sources */,
 				B5B638BC2FAAD97900675060 /* PolyrhythmView.swift in Sources */,
+				B56F98C32FE5BEBF00E09E52 /* SequencerConfiguration.swift in Sources */,
 				74DC6A76FA4044E1B3794662 /* ScheduledMetronomeEngine.swift in Sources */,
 				A1B2C3D4E5F6A7B8C9D0E1F2 /* ScheduledPolyrhythmEngine.swift in Sources */,
 			);
