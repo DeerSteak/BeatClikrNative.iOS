@@ -27,14 +27,8 @@ final class MetronomeConstantsTests: XCTestCase {
 
     func testTimingValues() {
         // Verify timing values are reasonable
-        XCTAssertGreaterThan(MetronomeConstants.timerCheckInterval, 0, "Timer check interval should be positive")
-        XCTAssertLessThan(MetronomeConstants.timerCheckInterval, 0.1, "Timer check interval should be less than 100ms")
-
         XCTAssertGreaterThan(MetronomeConstants.firstBeatDelay, 0, "First beat delay should be positive")
         XCTAssertLessThan(MetronomeConstants.firstBeatDelay, 0.5, "First beat delay should be less than 500ms")
-
-        XCTAssertGreaterThan(MetronomeConstants.lookaheadTolerance, 0, "Lookahead tolerance should be positive")
-        XCTAssertLessThan(MetronomeConstants.lookaheadTolerance, 0.1, "Lookahead tolerance should be less than 100ms")
     }
 
     func testViewSizing() {

@@ -101,7 +101,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
                     settings.updatePlaylistBeat(beat)
                 }
             }
-            audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
+            audio.setupMetronomeAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         }
     }
 
@@ -114,7 +114,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
                     settings.updatePlaylistRhythm(rhythm)
                 }
             }
-            audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
+            audio.setupMetronomeAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
         }
     }
 
@@ -165,7 +165,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         isBeat = false
 
         // Set self as delegate for audio callbacks
-        audio.delegate = self
+        audio.metronomeDelegate = self
         visualAnimator.onUpdate = { [weak self] scale, pulse in
             self?.iconScale = scale
             self?.beatPulse = pulse
@@ -180,7 +180,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
         if isBeat {
             visualAnimator.notifyBeat(interval: beatInterval)
-            handleBeat()
+            handleBeat(beatInterval: beatInterval)
         } else {
             handleRhythm()
         }
@@ -225,7 +225,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             song.groove = .quarter
         }
 
-        audio.setupAudioPlayer(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
+        audio.setupMetronomeAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
     }
 
     func togglePlayPause() {
@@ -249,6 +249,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         activeBpm = bpm
         let groove = song.groove ?? selectedGroove
         audio.setRamp(enabled: rampEnabled && clickerType == .metronome, increment: rampIncrement, interval: rampInterval)
+        vibration.prepare()
         audio.startMetronome(bpm: bpm, subdivisions: groove.subdivisions, accentPattern: computeAccentPattern())
         visualAnimator.start()
         isPlaying = true
@@ -297,12 +298,20 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         }
     }
 
-    private func handleBeat() {
+    private func handleBeat(beatInterval: TimeInterval) {
         if settings.useVibration {
             vibration.vibrateBeat()
         }
         if settings.useFlashlight {
             flashlight.turnFlashlightOn()
+            let groove = clickerType == .metronome ? selectedGroove : (song.groove ?? .quarter)
+            if groove.subdivisions == 1 {
+                // Quarter groove fires no rhythm event, so schedule the flashlight off at the half-beat point.
+                DispatchQueue.main.asyncAfter(deadline: .now() + beatInterval / 2) { [weak self] in
+                    guard let self, isPlaying else { return }
+                    flashlight.turnFlashlightOff()
+                }
+            }
         }
     }
 
@@ -345,6 +354,15 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             .sink { [weak self] rhythm in
                 guard let self, clickerType == .metronome, self.rhythm != rhythm else { return }
                 applySettingsChange { self.rhythm = rhythm }
+            }
+            .store(in: &settingsCancellables)
+
+        settings.$soundBank
+            .dropFirst()
+            .sink { [weak self] bank in
+                guard let self else { return }
+                audio.setSoundBank(bank)
+                audio.setupMetronomeAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
             }
             .store(in: &settingsCancellables)
 

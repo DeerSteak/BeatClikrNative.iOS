@@ -72,6 +72,10 @@ class UserDefaultsService: ObservableObject {
         didSet { syncSave(metronomeRhythm, oldValue: oldValue, key: PreferenceKeys.metronomeRhythm) }
     }
 
+    @Published var soundBank: SoundBank {
+        didSet { syncSave(soundBank, oldValue: oldValue, key: PreferenceKeys.soundBank) }
+    }
+
     @Published var rampEnabled: Bool {
         didSet { syncSave(rampEnabled, oldValue: oldValue, key: PreferenceKeys.rampEnabled) }
     }
@@ -132,6 +136,7 @@ class UserDefaultsService: ObservableObject {
 
         metronomeBeat = Self.loadEnum(defaults, key: PreferenceKeys.metronomeBeat, default: .ClickHi)
         metronomeRhythm = Self.loadEnum(defaults, key: PreferenceKeys.metronomeRhythm, default: .ClickLo)
+        soundBank = Self.loadEnum(defaults, key: PreferenceKeys.soundBank, default: .acoustic)
         metronomeBpm = Self.loadNonZeroDouble(defaults, key: PreferenceKeys.metronomeBpm, default: 60)
         metronomeGroove = Self.loadEnum(defaults, key: PreferenceKeys.metronomeGroove, default: .quarter)
         metronomeBeatPattern = Self.loadOptionalString(defaults, key: PreferenceKeys.metronomeBeatPattern)
@@ -197,6 +202,7 @@ class UserDefaultsService: ObservableObject {
 
         metronomeBeat = cloudEnum(PreferenceKeys.metronomeBeat, default: .ClickHi)
         metronomeRhythm = cloudEnum(PreferenceKeys.metronomeRhythm, default: .ClickLo)
+        soundBank = cloudEnum(PreferenceKeys.soundBank, default: .acoustic)
         metronomeBpm = cloudNonZeroDouble(PreferenceKeys.metronomeBpm, default: 60)
         metronomeGroove = cloudEnum(PreferenceKeys.metronomeGroove, default: .quarter)
         metronomeBeatPattern = cloudOptionalString(PreferenceKeys.metronomeBeatPattern)

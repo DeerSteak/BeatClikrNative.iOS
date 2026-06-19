@@ -7,6 +7,19 @@
 
 import Foundation
 
+enum SoundBank: String, CaseIterable, Identifiable, CustomStringConvertible, Codable {
+    case acoustic = "Acoustic"
+    case synth = "Synth"
+
+    var id: Self {
+        self
+    }
+
+    var description: String {
+        rawValue
+    }
+}
+
 enum FileConstants: String, CaseIterable, Identifiable, CustomStringConvertible, Codable {
     case FileExt = "wav"
     case ClickHi = "clickhi_E5"
