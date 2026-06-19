@@ -9,7 +9,7 @@ import AVFoundation
 import Foundation
 
 @MainActor
-class AudioPlayerService: MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDelegate {
+class AudioPlayerService: MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDelegate, SequencerAudioEngineDelegate {
     static let instance = AudioPlayerService()
 
     private let metronomeEngine = ScheduledMetronomeEngine()
@@ -66,6 +66,7 @@ class AudioPlayerService: MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDel
     }
 
     func startMetronome(bpm: Double, subdivisions: Int, accentPattern: [Bool]? = nil) {
+        activeEngine = .metronome
         metronomeEngine.startMetronome(bpm: bpm, subdivisions: subdivisions, accentPattern: accentPattern, delegate: self)
     }
 
@@ -82,11 +83,49 @@ class AudioPlayerService: MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDel
     }
 
     func startPolyrhythm(bpm: Double, beats: Int, against: Int) {
+        activeEngine = .polyrhythm
         polyrhythmEngine.startPolyrhythm(bpm: bpm, beats: beats, against: against, delegate: self)
     }
 
     func stopPolyrhythm() {
         polyrhythmEngine.stopPolyrhythm()
+    }
+
+    // MARK: - Sequencer
+
+    private let sequencerEngine = ScheduledSequencerEngine()
+    weak var sequencerDelegate: SequencerAudioEngineDelegate?
+    private enum ActiveEngine {
+        case none, metronome, polyrhythm, sequencer
+    }
+
+    private var activeEngine: ActiveEngine = .none
+
+    func startSequencer(pattern: SequencePattern) {
+        stopMetronome() // ADD: Mutual exclusion
+        stopPolyrhythm() // ADD: Mutual exclusion
+        activeEngine = .sequencer
+        sequencerEngine.startSequencer(pattern: pattern, delegate: self)
+    }
+
+    func stopSequencer() {
+        sequencerEngine.stopSequencer()
+        if activeEngine == .sequencer {
+            activeEngine = .none
+        }
+    }
+
+    func updateSequencerPattern(_ pattern: SequencePattern) {
+        sequencerEngine.updatePattern(pattern)
+    }
+
+    func updateSequencerTempo(_ bpm: Double) {
+        sequencerEngine.updateTempo(bpm)
+    }
+
+    /// SequencerAudioEngineDelegate
+    func sequencerStepFired(step: Int, measure: Int, beat: Int) {
+        sequencerDelegate?.sequencerStepFired(step: step, measure: measure, beat: beat)
     }
 
     // MARK: - MetronomeAudioEngineDelegate

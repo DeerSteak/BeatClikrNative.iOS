@@ -183,6 +183,7 @@ struct beatclikrApp: App {
             Playlist.self,
             PracticedSong.self,
             PracticeSession.self,
+            SavedSequence.self,
             configurations: config,
         )
     }

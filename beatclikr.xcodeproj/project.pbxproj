@@ -32,12 +32,23 @@
 		B56F98C12FE5B22600E09E52 /* Sequence.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56F98C02FE5B22600E09E52 /* Sequence.swift */; };
 		B56F98C32FE5BEBF00E09E52 /* SequencerConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56F98C22FE5BEBF00E09E52 /* SequencerConfiguration.swift */; };
 		B56F98C52FE5BEE700E09E52 /* SequencePattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56F98C42FE5BEE700E09E52 /* SequencePattern.swift */; };
+		B56F98CC2FE5C39200E09E52 /* BeatCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56F98C62FE5C39200E09E52 /* BeatCellView.swift */; };
+		B56F98CD2FE5C39200E09E52 /* SequenceLoadSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56F98C82FE5C39200E09E52 /* SequenceLoadSheet.swift */; };
+		B56F98CE2FE5C39200E09E52 /* SequencerGridView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56F98CA2FE5C39200E09E52 /* SequencerGridView.swift */; };
+		B56F98CF2FE5C39200E09E52 /* SequencerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56F98CB2FE5C39200E09E52 /* SequencerView.swift */; };
+		B56F98D02FE5C39200E09E52 /* InstrumentTrackView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56F98C72FE5C39200E09E52 /* InstrumentTrackView.swift */; };
+		B56F98D12FE5C39200E09E52 /* SequencerConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56F98C92FE5C39200E09E52 /* SequencerConfigView.swift */; };
+		B56F98D32FE5C3A600E09E52 /* SequencerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56F98D22FE5C3A600E09E52 /* SequencerViewModel.swift */; };
 		B5900FC92FAB752B008416A1 /* SettingsCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5900FC82FAB752B008416A1 /* SettingsCard.swift */; };
 		B5900FCB2FAB770F008416A1 /* CardContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5900FCA2FAB770F008416A1 /* CardContainer.swift */; };
 		B59482B12FA3C88A00410C67 /* TapTempoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59482B02FA3C88A00410C67 /* TapTempoButton.swift */; };
 		B59482B32FA3C90B00410C67 /* SongNavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */; };
 		B59515C22FAA75DA0023CA41 /* BeatPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59515C12FAA75DA0023CA41 /* BeatPattern.swift */; };
 		B59EE8512FA4DBC20021C335 /* SongNavigationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */; };
+		B5AF25862FE5CD8900CEDDBE /* ScheduledSequencerEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5AF25852FE5CD8900CEDDBE /* ScheduledSequencerEngine.swift */; };
+		B5AF258C2FE5CFB200CEDDBE /* SequencePatternTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5AF25892FE5CFB200CEDDBE /* SequencePatternTests.swift */; };
+		B5AF258D2FE5CFB200CEDDBE /* SequencerConfigurationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5AF258A2FE5CFB200CEDDBE /* SequencerConfigurationTests.swift */; };
+		B5AF258E2FE5CFB200CEDDBE /* SequencerViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5AF258B2FE5CFB200CEDDBE /* SequencerViewModelTests.swift */; };
 		B5B638B62FAAD8C300675060 /* PolyrhythmAudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B638B52FAAD8C300675060 /* PolyrhythmAudioEngine.swift */; };
 		B5B638BA2FAAD95800675060 /* PolyrhythmViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B638B92FAAD95800675060 /* PolyrhythmViewModel.swift */; };
 		B5B638BC2FAAD97900675060 /* PolyrhythmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B638BB2FAAD97900675060 /* PolyrhythmView.swift */; };
@@ -139,12 +150,23 @@
 		B56F98C02FE5B22600E09E52 /* Sequence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Sequence.swift; sourceTree = "<group>"; };
 		B56F98C22FE5BEBF00E09E52 /* SequencerConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequencerConfiguration.swift; sourceTree = "<group>"; };
 		B56F98C42FE5BEE700E09E52 /* SequencePattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequencePattern.swift; sourceTree = "<group>"; };
+		B56F98C62FE5C39200E09E52 /* BeatCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeatCellView.swift; sourceTree = "<group>"; };
+		B56F98C72FE5C39200E09E52 /* InstrumentTrackView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InstrumentTrackView.swift; sourceTree = "<group>"; };
+		B56F98C82FE5C39200E09E52 /* SequenceLoadSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequenceLoadSheet.swift; sourceTree = "<group>"; };
+		B56F98C92FE5C39200E09E52 /* SequencerConfigView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequencerConfigView.swift; sourceTree = "<group>"; };
+		B56F98CA2FE5C39200E09E52 /* SequencerGridView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequencerGridView.swift; sourceTree = "<group>"; };
+		B56F98CB2FE5C39200E09E52 /* SequencerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequencerView.swift; sourceTree = "<group>"; };
+		B56F98D22FE5C3A600E09E52 /* SequencerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequencerViewModel.swift; sourceTree = "<group>"; };
 		B5900FC82FAB752B008416A1 /* SettingsCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsCard.swift; sourceTree = "<group>"; };
 		B5900FCA2FAB770F008416A1 /* CardContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardContainer.swift; sourceTree = "<group>"; };
 		B59482B02FA3C88A00410C67 /* TapTempoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapTempoButton.swift; sourceTree = "<group>"; };
 		B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongNavigationViewModel.swift; sourceTree = "<group>"; };
 		B59515C12FAA75DA0023CA41 /* BeatPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeatPattern.swift; sourceTree = "<group>"; };
 		B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongNavigationViewModelTests.swift; sourceTree = "<group>"; };
+		B5AF25852FE5CD8900CEDDBE /* ScheduledSequencerEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledSequencerEngine.swift; sourceTree = "<group>"; };
+		B5AF25892FE5CFB200CEDDBE /* SequencePatternTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequencePatternTests.swift; sourceTree = "<group>"; };
+		B5AF258A2FE5CFB200CEDDBE /* SequencerConfigurationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequencerConfigurationTests.swift; sourceTree = "<group>"; };
+		B5AF258B2FE5CFB200CEDDBE /* SequencerViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SequencerViewModelTests.swift; sourceTree = "<group>"; };
 		B5B638B52FAAD8C300675060 /* PolyrhythmAudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolyrhythmAudioEngine.swift; sourceTree = "<group>"; };
 		B5B638B92FAAD95800675060 /* PolyrhythmViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolyrhythmViewModel.swift; sourceTree = "<group>"; };
 		B5B638BB2FAAD97900675060 /* PolyrhythmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolyrhythmView.swift; sourceTree = "<group>"; };
@@ -315,6 +337,9 @@
 		EE84F3082A7C7A23009E2F23 /* beatclikrTests */ = {
 			isa = PBXGroup;
 			children = (
+				B5AF25892FE5CFB200CEDDBE /* SequencePatternTests.swift */,
+				B5AF258A2FE5CFB200CEDDBE /* SequencerConfigurationTests.swift */,
+				B5AF258B2FE5CFB200CEDDBE /* SequencerViewModelTests.swift */,
 				EE84F3092A7C7A23009E2F23 /* beatclikrTests.swift */,
 				EE7774262FAD141900B87244 /* BeatPatternTests.swift */,
 				EE7774282FAD142400B87244 /* FormatterHelperTests.swift */,
@@ -365,12 +390,18 @@
 		EE84F3232A7C7A4D009E2F23 /* View */ = {
 			isa = PBXGroup;
 			children = (
+				B56F98C62FE5C39200E09E52 /* BeatCellView.swift */,
 				EE0473182AA388EB004E958A /* HomeView.swift */,
+				B56F98C72FE5C39200E09E52 /* InstrumentTrackView.swift */,
 				EE34F0752A7C7D8300CA5BD0 /* MetronomeView.swift */,
 				EE8201822A81B1E900675A1C /* PlaylistDetailView.swift */,
 				B537D3522FA383BD00CB2D7D /* PlaylistListView.swift */,
 				B5B638BB2FAAD97900675060 /* PolyrhythmView.swift */,
 				B524A0BD2FA528BF0085E73C /* PracticeHistoryView.swift */,
+				B56F98C82FE5C39200E09E52 /* SequenceLoadSheet.swift */,
+				B56F98C92FE5C39200E09E52 /* SequencerConfigView.swift */,
+				B56F98CA2FE5C39200E09E52 /* SequencerGridView.swift */,
+				B56F98CB2FE5C39200E09E52 /* SequencerView.swift */,
 				EE5DFD732AD8201C00756566 /* SettingsView.swift */,
 				EE97D5A02A7E7EB900FA11A0 /* SongDetailsView.swift */,
 				EE84F2F62A7C7A21009E2F23 /* SongLibraryView.swift */,
@@ -386,6 +417,7 @@
 				B537D3502FA383B400CB2D7D /* PlaylistListViewModel.swift */,
 				B5B638B92FAAD95800675060 /* PolyrhythmViewModel.swift */,
 				B524A0BF2FA528E80085E73C /* PracticeHistoryViewModel.swift */,
+				B56F98D22FE5C3A600E09E52 /* SequencerViewModel.swift */,
 				EE5DFD772AD82B5A00756566 /* SettingsViewModel.swift */,
 				EE97D59B2A7E7C3200FA11A0 /* SongLibraryViewModel.swift */,
 				B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */,
@@ -405,6 +437,7 @@
 				A1B2C3D4E5F6A7B8C9D0E1F3 /* ScheduledPolyrhythmEngine.swift */,
 				EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */,
 				EE82F9AB2A7FC98200B873E7 /* VibrationService.swift */,
+				B5AF25852FE5CD8900CEDDBE /* ScheduledSequencerEngine.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -659,11 +692,18 @@
 				EE5772682A880BB6002AAC3A /* InstrumentLists.swift in Sources */,
 				EE84F2F52A7C7A21009E2F23 /* beatclikrApp.swift in Sources */,
 				B537D3512FA383B400CB2D7D /* PlaylistListViewModel.swift in Sources */,
+				B56F98CC2FE5C39200E09E52 /* BeatCellView.swift in Sources */,
+				B56F98CD2FE5C39200E09E52 /* SequenceLoadSheet.swift in Sources */,
+				B56F98CE2FE5C39200E09E52 /* SequencerGridView.swift in Sources */,
+				B56F98CF2FE5C39200E09E52 /* SequencerView.swift in Sources */,
+				B56F98D02FE5C39200E09E52 /* InstrumentTrackView.swift in Sources */,
+				B56F98D12FE5C39200E09E52 /* SequencerConfigView.swift in Sources */,
 				EE82F9A82A7FBD7000B873E7 /* UserDefaultsService.swift in Sources */,
 				B59482B12FA3C88A00410C67 /* TapTempoButton.swift in Sources */,
 				B5900FC92FAB752B008416A1 /* SettingsCard.swift in Sources */,
 				EE34F0762A7C7D8300CA5BD0 /* MetronomeView.swift in Sources */,
 				EE6406BC2A7EEF5700DEDED2 /* MetronomePlaybackViewModel.swift in Sources */,
+				B56F98D32FE5C3A600E09E52 /* SequencerViewModel.swift in Sources */,
 				B5F4E57E2FA65B90003FC6E6 /* ReminderNotificationService.swift in Sources */,
 				B53234762F8DD8D300BA7DE1 /* PlaylistTransportView.swift in Sources */,
 				EE8201832A81B1E900675A1C /* PlaylistDetailView.swift in Sources */,
@@ -671,6 +711,7 @@
 				EE5DFD742AD8201C00756566 /* SettingsView.swift in Sources */,
 				B56F98C52FE5BEE700E09E52 /* SequencePattern.swift in Sources */,
 				EE5DFD782AD82B5A00756566 /* SettingsViewModel.swift in Sources */,
+				B5AF25862FE5CD8900CEDDBE /* ScheduledSequencerEngine.swift in Sources */,
 				283672342F8988AB0090EE63 /* MetronomeConstants.swift in Sources */,
 				30DEB7A2263835E813BCF3F4 /* MetronomeAudioEngine.swift in Sources */,
 				B524A0C42FA52BB60085E73C /* PracticedSong.swift in Sources */,
@@ -689,6 +730,9 @@
 				28363D542F8989430066C665 /* MetronomeConstantsTests.swift in Sources */,
 				EE84F30A2A7C7A23009E2F23 /* beatclikrTests.swift in Sources */,
 				28363D582F898A110066C665 /* ImageConstantsTests.swift in Sources */,
+				B5AF258C2FE5CFB200CEDDBE /* SequencePatternTests.swift in Sources */,
+				B5AF258D2FE5CFB200CEDDBE /* SequencerConfigurationTests.swift in Sources */,
+				B5AF258E2FE5CFB200CEDDBE /* SequencerViewModelTests.swift in Sources */,
 				EE7774292FAD142400B87244 /* FormatterHelperTests.swift in Sources */,
 				EE7774272FAD141900B87244 /* BeatPatternTests.swift in Sources */,
 				28363D592F898A110066C665 /* MetronomePlaybackViewModelTests.swift in Sources */,

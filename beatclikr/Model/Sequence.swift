@@ -9,27 +9,28 @@ import Foundation
 import SwiftData
 
 @Model
-final class Sequence: Identifiable {
-    var id: String
-    var name: String
-    var tempo: Double
-    var beatsPerMeasure: Int
-    var measuresCount: Int
-    var subdivisionsPerBeat: Int
-    var patternData: Data  // Encoded [String: [UInt8]] pattern
-    var createdAt: Date
-    var modifiedAt: Date
-    
+final class SavedSequence: Identifiable {
+    var id: String?
+    var name: String?
+    var tempo: Double?
+    var beatsPerMeasure: Int?
+    var measuresCount: Int?
+    var subdivisionsPerBeat: Int?
+    var patternData: Data?
+    var createdAt: Date?
+    var modifiedAt: Date?
+
     init(name: String, tempo: Double, beatsPerMeasure: Int,
-         measuresCount: Int, subdivisionsPerBeat: Int, patternData: Data) {
-        self.id = UUID().uuidString
+         measuresCount: Int, subdivisionsPerBeat: Int, patternData: Data)
+    {
+        id = UUID().uuidString
         self.name = name
         self.tempo = tempo
         self.beatsPerMeasure = beatsPerMeasure
         self.measuresCount = measuresCount
         self.subdivisionsPerBeat = subdivisionsPerBeat
         self.patternData = patternData
-        self.createdAt = Date()
-        self.modifiedAt = Date()
+        createdAt = Date()
+        modifiedAt = Date()
     }
 }
