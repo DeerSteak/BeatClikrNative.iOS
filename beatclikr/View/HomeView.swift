@@ -8,7 +8,7 @@
 import SwiftUI
 
 enum AppSection: String, CaseIterable, Identifiable {
-    case metronome, polyrhythm, library, playlist, history, settings
+    case metronome, polyrhythm, sequencer, library, playlist, history, settings
     var id: String {
         rawValue
     }
@@ -17,6 +17,7 @@ enum AppSection: String, CaseIterable, Identifiable {
         switch self {
         case .metronome: "Metronome"
         case .polyrhythm: "Polyrhythm"
+        case .sequencer: "Sequencer"
         case .library: "Song Library"
         case .playlist: "All Playlists"
         case .history: "Practice History"
@@ -28,6 +29,7 @@ enum AppSection: String, CaseIterable, Identifiable {
         switch self {
         case .metronome: ImageConstants.tabMetronome
         case .polyrhythm: ImageConstants.tabPolyrhythm
+        case .sequencer: "square.grid.3x3.fill"
         case .library: ImageConstants.tabLibrary
         case .playlist: ImageConstants.tabPlaylist
         case .history: ImageConstants.tabHistory
@@ -85,6 +87,9 @@ struct HomeView: View {
                             PolyrhythmView()
                                 .environmentObject(polyrhythmViewModel)
                                 .navigationTitle("Polyrhythm")
+                        case .sequencer:
+                            SequencerView()
+                                .navigationTitle("Sequencer")
                         case .library: SongLibraryView()
                         case .playlist: PlaylistListView()
                         case .history: PracticeHistoryView()
@@ -163,7 +168,7 @@ struct HomeView: View {
                 switch selectedSection {
                 case .library, .playlist, .history, .settings:
                     selectedSection ?? .metronome
-                case .metronome, .polyrhythm, nil:
+                case .metronome, .polyrhythm, .sequencer, nil:
                     .metronome
                 }
             },
