@@ -9,7 +9,7 @@ import AVFoundation
 import Foundation
 
 @MainActor
-class UserDefaultsService: ObservableObject {
+final class UserDefaultsService: ObservableObject {
     // MARK: - General settings
 
     @Published var keepAwake: Bool {

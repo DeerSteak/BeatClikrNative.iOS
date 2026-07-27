@@ -16,7 +16,7 @@ protocol VibrationControlling: AnyObject {
 }
 
 @MainActor
-class VibrationService: VibrationControlling {
+final class VibrationService: VibrationControlling {
     static let instance = VibrationService()
 
     private var beatGenerator = UIImpactFeedbackGenerator(style: .heavy)
