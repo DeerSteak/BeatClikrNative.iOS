@@ -36,6 +36,7 @@ enum TestModelContainerFactory {
 final class TestAudioPlaybackService: AudioPlaybackService {
     weak var metronomeDelegate: MetronomeAudioEngineDelegate?
     weak var polyrhythmDelegate: PolyrhythmAudioEngineDelegate?
+    weak var lifecycleDelegate: AudioPlaybackLifecycleDelegate?
 
     var setupError: PlaybackError?
     var startError: PlaybackError?
@@ -83,6 +84,34 @@ final class TestAudioPlaybackService: AudioPlaybackService {
 
 @MainActor
 final class PlaybackCoordinatorTests: XCTestCase {
+    func testInterruptionClearsMetronomeWithoutAutomaticResume() throws {
+        let audio = TestAudioPlaybackService()
+        let coordinator = PlaybackCoordinator(audio: audio)
+        var interrupted = false
+        coordinator.onMetronomeInterrupted = { interrupted = true }
+
+        try coordinator.startMetronome(bpm: 120, subdivisions: 1, accentPattern: nil)
+        audio.lifecycleDelegate?.audioPlaybackWasInterrupted()
+
+        XCTAssertNil(coordinator.activeMode)
+        XCTAssertTrue(interrupted)
+        XCTAssertEqual(audio.metronomeStartCount, 1)
+    }
+
+    func testInterruptionClearsPolyrhythmWithoutAutomaticResume() throws {
+        let audio = TestAudioPlaybackService()
+        let coordinator = PlaybackCoordinator(audio: audio)
+        var interrupted = false
+        coordinator.onPolyrhythmInterrupted = { interrupted = true }
+
+        try coordinator.startPolyrhythm(bpm: 120, beats: 3, against: 4)
+        audio.lifecycleDelegate?.audioPlaybackWasInterrupted()
+
+        XCTAssertNil(coordinator.activeMode)
+        XCTAssertTrue(interrupted)
+        XCTAssertEqual(audio.polyrhythmStartCount, 1)
+    }
+
     func testStartingPolyrhythmDisplacesMetronome() throws {
         let audio = TestAudioPlaybackService()
         let coordinator = PlaybackCoordinator(audio: audio)

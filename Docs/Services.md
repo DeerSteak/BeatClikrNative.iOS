@@ -188,6 +188,16 @@ The active dot indices, pulses, and `cycleProgress` are all stored in `Polyrhyth
 
 ---
 
+## Audio lifecycle policy
+
+`AudioSessionCoordinator` owns audio-session activation and observes interruptions, output-route disconnection, engine configuration changes, and media-services loss/reset.
+
+BeatClikr never resumes playback automatically after a lifecycle event. It stops both engines, clears the active playback mode, stops visual/effect activity, and reports the active view model as `interrupted`. The user must press Play to begin a new session. Engine configuration and media-service events also discard both engine graphs; the next user-initiated start rebuilds the engines and reloads the selected immutable sounds.
+
+This conservative policy prevents unexpected playback after a call, Siri interaction, device unplug, or output-route change.
+
+---
+
 ## Tap Tempo
 
 The Instant Metronome includes a **Tap Tempo** button displayed as a circle to the right of the BPM display. Tapping it calculates BPM from the average interval of the last several taps. The result is rounded to one decimal place and clamped to the app's min/max BPM range. If more than 2 seconds pass between taps, the tap history is cleared so the user can start a new tempo.

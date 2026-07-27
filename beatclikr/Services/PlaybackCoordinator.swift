@@ -13,12 +13,19 @@ enum PlaybackMode: Equatable {
 }
 
 @MainActor
-final class PlaybackCoordinator: AudioPlaybackService {
+final class PlaybackCoordinator: AudioPlaybackService, AudioPlaybackLifecycleDelegate {
     private let audio: any AudioPlaybackService
 
     private(set) var activeMode: PlaybackMode?
     var onMetronomeStopped: (() -> Void)?
     var onPolyrhythmStopped: (() -> Void)?
+    var onMetronomeInterrupted: (() -> Void)?
+    var onPolyrhythmInterrupted: (() -> Void)?
+
+    var lifecycleDelegate: AudioPlaybackLifecycleDelegate? {
+        get { audio.lifecycleDelegate }
+        set { audio.lifecycleDelegate = newValue }
+    }
 
     var metronomeDelegate: MetronomeAudioEngineDelegate? {
         get { audio.metronomeDelegate }
@@ -32,6 +39,7 @@ final class PlaybackCoordinator: AudioPlaybackService {
 
     init(audio: any AudioPlaybackService = AudioPlayerService.instance) {
         self.audio = audio
+        audio.lifecycleDelegate = self
     }
 
     func setupMetronomeAudio(beatName: String, rhythmName: String) throws {
@@ -101,5 +109,18 @@ final class PlaybackCoordinator: AudioPlaybackService {
     func stopAll() {
         stopMetronome(notifyOwner: true)
         stopPolyrhythm(notifyOwner: true)
+    }
+
+    func audioPlaybackWasInterrupted() {
+        let interruptedMode = activeMode
+        activeMode = nil
+        switch interruptedMode {
+        case .metronome:
+            onMetronomeInterrupted?()
+        case .polyrhythm:
+            onPolyrhythmInterrupted?()
+        case nil:
+            break
+        }
     }
 }

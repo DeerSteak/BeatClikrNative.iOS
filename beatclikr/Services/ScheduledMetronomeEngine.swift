@@ -21,6 +21,10 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
     private let beatNode = AVAudioPlayerNode()
     private let rhythmNode = AVAudioPlayerNode()
 
+    var notificationEngine: AVAudioEngine {
+        engine
+    }
+
     private var beatBuffers: AudioBufferClipCache?
     private var rhythmBuffers: AudioBufferClipCache?
     private var isGraphConfigured = false

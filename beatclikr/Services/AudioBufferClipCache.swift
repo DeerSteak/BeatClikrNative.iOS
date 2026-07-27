@@ -2,6 +2,8 @@
 //  AudioBufferClipCache.swift
 //  beatclikr
 //
+//  Created by Ben Funk 7/27/26
+//
 
 import AudioToolbox
 import AVFoundation

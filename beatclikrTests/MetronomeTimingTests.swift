@@ -398,4 +398,62 @@ final class AbsoluteAudioTimelineTests: XCTestCase {
         XCTAssertEqual(destination.floatChannelData?[1][37], 0.5)
         XCTAssertEqual(destination.floatChannelData?[0][38], 0)
     }
+
+    func testVisualPhaseUsesAbsoluteAudioTimeWithoutLongRunAccumulation() throws {
+        for sampleRate in [44100.0, 48000.0] {
+            let timeline = try AbsoluteAudioTimeline(
+                sampleRate: sampleRate,
+                intervalsPerMinute: 137 * 2,
+            )
+            for eventIndex in [Int64(0), 7, 14, 1_000_000] {
+                let start = Double(timeline.samplePosition(eventIndex)) / sampleRate
+                let end = Double(timeline.samplePosition(eventIndex + 1)) / sampleRate
+                let midpoint = start + (end - start) / 2
+
+                XCTAssertEqual(
+                    AudioVisualPhase.elapsed(from: start, to: midpoint, duration: end - start),
+                    0.5,
+                    accuracy: 0.000_001,
+                )
+                XCTAssertEqual(
+                    AudioVisualPhase.elapsed(from: start, to: end, duration: end - start),
+                    1,
+                )
+            }
+        }
+    }
+
+    func testVisualPhaseClampsAtEveryPolyrhythmCycleBoundary() throws {
+        for sampleRate in [44100.0, 48000.0] {
+            for beats in 1 ... 15 {
+                for against in 1 ... 15 {
+                    let first = try PolyrhythmAudioBlockPlan(
+                        blockIndex: 99,
+                        sampleRate: sampleRate,
+                        bpm: 137,
+                        beats: beats,
+                        against: against,
+                    )
+                    let second = try PolyrhythmAudioBlockPlan(
+                        blockIndex: 100,
+                        sampleRate: sampleRate,
+                        bpm: 137,
+                        beats: beats,
+                        against: against,
+                    )
+                    let start = Double(first.absoluteStartSample) / sampleRate
+                    let end = Double(second.absoluteStartSample) / sampleRate
+
+                    XCTAssertEqual(
+                        AudioVisualPhase.elapsed(from: start, to: end, duration: end - start),
+                        1,
+                    )
+                    XCTAssertEqual(
+                        AudioVisualPhase.elapsed(from: end, to: end, duration: end - start),
+                        0,
+                    )
+                }
+            }
+        }
+    }
 }

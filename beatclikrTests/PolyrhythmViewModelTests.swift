@@ -47,6 +47,21 @@ final class PolyrhythmViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.cycleProgress, 0, "Cycle progress should start at 0")
     }
 
+    func testReduceMotionKeepsPulsesAndPlayheadStationary() {
+        let reducedViewModel = PolyrhythmViewModel(audio: audio, reduceMotionEnabled: { true })
+
+        reducedViewModel.polyrhythmBeatFired(
+            beatFired: true,
+            rhythmFired: true,
+            beatIndex: 0,
+            rhythmIndex: 0,
+        )
+
+        XCTAssertEqual(reducedViewModel.beatPulse, 0)
+        XCTAssertEqual(reducedViewModel.rhythmPulse, 0)
+        XCTAssertEqual(reducedViewModel.cycleProgress, 0)
+    }
+
     // MARK: - Playback Control
 
     func testToggleStartsPlayback() {

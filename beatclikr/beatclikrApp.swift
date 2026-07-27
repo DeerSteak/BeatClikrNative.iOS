@@ -67,6 +67,12 @@ struct beatclikrApp: App {
         coordinator.onPolyrhythmStopped = { [weak polyrhythm] in
             polyrhythm?.playbackWasStoppedByCoordinator()
         }
+        coordinator.onMetronomeInterrupted = { [weak metronome] in
+            metronome?.playbackWasInterrupted()
+        }
+        coordinator.onPolyrhythmInterrupted = { [weak polyrhythm] in
+            polyrhythm?.playbackWasInterrupted()
+        }
         playbackCoordinator = coordinator
         _metronomeViewModel = StateObject(wrappedValue: metronome)
         _polyrhythmViewModel = StateObject(wrappedValue: polyrhythm)

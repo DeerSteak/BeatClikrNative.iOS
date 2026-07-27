@@ -2,6 +2,8 @@
 //  AbsoluteAudioTimeline.swift
 //  beatclikr
 //
+//  Created by Ben Funk 7/27/26
+//
 
 import AudioToolbox
 import AVFoundation
@@ -205,5 +207,16 @@ enum AudioBlockRenderer {
                 destinationChannel[frame] += sourceChannel[frame]
             }
         }
+    }
+}
+
+enum AudioVisualPhase {
+    static func elapsed(from start: TimeInterval, to current: TimeInterval, duration: TimeInterval) -> Double {
+        guard duration > 0 else { return 1 }
+        return min(1, max(0, (current - start) / duration))
+    }
+
+    static func remaining(from start: TimeInterval, to current: TimeInterval, duration: TimeInterval) -> Double {
+        1 - elapsed(from: start, to: current, duration: duration)
     }
 }

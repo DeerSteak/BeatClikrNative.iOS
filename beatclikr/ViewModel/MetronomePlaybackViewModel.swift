@@ -153,6 +153,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         flashlight: FlashlightService = .instance,
         audio: any AudioPlaybackService = AudioPlayerService.instance,
         settings: SettingsViewModel = SettingsViewModel(),
+        reduceMotionEnabled: @escaping () -> Bool = { UIAccessibility.isReduceMotionEnabled },
     ) {
         self.vibration = vibration
         self.flashlight = flashlight
@@ -182,6 +183,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         visualAnimator.playbackTime = { [weak audio] in
             audio?.metronomePlaybackTime()
         }
+        visualAnimator.reduceMotionEnabled = reduceMotionEnabled
         observeSettings()
     }
 
@@ -291,6 +293,12 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         if rampEnabled, clickerType == .metronome {
             beatsPerMinute = activeBpm
         }
+    }
+
+    func playbackWasInterrupted() {
+        visualAnimator.stop()
+        flashlight.turnFlashlightOff()
+        playbackState = .interrupted
     }
 
     func resetMetronome() {
@@ -471,6 +479,7 @@ private final class MetronomeVisualAnimator: NSObject {
 
     var onUpdate: ((CGFloat, Double) -> Void)?
     var playbackTime: (() -> TimeInterval?)?
+    var reduceMotionEnabled: () -> Bool = { false }
 
     func start() {
         guard displayLink == nil else {
@@ -494,13 +503,21 @@ private final class MetronomeVisualAnimator: NSObject {
     func notifyBeat(interval: TimeInterval) {
         lastBeatTime = currentTime()
         beatInterval = max(interval, 0.001)
-        onUpdate?(MetronomeConstants.iconScaleMax, 1.0)
+        let reduceMotion = reduceMotionEnabled()
+        onUpdate?(
+            reduceMotion ? MetronomeConstants.iconScaleMin : MetronomeConstants.iconScaleMax,
+            reduceMotion ? 0 : 1,
+        )
     }
 
     @objc private func tick(_ displayLink: CADisplayLink) {
         guard isAnimating else { return }
+        guard !reduceMotionEnabled() else {
+            onUpdate?(MetronomeConstants.iconScaleMin, 0)
+            return
+        }
         let elapsed = currentTime(fallback: displayLink.timestamp) - lastBeatTime
-        let progress = min(1.0, max(0.0, elapsed / beatInterval))
+        let progress = AudioVisualPhase.elapsed(from: 0, to: elapsed, duration: beatInterval)
         let scale = lerp(
             from: MetronomeConstants.iconScaleMax,
             to: MetronomeConstants.iconScaleMin,

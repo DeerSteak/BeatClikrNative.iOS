@@ -39,6 +39,7 @@
 		B5A113012FB8000000000001 /* PlaybackCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A113002FB8000000000001 /* PlaybackCoordinator.swift */; };
 		B5A114012FB8000000000001 /* AudioBufferClipCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A114002FB8000000000001 /* AudioBufferClipCache.swift */; };
 		B5A115012FB8000000000001 /* AbsoluteAudioTimeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A115002FB8000000000001 /* AbsoluteAudioTimeline.swift */; };
+		B5A116012FB8000000000001 /* AudioSessionCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A116002FB8000000000001 /* AudioSessionCoordinator.swift */; };
 		B5B638B62FAAD8C300675060 /* PolyrhythmAudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B638B52FAAD8C300675060 /* PolyrhythmAudioEngine.swift */; };
 		B5B638BA2FAAD95800675060 /* PolyrhythmViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B638B92FAAD95800675060 /* PolyrhythmViewModel.swift */; };
 		B5B638BC2FAAD97900675060 /* PolyrhythmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B638BB2FAAD97900675060 /* PolyrhythmView.swift */; };
@@ -147,6 +148,7 @@
 		B5A113002FB8000000000001 /* PlaybackCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackCoordinator.swift; sourceTree = "<group>"; };
 		B5A114002FB8000000000001 /* AudioBufferClipCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioBufferClipCache.swift; sourceTree = "<group>"; };
 		B5A115002FB8000000000001 /* AbsoluteAudioTimeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbsoluteAudioTimeline.swift; sourceTree = "<group>"; };
+		B5A116002FB8000000000001 /* AudioSessionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSessionCoordinator.swift; sourceTree = "<group>"; };
 		B5B638B52FAAD8C300675060 /* PolyrhythmAudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolyrhythmAudioEngine.swift; sourceTree = "<group>"; };
 		B5B638B92FAAD95800675060 /* PolyrhythmViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolyrhythmViewModel.swift; sourceTree = "<group>"; };
 		B5B638BB2FAAD97900675060 /* PolyrhythmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolyrhythmView.swift; sourceTree = "<group>"; };
@@ -399,6 +401,7 @@
 				B5A115002FB8000000000001 /* AbsoluteAudioTimeline.swift */,
 				B5A114002FB8000000000001 /* AudioBufferClipCache.swift */,
 				EE478E8A2A879C51008337DB /* AudioPlayerService.swift */,
+				B5A116002FB8000000000001 /* AudioSessionCoordinator.swift */,
 				EE82F9A92A7FBFE100B873E7 /* FlashlightService.swift */,
 				CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */,
 				B5A113002FB8000000000001 /* PlaybackCoordinator.swift */,
@@ -682,6 +685,7 @@
 				A1B2C3D4E5F6A7B8C9D0E1F2 /* ScheduledPolyrhythmEngine.swift in Sources */,
 				B5A114012FB8000000000001 /* AudioBufferClipCache.swift in Sources */,
 				B5A115012FB8000000000001 /* AbsoluteAudioTimeline.swift in Sources */,
+				B5A116012FB8000000000001 /* AudioSessionCoordinator.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

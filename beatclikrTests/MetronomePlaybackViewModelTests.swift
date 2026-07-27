@@ -75,6 +75,15 @@ final class MetronomePlaybackViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.iconScale, scaleAfterBeat, "Icon scale should not change on rhythm")
     }
 
+    func testReduceMotionKeepsBeatIndicatorStationary() {
+        let reducedViewModel = MetronomePlaybackViewModel(audio: audio, reduceMotionEnabled: { true })
+
+        reducedViewModel.metronomeBeatFired(isBeat: true, beatInterval: 0.5)
+
+        XCTAssertEqual(reducedViewModel.iconScale, MetronomeConstants.iconScaleMin)
+        XCTAssertEqual(reducedViewModel.beatPulse, 0)
+    }
+
     // MARK: - Playback State Tests
 
     func testInitialPlaybackState() {
