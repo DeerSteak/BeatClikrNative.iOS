@@ -57,7 +57,13 @@ struct beatclikrApp: App {
             SettingsViewModel.configureUITestMetronomeReset()
         }
 
-        let settingsVM = SettingsViewModel()
+        let practiceVM = PracticeHistoryViewModel()
+        let settingsVM = SettingsViewModel { reminderTime in
+            let dates = practiceVM.markedDates(context: context)
+            return ReminderPlan.build(reminderTime: reminderTime) { date in
+                practiceVM.notificationBody(from: dates, for: date)
+            }
+        }
         let coordinator = PlaybackCoordinator(lockScreenControls: LockScreenPlaybackController())
         let metronome = MetronomePlaybackViewModel(audio: coordinator, settings: settingsVM)
         let polyrhythm = PolyrhythmViewModel(audio: coordinator, settings: settingsVM)
@@ -78,7 +84,6 @@ struct beatclikrApp: App {
         _polyrhythmViewModel = StateObject(wrappedValue: polyrhythm)
         _songLibraryViewModel = StateObject(wrappedValue: SongLibraryViewModel())
         _playlistListViewModel = StateObject(wrappedValue: PlaylistListViewModel())
-        let practiceVM = PracticeHistoryViewModel()
         metronome.onPlaybackStarted = { [weak practiceVM] song in
             practiceVM?.beginPlayback(.init(song: song), context: context)
         }
@@ -94,11 +99,9 @@ struct beatclikrApp: App {
         polyrhythm.onPlaybackEnded = { [weak practiceVM] in
             practiceVM?.endPlayback()
         }
-        practiceVM.onPracticeRecorded = { [weak practiceVM, weak settingsVM] context in
-            guard let vm = practiceVM, let settings = settingsVM else { return }
-            let dates = vm.markedDates(context: context)
-            let bodies = vm.scheduledNotificationBodies(from: dates, days: 7)
-            settings.rescheduleReminder(bodies: bodies)
+        practiceVM.onPracticeRecorded = { [weak practiceVM, weak settingsVM] _ in
+            guard practiceVM != nil, let settings = settingsVM else { return }
+            settings.rescheduleReminder()
         }
         _settingsViewModel = StateObject(wrappedValue: settingsVM)
         _practiceHistoryViewModel = StateObject(wrappedValue: practiceVM)
@@ -138,9 +141,7 @@ struct beatclikrApp: App {
                         .receive(on: DispatchQueue.main),
                 ) { _ in
                     guard settingsViewModel.sendReminders else { return }
-                    let dates = practiceHistoryViewModel.markedDates(context: container.mainContext)
-                    let bodies = practiceHistoryViewModel.scheduledNotificationBodies(from: dates, days: 7)
-                    settingsViewModel.rescheduleReminder(bodies: bodies)
+                    settingsViewModel.rescheduleReminder()
                 }
         }
         .modelContainer(container)
@@ -157,9 +158,6 @@ struct beatclikrApp: App {
                 return
             }
             updateIdleTimer(for: newPhase)
-            let dates = practiceHistoryViewModel.markedDates(context: container.mainContext)
-            let bodies = practiceHistoryViewModel.scheduledNotificationBodies(from: dates, days: 7)
-            settingsViewModel.rescheduleReminder(bodies: bodies)
             settingsViewModel.refreshNotificationStatus()
         }
     }

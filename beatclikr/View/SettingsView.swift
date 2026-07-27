@@ -63,6 +63,14 @@ struct SettingsView: View {
                                     .font(.footnote)
                                 }
                                 .padding(.horizontal, 4)
+                            } else if model.reminderSchedulingError != nil {
+                                Label(
+                                    "Reminders could not be scheduled on this device. BeatClikr will retry when the app becomes active.",
+                                    systemImage: "exclamationmark.triangle.fill",
+                                )
+                                .font(.footnote)
+                                .foregroundStyle(.orange)
+                                .padding(.horizontal, 4)
                             }
                         }
                     }

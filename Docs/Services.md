@@ -61,7 +61,7 @@
 
 - **UserDefaultsService** - Persists user preferences to both `UserDefaults.standard` and `NSUbiquitousKeyValueStore` for cross-device sync. Observes `didChangeExternallyNotification` to pull in changes from other devices. Exposes an `onSendRemindersEnabled` callback that fires when `sendReminders` transitions `false → true` via cloud sync, so `SettingsViewModel` can respond without coupling the two layers with Combine
 
-- **ReminderNotificationService** - Manages `UNUserNotificationCenter` authorization and scheduling; schedules 7 individual ahead-of-time notifications (one per upcoming day) with pre-computed personalized bodies; caches the last set of bodies so time-change reschedules don't require a new body computation; exposes `currentAuthorizationStatus()` for non-prompting status checks
+- **ReminderNotificationService** - Manages `UNUserNotificationCenter` authorization and deterministic scheduling. `ReminderPlan` describes 7 concrete future occurrences with explicit identifiers, dates, personalized bodies, and the current-local-time-zone policy. Replacing a schedule awaits every add and verifies that the notification center retained the complete plan; partial or failed plans are removed and surfaced to the settings UI. Plans are rebuilt from current settings and practice history instead of relying on hidden cached bodies.
 
 ---
 

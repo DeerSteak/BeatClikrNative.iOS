@@ -28,7 +28,7 @@ A new **Practice History** tab measures active playback per song/mode and shows:
 - Current and longest streak counts with start/end dates
 - A reminder banner when you have an active streak but haven't practiced today
 
-When an item first reaches 30 seconds, the app reschedules 7 ahead-of-time daily notifications with content that reflects the projected streak state for each upcoming day (keep it alive, broken, or generic). Notifications also reschedule when the app becomes active or the reminder time changes in Settings.
+When an item first reaches 30 seconds, the app rebuilds a complete plan of 7 future daily notifications with content that reflects the projected streak state for each upcoming day (keep it alive, broken, or generic). A past reminder time starts the plan tomorrow, while a future time may include today. Plans also rebuild when the app becomes active, practice history changes, or the reminder time changes. Scheduling is awaited and verified; failures remain visible in Settings instead of silently leaving reminders enabled with no pending requests.
 
 ### Streak Sharing
 The Practice History tab has a **Share** button that renders a `SharableStreakCard` — a 360×360 image with the streak count, app icon, and a gradient background — and opens the system share sheet with pre-written adaptive text.

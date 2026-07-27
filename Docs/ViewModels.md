@@ -8,7 +8,7 @@ All ViewModels are injected as `EnvironmentObject`s from `beatclikrApp` and shar
 
 - **PolyrhythmViewModel** - Manages polyrhythm mode state and uses the same truthful `PlaybackState`/`PlaybackError` contract as the metronome. It owns the M:N ratio (`beats` and `against`, each 1–9), BPM, sound selection, and per-row dot animations (`beatPulse`/`rhythmPulse`, `activeBeatIndex`/`activeRhythmIndex`). Receives `polyrhythmBeatFired` callbacks and fades each row's pulse over the appropriate interval.
 
-- **SettingsViewModel** - Manages user preferences and notification permission state. Maintains three separate permission states: `notificationsBlockedLocally` (system denied), `notificationsDeferredLocally` (user tapped "Not Now" on the cross-device pre-prompt), and `showCrossDeviceReminderPrompt` (undetermined, needs to ask). Delegates all scheduling to `ReminderNotificationService`; see [SongLibrary.md](SongLibrary.md) for the full cross-device notification flow
+- **SettingsViewModel** - Manages user preferences, notification permission state, and reminder reconciliation. Maintains separate blocked, deferred, prompt, and scheduling-failure states. Every authorized reconciliation obtains a new complete `ReminderPlan` from current settings and practice history, then delegates its verified replacement to `ReminderNotificationService`; see [SongLibrary.md](SongLibrary.md) for the full cross-device notification flow
 
 - **SongLibraryViewModel** - Handles song library CRUD operations and playlist-style playback for the flat song list
 
