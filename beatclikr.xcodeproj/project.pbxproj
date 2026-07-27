@@ -34,6 +34,8 @@
 		B59482B12FA3C88A00410C67 /* TapTempoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59482B02FA3C88A00410C67 /* TapTempoButton.swift */; };
 		B59482B32FA3C90B00410C67 /* SongNavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */; };
 		B59515C22FAA75DA0023CA41 /* BeatPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59515C12FAA75DA0023CA41 /* BeatPattern.swift */; };
+		B5A110012FB8000000000001 /* PlaybackState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A110002FB8000000000001 /* PlaybackState.swift */; };
+		B5A113012FB8000000000001 /* PlaybackCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A113002FB8000000000001 /* PlaybackCoordinator.swift */; };
 		B59EE8512FA4DBC20021C335 /* SongNavigationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */; };
 		B5B638B62FAAD8C300675060 /* PolyrhythmAudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B638B52FAAD8C300675060 /* PolyrhythmAudioEngine.swift */; };
 		B5B638BA2FAAD95800675060 /* PolyrhythmViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B638B92FAAD95800675060 /* PolyrhythmViewModel.swift */; };
@@ -138,6 +140,8 @@
 		B59482B02FA3C88A00410C67 /* TapTempoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapTempoButton.swift; sourceTree = "<group>"; };
 		B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongNavigationViewModel.swift; sourceTree = "<group>"; };
 		B59515C12FAA75DA0023CA41 /* BeatPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeatPattern.swift; sourceTree = "<group>"; };
+		B5A110002FB8000000000001 /* PlaybackState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackState.swift; sourceTree = "<group>"; };
+		B5A113002FB8000000000001 /* PlaybackCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackCoordinator.swift; sourceTree = "<group>"; };
 		B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongNavigationViewModelTests.swift; sourceTree = "<group>"; };
 		B5B638B52FAAD8C300675060 /* PolyrhythmAudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolyrhythmAudioEngine.swift; sourceTree = "<group>"; };
 		B5B638B92FAAD95800675060 /* PolyrhythmViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolyrhythmViewModel.swift; sourceTree = "<group>"; };
@@ -345,6 +349,7 @@
 				EE3BEF3B2A83B476004B0C97 /* Groove.swift */,
 				B537D34E2FA382B300CB2D7D /* Playlist.swift */,
 				EE9BD3DC2F89A555007F91FA /* PlaylistEntry.swift */,
+				B5A110002FB8000000000001 /* PlaybackState.swift */,
 				B524A0C32FA52BB60085E73C /* PracticedSong.swift */,
 				B524A0C12FA529E00085E73C /* PracticeSession.swift */,
 				EE84F2F82A7C7A21009E2F23 /* Song.swift */,
@@ -388,6 +393,7 @@
 			isa = PBXGroup;
 			children = (
 				EE478E8A2A879C51008337DB /* AudioPlayerService.swift */,
+				B5A113002FB8000000000001 /* PlaybackCoordinator.swift */,
 				EE82F9A92A7FBFE100B873E7 /* FlashlightService.swift */,
 				CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */,
 				B5B638B52FAAD8C300675060 /* PolyrhythmAudioEngine.swift */,
@@ -600,7 +606,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin:/usr/local/bin\"\nif which swiftformat >/dev/null; then\n  swiftformat . --config \"$SRCROOT/.swiftformat\"\nelse\n  echo \"error: SwiftFormat 0.62.1 or newer is required; download from https://github.com/nicklockwood/SwiftFormat\"\n  exit 1\nfi\n";
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin:/usr/local/bin\"\nif which swiftformat >/dev/null; then\n  swiftformat . --config \"$SRCROOT/.swiftformat\"\nelse\n  echo \"error: SwiftFormat 0.62.1 or newer is required; download from https://github.com/nicklockwood/SwiftFormat\"\n  exit 1\nfi\n\nif [ \"$CONFIGURATION\" = \"Release\" ]; then\n  REQUIRE_SOUND_ASSETS=\"${REQUIRE_SOUND_ASSETS:-1}\" \"$SRCROOT/scripts/validate-sounds.sh\"\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -627,6 +633,7 @@
 				B524A0C22FA529E00085E73C /* PracticeSession.swift in Sources */,
 				B53234782F8DD8D900BA7DE1 /* SongPickerView.swift in Sources */,
 				EE207A3F2A89734F00D8E267 /* SoundFile.swift in Sources */,
+				B5A110012FB8000000000001 /* PlaybackState.swift in Sources */,
 				EE8201852A81B20F00675A1C /* SongListItemView.swift in Sources */,
 				EEE911532A7EDE07008DFDED /* FileConstants.swift in Sources */,
 				EE82F9AA2A7FBFE100B873E7 /* FlashlightService.swift in Sources */,
@@ -638,6 +645,7 @@
 				B59515C22FAA75DA0023CA41 /* BeatPattern.swift in Sources */,
 				EE6406BA2A7EEE2400DEDED2 /* MetronomePlayerView.swift in Sources */,
 				EE478E8B2A879C51008337DB /* AudioPlayerService.swift in Sources */,
+				B5A113012FB8000000000001 /* PlaybackCoordinator.swift in Sources */,
 				B5B638B62FAAD8C300675060 /* PolyrhythmAudioEngine.swift in Sources */,
 				B53042152FA671A100A3CAE6 /* SharableStreakCard.swift in Sources */,
 				EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */,

@@ -17,7 +17,7 @@ final class SongNavigationViewModelTests: XCTestCase {
     }
 
     private func makeMetronome() -> MetronomePlaybackViewModel {
-        MetronomePlaybackViewModel()
+        MetronomePlaybackViewModel(audio: TestAudioPlaybackService())
     }
 
     // MARK: - Initial state

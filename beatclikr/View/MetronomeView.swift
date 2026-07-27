@@ -144,9 +144,24 @@ struct MetronomeView: View {
             .padding()
         }
         .background(Color(UIColor.systemGroupedBackground))
-        .onDisappear(perform: model.stop)
         .onAppear {
             model.clickerType = .metronome
+        }
+        .alert(
+            String(localized: "Playback Unavailable"),
+            isPresented: Binding(
+                get: { model.playbackError != nil },
+                set: { if !$0 { model.dismissPlaybackError() } },
+            ),
+        ) {
+            Button(String(localized: "Try Again")) {
+                model.start()
+            }
+            Button(String(localized: "OK"), role: .cancel) {
+                model.dismissPlaybackError()
+            }
+        } message: {
+            Text(model.playbackError?.localizedDescription ?? "")
         }
     }
 
@@ -155,7 +170,9 @@ struct MetronomeView: View {
             model.stop()
         } else {
             model.start()
-            practiceHistory.recordMetronomePractice(context: modelContext)
+            if model.isPlaying {
+                practiceHistory.recordMetronomePractice(context: modelContext)
+            }
         }
     }
 }

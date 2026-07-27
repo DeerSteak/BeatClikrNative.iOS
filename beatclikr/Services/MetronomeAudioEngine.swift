@@ -12,10 +12,10 @@ import Foundation
 @MainActor
 protocol MetronomeAudioEngine {
     /// Load the beat and rhythm sound files
-    func loadSounds(beatName: String, rhythmName: String, from sounds: [SoundFile])
+    func loadSounds(beatName: String, rhythmName: String, from sounds: [SoundFile]) throws
 
     /// Start the metronome with the given tempo, subdivisions, and optional accent pattern
-    func startMetronome(bpm: Double, subdivisions: Int, accentPattern: [Bool]?, delegate: MetronomeAudioEngineDelegate)
+    func startMetronome(bpm: Double, subdivisions: Int, accentPattern: [Bool]?, delegate: MetronomeAudioEngineDelegate) throws
 
     /// Stop the metronome
     func stopMetronome()

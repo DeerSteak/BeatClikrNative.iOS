@@ -41,14 +41,23 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
         }
     }
 
-    @Published var isPlaying = false
+    @Published private(set) var playbackState: PlaybackState = .idle
+
+    var isPlaying: Bool {
+        playbackState == .playing
+    }
+
+    var playbackError: PlaybackError? {
+        guard case let .failed(error) = playbackState else { return nil }
+        return error
+    }
 
     @Published var beat: FileConstants {
         didSet {
             if !applyingSettingsChange {
                 settings.updatePolyrhythmBeat(beat)
             }
-            audio.setupPolyrhythmAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
+            restartForSoundChangeIfNeeded()
         }
     }
 
@@ -57,7 +66,7 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
             if !applyingSettingsChange {
                 settings.updatePolyrhythmRhythm(rhythm)
             }
-            audio.setupPolyrhythmAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
+            restartForSoundChangeIfNeeded()
         }
     }
 
@@ -76,7 +85,7 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
 
     // MARK: - Private
 
-    private let audio: AudioPlayerService
+    private let audio: any AudioPlaybackService
     private let settings: SettingsViewModel
     private var settingsCancellables: Set<AnyCancellable> = []
     private var applyingSettingsChange = false
@@ -84,7 +93,7 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
 
     // MARK: - Init
 
-    init(audio: AudioPlayerService = .instance, settings: SettingsViewModel = SettingsViewModel()) {
+    init(audio: any AudioPlaybackService = AudioPlayerService.instance, settings: SettingsViewModel = SettingsViewModel()) {
         self.audio = audio
         self.settings = settings
         beats = settings.polyrhythmBeats
@@ -130,23 +139,43 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
 
     func start() {
         guard beats >= 1, against >= 1, bpm > 0 else {
-            stop()
+            playbackState = .failed(.invalidConfiguration)
             return
         }
 
+        playbackState = .preparing
         playheadResetID += 1
         resetCycleProgress()
-        visualAnimator.start()
-        audio.setupPolyrhythmAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
-        audio.startPolyrhythm(bpm: bpm, beats: beats, against: against)
-        isPlaying = true
+        do {
+            try audio.setupPolyrhythmAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
+            try audio.startPolyrhythm(bpm: bpm, beats: beats, against: against)
+            visualAnimator.start()
+            playbackState = .playing
+        } catch {
+            audio.stopPolyrhythm()
+            visualAnimator.stop()
+            resetCycleProgress()
+            playbackState = .failed(Self.playbackError(from: error))
+        }
     }
 
     func stop() {
         playheadResetID += 1
         audio.stopPolyrhythm()
         visualAnimator.stop()
-        isPlaying = false
+        playbackState = .idle
+        resetCycleProgress()
+    }
+
+    func dismissPlaybackError() {
+        guard playbackError != nil else { return }
+        playbackState = .idle
+    }
+
+    func playbackWasStoppedByCoordinator() {
+        playheadResetID += 1
+        visualAnimator.stop()
+        playbackState = .idle
         resetCycleProgress()
     }
 
@@ -204,7 +233,7 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
             .sink { [weak self] bank in
                 guard let self else { return }
                 audio.setSoundBank(bank)
-                audio.setupPolyrhythmAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
+                restartForSoundChangeIfNeeded()
             }
             .store(in: &settingsCancellables)
     }
@@ -213,6 +242,15 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
         applyingSettingsChange = true
         update()
         applyingSettingsChange = false
+    }
+
+    private func restartForSoundChangeIfNeeded() {
+        guard isPlaying else { return }
+        start()
+    }
+
+    private static func playbackError(from error: Error) -> PlaybackError {
+        error as? PlaybackError ?? .engineStartFailed
     }
 }
 

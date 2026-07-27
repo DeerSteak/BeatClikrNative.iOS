@@ -16,7 +16,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
     private let vibration: VibrationService
     private let flashlight: FlashlightService
-    private let audio: AudioPlayerService
+    private let audio: any AudioPlaybackService
     private let settings: SettingsViewModel
     private var settingsCancellables: Set<AnyCancellable> = []
     private let visualAnimator = MetronomeVisualAnimator()
@@ -34,8 +34,17 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
     @Published var iconScale: CGFloat = MetronomeConstants.iconScaleMin
     @Published var beatPulse: Double = 0
-    @Published var isPlaying: Bool = false
+    @Published private(set) var playbackState: PlaybackState = .idle
     @Published var currentSongTitle: String? = nil
+
+    var isPlaying: Bool {
+        playbackState == .playing
+    }
+
+    var playbackError: PlaybackError? {
+        guard case let .failed(error) = playbackState else { return nil }
+        return error
+    }
 
     @Published var beatsPerMinute: Double = UserDefaultsService.instance.metronomeBpm {
         didSet {
@@ -87,7 +96,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
                 settings.updateMetronomeGroove(selectedGroove)
             }
             if isPlaying {
-                audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.subdivisions, accentPattern: computeAccentPattern())
+                start()
             }
         }
     }
@@ -101,7 +110,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
                     settings.updatePlaylistBeat(beat)
                 }
             }
-            audio.setupMetronomeAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
+            restartForSoundChangeIfNeeded()
         }
     }
 
@@ -114,7 +123,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
                     settings.updatePlaylistRhythm(rhythm)
                 }
             }
-            audio.setupMetronomeAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
+            restartForSoundChangeIfNeeded()
         }
     }
 
@@ -124,7 +133,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
                 settings.updateMetronomeBeatPattern(selectedBeatPattern)
             }
             if isPlaying {
-                audio.startMetronome(bpm: beatsPerMinute, subdivisions: selectedGroove.subdivisions, accentPattern: computeAccentPattern())
+                start()
             }
         }
     }
@@ -142,7 +151,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     init(
         vibration: VibrationService = .instance,
         flashlight: FlashlightService = .instance,
-        audio: AudioPlayerService = .instance,
+        audio: any AudioPlaybackService = AudioPlayerService.instance,
         settings: SettingsViewModel = SettingsViewModel(),
     ) {
         self.vibration = vibration
@@ -224,20 +233,14 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         if song.groove == nil {
             song.groove = .quarter
         }
-
-        audio.setupMetronomeAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
     }
 
     func togglePlayPause() {
-        isPlaying.toggle()
-        if isPlaying {
-            start()
-        } else {
-            stop()
-        }
+        if isPlaying { stop() } else { start() }
     }
 
     func start() {
+        playbackState = .preparing
         if clickerType == .metronome {
             song = Song.metronomeSong()
             song.beatsPerMinute = beatsPerMinute
@@ -249,17 +252,39 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         activeBpm = bpm
         let groove = song.groove ?? selectedGroove
         audio.setRamp(enabled: rampEnabled && clickerType == .metronome, increment: rampIncrement, interval: rampInterval)
-        vibration.prepare()
-        audio.startMetronome(bpm: bpm, subdivisions: groove.subdivisions, accentPattern: computeAccentPattern())
-        visualAnimator.start()
-        isPlaying = true
+        do {
+            try audio.setupMetronomeAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
+            try audio.startMetronome(bpm: bpm, subdivisions: groove.subdivisions, accentPattern: computeAccentPattern())
+            vibration.prepare()
+            visualAnimator.start()
+            playbackState = .playing
+        } catch {
+            audio.stopMetronome()
+            visualAnimator.stop()
+            flashlight.turnFlashlightOff()
+            playbackState = .failed(Self.playbackError(from: error))
+        }
     }
 
     func stop() {
         audio.stopMetronome()
         visualAnimator.stop()
         flashlight.turnFlashlightOff()
-        isPlaying = false
+        playbackState = .idle
+        if rampEnabled, clickerType == .metronome {
+            beatsPerMinute = activeBpm
+        }
+    }
+
+    func dismissPlaybackError() {
+        guard playbackError != nil else { return }
+        playbackState = .idle
+    }
+
+    func playbackWasStoppedByCoordinator() {
+        visualAnimator.stop()
+        flashlight.turnFlashlightOff()
+        playbackState = .idle
         if rampEnabled, clickerType == .metronome {
             beatsPerMinute = activeBpm
         }
@@ -362,7 +387,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             .sink { [weak self] bank in
                 guard let self else { return }
                 audio.setSoundBank(bank)
-                audio.setupMetronomeAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
+                restartForSoundChangeIfNeeded()
             }
             .store(in: &settingsCancellables)
 
@@ -421,6 +446,15 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         applyingSettingsChange = true
         update()
         applyingSettingsChange = false
+    }
+
+    private func restartForSoundChangeIfNeeded() {
+        guard isPlaying else { return }
+        start()
+    }
+
+    private static func playbackError(from error: Error) -> PlaybackError {
+        error as? PlaybackError ?? .engineStartFailed
     }
 }
 

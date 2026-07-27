@@ -6,7 +6,22 @@
 
 - **ScheduledPolyrhythmEngine** - Polyrhythm engine using two independent scheduled `AVAudioPlayerNode` tracks. For M beats against N: the beat track fires every quarter note, the rhythm track fires every `N × 60 / (bpm × M)` seconds, and both tracks start from the same scheduled origin. Schedules `polyrhythmBeatFired` callbacks from each track's sample timeline position with the active beat/rhythm index so the view can animate individual dots independently
 
-- **AudioPlayerService** - `@MainActor` singleton wrapper that owns one `ScheduledMetronomeEngine` and one `ScheduledPolyrhythmEngine`. It configures the shared audio session, builds the app's sound catalog from the selected `SoundBank`, starts both engines, and forwards callbacks to `MetronomePlaybackViewModel` via `metronomeDelegate` and `PolyrhythmViewModel` via `polyrhythmDelegate`. Metronome and polyrhythm sound loading are intentionally separate (`setupMetronomeAudio` and `setupPolyrhythmAudio`) so each mode can keep its own selected instruments without reloading the other engine. Real-time tempo/subdivision and ramp updates apply to the metronome engine.
+- **AudioPlayerService** - `@MainActor` implementation of the injectable `AudioPlaybackService` protocol. It owns one `ScheduledMetronomeEngine` and one `ScheduledPolyrhythmEngine`, but prepares each engine lazily. Audio-session setup, sound loading, conversion, configuration, and engine start report typed `PlaybackError` failures rather than being swallowed. Metronome and polyrhythm sound loading remain separate so each mode keeps its own selected instruments.
+
+- **PlaybackCoordinator** - The single app-level owner of `AudioPlayerService`.
+  Both playback view models receive this coordinator rather than accessing the
+  singleton directly. Starting metronome playback stops and invalidates
+  polyrhythm playback first, and vice versa. Displaced owners are notified so
+  their published state and animations return to idle synchronously.
+
+### Playback navigation policy
+
+- Changing a top-level tab/sidebar section stops all playback.
+- Changing the compact metronome/polyrhythm mode stops the mode being hidden.
+- Navigation-stack pushes and sheets within the Library or Playlist section do
+  not stop playback; transport continues until the user stops it or leaves the
+  top-level section.
+- Presenting editing, picker, or Focus Mode UI does not implicitly stop audio.
 
 - **FlashlightService** - Controls device flashlight for visual beat accessibility
 

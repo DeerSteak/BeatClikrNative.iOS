@@ -11,20 +11,26 @@ import XCTest
 @MainActor
 final class PolyrhythmViewModelTests: XCTestCase {
     var viewModel: PolyrhythmViewModel!
+    var audio: TestAudioPlaybackService!
 
     override func setUp() async throws {
-        viewModel = PolyrhythmViewModel()
+        UserDefaultsService.instance.polyrhythmBpm = 60
+        audio = TestAudioPlaybackService()
+        viewModel = PolyrhythmViewModel(audio: audio)
+        audio.resetStopCounts()
     }
 
     override func tearDown() async throws {
         viewModel.stop()
         viewModel = nil
+        audio = nil
     }
 
     // MARK: - Initial State
 
     func testInitialPlaybackState() {
         XCTAssertFalse(viewModel.isPlaying, "Should not be playing initially")
+        XCTAssertEqual(viewModel.playbackState, .idle)
     }
 
     func testInitialPulseValues() {
@@ -59,6 +65,46 @@ final class PolyrhythmViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isPlaying, "Should be playing after start")
         viewModel.stop()
         XCTAssertFalse(viewModel.isPlaying, "Should not be playing after stop")
+    }
+
+    func testUnreadableSoundNeverReportsPlaying() {
+        audio.setupError = .soundUnreadable("Clave")
+
+        viewModel.start()
+
+        XCTAssertEqual(viewModel.playbackState, .failed(.soundUnreadable("Clave")))
+        XCTAssertFalse(viewModel.isPlaying)
+        XCTAssertEqual(audio.polyrhythmStopCount, 1)
+    }
+
+    func testEngineFailureCanBeRetried() {
+        audio.startError = .engineStartFailed
+        viewModel.start()
+        XCTAssertEqual(viewModel.playbackState, .failed(.engineStartFailed))
+
+        audio.startError = nil
+        viewModel.start()
+
+        XCTAssertEqual(viewModel.playbackState, .playing)
+    }
+
+    func testInvalidConfigurationNeverReportsPlaying() {
+        let originalBpm = viewModel.bpm
+        defer { viewModel.bpm = originalBpm }
+        viewModel.bpm = 0
+
+        viewModel.start()
+
+        XCTAssertEqual(viewModel.playbackState, .failed(.invalidConfiguration))
+        XCTAssertFalse(viewModel.isPlaying)
+    }
+
+    func testStopIsIdempotent() {
+        viewModel.stop()
+        viewModel.stop()
+
+        XCTAssertEqual(viewModel.playbackState, .idle)
+        XCTAssertEqual(audio.polyrhythmStopCount, 2)
     }
 
     func testStopResetsCycleProgressToZero() {

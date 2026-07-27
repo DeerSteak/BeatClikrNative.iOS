@@ -18,6 +18,10 @@ jobs:
   validate:
     runs-on: macos-26
     timeout-minutes: 45
+    env:
+      # Proprietary WAVs are intentionally absent from the public repository.
+      # Distribution builds default to requiring them outside this workflow.
+      REQUIRE_SOUND_ASSETS: "0"
 
     steps:
       - name: Check out repository

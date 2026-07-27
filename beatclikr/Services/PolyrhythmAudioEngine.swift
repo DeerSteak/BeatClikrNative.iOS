@@ -10,8 +10,8 @@ import Foundation
 /// Protocol for polyrhythm audio playback engines.
 @MainActor
 protocol PolyrhythmAudioEngine {
-    func loadSounds(beatName: String, rhythmName: String, from sounds: [SoundFile])
-    func startPolyrhythm(bpm: Double, beats: Int, against: Int, delegate: PolyrhythmAudioEngineDelegate)
+    func loadSounds(beatName: String, rhythmName: String, from sounds: [SoundFile]) throws
+    func startPolyrhythm(bpm: Double, beats: Int, against: Int, delegate: PolyrhythmAudioEngineDelegate) throws
     func stopPolyrhythm()
     func start() throws
     func stop()
