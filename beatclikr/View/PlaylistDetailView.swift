@@ -11,7 +11,6 @@ import SwiftUI
 struct PlaylistDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var metronome: MetronomePlaybackViewModel
-    @EnvironmentObject var practiceHistory: PracticeHistoryViewModel
     @StateObject private var model = PlaylistDetailViewModel()
 
     let playlist: Playlist
@@ -172,11 +171,6 @@ struct PlaylistDetailView: View {
             .sheet(isPresented: $showingSongPicker) {
                 SongPickerView(playlist: playlist)
                     .environmentObject(model)
-            }
-        }
-        .onAppear {
-            model.onSongPlayed = { song in
-                practiceHistory.recordSongPlayed(song: song, context: modelContext)
             }
         }
     }

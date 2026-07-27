@@ -29,7 +29,9 @@ struct MetronomeContainerView: View {
             .clipped()
             .onChange(of: selectedMode) { _, newMode in
                 switch newMode {
-                case .metronome: polyrhythmModel.stop()
+                case .metronome:
+                    metronomeModel.activateMetronomeMode()
+                    polyrhythmModel.stop()
                 case .polyrhythm: metronomeModel.stop()
                 }
             }

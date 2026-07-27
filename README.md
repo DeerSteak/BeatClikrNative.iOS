@@ -22,12 +22,13 @@ A new **Polyrhythm** mode layers two independent rhythms at the same tempo: M be
 Two new groove types — **Odd Quarter** and **Odd Eighth** — support asymmetric meters from 5/8 through 15/8 via a `BeatPattern` accent picker. The audio engine steps through the accent array tick by tick and computes a per-group `beatInterval` so animations stretch to match each rhythmic group (e.g. the 3-beat group in a 3+2+2 pattern animates longer than the 2-beat groups).
 
 ### Practice History
-A new **Practice History** tab records every song played per day and shows:
-- A monthly calendar with dots on practiced days; tap any day to see which songs were played
+A new **Practice History** tab measures active playback per song/mode and shows:
+- A monthly calendar with dots only after at least one item accumulates 30 seconds that day
+- One daily row per item with total duration and playback-period count; Metronome and Polyrhythm sort before songs
 - Current and longest streak counts with start/end dates
 - A reminder banner when you have an active streak but haven't practiced today
 
-After each session the app reschedules 7 ahead-of-time daily notifications with content that reflects the projected streak state for each upcoming day (keep it alive, broken, or generic). Notifications also reschedule when the app becomes active or the reminder time changes in Settings.
+When an item first reaches 30 seconds, the app reschedules 7 ahead-of-time daily notifications with content that reflects the projected streak state for each upcoming day (keep it alive, broken, or generic). Notifications also reschedule when the app becomes active or the reminder time changes in Settings.
 
 ### Streak Sharing
 The Practice History tab has a **Share** button that renders a `SharableStreakCard` — a 360×360 image with the streak count, app icon, and a gradient background — and opens the system share sheet with pre-written adaptive text.

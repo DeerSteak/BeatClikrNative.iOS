@@ -79,6 +79,21 @@ struct beatclikrApp: App {
         _songLibraryViewModel = StateObject(wrappedValue: SongLibraryViewModel())
         _playlistListViewModel = StateObject(wrappedValue: PlaylistListViewModel())
         let practiceVM = PracticeHistoryViewModel()
+        metronome.onPlaybackStarted = { [weak practiceVM] song in
+            practiceVM?.beginPlayback(.init(song: song), context: context)
+        }
+        metronome.onPlaybackEnded = { [weak practiceVM] in
+            practiceVM?.endPlayback()
+        }
+        polyrhythm.onPlaybackStarted = { [weak practiceVM] in
+            practiceVM?.beginPlayback(
+                .init(songId: "beatclikr.polyrhythm", title: "Polyrhythm"),
+                context: context,
+            )
+        }
+        polyrhythm.onPlaybackEnded = { [weak practiceVM] in
+            practiceVM?.endPlayback()
+        }
         practiceVM.onPracticeRecorded = { [weak practiceVM, weak settingsVM] context in
             guard let vm = practiceVM, let settings = settingsVM else { return }
             let dates = vm.markedDates(context: context)
@@ -93,9 +108,6 @@ struct beatclikrApp: App {
         WindowGroup {
             appContent
                 .preferredColorScheme(defaults.alwaysUseDarkTheme ? .dark : nil)
-                .transaction { transaction in
-                    transaction.disablesAnimations = true
-                }
                 .onAppear {
                     updateIdleTimer(for: scenePhase)
                     metronomeViewModel.setNonAudioEffectsEnabled(scenePhase == .active)
@@ -133,7 +145,13 @@ struct beatclikrApp: App {
         }
         .modelContainer(container)
         .onChange(of: scenePhase) { _, newPhase in
+            if newPhase != .active {
+                practiceHistoryViewModel.checkpointPlayback()
+            }
             metronomeViewModel.setNonAudioEffectsEnabled(newPhase == .active)
+            if newPhase == .background {
+                PracticeDayRepair.repairIfPossible(context: container.mainContext)
+            }
             guard newPhase == .active else {
                 updateIdleTimer(for: newPhase)
                 return
@@ -147,17 +165,25 @@ struct beatclikrApp: App {
     }
 
     private var appContent: some View {
-        HomeView(selectedSection: $selectedSection)
-            .environmentObject(songLibraryViewModel)
-            .environmentObject(playlistListViewModel)
-            .environmentObject(metronomeViewModel)
-            .environmentObject(polyrhythmViewModel)
-            .environmentObject(settingsViewModel)
-            .environmentObject(practiceHistoryViewModel)
-            .onChange(of: selectedSection) { oldSection, newSection in
-                guard oldSection != newSection else { return }
-                playbackCoordinator.stopAll()
-            }
+        HomeView(
+            selectedSection: Binding(
+                get: { selectedSection },
+                set: { newSection in
+                    guard selectedSection != newSection else { return }
+                    playbackCoordinator.stopAll()
+                    if newSection == .metronome {
+                        metronomeViewModel.activateMetronomeMode()
+                    }
+                    selectedSection = newSection
+                },
+            ),
+        )
+        .environmentObject(songLibraryViewModel)
+        .environmentObject(playlistListViewModel)
+        .environmentObject(metronomeViewModel)
+        .environmentObject(polyrhythmViewModel)
+        .environmentObject(settingsViewModel)
+        .environmentObject(practiceHistoryViewModel)
     }
 
     private func updateIdleTimer(for phase: ScenePhase) {
@@ -216,6 +242,8 @@ struct beatclikrApp: App {
     }
 
     private static func performStartupMaintenance(context: ModelContext) {
+        PracticeDayRepair.repairIfPossible(context: context)
+
         let orphaned = (try? context.fetch(
             FetchDescriptor<PlaylistEntry>(predicate: #Predicate { $0.song == nil }),
         )) ?? []

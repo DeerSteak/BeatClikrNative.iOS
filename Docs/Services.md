@@ -14,6 +14,12 @@
   polyrhythm playback first, and vice versa. Displaced owners are notified so
   their published state and animations return to idle synchronously.
 
+- **PersistenceRepository** - Generic SwiftData fetch/save boundary returning
+  typed failures and rolling back failed saves.
+
+- **PracticeHistoryRepository** - Practice-domain repository built on the
+  generic persistence boundary. Practice views do not perform saves directly.
+
 ### Playback navigation policy
 
 - Changing a top-level tab/sidebar section stops all playback.

@@ -62,15 +62,15 @@ struct PracticeHistoryView: View {
                                     HStack(spacing: 12) {
                                         SongListItemView(song: song)
                                         Spacer()
-                                        if let count = song.timesPracticed, count > 1 {
-                                            Text("×\(count)")
+                                        VStack(alignment: .trailing, spacing: 4) {
+                                            Text(formattedDuration(song.durationSeconds ?? 0))
                                                 .font(.subheadline.bold())
                                                 .monospacedDigit()
-                                                .foregroundStyle(.secondary)
-                                                .padding(.horizontal, 8)
-                                                .padding(.vertical, 4)
-                                                .background(Color(UIColor.tertiarySystemFill), in: Capsule())
-                                                .accessibilityLabel("\(count) times practiced")
+                                            if let count = song.timesPracticed, count > 1 {
+                                                Text("×\(count) sessions")
+                                                    .font(.caption)
+                                                    .foregroundStyle(.secondary)
+                                            }
                                         }
                                     }
                                 }
@@ -108,6 +108,14 @@ struct PracticeHistoryView: View {
         .onChange(of: selectedDate) { _, newDate in
             model.loadSongs(for: newDate, context: modelContext)
         }
+    }
+
+    private func formattedDuration(_ seconds: TimeInterval) -> String {
+        let formatter = DateComponentsFormatter()
+        formatter.allowedUnits = seconds >= 3600 ? [.hour, .minute] : [.minute, .second]
+        formatter.unitsStyle = .abbreviated
+        formatter.maximumUnitCount = 2
+        return formatter.string(from: seconds) ?? "0 sec"
     }
 
     @MainActor

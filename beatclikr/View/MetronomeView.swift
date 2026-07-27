@@ -9,9 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct MetronomeView: View {
-    @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: MetronomePlaybackViewModel
-    @EnvironmentObject var practiceHistory: PracticeHistoryViewModel
 
     var body: some View {
         ScrollView {
@@ -144,9 +142,6 @@ struct MetronomeView: View {
             .padding()
         }
         .background(Color(UIColor.systemGroupedBackground))
-        .onAppear {
-            model.clickerType = .metronome
-        }
         .alert(
             String(localized: "Playback Unavailable"),
             isPresented: Binding(
@@ -170,9 +165,6 @@ struct MetronomeView: View {
             model.stop()
         } else {
             model.start()
-            if model.isPlaying {
-                practiceHistory.recordMetronomePractice(context: modelContext)
-            }
         }
     }
 }
