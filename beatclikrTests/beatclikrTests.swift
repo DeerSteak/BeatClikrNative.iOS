@@ -39,6 +39,8 @@ final class TestAudioPlaybackService: AudioPlaybackService {
 
     var setupError: PlaybackError?
     var startError: PlaybackError?
+    private(set) var metronomeStartCount = 0
+    private(set) var polyrhythmStartCount = 0
     private(set) var metronomeStopCount = 0
     private(set) var polyrhythmStopCount = 0
 
@@ -54,6 +56,7 @@ final class TestAudioPlaybackService: AudioPlaybackService {
 
     func startMetronome(bpm _: Double, subdivisions _: Int, accentPattern _: [Bool]?) throws {
         if let startError { throw startError }
+        metronomeStartCount += 1
     }
 
     func stopMetronome() {
@@ -65,6 +68,7 @@ final class TestAudioPlaybackService: AudioPlaybackService {
 
     func startPolyrhythm(bpm _: Double, beats _: Int, against _: Int) throws {
         if let startError { throw startError }
+        polyrhythmStartCount += 1
     }
 
     func stopPolyrhythm() {

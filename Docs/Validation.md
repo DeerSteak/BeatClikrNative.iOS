@@ -48,10 +48,17 @@ The proprietary WAV files are intentionally excluded from git.
   presence.
 - A partial asset set fails validation.
 - Set `REQUIRE_SOUND_ASSETS=1` to require the complete set.
-- When `afinfo` is available, present files are checked for audio readability.
+- Present files must be readable, contain at least one audio frame, and match
+  the manifest's sample-rate, channel-count, bit-depth, and layout contract.
 
 Release/archive automation that has access to the proprietary files must set
 `REQUIRE_SOUND_ASSETS=1`.
+
+Release builds enforce `REQUIRE_SOUND_ASSETS=1` by default, including local
+archives intended for App Store submission. The public GitHub workflow sets it
+to `0` because the proprietary binaries are intentionally absent; that workflow
+still validates the complete machine-readable manifest. A partial sound set
+always fails, even in the public-checkout mode.
 
 Archive validation is conditional because it requires signing credentials. Set
 `ARCHIVE_VALIDATION=1` in a trusted CI environment with signing configured.

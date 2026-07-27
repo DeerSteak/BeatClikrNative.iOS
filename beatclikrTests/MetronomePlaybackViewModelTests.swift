@@ -121,6 +121,18 @@ final class MetronomePlaybackViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.playbackState, .playing)
     }
 
+    func testMissingReplacementSoundStopsInsteadOfReusingPreviousSound() {
+        viewModel.start()
+        XCTAssertEqual(audio.metronomeStartCount, 1)
+
+        audio.setupError = .soundNotFound("cowbell_G#3")
+        viewModel.beat = .Cowbell
+
+        XCTAssertEqual(viewModel.playbackState, .failed(.soundNotFound("cowbell_G#3")))
+        XCTAssertEqual(audio.metronomeStartCount, 1)
+        XCTAssertEqual(audio.metronomeStopCount, 1)
+    }
+
     func testStopIsIdempotent() {
         viewModel.stop()
         viewModel.stop()
