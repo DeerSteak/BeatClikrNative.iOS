@@ -6,6 +6,7 @@
 //
 
 @testable import BeatClikr
+import SwiftData
 import XCTest
 
 // This file serves as the main test suite entry point.
@@ -17,4 +18,16 @@ import XCTest
 
 final class beatclikrTests: XCTestCase {
     // Placeholder for integration tests if needed in the future
+}
+
+@MainActor
+enum TestModelContainerFactory {
+    static func make(_ modelTypes: [any PersistentModel.Type]) throws -> ModelContainer {
+        let schema = Schema(modelTypes)
+        let configuration = ModelConfiguration(
+            isStoredInMemoryOnly: true,
+            cloudKitDatabase: .none,
+        )
+        return try ModelContainer(for: schema, configurations: [configuration])
+    }
 }

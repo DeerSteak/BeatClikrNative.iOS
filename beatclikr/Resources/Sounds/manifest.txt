@@ -1,0 +1,33 @@
+# Required proprietary WAV assets.
+# Paths are relative to beatclikr/Resources/Sounds.
+
+Acoustic/clickhi_E5.wav
+Acoustic/clicklo_F5.wav
+Acoustic/cowbell_G#3.wav
+Acoustic/crashl_C#3.wav
+Acoustic/crashr_A3.wav
+Acoustic/hatclosed_F#2.wav
+Acoustic/hatopen_A#2.wav
+Acoustic/kick_C2.wav
+Acoustic/rideedge_D#3.wav
+Acoustic/ridebell_F3.wav
+Acoustic/snare_D2.wav
+Acoustic/tamb_F#3.wav
+Acoustic/tomhi_D3.wav
+Acoustic/tomlow_A2.wav
+Acoustic/tommid_B2.wav
+Synth/clickhi_E5.wav
+Synth/clicklo_F5.wav
+Synth/cowbell_G#3.wav
+Synth/crashl_C#3.wav
+Synth/crashr_A3.wav
+Synth/hatclosed_F#2.wav
+Synth/hatopen_A#2.wav
+Synth/kick_C2.wav
+Synth/rideedge_D#3.wav
+Synth/ridebell_F3.wav
+Synth/snare_D2.wav
+Synth/tamb_F#3.wav
+Synth/tomhi_D3.wav
+Synth/tomlow_A2.wav
+Synth/tommid_B2.wav

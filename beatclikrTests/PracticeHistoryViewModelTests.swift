@@ -21,14 +21,6 @@ struct PracticeHistoryViewModelTests {
         cal.date(byAdding: .day, value: -n, to: today)!
     }
 
-    private func makeContainer() throws -> ModelContainer {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
-        return try ModelContainer(
-            for: Song.self, PracticeSession.self, PracticedSong.self,
-            configurations: config,
-        )
-    }
-
     // MARK: - currentStreak
 
     @Test func `current streak is zero for empty dates`() {
@@ -245,14 +237,14 @@ struct PracticeHistoryViewModelTests {
     // MARK: - markedDates
 
     @Test func `marked dates is empty with no sessions`() throws {
-        let container = try makeContainer()
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
         let context = container.mainContext
         let vm = PracticeHistoryViewModel()
         #expect(vm.markedDates(context: context).isEmpty)
     }
 
     @Test func `marked dates contains session dates`() throws {
-        let container = try makeContainer()
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
         let context = container.mainContext
         let session = PracticeSession(date: today)
         context.insert(session)
@@ -263,7 +255,7 @@ struct PracticeHistoryViewModelTests {
     }
 
     @Test func `marked dates normalizes to start of day`() throws {
-        let container = try makeContainer()
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
         let context = container.mainContext
         let noon = try #require(cal.date(bySettingHour: 12, minute: 0, second: 0, of: today))
         let session = PracticeSession(date: noon)
@@ -275,7 +267,7 @@ struct PracticeHistoryViewModelTests {
     // MARK: - session(for:context:)
 
     @Test func `session for date returns matching session`() throws {
-        let container = try makeContainer()
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
         let context = container.mainContext
         let session = PracticeSession(date: today)
         context.insert(session)
@@ -286,14 +278,14 @@ struct PracticeHistoryViewModelTests {
     }
 
     @Test func `session for date returns nil when not found`() throws {
-        let container = try makeContainer()
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
         let context = container.mainContext
         let vm = PracticeHistoryViewModel()
         #expect(vm.session(for: today, context: context) == nil)
     }
 
     @Test func `session for date does not return wrong day session`() throws {
-        let container = try makeContainer()
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
         let context = container.mainContext
         let session = PracticeSession(date: daysAgo(1))
         context.insert(session)
@@ -304,7 +296,7 @@ struct PracticeHistoryViewModelTests {
     // MARK: - getOrCreateTodaysSession
 
     @Test func `get or create todays session creates new session`() throws {
-        let container = try makeContainer()
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
         let context = container.mainContext
         let vm = PracticeHistoryViewModel()
         let session = vm.getOrCreateTodaysSession(context: context)
@@ -313,7 +305,7 @@ struct PracticeHistoryViewModelTests {
     }
 
     @Test func `get or create todays session returns existing session`() throws {
-        let container = try makeContainer()
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
         let context = container.mainContext
         let vm = PracticeHistoryViewModel()
         let first = vm.getOrCreateTodaysSession(context: context)
@@ -324,7 +316,7 @@ struct PracticeHistoryViewModelTests {
     // MARK: - recordSongPlayed
 
     @Test func `record song played creates new practiced song`() throws {
-        let container = try makeContainer()
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
         let context = container.mainContext
         let song = Song(title: "Test Song", artist: "Test Artist", beatsPerMinute: 120, beatsPerMeasure: 4, groove: .quarter)
         context.insert(song)
@@ -337,7 +329,7 @@ struct PracticeHistoryViewModelTests {
     }
 
     @Test func `record song played increments times played on repeat`() throws {
-        let container = try makeContainer()
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
         let context = container.mainContext
         let song = Song(title: "Test Song", artist: "Test Artist", beatsPerMinute: 120, beatsPerMeasure: 4, groove: .quarter)
         context.insert(song)
@@ -350,7 +342,7 @@ struct PracticeHistoryViewModelTests {
     }
 
     @Test func `record song played copies song metadata`() throws {
-        let container = try makeContainer()
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
         let context = container.mainContext
         let song = Song(title: "My Song", artist: "My Artist", beatsPerMinute: 100, beatsPerMeasure: 4, groove: .quarter)
         context.insert(song)
@@ -364,7 +356,7 @@ struct PracticeHistoryViewModelTests {
     }
 
     @Test func `record metronome practice creates one built in item per day`() throws {
-        let container = try makeContainer()
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
         let context = container.mainContext
         let vm = PracticeHistoryViewModel()
         vm.recordMetronomePractice(context: context)
@@ -377,7 +369,7 @@ struct PracticeHistoryViewModelTests {
     }
 
     @Test func `record song played with transient metronome still creates one built in item per day`() throws {
-        let container = try makeContainer()
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
         let context = container.mainContext
         let vm = PracticeHistoryViewModel()
         vm.recordSongPlayed(song: Song.metronomeSong(), context: context)
@@ -390,7 +382,7 @@ struct PracticeHistoryViewModelTests {
     }
 
     @Test func `record polyrhythm practice creates one built in item per day`() throws {
-        let container = try makeContainer()
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
         let context = container.mainContext
         let vm = PracticeHistoryViewModel()
         vm.recordPolyrhythmPractice(context: context)
@@ -403,7 +395,7 @@ struct PracticeHistoryViewModelTests {
     }
 
     @Test func `metronome and polyrhythm practice are separate history items`() throws {
-        let container = try makeContainer()
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
         let context = container.mainContext
         let vm = PracticeHistoryViewModel()
         vm.recordMetronomePractice(context: context)

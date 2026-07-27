@@ -63,3 +63,4 @@ The WAV files are proprietary recordings. You're free to use this code, but you'
 | [Docs/Services.md](Docs/Services.md) | Services, timing, audio, odd meter, polyrhythm, tap tempo |
 | [Docs/Constants.md](Docs/Constants.md) | Constants and preview helpers |
 | [Docs/SongLibrary.md](Docs/SongLibrary.md) | Song library, playlists, practice history, iCloud sync, notifications |
+| [Docs/Validation.md](Docs/Validation.md) | Local and CI validation commands, tools, assets, and archive policy |

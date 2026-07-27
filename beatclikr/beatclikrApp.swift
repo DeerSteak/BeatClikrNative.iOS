@@ -33,10 +33,13 @@ struct beatclikrApp: App {
         ProcessInfo.processInfo.environment["UI_TESTING_NOTIFICATION_STATE"]
     private static let uiTestMetronomeReset: Bool =
         ProcessInfo.processInfo.environment["UI_TESTING_METRONOME_RESET"] != nil
+    private static let isUnitTesting =
+        ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] != nil
 
     init() {
         let isUITesting = Self.uiTestPracticeState != nil
-        let startup = Self.makeStartupContainer(isUITesting: isUITesting)
+        let isTesting = isUITesting || Self.isUnitTesting
+        let startup = Self.makeStartupContainer(isTesting: isTesting)
         _container = State(initialValue: startup.container)
         _databaseRecoveryAlert = State(initialValue: startup.recoveryAlert)
 
@@ -45,7 +48,7 @@ struct beatclikrApp: App {
         if let state = Self.uiTestPracticeState {
             SettingsViewModel.configureUITestNotificationState(Self.uiTestNotificationState)
             Self.seedUITestData(state: state, context: context)
-        } else if startup.recoveryAlert == nil {
+        } else if !Self.isUnitTesting, startup.recoveryAlert == nil {
             Self.performStartupMaintenance(context: context)
         }
 
@@ -152,9 +155,9 @@ struct beatclikrApp: App {
         }
     }
 
-    private static func makeStartupContainer(isUITesting: Bool) -> (container: ModelContainer, recoveryAlert: DatabaseRecoveryAlert?) {
+    private static func makeStartupContainer(isTesting: Bool) -> (container: ModelContainer, recoveryAlert: DatabaseRecoveryAlert?) {
         do {
-            let container = try isUITesting ? makeInMemoryContainer() : makePersistentContainer()
+            let container = try isTesting ? makeInMemoryContainer() : makePersistentContainer()
             return (container, nil)
         } catch {
             do {
@@ -172,7 +175,10 @@ struct beatclikrApp: App {
     }
 
     private static func makeInMemoryContainer() throws -> ModelContainer {
-        let config = ModelConfiguration(isStoredInMemoryOnly: true)
+        let config = ModelConfiguration(
+            isStoredInMemoryOnly: true,
+            cloudKitDatabase: .none,
+        )
         return try makeContainer(config: config)
     }
 
