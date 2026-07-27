@@ -32,10 +32,14 @@
 - Returning to the foreground preserves the current playback state. Normal
   audio interruptions and unavailable output routes still stop playback and
   require the user to press Play again.
-- BeatClikr does not currently publish Now Playing metadata or register remote
-  transport commands. Lock-screen and Control Center controls are deferred
-  until the app can offer them without ambiguous play behavior across its two
-  playback modes.
+- During playback, BeatClikr publishes minimal Now Playing metadata and enables
+  the lock-screen and Control Center Pause/Stop commands. Both commands stop
+  the active mode and return its UI to idle. Stop-capable commands are enabled
+  for each playback session and disabled again on stop, so repeated
+  start-lock-stop cycles do not leave stale controls. If iOS presents a
+  Play-shaped button in the transport slot, it also stops current playback; it
+  never restarts audio. Seeking, skipping, playback-rate changes, and track
+  navigation remain disabled because they are not meaningful for a metronome.
 - “Keep Awake” remains an optional visual-performance preference for users who
   want the beat display to remain visible. Background audio does not depend on
   it, and the idle-timer override is removed whenever the scene is not active.

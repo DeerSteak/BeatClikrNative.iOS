@@ -58,7 +58,7 @@ struct beatclikrApp: App {
         }
 
         let settingsVM = SettingsViewModel()
-        let coordinator = PlaybackCoordinator()
+        let coordinator = PlaybackCoordinator(lockScreenControls: LockScreenPlaybackController())
         let metronome = MetronomePlaybackViewModel(audio: coordinator, settings: settingsVM)
         let polyrhythm = PolyrhythmViewModel(audio: coordinator, settings: settingsVM)
         coordinator.onMetronomeStopped = { [weak metronome] in

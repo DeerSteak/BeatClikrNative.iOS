@@ -6,6 +6,7 @@
 //
 
 import Foundation
+@preconcurrency import MediaPlayer
 
 enum PlaybackMode: Equatable {
     case metronome
@@ -13,8 +14,84 @@ enum PlaybackMode: Equatable {
 }
 
 @MainActor
+protocol LockScreenPlaybackControlling: AnyObject {
+    func installStopHandler(_ handler: @escaping @MainActor () -> Void)
+    func playbackStarted(mode: PlaybackMode)
+    func playbackStopped()
+}
+
+@MainActor
+final class LockScreenPlaybackController: LockScreenPlaybackControlling {
+    private var stopHandler: (@MainActor () -> Void)?
+    private nonisolated(unsafe) var commandTargets: [Any] = []
+
+    func installStopHandler(_ handler: @escaping @MainActor () -> Void) {
+        stopHandler = handler
+
+        let commandCenter = MPRemoteCommandCenter.shared()
+        commandCenter.nextTrackCommand.isEnabled = false
+        commandCenter.previousTrackCommand.isEnabled = false
+        commandCenter.skipForwardCommand.isEnabled = false
+        commandCenter.skipBackwardCommand.isEnabled = false
+        commandCenter.seekForwardCommand.isEnabled = false
+        commandCenter.seekBackwardCommand.isEnabled = false
+        commandCenter.changePlaybackPositionCommand.isEnabled = false
+        commandCenter.changePlaybackRateCommand.isEnabled = false
+
+        register(commandCenter.playCommand)
+        register(commandCenter.pauseCommand)
+        register(commandCenter.stopCommand)
+        register(commandCenter.togglePlayPauseCommand)
+        setStopCommandsEnabled(false)
+    }
+
+    func playbackStarted(mode: PlaybackMode) {
+        let modeName = switch mode {
+        case .metronome:
+            "Metronome"
+        case .polyrhythm:
+            "Polyrhythm"
+        }
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = [
+            MPMediaItemPropertyTitle: "BeatClikr",
+            MPMediaItemPropertyArtist: modeName,
+            MPNowPlayingInfoPropertyIsLiveStream: true,
+            MPNowPlayingInfoPropertyPlaybackRate: 1,
+        ]
+        setStopCommandsEnabled(true)
+        MPNowPlayingInfoCenter.default().playbackState = .playing
+    }
+
+    func playbackStopped() {
+        setStopCommandsEnabled(false)
+        MPNowPlayingInfoCenter.default().playbackState = .stopped
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nil
+    }
+
+    private func register(_ command: MPRemoteCommand) {
+        command.isEnabled = true
+        let target = command.addTarget { [weak self] _ in
+            Task { @MainActor [weak self] in
+                self?.stopHandler?()
+            }
+            return .success
+        }
+        commandTargets.append(target)
+    }
+
+    private func setStopCommandsEnabled(_ enabled: Bool) {
+        let commandCenter = MPRemoteCommandCenter.shared()
+        commandCenter.playCommand.isEnabled = enabled
+        commandCenter.pauseCommand.isEnabled = enabled
+        commandCenter.stopCommand.isEnabled = enabled
+        commandCenter.togglePlayPauseCommand.isEnabled = enabled
+    }
+}
+
+@MainActor
 final class PlaybackCoordinator: AudioPlaybackService, AudioPlaybackLifecycleDelegate {
     private let audio: any AudioPlaybackService
+    private let lockScreenControls: (any LockScreenPlaybackControlling)?
 
     private(set) var activeMode: PlaybackMode?
     var onMetronomeStopped: (() -> Void)?
@@ -37,9 +114,16 @@ final class PlaybackCoordinator: AudioPlaybackService, AudioPlaybackLifecycleDel
         set { audio.polyrhythmDelegate = newValue }
     }
 
-    init(audio: any AudioPlaybackService = AudioPlayerService.instance) {
+    init(
+        audio: any AudioPlaybackService = AudioPlayerService.instance,
+        lockScreenControls: (any LockScreenPlaybackControlling)? = nil,
+    ) {
         self.audio = audio
+        self.lockScreenControls = lockScreenControls
         audio.lifecycleDelegate = self
+        lockScreenControls?.installStopHandler { [weak self] in
+            self?.stopActivePlayback()
+        }
     }
 
     func setupMetronomeAudio(beatName: String, rhythmName: String) throws {
@@ -60,6 +144,7 @@ final class PlaybackCoordinator: AudioPlaybackService, AudioPlaybackLifecycleDel
         }
         try audio.startMetronome(bpm: bpm, subdivisions: subdivisions, accentPattern: accentPattern)
         activeMode = .metronome
+        lockScreenControls?.playbackStarted(mode: .metronome)
     }
 
     func stopMetronome() {
@@ -70,6 +155,7 @@ final class PlaybackCoordinator: AudioPlaybackService, AudioPlaybackLifecycleDel
         audio.stopMetronome()
         if activeMode == .metronome {
             activeMode = nil
+            lockScreenControls?.playbackStopped()
         }
         if notifyOwner {
             onMetronomeStopped?()
@@ -90,6 +176,7 @@ final class PlaybackCoordinator: AudioPlaybackService, AudioPlaybackLifecycleDel
         }
         try audio.startPolyrhythm(bpm: bpm, beats: beats, against: against)
         activeMode = .polyrhythm
+        lockScreenControls?.playbackStarted(mode: .polyrhythm)
     }
 
     func stopPolyrhythm() {
@@ -100,6 +187,7 @@ final class PlaybackCoordinator: AudioPlaybackService, AudioPlaybackLifecycleDel
         audio.stopPolyrhythm()
         if activeMode == .polyrhythm {
             activeMode = nil
+            lockScreenControls?.playbackStopped()
         }
         if notifyOwner {
             onPolyrhythmStopped?()
@@ -111,9 +199,21 @@ final class PlaybackCoordinator: AudioPlaybackService, AudioPlaybackLifecycleDel
         stopPolyrhythm(notifyOwner: true)
     }
 
+    private func stopActivePlayback() {
+        switch activeMode {
+        case .metronome:
+            stopMetronome(notifyOwner: true)
+        case .polyrhythm:
+            stopPolyrhythm(notifyOwner: true)
+        case nil:
+            lockScreenControls?.playbackStopped()
+        }
+    }
+
     func audioPlaybackWasInterrupted() {
         let interruptedMode = activeMode
         activeMode = nil
+        lockScreenControls?.playbackStopped()
         switch interruptedMode {
         case .metronome:
             onMetronomeInterrupted?()
