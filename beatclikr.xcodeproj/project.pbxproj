@@ -600,7 +600,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin:/usr/local/bin\"\nif which swiftformat >/dev/null; then\n  swiftformat .\nelse\n  echo \"warning: SwiftFormat not installed, download from https://github.com/nicklockwood/SwiftFormat\"\nfi\n";
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin:/usr/local/bin\"\nif which swiftformat >/dev/null; then\n  swiftformat . --config \"$SRCROOT/.swiftformat\"\nelse\n  echo \"error: SwiftFormat 0.62.1 or newer is required; download from https://github.com/nicklockwood/SwiftFormat\"\n  exit 1\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
