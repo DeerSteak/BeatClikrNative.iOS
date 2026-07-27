@@ -12,6 +12,9 @@ import SwiftUI
 
 @MainActor
 class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate {
+    var onPlaybackStarted: ((Song) -> Void)?
+    var onPlaybackEnded: (() -> Void)?
+
     // MARK: Private variables
 
     private let vibration: any VibrationControlling
@@ -280,6 +283,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             vibration.prepare()
             visualAnimator.start()
             playbackState = .playing
+            onPlaybackStarted?(song)
         } catch {
             audio.stopMetronome()
             visualAnimator.stop()
@@ -289,10 +293,12 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     }
 
     func stop() {
+        let wasPlaying = isPlaying
         audio.stopMetronome()
         visualAnimator.stop()
         invalidateEffectsSession()
         playbackState = .idle
+        if wasPlaying { onPlaybackEnded?() }
         if rampEnabled, clickerType == .metronome {
             beatsPerMinute = activeBpm
         }
@@ -304,18 +310,22 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     }
 
     func playbackWasStoppedByCoordinator() {
+        let wasPlaying = isPlaying
         visualAnimator.stop()
         invalidateEffectsSession()
         playbackState = .idle
+        if wasPlaying { onPlaybackEnded?() }
         if rampEnabled, clickerType == .metronome {
             beatsPerMinute = activeBpm
         }
     }
 
     func playbackWasInterrupted() {
+        let wasPlaying = isPlaying
         visualAnimator.stop()
         invalidateEffectsSession()
         playbackState = .interrupted
+        if wasPlaying { onPlaybackEnded?() }
     }
 
     /// Audio may continue in the background, but UIKit haptics and the camera

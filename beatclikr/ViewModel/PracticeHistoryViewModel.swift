@@ -11,15 +11,57 @@ import SwiftData
 
 @MainActor
 class PracticeHistoryViewModel: ObservableObject {
+    static let qualifyingDuration: TimeInterval = 30
+
+    struct PlaybackItem {
+        let songId: String
+        let title: String
+        let artist: String
+        let beatsPerMinute: Double?
+        let beatsPerMeasure: Int?
+        let groove: Groove?
+
+        init(song: Song) {
+            songId = song.id ?? UUID().uuidString
+            title = song.title ?? String(localized: "Unknown")
+            artist = song.artist ?? ""
+            beatsPerMinute = song.beatsPerMinute
+            beatsPerMeasure = song.beatsPerMeasure
+            groove = song.groove
+        }
+
+        init(songId: String, title: String, artist: String = "BeatClikr") {
+            self.songId = songId
+            self.title = title
+            self.artist = artist
+            beatsPerMinute = nil
+            beatsPerMeasure = nil
+            groove = nil
+        }
+    }
+
+    private struct ActivePlayback {
+        let item: PlaybackItem
+        let context: ModelContext
+        var checkpoint: TimeInterval
+    }
+
     var onPracticeRecorded: ((ModelContext) -> Void)?
 
     @Published var practiceDates: Set<Date> = []
     @Published var selectedDateSongs: [PracticedSong] = []
     @Published var persistenceFailure: PersistenceFailure?
     private let repository: PracticeHistoryRepository
+    private let monotonicNow: () -> TimeInterval
+    private var activePlayback: ActivePlayback?
+    private var checkpointTask: Task<Void, Never>?
 
-    init(repository: PracticeHistoryRepository = PracticeHistoryRepository()) {
+    init(
+        repository: PracticeHistoryRepository = PracticeHistoryRepository(),
+        monotonicNow: @escaping () -> TimeInterval = { ProcessInfo.processInfo.systemUptime },
+    ) {
         self.repository = repository
+        self.monotonicNow = monotonicNow
     }
 
     var currentStreak: Int {
@@ -69,33 +111,10 @@ class PracticeHistoryViewModel: ObservableObject {
     func loadSongs(for date: Date?, context: ModelContext) {
         guard let date else { selectedDateSongs = []; return }
         persistenceFailure = nil
-        let songs = session(for: date, context: context)?.songsPracticed ?? []
+        let songs = (session(for: date, context: context)?.songsPracticed ?? [])
+            .filter { ($0.durationSeconds ?? Self.qualifyingDuration) >= Self.qualifyingDuration }
         guard persistenceFailure == nil else { return }
         selectedDateSongs = songs
-    }
-
-    func recordSongPlayed(song: Song, context: ModelContext) {
-        if song.id == Song.metronomeSongId {
-            recordMetronomePractice(context: context)
-            return
-        }
-        recordPracticeItem(PracticedSong(from: song), context: context, incrementsExisting: true)
-    }
-
-    func recordMetronomePractice(context: ModelContext) {
-        recordPracticeItem(
-            PracticedSong(title: "Metronome", artist: "BeatClikr", songId: Song.metronomeSongId),
-            context: context,
-            incrementsExisting: false,
-        )
-    }
-
-    func recordPolyrhythmPractice(context: ModelContext) {
-        recordPracticeItem(
-            PracticedSong(title: "Polyrhythm", artist: "BeatClikr", songId: "beatclikr.polyrhythm"),
-            context: context,
-            incrementsExisting: false,
-        )
     }
 
     func getOrCreateTodaysSession(context: ModelContext) -> PracticeSession {
@@ -143,8 +162,46 @@ class PracticeHistoryViewModel: ObservableObject {
             return []
         }
         return Set(sessions.compactMap { session in
-            session.dayKey.flatMap { PracticeDayIdentity.date(for: $0) }
+            guard (session.songsPracticed ?? []).contains(where: {
+                ($0.durationSeconds ?? Self.qualifyingDuration) >= Self.qualifyingDuration
+            }) else { return nil }
+            return session.dayKey.flatMap { PracticeDayIdentity.date(for: $0) }
         })
+    }
+
+    func beginPlayback(_ item: PlaybackItem, context: ModelContext) {
+        if activePlayback?.item.songId == item.songId { return }
+        endPlayback()
+        activePlayback = ActivePlayback(item: item, context: context, checkpoint: monotonicNow())
+        incrementPlaybackPeriod(item, context: context)
+        checkpointTask = Task { [weak self] in
+            while !Task.isCancelled {
+                try? await Task.sleep(for: .seconds(10))
+                guard !Task.isCancelled else { return }
+                self?.checkpointPlayback()
+            }
+        }
+    }
+
+    func endPlayback() {
+        checkpointPlayback()
+        checkpointTask?.cancel()
+        checkpointTask = nil
+        activePlayback = nil
+    }
+
+    func checkpointPlayback() {
+        guard var activePlayback else { return }
+        let now = monotonicNow()
+        let elapsed = max(0, now - activePlayback.checkpoint)
+        guard elapsed > 0 else { return }
+        activePlayback.checkpoint = now
+        self.activePlayback = activePlayback
+        let practiced = practicedSong(for: activePlayback.item, context: activePlayback.context)
+        let wasQualified = (practiced.durationSeconds ?? 0) >= Self.qualifyingDuration
+        practiced.durationSeconds = (practiced.durationSeconds ?? 0) + elapsed
+        let isQualified = (practiced.durationSeconds ?? 0) >= Self.qualifyingDuration
+        commitPractice(context: activePlayback.context, notifyPracticeRecorded: !wasQualified && isQualified)
     }
 
     func currentStreak(from dates: Set<Date>) -> Int {
@@ -217,24 +274,41 @@ class PracticeHistoryViewModel: ObservableObject {
 
     // MARK: - Private helpers
 
-    private func recordPracticeItem(_ practicedSong: PracticedSong, context: ModelContext, incrementsExisting: Bool) {
+    private func incrementPlaybackPeriod(_ item: PlaybackItem, context: ModelContext) {
+        let practiced = practicedSong(for: item, context: context)
+        practiced.timesPracticed = (practiced.timesPracticed ?? 0) + 1
+        commitPractice(context: context, notifyPracticeRecorded: false)
+    }
+
+    private func practicedSong(for item: PlaybackItem, context: ModelContext) -> PracticedSong {
         let session = getOrCreateTodaysSession(context: context)
-        if let existing = session.songsPracticed?.first(where: { $0.songId == practicedSong.songId }) {
-            if incrementsExisting {
-                existing.timesPracticed = (existing.timesPracticed ?? 0) + 1
-            }
-        } else {
-            session.songsPracticed?.append(practicedSong)
+        if let existing = session.songsPracticed?.first(where: { $0.songId == item.songId }) {
+            return existing
         }
+        let practiced = PracticedSong(title: item.title, artist: item.artist, songId: item.songId)
+        practiced.beatsPerMinute = item.beatsPerMinute
+        practiced.beatsPerMeasure = item.beatsPerMeasure
+        practiced.groove = item.groove
+        practiced.timesPracticed = 0
+        practiced.durationSeconds = 0
+        session.songsPracticed?.append(practiced)
+        return practiced
+    }
+
+    private func commitPractice(context: ModelContext, notifyPracticeRecorded: Bool) {
         switch repository.commit(context: context) {
         case .success:
             persistenceFailure = nil
+            loadPracticeDates(context: context)
+            if notifyPracticeRecorded {
+                onPracticeRecorded?(context)
+            }
         case let .failure(error):
             persistenceFailure = error
-            return
+            checkpointTask?.cancel()
+            checkpointTask = nil
+            activePlayback = nil
         }
-        loadPracticeDates(context: context)
-        onPracticeRecorded?(context)
     }
 
     private func currentStreakInfo(from dates: Set<Date>) -> (length: Int, start: Date?) {

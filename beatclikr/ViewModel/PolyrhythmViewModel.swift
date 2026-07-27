@@ -12,6 +12,9 @@ import SwiftUI
 
 @MainActor
 class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
+    var onPlaybackStarted: (() -> Void)?
+    var onPlaybackEnded: (() -> Void)?
+
     // MARK: - Published properties
 
     @Published var beats: Int {
@@ -159,6 +162,7 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
             try audio.startPolyrhythm(bpm: bpm, beats: beats, against: against)
             visualAnimator.start()
             playbackState = .playing
+            onPlaybackStarted?()
         } catch {
             audio.stopPolyrhythm()
             visualAnimator.stop()
@@ -168,10 +172,12 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
     }
 
     func stop() {
+        let wasPlaying = isPlaying
         playheadResetID += 1
         audio.stopPolyrhythm()
         visualAnimator.stop()
         playbackState = .idle
+        if wasPlaying { onPlaybackEnded?() }
         resetCycleProgress()
     }
 
@@ -181,15 +187,19 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
     }
 
     func playbackWasStoppedByCoordinator() {
+        let wasPlaying = isPlaying
         playheadResetID += 1
         visualAnimator.stop()
         playbackState = .idle
+        if wasPlaying { onPlaybackEnded?() }
         resetCycleProgress()
     }
 
     func playbackWasInterrupted() {
+        let wasPlaying = isPlaying
         visualAnimator.stop()
         playbackState = .interrupted
+        if wasPlaying { onPlaybackEnded?() }
     }
 
     private func resetCycleProgress() {

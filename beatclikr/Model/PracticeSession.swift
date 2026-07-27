@@ -157,6 +157,15 @@ enum PracticeDayRepair {
                     song.timesPracticed = 1
                     changed += 1
                 }
+                if song.durationSeconds == nil {
+                    // Records created before duration tracking already earned
+                    // practice credit and must remain visible after migration.
+                    song.durationSeconds = 30
+                    changed += 1
+                } else if song.durationSeconds! < 0 {
+                    song.durationSeconds = 0
+                    changed += 1
+                }
             }
         }
 
@@ -228,6 +237,7 @@ enum PracticeDayRepair {
                 timesPracticed: isSingleCreditMode
                     ? min(1, matches.compactMap(\.timesPracticed).max() ?? 1)
                     : matches.reduce(0) { $0 + max(0, $1.timesPracticed ?? 0) },
+                durationSeconds: matches.reduce(0) { $0 + max(0, $1.durationSeconds ?? 30) },
                 songId: first.songId,
             )
         }

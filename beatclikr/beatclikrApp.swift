@@ -79,6 +79,21 @@ struct beatclikrApp: App {
         _songLibraryViewModel = StateObject(wrappedValue: SongLibraryViewModel())
         _playlistListViewModel = StateObject(wrappedValue: PlaylistListViewModel())
         let practiceVM = PracticeHistoryViewModel()
+        metronome.onPlaybackStarted = { [weak practiceVM] song in
+            practiceVM?.beginPlayback(.init(song: song), context: context)
+        }
+        metronome.onPlaybackEnded = { [weak practiceVM] in
+            practiceVM?.endPlayback()
+        }
+        polyrhythm.onPlaybackStarted = { [weak practiceVM] in
+            practiceVM?.beginPlayback(
+                .init(songId: "beatclikr.polyrhythm", title: "Polyrhythm"),
+                context: context,
+            )
+        }
+        polyrhythm.onPlaybackEnded = { [weak practiceVM] in
+            practiceVM?.endPlayback()
+        }
         practiceVM.onPracticeRecorded = { [weak practiceVM, weak settingsVM] context in
             guard let vm = practiceVM, let settings = settingsVM else { return }
             let dates = vm.markedDates(context: context)
@@ -130,6 +145,9 @@ struct beatclikrApp: App {
         }
         .modelContainer(container)
         .onChange(of: scenePhase) { _, newPhase in
+            if newPhase != .active {
+                practiceHistoryViewModel.checkpointPlayback()
+            }
             metronomeViewModel.setNonAudioEffectsEnabled(newPhase == .active)
             if newPhase == .background {
                 PracticeDayRepair.repairIfPossible(context: container.mainContext)

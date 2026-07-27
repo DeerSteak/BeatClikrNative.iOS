@@ -16,6 +16,7 @@ struct PracticedSongSnapshot {
     let beatsPerMeasure: Int?
     let groove: Groove?
     let timesPracticed: Int
+    let durationSeconds: Double
     let songId: String?
 }
 
@@ -28,6 +29,7 @@ final class PracticedSong: Identifiable, SongDisplayable {
     var beatsPerMeasure: Int?
     var groove: Groove?
     var timesPracticed: Int?
+    var durationSeconds: Double?
     var songId: String?
 
     @Relationship(inverse: \PracticeSession.songsPracticed)
@@ -41,6 +43,7 @@ final class PracticedSong: Identifiable, SongDisplayable {
         beatsPerMeasure = song.beatsPerMeasure
         groove = song.groove
         timesPracticed = 1
+        durationSeconds = 0
         songId = song.id
     }
 
@@ -52,6 +55,7 @@ final class PracticedSong: Identifiable, SongDisplayable {
         beatsPerMeasure = nil
         groove = nil
         timesPracticed = 1
+        durationSeconds = 0
         self.songId = songId
     }
 
@@ -63,6 +67,7 @@ final class PracticedSong: Identifiable, SongDisplayable {
         beatsPerMeasure = snapshot.beatsPerMeasure
         groove = snapshot.groove
         timesPracticed = snapshot.timesPracticed
+        durationSeconds = snapshot.durationSeconds
         songId = snapshot.songId
     }
 }

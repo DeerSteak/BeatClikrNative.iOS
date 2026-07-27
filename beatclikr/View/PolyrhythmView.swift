@@ -9,9 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct PolyrhythmView: View {
-    @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var model: PolyrhythmViewModel
-    @EnvironmentObject var practiceHistory: PracticeHistoryViewModel
 
     var body: some View {
         ScrollView {
@@ -119,9 +117,6 @@ struct PolyrhythmView: View {
             model.stop()
         } else {
             model.start()
-            if model.isPlaying {
-                practiceHistory.recordPolyrhythmPractice(context: modelContext)
-            }
         }
     }
 }

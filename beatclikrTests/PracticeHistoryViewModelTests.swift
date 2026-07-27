@@ -14,6 +14,10 @@ private enum InjectedPersistenceError: Error {
     case failure
 }
 
+private final class TestMonotonicClock {
+    var now: TimeInterval = 0
+}
+
 @MainActor
 private struct FailingPersistenceRepository: PersistenceRepository {
     enum Operation {
@@ -279,7 +283,11 @@ struct PracticeHistoryViewModelTests {
     @Test func `marked dates contains session dates`() throws {
         let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
         let context = container.mainContext
-        let session = PracticeSession(date: today)
+        let session = PracticeSession(
+            date: today,
+            songsPracticed: [PracticedSong(title: "Metronome", artist: "BeatClikr", songId: Song.metronomeSongId)],
+        )
+        session.songsPracticed?.first?.durationSeconds = 30
         context.insert(session)
         let vm = PracticeHistoryViewModel()
         let dates = vm.markedDates(context: context)
@@ -291,7 +299,11 @@ struct PracticeHistoryViewModelTests {
         let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
         let context = container.mainContext
         let noon = try #require(cal.date(bySettingHour: 12, minute: 0, second: 0, of: today))
-        let session = PracticeSession(date: noon)
+        let session = PracticeSession(
+            date: noon,
+            songsPracticed: [PracticedSong(title: "Metronome", artist: "BeatClikr", songId: Song.metronomeSongId)],
+        )
+        session.songsPracticed?.first?.durationSeconds = 30
         context.insert(session)
         let vm = PracticeHistoryViewModel()
         #expect(vm.markedDates(context: context).contains(today))
@@ -344,99 +356,6 @@ struct PracticeHistoryViewModelTests {
         let first = vm.getOrCreateTodaysSession(context: context)
         let second = vm.getOrCreateTodaysSession(context: context)
         #expect(first.id == second.id)
-    }
-
-    // MARK: - recordSongPlayed
-
-    @Test func `record song played creates new practiced song`() throws {
-        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
-        let context = container.mainContext
-        let song = Song(title: "Test Song", artist: "Test Artist", beatsPerMinute: 120, beatsPerMeasure: 4, groove: .quarter)
-        context.insert(song)
-        let vm = PracticeHistoryViewModel()
-        vm.recordSongPlayed(song: song, context: context)
-        let session = vm.getOrCreateTodaysSession(context: context)
-        let practiced = session.songsPracticed?.first(where: { $0.songId == song.id })
-        #expect(practiced != nil)
-        #expect(practiced?.timesPracticed == 1)
-    }
-
-    @Test func `record song played increments times played on repeat`() throws {
-        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
-        let context = container.mainContext
-        let song = Song(title: "Test Song", artist: "Test Artist", beatsPerMinute: 120, beatsPerMeasure: 4, groove: .quarter)
-        context.insert(song)
-        let vm = PracticeHistoryViewModel()
-        vm.recordSongPlayed(song: song, context: context)
-        vm.recordSongPlayed(song: song, context: context)
-        let session = vm.getOrCreateTodaysSession(context: context)
-        let practiced = session.songsPracticed?.first(where: { $0.songId == song.id })
-        #expect(practiced?.timesPracticed == 2)
-    }
-
-    @Test func `record song played copies song metadata`() throws {
-        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
-        let context = container.mainContext
-        let song = Song(title: "My Song", artist: "My Artist", beatsPerMinute: 100, beatsPerMeasure: 4, groove: .quarter)
-        context.insert(song)
-        let vm = PracticeHistoryViewModel()
-        vm.recordSongPlayed(song: song, context: context)
-        let session = vm.getOrCreateTodaysSession(context: context)
-        let practiced = session.songsPracticed?.first(where: { $0.songId == song.id })
-        #expect(practiced?.title == "My Song")
-        #expect(practiced?.artist == "My Artist")
-        #expect(practiced?.beatsPerMinute == 100)
-    }
-
-    @Test func `record metronome practice creates one built in item per day`() throws {
-        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
-        let context = container.mainContext
-        let vm = PracticeHistoryViewModel()
-        vm.recordMetronomePractice(context: context)
-        vm.recordMetronomePractice(context: context)
-        let session = vm.getOrCreateTodaysSession(context: context)
-        let practiced = session.songsPracticed?.filter { $0.songId == "beatclikr.metronome" } ?? []
-        #expect(practiced.count == 1)
-        #expect(practiced.first?.title == "Metronome")
-        #expect(practiced.first?.timesPracticed == 1)
-    }
-
-    @Test func `record song played with transient metronome still creates one built in item per day`() throws {
-        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
-        let context = container.mainContext
-        let vm = PracticeHistoryViewModel()
-        vm.recordSongPlayed(song: Song.metronomeSong(), context: context)
-        vm.recordSongPlayed(song: Song.metronomeSong(), context: context)
-        let session = vm.getOrCreateTodaysSession(context: context)
-        let practiced = session.songsPracticed?.filter { $0.songId == Song.metronomeSongId } ?? []
-        #expect(practiced.count == 1)
-        #expect(practiced.first?.title == "Metronome")
-        #expect(practiced.first?.timesPracticed == 1)
-    }
-
-    @Test func `record polyrhythm practice creates one built in item per day`() throws {
-        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
-        let context = container.mainContext
-        let vm = PracticeHistoryViewModel()
-        vm.recordPolyrhythmPractice(context: context)
-        vm.recordPolyrhythmPractice(context: context)
-        let session = vm.getOrCreateTodaysSession(context: context)
-        let practiced = session.songsPracticed?.filter { $0.songId == "beatclikr.polyrhythm" } ?? []
-        #expect(practiced.count == 1)
-        #expect(practiced.first?.title == "Polyrhythm")
-        #expect(practiced.first?.timesPracticed == 1)
-    }
-
-    @Test func `metronome and polyrhythm practice are separate history items`() throws {
-        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
-        let context = container.mainContext
-        let vm = PracticeHistoryViewModel()
-        vm.recordMetronomePractice(context: context)
-        vm.recordPolyrhythmPractice(context: context)
-        let session = vm.getOrCreateTodaysSession(context: context)
-        let ids = Set(session.songsPracticed?.compactMap(\.songId) ?? [])
-        #expect(ids.contains("beatclikr.metronome"))
-        #expect(ids.contains("beatclikr.polyrhythm"))
     }
 
     // MARK: - Stable practice-day identity and repair
@@ -602,10 +521,99 @@ struct PracticeHistoryViewModelTests {
         var callbackCount = 0
         vm.onPracticeRecorded = { _ in callbackCount += 1 }
 
-        vm.recordMetronomePractice(context: context)
+        vm.beginPlayback(
+            .init(songId: Song.metronomeSongId, title: "Metronome"),
+            context: context,
+        )
 
         #expect(vm.persistenceFailure != nil)
         #expect(callbackCount == 0)
         #expect(try context.fetch(FetchDescriptor<PracticeSession>()).isEmpty)
+    }
+
+    @Test func `playback remains hidden until accumulated duration reaches thirty seconds`() throws {
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
+        let context = container.mainContext
+        let clock = TestMonotonicClock()
+        let vm = PracticeHistoryViewModel(monotonicNow: { clock.now })
+        let item = PracticeHistoryViewModel.PlaybackItem(songId: Song.metronomeSongId, title: "Metronome")
+
+        vm.beginPlayback(item, context: context)
+        clock.now = 29
+        vm.endPlayback()
+        #expect(vm.markedDates(context: context).isEmpty)
+
+        vm.beginPlayback(item, context: context)
+        clock.now = 30
+        vm.endPlayback()
+        #expect(vm.markedDates(context: context).contains(today))
+    }
+
+    @Test func `multiple playback periods accumulate duration and session count`() throws {
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
+        let context = container.mainContext
+        let clock = TestMonotonicClock()
+        let vm = PracticeHistoryViewModel(monotonicNow: { clock.now })
+        let item = PracticeHistoryViewModel.PlaybackItem(songId: "song.test", title: "Test")
+
+        vm.beginPlayback(item, context: context)
+        clock.now = 12
+        vm.endPlayback()
+        vm.beginPlayback(item, context: context)
+        clock.now = 35
+        vm.endPlayback()
+
+        let session = try #require(context.fetch(FetchDescriptor<PracticeSession>()).first)
+        let practiced = try #require(session.songsPracticed?.first)
+        #expect(practiced.durationSeconds == 35)
+        #expect(practiced.timesPracticed == 2)
+    }
+
+    @Test func `switching playback attributes elapsed time to each item`() throws {
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
+        let context = container.mainContext
+        let clock = TestMonotonicClock()
+        let vm = PracticeHistoryViewModel(monotonicNow: { clock.now })
+
+        vm.beginPlayback(.init(songId: "song.first", title: "First"), context: context)
+        clock.now = 20
+        vm.beginPlayback(.init(songId: "song.second", title: "Second"), context: context)
+        clock.now = 55
+        vm.endPlayback()
+
+        let session = try #require(context.fetch(FetchDescriptor<PracticeSession>()).first)
+        var songs: [String: Double] = [:]
+        for song in session.songsPracticed ?? [] {
+            guard let id = song.songId else { continue }
+            songs[id] = song.durationSeconds ?? 0
+        }
+        #expect(songs["song.first"] == 20)
+        #expect(songs["song.second"] == 35)
+    }
+
+    @Test func `stopped time is excluded and qualification callback fires once`() throws {
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
+        let context = container.mainContext
+        let clock = TestMonotonicClock()
+        let vm = PracticeHistoryViewModel(monotonicNow: { clock.now })
+        let item = PracticeHistoryViewModel.PlaybackItem(songId: "song.test", title: "Test")
+        var callbackCount = 0
+        vm.onPracticeRecorded = { _ in callbackCount += 1 }
+
+        vm.beginPlayback(item, context: context)
+        clock.now = 20
+        vm.endPlayback()
+        clock.now = 120
+        vm.beginPlayback(item, context: context)
+        clock.now = 130
+        vm.endPlayback()
+        vm.beginPlayback(item, context: context)
+        clock.now = 140
+        vm.endPlayback()
+
+        let session = try #require(context.fetch(FetchDescriptor<PracticeSession>()).first)
+        let practiced = try #require(session.songsPracticed?.first)
+        #expect(practiced.durationSeconds == 40)
+        #expect(callbackCount == 1)
     }
 }
