@@ -60,7 +60,6 @@
 		EE3BEF3C2A83B476004B0C97 /* Groove.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE3BEF3B2A83B476004B0C97 /* Groove.swift */; };
 		EE478E8B2A879C51008337DB /* AudioPlayerService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE478E8A2A879C51008337DB /* AudioPlayerService.swift */; };
 		EE5772682A880BB6002AAC3A /* InstrumentLists.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5772672A880BB6002AAC3A /* InstrumentLists.swift */; };
-		EE5DFD722AD81FA900756566 /* README.md in Resources */ = {isa = PBXBuildFile; fileRef = EE5DFD712AD81FA900756566 /* README.md */; };
 		EE5DFD742AD8201C00756566 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5DFD732AD8201C00756566 /* SettingsView.swift */; };
 		EE5DFD762AD8253300756566 /* Localizable.xcstrings in Resources */ = {isa = PBXBuildFile; fileRef = EE5DFD752AD8253300756566 /* Localizable.xcstrings */; };
 		EE5DFD782AD82B5A00756566 /* SettingsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE5DFD772AD82B5A00756566 /* SettingsViewModel.swift */; };
@@ -84,7 +83,6 @@
 		EE84F2F72A7C7A21009E2F23 /* SongLibraryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F2F62A7C7A21009E2F23 /* SongLibraryView.swift */; };
 		EE84F2F92A7C7A21009E2F23 /* Song.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F2F82A7C7A21009E2F23 /* Song.swift */; };
 		EE84F2FB2A7C7A23009E2F23 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE84F2FA2A7C7A23009E2F23 /* Assets.xcassets */; };
-		EE84F2FE2A7C7A23009E2F23 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = EE84F2FD2A7C7A23009E2F23 /* Preview Assets.xcassets */; };
 		EE84F30A2A7C7A23009E2F23 /* beatclikrTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F3092A7C7A23009E2F23 /* beatclikrTests.swift */; };
 		EE84F3142A7C7A24009E2F23 /* beatclikrUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F3132A7C7A24009E2F23 /* beatclikrUITests.swift */; };
 		EE84F3162A7C7A24009E2F23 /* beatclikrUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE84F3152A7C7A24009E2F23 /* beatclikrUITestsLaunchTests.swift */; };
@@ -92,12 +90,6 @@
 		EE97D5A12A7E7EB900FA11A0 /* SongDetailsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE97D5A02A7E7EB900FA11A0 /* SongDetailsView.swift */; };
 		EE9BD3DD2F89A555007F91FA /* PlaylistEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE9BD3DC2F89A555007F91FA /* PlaylistEntry.swift */; };
 		EEC392172AA5FA3000F4AAB4 /* ImageConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEC392162AA5FA3000F4AAB4 /* ImageConstants.swift */; };
-		EECFF58E2FB2E70D0075222A /* Models.md in Resources */ = {isa = PBXBuildFile; fileRef = EECFF5892FB2E70D0075222A /* Models.md */; };
-		EECFF58F2FB2E70D0075222A /* SongLibrary.md in Resources */ = {isa = PBXBuildFile; fileRef = EECFF58B2FB2E70D0075222A /* SongLibrary.md */; };
-		EECFF5902FB2E70D0075222A /* Services.md in Resources */ = {isa = PBXBuildFile; fileRef = EECFF58A2FB2E70D0075222A /* Services.md */; };
-		EECFF5912FB2E70D0075222A /* ViewModels.md in Resources */ = {isa = PBXBuildFile; fileRef = EECFF58C2FB2E70D0075222A /* ViewModels.md */; };
-		EECFF5922FB2E70D0075222A /* Views.md in Resources */ = {isa = PBXBuildFile; fileRef = EECFF58D2FB2E70D0075222A /* Views.md */; };
-		EECFF5932FB2E70D0075222A /* Constants.md in Resources */ = {isa = PBXBuildFile; fileRef = EECFF5882FB2E70D0075222A /* Constants.md */; };
 		EEE911532A7EDE07008DFDED /* FileConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE911522A7EDE07008DFDED /* FileConstants.swift */; };
 		EEE911552A7EDEDC008DFDED /* PreferenceKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE911542A7EDEDC008DFDED /* PreferenceKeys.swift */; };
 /* End PBXBuildFile section */
@@ -576,14 +568,6 @@
 				EE5DFD762AD8253300756566 /* Localizable.xcstrings in Resources */,
 				B530421D2FA68ECF00A3CAE6 /* BeatClikrAppIcon.icon in Resources */,
 				EE5F00012FB4D00000100001 /* Sounds Folder in Resources */,
-				EECFF58E2FB2E70D0075222A /* Models.md in Resources */,
-				EECFF58F2FB2E70D0075222A /* SongLibrary.md in Resources */,
-				EECFF5902FB2E70D0075222A /* Services.md in Resources */,
-				EECFF5912FB2E70D0075222A /* ViewModels.md in Resources */,
-				EECFF5922FB2E70D0075222A /* Views.md in Resources */,
-				EECFF5932FB2E70D0075222A /* Constants.md in Resources */,
-				EE5DFD722AD81FA900756566 /* README.md in Resources */,
-				EE84F2FE2A7C7A23009E2F23 /* Preview Assets.xcassets in Resources */,
 				EE84F2FB2A7C7A23009E2F23 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -621,7 +605,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin:/usr/local/bin\"\nif which swiftformat >/dev/null; then\n  swiftformat . --config \"$SRCROOT/.swiftformat\"\nelse\n  echo \"error: SwiftFormat 0.62.1 or newer is required; download from https://github.com/nicklockwood/SwiftFormat\"\n  exit 1\nfi\n\nif [ \"$CONFIGURATION\" = \"Release\" ]; then\n  REQUIRE_SOUND_ASSETS=\"${REQUIRE_SOUND_ASSETS:-1}\" \"$SRCROOT/scripts/validate-sounds.sh\"\nfi\n";
+			shellScript = "export PATH=\"$PATH:/opt/homebrew/bin:/usr/local/bin\"\nif which swiftformat >/dev/null; then\n  swiftformat . --config \"$SRCROOT/.swiftformat\"\nelse\n  echo \"error: SwiftFormat 0.62.1 or newer is required; download from https://github.com/nicklockwood/SwiftFormat\"\n  exit 1\nfi\n\nif [ \"$CONFIGURATION\" = \"Release\" ]; then\n  REQUIRE_SOUND_ASSETS=\"${REQUIRE_SOUND_ASSETS:-1}\" \"$SRCROOT/scripts/validate-sounds.sh\"\nfi\n\nSOUNDS_PRODUCT_PATH=\"$TARGET_BUILD_DIR/$UNLOCALIZED_RESOURCES_FOLDER_PATH/Sounds\"\nif [ -d \"$SOUNDS_PRODUCT_PATH\" ]; then\n  /bin/rm -f \"$SOUNDS_PRODUCT_PATH/manifest.txt\"\n  /usr/bin/find \"$SOUNDS_PRODUCT_PATH\" -name .gitkeep -type f -delete\nfi\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

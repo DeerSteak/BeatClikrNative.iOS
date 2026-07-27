@@ -63,6 +63,17 @@ always fails, even in the public-checkout mode.
 Archive validation is conditional because it requires signing credentials. Set
 `ARCHIVE_VALIDATION=1` in a trusted CI environment with signing configured.
 The `all` command reports the gate as skipped when credentials are unavailable.
+An unsigned device archive can validate compilation and bundle contents, but
+only a signed distribution archive can prove the final provisioning-controlled
+entitlements. Inspect that signed `.app` before submission; see
+[Capabilities.md](Capabilities.md).
+
+Shipping products intentionally exclude `README.md`, `Docs/*.md`, preview
+assets, the sound manifest, and `.gitkeep` placeholders. The sound manifest
+remains a repository/build-time contract and is removed from the copied product
+after Release validation. A clean Release bundle contains the executable,
+compiled assets and localizations, required metadata/icons, and the two sound
+banks.
 
 ## Build-time formatting and sandboxing
 

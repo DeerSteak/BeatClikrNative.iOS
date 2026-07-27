@@ -20,7 +20,7 @@
 
 - **SongDetailsView** - Add or edit a song's metadata (title, artist, BPM, time signature, groove)
 
-- **SettingsView** - App-wide preferences (sounds, haptics, flashlight, keep-awake, practice reminders). Shows an inline warning below the reminders toggle when notifications are blocked or deferred on this device, with context-appropriate actions: "Open Settings" for denied permissions, "Enable" to trigger the system prompt when previously deferred
+- **SettingsView** - App-wide preferences (sounds, haptics, flashlight, keep-awake, practice reminders). Shows an inline warning when notifications are blocked, deferred, or could not be scheduled; actions include "Open Settings" for denied permission and "Enable" after a local deferral
 
 ## Custom Views
 

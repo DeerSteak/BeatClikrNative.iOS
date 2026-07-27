@@ -229,6 +229,10 @@ class PracticeHistoryViewModel: ObservableObject {
         projectedBody(from: dates, referenceDate: .now)
     }
 
+    func notificationBody(from dates: Set<Date>, for date: Date) -> String {
+        projectedBody(from: dates, referenceDate: date)
+    }
+
     func scheduledNotificationBodies(from dates: Set<Date>, days: Int) -> [String] {
         let cal = Calendar.current
         let today = cal.startOfDay(for: .now)

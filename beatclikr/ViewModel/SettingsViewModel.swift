@@ -13,11 +13,14 @@ import UserNotifications
 class SettingsViewModel: ObservableObject {
     private let defaults: UserDefaultsService = .instance
     private let notificationService: any ReminderNotificationServicing
+    private let reminderPlanProvider: (Date) -> ReminderPlan
+    private var schedulingTask: Task<Void, Never>?
 
     @Published var showPermissionDeniedAlert = false
     @Published var notificationsBlockedLocally = false
     @Published var notificationsDeferredLocally = false
     @Published var showCrossDeviceReminderPrompt = false
+    @Published var reminderSchedulingError: String?
 
     @Published var sendReminders: Bool {
         didSet {
@@ -36,7 +39,7 @@ class SettingsViewModel: ObservableObject {
         didSet {
             defaults.reminderTime = reminderTime
             if sendReminders {
-                notificationService.reschedule(at: reminderTime)
+                scheduleCurrentReminderPlan()
             }
         }
     }
@@ -133,8 +136,16 @@ class SettingsViewModel: ObservableObject {
         didSet { UserDefaults.standard.set(playlistSortAscending, forKey: PreferenceKeys.playlistSortAscending) }
     }
 
-    init(notificationService: any ReminderNotificationServicing = ReminderNotificationService()) {
+    init(
+        notificationService: any ReminderNotificationServicing = ReminderNotificationService(),
+        reminderPlanProvider: @escaping (Date) -> ReminderPlan = { reminderTime in
+            ReminderPlan.build(reminderTime: reminderTime) { _ in
+                String(localized: "PracticeReminderNotificationBody")
+            }
+        },
+    ) {
         self.notificationService = notificationService
+        self.reminderPlanProvider = reminderPlanProvider
         sendReminders = defaults.sendReminders
         reminderTime = defaults.reminderTime
         useFlashlight = defaults.useFlashlight
@@ -268,7 +279,7 @@ class SettingsViewModel: ObservableObject {
             case .granted:
                 clearDeferral()
                 notificationsBlockedLocally = false
-                notificationService.reschedule(at: reminderTime)
+                scheduleCurrentReminderPlan()
             case .denied:
                 sendReminders = false
                 showPermissionDeniedAlert = true
@@ -284,7 +295,7 @@ class SettingsViewModel: ObservableObject {
             case .authorized, .provisional, .ephemeral:
                 clearDeferral()
                 notificationsBlockedLocally = false
-                notificationService.reschedule(at: reminderTime)
+                scheduleCurrentReminderPlan()
             case .denied:
                 notificationsBlockedLocally = true
             case .notDetermined:
@@ -305,7 +316,7 @@ class SettingsViewModel: ObservableObject {
             case .granted:
                 clearDeferral()
                 notificationsBlockedLocally = false
-                notificationService.reschedule(at: reminderTime)
+                scheduleCurrentReminderPlan()
             case .denied, .notGranted:
                 // Deferral is resolved — permission is now actually denied
                 clearDeferral()
@@ -329,9 +340,17 @@ class SettingsViewModel: ObservableObject {
             case .authorized, .provisional, .ephemeral:
                 clearDeferral()
                 notificationsBlockedLocally = false
-                notificationService.reschedule(at: reminderTime)
-            default:
-                break
+                scheduleCurrentReminderPlan()
+            case .denied:
+                notificationsBlockedLocally = true
+                notificationService.cancel()
+            case .notDetermined:
+                notificationsBlockedLocally = false
+                showCrossDeviceReminderPrompt = !notificationsDeferredLocally
+                notificationService.cancel()
+            @unknown default:
+                notificationsBlockedLocally = true
+                notificationService.cancel()
             }
         }
     }
@@ -348,13 +367,27 @@ class SettingsViewModel: ObservableObject {
         #endif
     }
 
-    func rescheduleReminder(bodies: [String]) {
+    func rescheduleReminder() {
         guard sendReminders else { return }
-        notificationService.schedule(bodies: bodies, at: reminderTime)
+        scheduleCurrentReminderPlan()
     }
 
     private func clearDeferral() {
         UserDefaults.standard.removeObject(forKey: PreferenceKeys.remindersDeferredDate)
         notificationsDeferredLocally = false
+    }
+
+    private func scheduleCurrentReminderPlan() {
+        let plan = reminderPlanProvider(reminderTime)
+        schedulingTask?.cancel()
+        schedulingTask = Task { @MainActor [weak self] in
+            guard let self, !Task.isCancelled else { return }
+            switch await notificationService.replaceSchedule(with: plan) {
+            case .scheduled:
+                reminderSchedulingError = nil
+            case let .failed(message):
+                reminderSchedulingError = message
+            }
+        }
     }
 }
