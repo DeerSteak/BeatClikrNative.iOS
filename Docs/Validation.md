@@ -73,3 +73,9 @@ source tree; this is a documented exception rather than an unreviewed default.
 
 CI runs SwiftFormat in lint mode before building, so pull requests fail without
 rewriting the checkout.
+
+## Playback performance
+
+Deterministic timing and cache limits run with the unit suite. The manual
+Catalyst, Instruments, and TestFlight measurement matrix is documented in
+`Docs/PlaybackPerformance.md`.
