@@ -14,8 +14,8 @@ import SwiftUI
 class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate {
     // MARK: Private variables
 
-    private let vibration: VibrationService
-    private let flashlight: FlashlightService
+    private let vibration: any VibrationControlling
+    private let flashlight: any FlashlightControlling
     private let audio: any AudioPlaybackService
     private let settings: SettingsViewModel
     private var settingsCancellables: Set<AnyCancellable> = []
@@ -29,6 +29,9 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     private var activeBpm: Double = 120.0
     private var applyingRamp: Bool = false
     private var applyingSettingsChange: Bool = false
+    private var effectsSessionID = 0
+    private var flashlightOffWorkItem: DispatchWorkItem?
+    private var nonAudioEffectsEnabled = true
 
     // MARK: Published properties
 
@@ -149,8 +152,8 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     // MARK: Initializer
 
     init(
-        vibration: VibrationService = .instance,
-        flashlight: FlashlightService = .instance,
+        vibration: any VibrationControlling = VibrationService.instance,
+        flashlight: any FlashlightControlling = FlashlightService.instance,
         audio: any AudioPlaybackService = AudioPlayerService.instance,
         settings: SettingsViewModel = SettingsViewModel(),
         reduceMotionEnabled: @escaping () -> Bool = { UIAccessibility.isReduceMotionEnabled },
@@ -245,6 +248,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     }
 
     func start() {
+        beginEffectsSession()
         playbackState = .preparing
         if clickerType == .metronome {
             song = Song.metronomeSong()
@@ -266,7 +270,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         } catch {
             audio.stopMetronome()
             visualAnimator.stop()
-            flashlight.turnFlashlightOff()
+            invalidateEffectsSession()
             playbackState = .failed(Self.playbackError(from: error))
         }
     }
@@ -274,7 +278,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     func stop() {
         audio.stopMetronome()
         visualAnimator.stop()
-        flashlight.turnFlashlightOff()
+        invalidateEffectsSession()
         playbackState = .idle
         if rampEnabled, clickerType == .metronome {
             beatsPerMinute = activeBpm
@@ -288,7 +292,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
     func playbackWasStoppedByCoordinator() {
         visualAnimator.stop()
-        flashlight.turnFlashlightOff()
+        invalidateEffectsSession()
         playbackState = .idle
         if rampEnabled, clickerType == .metronome {
             beatsPerMinute = activeBpm
@@ -297,8 +301,16 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
     func playbackWasInterrupted() {
         visualAnimator.stop()
-        flashlight.turnFlashlightOff()
+        invalidateEffectsSession()
         playbackState = .interrupted
+    }
+
+    /// Audio may continue in the background, but UIKit haptics and the camera
+    /// torch are foreground-only, best-effort effects.
+    func setNonAudioEffectsEnabled(_ enabled: Bool) {
+        nonAudioEffectsEnabled = enabled
+        guard !enabled else { return }
+        invalidateEffectsSession()
     }
 
     func resetMetronome() {
@@ -335,6 +347,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     }
 
     private func handleBeat(beatInterval: TimeInterval) {
+        guard isPlaying, nonAudioEffectsEnabled else { return }
         if settings.useVibration {
             vibration.vibrateBeat()
         }
@@ -343,21 +356,53 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             let groove = clickerType == .metronome ? selectedGroove : (song.groove ?? .quarter)
             if groove.subdivisions == 1 {
                 // Quarter groove fires no rhythm event, so schedule the flashlight off at the half-beat point.
-                DispatchQueue.main.asyncAfter(deadline: .now() + beatInterval / 2) { [weak self] in
-                    guard let self, isPlaying else { return }
-                    flashlight.turnFlashlightOff()
-                }
+                scheduleFlashlightOff(after: beatInterval / 2)
             }
         }
     }
 
     private func handleRhythm() {
+        guard isPlaying, nonAudioEffectsEnabled else { return }
         if settings.useVibration {
             vibration.vibrateRhythm()
         }
         if settings.useFlashlight {
+            flashlightOffWorkItem?.cancel()
+            flashlightOffWorkItem = nil
             flashlight.turnFlashlightOff()
         }
+    }
+
+    private func beginEffectsSession() {
+        flashlightOffWorkItem?.cancel()
+        flashlightOffWorkItem = nil
+        effectsSessionID &+= 1
+        flashlight.turnFlashlightOff()
+    }
+
+    private func invalidateEffectsSession() {
+        effectsSessionID &+= 1
+        flashlightOffWorkItem?.cancel()
+        flashlightOffWorkItem = nil
+        flashlight.turnFlashlightOff()
+    }
+
+    private func scheduleFlashlightOff(after delay: TimeInterval) {
+        flashlightOffWorkItem?.cancel()
+        let capturedSessionID = effectsSessionID
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self,
+                  effectsSessionID == capturedSessionID,
+                  isPlaying,
+                  nonAudioEffectsEnabled
+            else {
+                return
+            }
+            flashlight.turnFlashlightOff()
+            flashlightOffWorkItem = nil
+        }
+        flashlightOffWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + max(delay, 0), execute: workItem)
     }
 
     private func observeSettings() {

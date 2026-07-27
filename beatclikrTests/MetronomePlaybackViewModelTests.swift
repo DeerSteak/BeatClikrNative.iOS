@@ -150,6 +150,61 @@ final class MetronomePlaybackViewModelTests: XCTestCase {
         XCTAssertEqual(audio.metronomeStopCount, 2)
     }
 
+    func testRestartCancelsPriorSessionFlashlightOff() async throws {
+        let priorFlashlightSetting = UserDefaultsService.instance.useFlashlight
+        defer { UserDefaultsService.instance.useFlashlight = priorFlashlightSetting }
+        UserDefaultsService.instance.useFlashlight = true
+        let flashlight = TestFlashlight()
+        let effectsViewModel = MetronomePlaybackViewModel(
+            flashlight: flashlight,
+            audio: audio,
+            settings: SettingsViewModel(),
+        )
+        effectsViewModel.selectedGroove = .quarter
+        effectsViewModel.start()
+        effectsViewModel.metronomeBeatFired(isBeat: true, beatInterval: 0.04)
+        effectsViewModel.start()
+        let offCountAfterRestart = flashlight.offCount
+
+        try await Task.sleep(for: .milliseconds(50))
+
+        XCTAssertEqual(flashlight.offCount, offCountAfterRestart)
+        effectsViewModel.stop()
+    }
+
+    func testBackgroundDisablesEffectsAndTurnsFlashlightOff() {
+        let priorFlashlightSetting = UserDefaultsService.instance.useFlashlight
+        let priorVibrationSetting = UserDefaultsService.instance.useVibration
+        defer {
+            UserDefaultsService.instance.useFlashlight = priorFlashlightSetting
+            UserDefaultsService.instance.useVibration = priorVibrationSetting
+        }
+        UserDefaultsService.instance.useFlashlight = true
+        UserDefaultsService.instance.useVibration = true
+        let flashlight = TestFlashlight()
+        let vibration = TestVibration()
+        let effectsViewModel = MetronomePlaybackViewModel(
+            vibration: vibration,
+            flashlight: flashlight,
+            audio: audio,
+            settings: SettingsViewModel(),
+        )
+        effectsViewModel.start()
+        effectsViewModel.metronomeBeatFired(isBeat: true, beatInterval: 0.5)
+        XCTAssertEqual(flashlight.onCount, 1)
+        XCTAssertEqual(vibration.beatCount, 1)
+
+        effectsViewModel.setNonAudioEffectsEnabled(false)
+        let offCountAfterBackground = flashlight.offCount
+        effectsViewModel.metronomeBeatFired(isBeat: true, beatInterval: 0.5)
+
+        XCTAssertEqual(flashlight.offCount, offCountAfterBackground)
+        XCTAssertEqual(flashlight.onCount, 1)
+        XCTAssertEqual(vibration.beatCount, 1)
+        XCTAssertTrue(effectsViewModel.isPlaying, "Backgrounding must not stop audio playback")
+        effectsViewModel.stop()
+    }
+
     // MARK: - Groove (Subdivision) Tests
 
     func testGrooveSelection() {
@@ -266,5 +321,35 @@ final class MetronomePlaybackViewModelTests: XCTestCase {
         viewModel.beatsPerMinute = MetronomeConstants.maxBPM
         viewModel.metronomeRampStepped(newBpm: MetronomeConstants.maxBPM)
         XCTAssertEqual(viewModel.beatsPerMinute, MetronomeConstants.maxBPM, "BPM should remain at maxBPM")
+    }
+}
+
+@MainActor
+private final class TestFlashlight: FlashlightControlling {
+    private(set) var onCount = 0
+    private(set) var offCount = 0
+
+    func turnFlashlightOn() {
+        onCount += 1
+    }
+
+    func turnFlashlightOff() {
+        offCount += 1
+    }
+}
+
+@MainActor
+private final class TestVibration: VibrationControlling {
+    private(set) var beatCount = 0
+    private(set) var rhythmCount = 0
+
+    func prepare() {}
+
+    func vibrateBeat() {
+        beatCount += 1
+    }
+
+    func vibrateRhythm() {
+        rhythmCount += 1
     }
 }

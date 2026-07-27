@@ -9,7 +9,14 @@ import Foundation
 import UIKit
 
 @MainActor
-class VibrationService {
+protocol VibrationControlling: AnyObject {
+    func prepare()
+    func vibrateBeat()
+    func vibrateRhythm()
+}
+
+@MainActor
+class VibrationService: VibrationControlling {
     static let instance = VibrationService()
 
     private var beatGenerator = UIImpactFeedbackGenerator(style: .heavy)

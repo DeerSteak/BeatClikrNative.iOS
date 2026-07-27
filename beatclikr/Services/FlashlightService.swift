@@ -9,7 +9,13 @@ import AVKit
 import Foundation
 
 @MainActor
-class FlashlightService {
+protocol FlashlightControlling: AnyObject {
+    func turnFlashlightOn()
+    func turnFlashlightOff()
+}
+
+@MainActor
+class FlashlightService: FlashlightControlling {
     static let instance = FlashlightService()
 
     private var hasFlashlight: Bool

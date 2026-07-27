@@ -7,6 +7,7 @@
 
 import AVFoundation
 import Foundation
+import OSLog
 
 private final class AudioNotificationToken: @unchecked Sendable {
     let value: NSObjectProtocol
@@ -24,8 +25,21 @@ enum AudioLifecycleEvent {
     case mediaServicesReset
 }
 
+struct AudioSessionPolicy {
+    let category: AVAudioSession.Category
+    let mode: AVAudioSession.Mode
+    let options: AVAudioSession.CategoryOptions
+
+    static let mixedPlayback = AudioSessionPolicy(
+        category: .playback,
+        mode: .default,
+        options: [.mixWithOthers],
+    )
+}
+
 @MainActor
 final class AudioSessionCoordinator {
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "BeatClikr", category: "AudioSession")
     private let session: AVAudioSession
     private let notificationCenter: NotificationCenter
     private var sessionObservers: [AudioNotificationToken] = []
@@ -49,8 +63,10 @@ final class AudioSessionCoordinator {
     }
 
     func activate() throws {
-        try session.setCategory(.playback, mode: .default, options: [])
+        let policy = AudioSessionPolicy.mixedPlayback
+        try session.setCategory(policy.category, mode: policy.mode, options: policy.options)
         try session.setActive(true)
+        logCurrentOutput(reason: "activated")
     }
 
     func observeEngines(_ engines: [AVAudioEngine]) {
@@ -97,6 +113,7 @@ final class AudioSessionCoordinator {
                     return
                 }
                 Task { @MainActor in
+                    self?.logCurrentOutput(reason: "old output unavailable")
                     self?.onEvent?(.routeDisconnected)
                 }
             }),
@@ -119,5 +136,12 @@ final class AudioSessionCoordinator {
                 }
             }),
         ]
+    }
+
+    private func logCurrentOutput(reason: String) {
+        let outputs = session.currentRoute.outputs
+            .map { "\($0.portName) [\($0.portType.rawValue)]" }
+            .joined(separator: ", ")
+        logger.info("Audio route \(reason, privacy: .public): \(outputs, privacy: .public)")
     }
 }

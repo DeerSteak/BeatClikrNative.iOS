@@ -45,6 +45,9 @@
 - “Keep Awake” remains an optional visual-performance preference for users who
   want the beat display to remain visible. Background audio does not depend on
   it, and the idle-timer override is removed whenever the scene is not active.
+- A custom Live Activity is deferred as a future replacement for the
+  system-owned Now Playing presentation. The current media control favors
+  reliable stop access over a guaranteed transport glyph.
 
 - **FlashlightService** - Controls device flashlight for visual beat accessibility
 
@@ -218,6 +221,24 @@ The active dot indices, pulses, and `cycleProgress` are all stored in `Polyrhyth
 BeatClikr never resumes playback automatically after a lifecycle event. It stops both engines, clears the active playback mode, stops visual/effect activity, and reports the active view model as `interrupted`. The user must press Play to begin a new session. Engine configuration and media-service events also discard both engine graphs; the next user-initiated start rebuilds the engines and reloads the selected immutable sounds.
 
 This conservative policy prevents unexpected playback after a call, Siri interaction, device unplug, or output-route change.
+
+### Mixing and output-route policy
+
+- BeatClikr uses the `.playback` audio-session category with `.mixWithOthers`.
+  Music, videos, and backing tracks from other apps therefore continue playing
+  when the metronome starts. BeatClikr does not duck their volume.
+- Mixing is the sole supported policy; there is no exclusive-audio setting.
+- The active output route is written to the AudioSession system log when the
+  session activates and when an old output becomes unavailable.
+- Bluetooth output adds device-, codec-, and route-dependent latency. The
+  metronome remains internally sample-accurate, but its audible click can lag
+  visuals, haptics, or flashlight feedback by the route’s transport latency.
+  Built-in speakers or wired audio are recommended when audiovisual alignment
+  matters.
+- Haptic and flashlight feedback are foreground-only, best-effort effects.
+  Their callbacks are tied to a playback generation and are discarded after a
+  stop, restart, interruption, failure, or background transition. They are not
+  sample-accurate and must not be used to judge audio timing.
 
 ---
 

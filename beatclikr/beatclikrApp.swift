@@ -98,6 +98,7 @@ struct beatclikrApp: App {
                 }
                 .onAppear {
                     updateIdleTimer(for: scenePhase)
+                    metronomeViewModel.setNonAudioEffectsEnabled(scenePhase == .active)
                 }
                 .alert(item: $databaseRecoveryAlert) { alert in
                     Alert(
@@ -132,6 +133,7 @@ struct beatclikrApp: App {
         }
         .modelContainer(container)
         .onChange(of: scenePhase) { _, newPhase in
+            metronomeViewModel.setNonAudioEffectsEnabled(newPhase == .active)
             guard newPhase == .active else {
                 updateIdleTimer(for: newPhase)
                 return
