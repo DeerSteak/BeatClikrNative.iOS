@@ -97,6 +97,22 @@ struct PolyrhythmView: View {
         }
         .background(Color(UIColor.systemGroupedBackground))
         .onDisappear(perform: model.stop)
+        .alert(
+            String(localized: "Playback Unavailable"),
+            isPresented: Binding(
+                get: { model.playbackError != nil },
+                set: { if !$0 { model.dismissPlaybackError() } },
+            ),
+        ) {
+            Button(String(localized: "Try Again")) {
+                model.start()
+            }
+            Button(String(localized: "OK"), role: .cancel) {
+                model.dismissPlaybackError()
+            }
+        } message: {
+            Text(model.playbackError?.localizedDescription ?? "")
+        }
     }
 
     private func togglePlayPause() {
@@ -104,7 +120,9 @@ struct PolyrhythmView: View {
             model.stop()
         } else {
             model.start()
-            practiceHistory.recordPolyrhythmPractice(context: modelContext)
+            if model.isPlaying {
+                practiceHistory.recordPolyrhythmPractice(context: modelContext)
+            }
         }
     }
 }

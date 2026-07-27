@@ -11,16 +11,20 @@ import XCTest
 @MainActor
 final class MetronomePlaybackViewModelTests: XCTestCase {
     var viewModel: MetronomePlaybackViewModel!
+    var audio: TestAudioPlaybackService!
 
     override func setUp() async throws {
         // Reset singleton so persisted UserDefaults from previous test runs don't bleed in
         UserDefaultsService.instance.rampEnabled = false
-        viewModel = MetronomePlaybackViewModel()
+        audio = TestAudioPlaybackService()
+        viewModel = MetronomePlaybackViewModel(audio: audio)
+        audio.resetStopCounts()
     }
 
     override func tearDown() async throws {
         viewModel.stop()
         viewModel = nil
+        audio = nil
     }
 
     // MARK: - BPM Tests
@@ -75,6 +79,7 @@ final class MetronomePlaybackViewModelTests: XCTestCase {
 
     func testInitialPlaybackState() {
         XCTAssertFalse(viewModel.isPlaying, "Metronome should not be playing initially")
+        XCTAssertEqual(viewModel.playbackState, .idle)
     }
 
     func testTogglePlayPause() {
@@ -93,6 +98,35 @@ final class MetronomePlaybackViewModelTests: XCTestCase {
 
         viewModel.stop()
         XCTAssertFalse(viewModel.isPlaying, "Should not be playing after stop")
+    }
+
+    func testMissingSoundNeverReportsPlaying() {
+        audio.setupError = .soundNotFound("Kick")
+
+        viewModel.start()
+
+        XCTAssertEqual(viewModel.playbackState, .failed(.soundNotFound("Kick")))
+        XCTAssertFalse(viewModel.isPlaying)
+        XCTAssertEqual(audio.metronomeStopCount, 1)
+    }
+
+    func testEngineFailureCanBeRetried() {
+        audio.startError = .engineStartFailed
+        viewModel.start()
+        XCTAssertEqual(viewModel.playbackState, .failed(.engineStartFailed))
+
+        audio.startError = nil
+        viewModel.start()
+
+        XCTAssertEqual(viewModel.playbackState, .playing)
+    }
+
+    func testStopIsIdempotent() {
+        viewModel.stop()
+        viewModel.stop()
+
+        XCTAssertEqual(viewModel.playbackState, .idle)
+        XCTAssertEqual(audio.metronomeStopCount, 2)
     }
 
     // MARK: - Groove (Subdivision) Tests

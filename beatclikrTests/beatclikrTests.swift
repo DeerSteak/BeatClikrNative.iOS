@@ -31,3 +31,48 @@ enum TestModelContainerFactory {
         return try ModelContainer(for: schema, configurations: [configuration])
     }
 }
+
+@MainActor
+final class TestAudioPlaybackService: AudioPlaybackService {
+    weak var metronomeDelegate: MetronomeAudioEngineDelegate?
+    weak var polyrhythmDelegate: PolyrhythmAudioEngineDelegate?
+
+    var setupError: PlaybackError?
+    var startError: PlaybackError?
+    private(set) var metronomeStopCount = 0
+    private(set) var polyrhythmStopCount = 0
+
+    func setupMetronomeAudio(beatName _: String, rhythmName _: String) throws {
+        if let setupError { throw setupError }
+    }
+
+    func setupPolyrhythmAudio(beatName _: String, rhythmName _: String) throws {
+        if let setupError { throw setupError }
+    }
+
+    func setSoundBank(_: SoundBank) {}
+
+    func startMetronome(bpm _: Double, subdivisions _: Int, accentPattern _: [Bool]?) throws {
+        if let startError { throw startError }
+    }
+
+    func stopMetronome() {
+        metronomeStopCount += 1
+    }
+
+    func updateTempo(bpm _: Double, subdivisions _: Int) {}
+    func setRamp(enabled _: Bool, increment _: Int, interval _: Int) {}
+
+    func startPolyrhythm(bpm _: Double, beats _: Int, against _: Int) throws {
+        if let startError { throw startError }
+    }
+
+    func stopPolyrhythm() {
+        polyrhythmStopCount += 1
+    }
+
+    func resetStopCounts() {
+        metronomeStopCount = 0
+        polyrhythmStopCount = 0
+    }
+}

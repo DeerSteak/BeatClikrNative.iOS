@@ -6,8 +6,10 @@
 //
 
 import AVFoundation
+import OSLog
 
 struct SoundFile {
+    private static let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "BeatClikr", category: "Playback")
     var displayName: String
     var fileName: String
     var midiNote: Int
@@ -22,7 +24,7 @@ struct SoundFile {
         do {
             audioFile = try AVAudioFile(forReading: url)
         } catch {
-            print("Could not load \(fileName): \(error)")
+            Self.logger.error("Could not load \(file, privacy: .public): \(error, privacy: .public)")
         }
     }
 

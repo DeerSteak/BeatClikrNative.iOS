@@ -30,6 +30,7 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
 
     private var beatBuffer: AVAudioPCMBuffer?
     private var rhythmBuffer: AVAudioPCMBuffer?
+    private var isGraphConfigured = false
 
     // Beat track state
     private let scheduleAheadCount = 4
@@ -63,17 +64,35 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
 
     // MARK: - PolyrhythmAudioEngine
 
-    func loadSounds(beatName: String, rhythmName: String, from sounds: [SoundFile]) {
-        if let file = sounds.first(where: { $0.displayName == beatName })?.audioFile {
-            beatBuffer = readBuffer(from: file)
+    func loadSounds(beatName: String, rhythmName: String, from sounds: [SoundFile]) throws {
+        beatBuffer = nil
+        rhythmBuffer = nil
+        guard let beatSound = sounds.first(where: { $0.displayName == beatName }) else {
+            throw PlaybackError.soundNotFound(beatName)
         }
-        if let file = sounds.first(where: { $0.displayName == rhythmName })?.audioFile {
-            rhythmBuffer = readBuffer(from: file)
+        guard let rhythmSound = sounds.first(where: { $0.displayName == rhythmName }) else {
+            throw PlaybackError.soundNotFound(rhythmName)
         }
+        guard let beatFile = beatSound.audioFile else {
+            throw PlaybackError.soundUnreadable(beatName)
+        }
+        guard let rhythmFile = rhythmSound.audioFile else {
+            throw PlaybackError.soundUnreadable(rhythmName)
+        }
+        beatBuffer = try readBuffer(from: beatFile, name: beatName)
+        rhythmBuffer = try readBuffer(from: rhythmFile, name: rhythmName)
     }
 
-    func startPolyrhythm(bpm: Double, beats: Int, against: Int, delegate: PolyrhythmAudioEngineDelegate) {
-        guard bpm > 0, beats >= 1, against >= 1 else { return }
+    func startPolyrhythm(bpm: Double, beats: Int, against: Int, delegate: PolyrhythmAudioEngineDelegate) throws {
+        guard bpm > 0, beats >= 1, against >= 1 else {
+            throw PlaybackError.invalidConfiguration
+        }
+        guard beatBuffer != nil, rhythmBuffer != nil else {
+            throw PlaybackError.soundUnreadable("Polyrhythm")
+        }
+        guard engine.isRunning else {
+            throw PlaybackError.engineStartFailed
+        }
 
         sessionID += 1
         beatNode.stop()
@@ -117,10 +136,13 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
     }
 
     func start() throws {
-        engine.attach(beatNode)
-        engine.attach(rhythmNode)
-        engine.connect(beatNode, to: engine.mainMixerNode, format: nil)
-        engine.connect(rhythmNode, to: engine.mainMixerNode, format: nil)
+        if !isGraphConfigured {
+            engine.attach(beatNode)
+            engine.attach(rhythmNode)
+            engine.connect(beatNode, to: engine.mainMixerNode, format: nil)
+            engine.connect(rhythmNode, to: engine.mainMixerNode, format: nil)
+            isGraphConfigured = true
+        }
         try engine.start()
     }
 
@@ -141,13 +163,17 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
         ticks * UInt64(timebaseInfo.numer) / UInt64(timebaseInfo.denom)
     }
 
-    private func readBuffer(from file: AVAudioFile) -> AVAudioPCMBuffer? {
+    private func readBuffer(from file: AVAudioFile, name: String) throws -> AVAudioPCMBuffer {
         file.framePosition = 0
         guard let sourceBuffer = AVAudioPCMBuffer(
             pcmFormat: file.processingFormat,
             frameCapacity: AVAudioFrameCount(file.length),
-        ) else { return nil }
-        try? file.read(into: sourceBuffer)
+        ) else { throw PlaybackError.soundUnreadable(name) }
+        do {
+            try file.read(into: sourceBuffer)
+        } catch {
+            throw PlaybackError.soundUnreadable(name)
+        }
 
         let outputFormat = engine.mainMixerNode.outputFormat(forBus: 0)
         guard sourceBuffer.format != outputFormat else { return sourceBuffer }
@@ -159,7 +185,7 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
         guard let convertedBuffer = AVAudioPCMBuffer(
             pcmFormat: outputFormat,
             frameCapacity: max(convertedFrameCapacity, 1),
-        ) else { return sourceBuffer }
+        ) else { throw PlaybackError.soundConversionFailed(name) }
 
         let inputProvider = PolyrhythmConversionInputProvider(buffer: sourceBuffer)
         var conversionError: NSError?
@@ -167,9 +193,8 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
             inputProvider.nextBuffer(outStatus: outStatus)
         }
 
-        if let conversionError {
-            print("Could not convert polyrhythm buffer: \(conversionError)")
-            return sourceBuffer
+        if conversionError != nil {
+            throw PlaybackError.soundConversionFailed(name)
         }
         return convertedBuffer
     }
