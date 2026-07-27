@@ -240,8 +240,6 @@ This conservative policy prevents unexpected playback after a call, Siri interac
   stop, restart, interruption, failure, or background transition. They are not
   sample-accurate and must not be used to judge audio timing.
 
----
-
 ## Tap Tempo
 
 The Instant Metronome includes a **Tap Tempo** button displayed as a circle to the right of the BPM display. Tapping it calculates BPM from the average interval of the last several taps. The result is rounded to one decimal place and clamped to the app's min/max BPM range. If more than 2 seconds pass between taps, the tap history is cleared so the user can start a new tempo.

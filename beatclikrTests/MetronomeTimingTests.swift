@@ -399,6 +399,196 @@ final class AbsoluteAudioTimelineTests: XCTestCase {
         XCTAssertEqual(destination.floatChannelData?[0][38], 0)
     }
 
+    func testOfflineRenderedOnsetsMatchAccentsAndAlternateSixteenths() throws {
+        let accentPlan = try MetronomeAudioBlockPlan(
+            blockIndex: 17,
+            sampleRate: 44100,
+            bpm: 137,
+            subdivisions: 2,
+            accentPattern: [true, false, false, true, false],
+            alternateSixteenth: false,
+        )
+        let accentBuffer = try renderMetronomePlan(accentPlan)
+
+        XCTAssertEqual(nonzeroSampleIndices(in: accentBuffer), accentPlan.events.map(\.relativeSample))
+        for event in accentPlan.events {
+            XCTAssertEqual(
+                accentBuffer.floatChannelData?[0][Int(event.relativeSample)],
+                event.isBeat ? 1 : 0.5,
+            )
+        }
+
+        let sixteenthPlan = try MetronomeAudioBlockPlan(
+            blockIndex: 23,
+            sampleRate: 48000,
+            bpm: 173,
+            subdivisions: 4,
+            accentPattern: nil,
+            alternateSixteenth: true,
+        )
+        let sixteenthBuffer = try renderMetronomePlan(sixteenthPlan)
+
+        XCTAssertEqual(nonzeroSampleIndices(in: sixteenthBuffer), sixteenthPlan.events.map(\.relativeSample))
+        XCTAssertEqual(
+            sixteenthPlan.events.map(\.usesBeatSound),
+            [true, false, true, false],
+        )
+        for event in sixteenthPlan.events {
+            XCTAssertEqual(
+                sixteenthBuffer.floatChannelData?[0][Int(event.relativeSample)],
+                event.usesBeatSound ? 1 : 0.5,
+            )
+        }
+    }
+
+    func testRenderedClickTailsMeetCycleBoundaryWithoutMovingNextDownbeat() throws {
+        let first = try MetronomeAudioBlockPlan(
+            blockIndex: 41,
+            sampleRate: 44100,
+            bpm: 137,
+            subdivisions: 2,
+            accentPattern: [true, false, false, true, false, false, true],
+            alternateSixteenth: false,
+        )
+        let second = try MetronomeAudioBlockPlan(
+            blockIndex: 42,
+            sampleRate: 44100,
+            bpm: 137,
+            subdivisions: 2,
+            accentPattern: [true, false, false, true, false, false, true],
+            alternateSixteenth: false,
+        )
+        let firstBuffer = try renderMetronomePlan(first, impulseOnly: false)
+        let secondBuffer = try renderMetronomePlan(second, impulseOnly: false)
+        let firstSamples = try XCTUnwrap(firstBuffer.floatChannelData?[0])
+        let secondSamples = try XCTUnwrap(secondBuffer.floatChannelData?[0])
+
+        XCTAssertNotEqual(firstSamples[Int(first.frameCount) - 1], 0)
+        XCTAssertNotEqual(secondSamples[0], 0)
+        XCTAssertEqual(first.absoluteStartSample + Int64(first.frameCount), second.absoluteStartSample)
+        XCTAssertEqual(second.events.first?.relativeSample, 0)
+    }
+
+    func testRenderedPolyrhythmOnsetsIncludeExactSimultaneousReunions() throws {
+        for beats in 1 ... 15 {
+            for against in 1 ... 15 {
+                let plan = try PolyrhythmAudioBlockPlan(
+                    blockIndex: 11,
+                    sampleRate: 44100,
+                    bpm: 137,
+                    beats: beats,
+                    against: against,
+                )
+                let buffer = try renderPolyrhythmPlan(plan)
+                let samples = try XCTUnwrap(buffer.floatChannelData?[0])
+                let expectedOnsets = Set(
+                    plan.beatEvents.map(\.relativeSample) + plan.rhythmEvents.map(\.relativeSample),
+                )
+
+                XCTAssertEqual(Set(nonzeroSampleIndices(in: buffer)), expectedOnsets)
+                XCTAssertEqual(samples[0], 1.5, "Both voices must reunite at the cycle origin")
+            }
+        }
+    }
+
+    func testEightHourPlaybackSimulationRetainsAbsoluteSampleAccuracy() throws {
+        let hours = 8.0
+
+        for sampleRate in [44100.0, 48000.0] {
+            for bpm in [MetronomeConstants.minBPM, 137, MetronomeConstants.maxBPM] {
+                for subdivisions in 1 ... 4 {
+                    let blockDuration = 60 / (bpm * Double(subdivisions))
+                    let blockCount = Int64(ceil(hours * 3600 / blockDuration))
+                    let finalPlan = try MetronomeAudioBlockPlan(
+                        blockIndex: blockCount - 1,
+                        sampleRate: sampleRate,
+                        bpm: bpm,
+                        subdivisions: subdivisions,
+                        accentPattern: nil,
+                        alternateSixteenth: subdivisions == 4,
+                    )
+                    let actualEnd = finalPlan.absoluteStartSample + Int64(finalPlan.frameCount)
+                    let timeline = try AbsoluteAudioTimeline(
+                        sampleRate: sampleRate,
+                        intervalsPerMinute: bpm * Double(subdivisions),
+                    )
+
+                    XCTAssertEqual(actualEnd, timeline.samplePosition(blockCount * Int64(subdivisions)))
+                }
+            }
+        }
+    }
+
+    func testEightHourPolyrhythmSimulationRetainsExactCycleReunions() throws {
+        let sampleRate = 44100.0
+        let bpm = 137.0
+        let hours = 8.0
+
+        for beats in 1 ... 15 {
+            for against in 1 ... 15 {
+                let cycleDuration = Double(against) * 60 / bpm
+                let blockIndex = Int64(ceil(hours * 3600 / cycleDuration))
+                let first = try PolyrhythmAudioBlockPlan(
+                    blockIndex: blockIndex,
+                    sampleRate: sampleRate,
+                    bpm: bpm,
+                    beats: beats,
+                    against: against,
+                )
+                let second = try PolyrhythmAudioBlockPlan(
+                    blockIndex: blockIndex + 1,
+                    sampleRate: sampleRate,
+                    bpm: bpm,
+                    beats: beats,
+                    against: against,
+                )
+
+                XCTAssertEqual(first.absoluteStartSample + Int64(first.frameCount), second.absoluteStartSample)
+                XCTAssertEqual(second.beatEvents.first?.absoluteSample, second.absoluteStartSample)
+                XCTAssertEqual(second.rhythmEvents.first?.absoluteSample, second.absoluteStartSample)
+            }
+        }
+    }
+
+    func testStablePlaybackReusesPrewarmedClipsAcrossLongRun() throws {
+        let cache = try AudioBufferClipCache(source: makeConstantBuffer(frameCount: 96000, value: 1))
+        let sampleRate = 48000.0
+        let bpm = 137.0
+        let subdivisions = 4
+        let timeline = try AbsoluteAudioTimeline(
+            sampleRate: sampleRate,
+            intervalsPerMinute: bpm * Double(subdivisions),
+        )
+        let possibleLengths = Set((0 ..< 100).map {
+            AVAudioFrameCount(timeline.samplePosition(Int64($0 + 1)) - timeline.samplePosition(Int64($0)))
+        })
+        let prewarmed = Dictionary(uniqueKeysWithValues: possibleLengths.map {
+            ($0, cache.buffer(maximumFrameLength: $0))
+        })
+        let countAfterPrewarming = cache.cachedClipCount
+        let bytesAfterPrewarming = cache.cachedByteCount
+
+        for blockIndex in Int64(0) ..< 100_000 {
+            let plan = try MetronomeAudioBlockPlan(
+                blockIndex: blockIndex,
+                sampleRate: sampleRate,
+                bpm: bpm,
+                subdivisions: subdivisions,
+                accentPattern: nil,
+                alternateSixteenth: true,
+            )
+            for event in plan.events {
+                XCTAssertTrue(cache.buffer(maximumFrameLength: event.maximumFrameLength)
+                    === prewarmed[event.maximumFrameLength])
+            }
+        }
+
+        XCTAssertEqual(cache.cachedClipCount, countAfterPrewarming)
+        XCTAssertEqual(cache.cachedByteCount, bytesAfterPrewarming)
+        XCTAssertLessThanOrEqual(cache.cachedClipCount, 16)
+        XCTAssertLessThanOrEqual(cache.cachedByteCount, 2 * 1024 * 1024)
+    }
+
     func testVisualPhaseUsesAbsoluteAudioTimeWithoutLongRunAccumulation() throws {
         for sampleRate in [44100.0, 48000.0] {
             let timeline = try AbsoluteAudioTimeline(
@@ -454,6 +644,60 @@ final class AbsoluteAudioTimelineTests: XCTestCase {
                     )
                 }
             }
+        }
+    }
+
+    private func renderMetronomePlan(
+        _ plan: MetronomeAudioBlockPlan,
+        impulseOnly: Bool = true,
+    ) throws -> AVAudioPCMBuffer {
+        let beat = try makeConstantBuffer(frameCount: plan.frameCount, value: 1, impulseOnly: impulseOnly)
+        let rhythm = try makeConstantBuffer(frameCount: plan.frameCount, value: 0.5, impulseOnly: impulseOnly)
+        let destination = try makeConstantBuffer(frameCount: plan.frameCount, value: 0)
+        AudioBlockRenderer.clear(destination, frameCount: plan.frameCount)
+
+        for event in plan.events {
+            let source = event.usesBeatSound ? beat : rhythm
+            source.frameLength = min(event.maximumFrameLength, source.frameCapacity)
+            AudioBlockRenderer.mix(source, at: event.relativeSample, into: destination)
+        }
+        return destination
+    }
+
+    private func renderPolyrhythmPlan(_ plan: PolyrhythmAudioBlockPlan) throws -> AVAudioPCMBuffer {
+        let beat = try makeConstantBuffer(frameCount: 1, value: 1)
+        let rhythm = try makeConstantBuffer(frameCount: 1, value: 0.5)
+        let destination = try makeConstantBuffer(frameCount: plan.frameCount, value: 0)
+        AudioBlockRenderer.clear(destination, frameCount: plan.frameCount)
+
+        for event in plan.beatEvents {
+            AudioBlockRenderer.mix(beat, at: event.relativeSample, into: destination)
+        }
+        for event in plan.rhythmEvents {
+            AudioBlockRenderer.mix(rhythm, at: event.relativeSample, into: destination)
+        }
+        return destination
+    }
+
+    private func makeConstantBuffer(
+        frameCount: AVAudioFrameCount,
+        value: Float,
+        impulseOnly: Bool = true,
+    ) throws -> AVAudioPCMBuffer {
+        let format = try XCTUnwrap(AVAudioFormat(standardFormatWithSampleRate: 48000, channels: 1))
+        let buffer = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: format, frameCapacity: frameCount))
+        buffer.frameLength = frameCount
+        let samples = try XCTUnwrap(buffer.floatChannelData?[0])
+        for frame in 0 ..< Int(frameCount) {
+            samples[frame] = impulseOnly && frame > 0 ? 0 : value
+        }
+        return buffer
+    }
+
+    private func nonzeroSampleIndices(in buffer: AVAudioPCMBuffer) -> [AVAudioFramePosition] {
+        guard let samples = buffer.floatChannelData?[0] else { return [] }
+        return (0 ..< Int(buffer.frameLength)).compactMap {
+            samples[$0] == 0 ? nil : AVAudioFramePosition($0)
         }
     }
 }
