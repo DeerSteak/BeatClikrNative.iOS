@@ -28,6 +28,16 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
     private var scheduledCount = 0
     private var nextBeatHostTime: UInt64 = 0
     private let scheduleAheadCount = 4
+    private var rollingBufferSlots: [AudioBufferSlot] = []
+    private var nextRollingBlockIndex: Int64 = 0
+    private var rollingOriginHostTime: UInt64 = 0
+
+    private enum PlaybackPath {
+        case dynamic
+        case rolling
+    }
+
+    private var playbackPath: PlaybackPath = .rolling
 
     // Incremented on every start/stop so callbacks from prior sessions self-discard
     private var sessionID = 0
@@ -85,12 +95,12 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
         guard engine.isRunning else {
             throw PlaybackError.engineStartFailed
         }
-        sessionID += 1
-        beatNode.stop()
-        rhythmNode.stop()
-        beatNode.play()
-        rhythmNode.play()
-
+        let outputFormat = engine.mainMixerNode.outputFormat(forBus: 0)
+        guard beatBuffers?.source.format == outputFormat,
+              rhythmBuffers?.source.format == outputFormat
+        else {
+            throw PlaybackError.engineStartFailed
+        }
         currentBPM = bpm
         currentSubdivisions = subdivisions
         self.accentPattern = accentPattern
@@ -101,13 +111,7 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
         scheduledCount = 0
         rampBeatCount = -1
         isPlaying = true
-
-        // Anchor both audio and UI events to the same mach_absolute_time baseline.
-        // AVAudioTime(hostTime:) and DispatchTime(uptimeNanoseconds:) both derive from
-        // mach_absolute_time, so scheduling via host ticks eliminates clock-domain drift.
-        nextBeatHostTime = mach_absolute_time() + secondsToHostTicks(MetronomeConstants.firstBeatDelay)
-
-        scheduleNextBeats()
+        restartPlaybackTimeline()
     }
 
     func stopMetronome() {
@@ -116,6 +120,8 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
         beatNode.stop()
         rhythmNode.stop()
         scheduledCount = 0
+        rollingBufferSlots = []
+        nextRollingBlockIndex = 0
         currentSubdivision = 0
         patternIndex = 0
         rampBeatCount = -1
@@ -125,13 +131,19 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
         currentBPM = bpm
         currentSubdivisions = subdivisions
         useAlternateSixteenth = UserDefaultsService.instance.sixteenthAlternate && subdivisions == 4
-        // Already-scheduled buffers drain naturally; new ones use the updated tempo
+        if isPlaying, playbackPath == .rolling {
+            restartPlaybackTimeline()
+        }
     }
 
     func setRamp(enabled: Bool, increment: Int, interval: Int) {
+        let pathChanged = rampEnabled != enabled
         rampEnabled = enabled
         rampIncrement = Double(increment)
         rampInterval = max(1, interval)
+        if isPlaying, pathChanged {
+            restartPlaybackTimeline()
+        }
     }
 
     func start() throws {
@@ -160,6 +172,133 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
 
     private func hostTicksToNanoseconds(_ ticks: UInt64) -> UInt64 {
         ticks * UInt64(timebaseInfo.numer) / UInt64(timebaseInfo.denom)
+    }
+
+    private func restartPlaybackTimeline() {
+        sessionID += 1
+        beatNode.stop()
+        rhythmNode.stop()
+        beatNode.play()
+        rhythmNode.play()
+        scheduledCount = 0
+        currentSubdivision = 0
+        patternIndex = 0
+        rampBeatCount = -1
+
+        let origin = mach_absolute_time() + secondsToHostTicks(MetronomeConstants.firstBeatDelay)
+        if rampEnabled {
+            playbackPath = .dynamic
+            rollingBufferSlots = []
+            nextBeatHostTime = origin
+            scheduleNextBeats()
+        } else {
+            playbackPath = .rolling
+            rollingOriginHostTime = origin
+            nextRollingBlockIndex = 0
+            prepareRollingBuffers()
+        }
+    }
+
+    private func prepareRollingBuffers() {
+        guard isPlaying, let beatBuffers, let rhythmBuffers else { return }
+        let format = engine.mainMixerNode.outputFormat(forBus: 0)
+        let intervalCount = accentPattern?.count ?? currentSubdivisions
+        let idealIntervalFrames = format.sampleRate * 60 / (currentBPM * Double(currentSubdivisions))
+        prewarmClips(
+            caches: [beatBuffers, rhythmBuffers],
+            idealFrameLength: idealIntervalFrames,
+        )
+        let idealFrames = Double(intervalCount) * format.sampleRate * 60
+            / (currentBPM * Double(currentSubdivisions))
+        let capacity = AVAudioFrameCount(ceil(idealFrames) + 1)
+        let poolSize = idealFrames / format.sampleRate > 1 ? 2 : scheduleAheadCount
+        rollingBufferSlots = (0 ..< poolSize).compactMap {
+            _ in AVAudioPCMBuffer(pcmFormat: format, frameCapacity: capacity).map { AudioBufferSlot(buffer: $0) }
+        }
+        guard rollingBufferSlots.count == poolSize else {
+            isPlaying = false
+            return
+        }
+
+        let muted = UserDefaultsService.instance.muteMetronome
+        beatNode.volume = muted ? 0 : 1
+        rhythmNode.volume = 0
+        for slot in rollingBufferSlots {
+            scheduleRollingBlock(using: slot)
+        }
+    }
+
+    private func prewarmClips(caches: [AudioBufferClipCache], idealFrameLength: Double) {
+        let lengths = Set([
+            AVAudioFrameCount(floor(idealFrameLength)),
+            AVAudioFrameCount(ceil(idealFrameLength)),
+        ])
+        for cache in caches {
+            for length in lengths where length > 0 {
+                _ = cache.buffer(maximumFrameLength: length)
+            }
+        }
+    }
+
+    private func scheduleRollingBlock(using slot: AudioBufferSlot) {
+        guard isPlaying,
+              playbackPath == .rolling,
+              let beatBuffers,
+              let rhythmBuffers
+        else {
+            return
+        }
+
+        let capturedSession = sessionID
+        let blockIndex = nextRollingBlockIndex
+        guard let plan = try? MetronomeAudioBlockPlan(
+            blockIndex: blockIndex,
+            sampleRate: slot.buffer.format.sampleRate,
+            bpm: currentBPM,
+            subdivisions: currentSubdivisions,
+            accentPattern: accentPattern,
+            alternateSixteenth: useAlternateSixteenth,
+        ) else {
+            return
+        }
+        guard plan.frameCount <= slot.buffer.frameCapacity else {
+            return
+        }
+
+        AudioBlockRenderer.clear(slot.buffer, frameCount: plan.frameCount)
+        for event in plan.events {
+            let source = (event.usesBeatSound ? beatBuffers : rhythmBuffers)
+                .buffer(maximumFrameLength: event.maximumFrameLength)
+            AudioBlockRenderer.mix(source, at: event.relativeSample, into: slot.buffer)
+            scheduleDelegateEvent(
+                isBeat: event.isBeat,
+                beatInterval: event.beatInterval,
+                rampedBpm: nil,
+                hostTime: rollingHostTime(forAbsoluteSample: event.absoluteSample, sampleRate: slot.buffer.format.sampleRate),
+                sessionID: capturedSession,
+            )
+        }
+
+        let blockHostTime = rollingHostTime(
+            forAbsoluteSample: plan.absoluteStartSample,
+            sampleRate: slot.buffer.format.sampleRate,
+        )
+        beatNode.scheduleBuffer(
+            slot.buffer,
+            at: AVAudioTime(hostTime: blockHostTime),
+            options: [],
+            completionCallbackType: .dataConsumed,
+        ) { [weak self] _ in
+            DispatchQueue.main.async {
+                guard let self, self.sessionID == capturedSession else { return }
+                self.scheduleRollingBlock(using: slot)
+            }
+        }
+        nextRollingBlockIndex += 1
+    }
+
+    private func rollingHostTime(forAbsoluteSample sample: Int64, sampleRate: Double) -> UInt64 {
+        rollingOriginHostTime + secondsToHostTicks(Double(sample) / sampleRate)
     }
 
     private func readBuffer(from file: AVAudioFile, name: String) throws -> AVAudioPCMBuffer {
@@ -267,7 +406,7 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
     }
 
     private func scheduleNextBeats() {
-        guard isPlaying else { return }
+        guard isPlaying, playbackPath == .dynamic else { return }
 
         let outputFormat = engine.mainMixerNode.outputFormat(forBus: 0)
         let sampleRate = outputFormat.sampleRate

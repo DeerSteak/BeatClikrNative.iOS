@@ -199,3 +199,122 @@ final class AudioBufferClipCacheTests: XCTestCase {
         return buffer
     }
 }
+
+final class AbsoluteAudioTimelineTests: XCTestCase {
+    func testAwkwardTempoStaysWithinHalfSampleForMillionsOfEvents() throws {
+        let timeline = try AbsoluteAudioTimeline(sampleRate: 44100, intervalsPerMinute: 137 * 3)
+
+        for event in [Int64(0), 1, 10, 10000, 10_000_000] {
+            let ideal = Double(event) * timeline.samplesPerInterval
+            XCTAssertLessThanOrEqual(abs(Double(timeline.samplePosition(event)) - ideal), 0.5)
+        }
+    }
+
+    func testRollingBlockLengthsCorrectFractionalSamplesInsteadOfAccumulatingThem() throws {
+        let sampleRate = 44100.0
+        let bpm = 137.0
+        let blockCount = Int64(100_000)
+        var totalFrames: Int64 = 0
+        var lengths: Set<AVAudioFrameCount> = []
+
+        for blockIndex in 0 ..< blockCount {
+            let plan = try MetronomeAudioBlockPlan(
+                blockIndex: blockIndex,
+                sampleRate: sampleRate,
+                bpm: bpm,
+                subdivisions: 1,
+                accentPattern: nil,
+                alternateSixteenth: false,
+            )
+            totalFrames += Int64(plan.frameCount)
+            lengths.insert(plan.frameCount)
+        }
+
+        let ideal = Double(blockCount) * sampleRate * 60 / bpm
+        XCTAssertLessThanOrEqual(abs(Double(totalFrames) - ideal), 0.5)
+        XCTAssertEqual(lengths.count, 2)
+    }
+
+    func testAdjacentMetronomeBlocksShareExactlyOneBoundary() throws {
+        let first = try MetronomeAudioBlockPlan(
+            blockIndex: 12345,
+            sampleRate: 48000,
+            bpm: 173,
+            subdivisions: 3,
+            accentPattern: nil,
+            alternateSixteenth: false,
+        )
+        let second = try MetronomeAudioBlockPlan(
+            blockIndex: 12346,
+            sampleRate: 48000,
+            bpm: 173,
+            subdivisions: 3,
+            accentPattern: nil,
+            alternateSixteenth: false,
+        )
+
+        XCTAssertEqual(first.absoluteStartSample + Int64(first.frameCount), second.absoluteStartSample)
+    }
+
+    func testOddMeterAccentsAndIntervalsArePreserved() throws {
+        let pattern = [true, false, false, true, false]
+        let plan = try MetronomeAudioBlockPlan(
+            blockIndex: 0,
+            sampleRate: 44100,
+            bpm: 120,
+            subdivisions: 2,
+            accentPattern: pattern,
+            alternateSixteenth: false,
+        )
+
+        XCTAssertEqual(plan.events.map(\.isBeat), pattern)
+        XCTAssertEqual(plan.events.map(\.usesBeatSound), pattern)
+        XCTAssertEqual(plan.events[0].beatInterval, 0.75, accuracy: 0.000_001)
+        XCTAssertEqual(plan.events[3].beatInterval, 0.5, accuracy: 0.000_001)
+    }
+
+    func testEverySupportedPolyrhythmSharesExactCycleBoundaries() throws {
+        for beats in 1 ... 15 {
+            for against in 1 ... 15 {
+                let first = try PolyrhythmAudioBlockPlan(
+                    blockIndex: 99,
+                    sampleRate: 44100,
+                    bpm: 137,
+                    beats: beats,
+                    against: against,
+                )
+                let second = try PolyrhythmAudioBlockPlan(
+                    blockIndex: 100,
+                    sampleRate: 44100,
+                    bpm: 137,
+                    beats: beats,
+                    against: against,
+                )
+
+                XCTAssertEqual(first.absoluteStartSample + Int64(first.frameCount), second.absoluteStartSample)
+                XCTAssertEqual(first.beatEvents.first?.relativeSample, 0)
+                XCTAssertEqual(first.rhythmEvents.first?.relativeSample, 0)
+                XCTAssertTrue(first.beatEvents.allSatisfy { $0.relativeSample < first.frameCount })
+                XCTAssertTrue(first.rhythmEvents.allSatisfy { $0.relativeSample < first.frameCount })
+            }
+        }
+    }
+
+    func testOfflineRendererPlacesAndMixesOnsetsAtExactSamples() throws {
+        let format = try XCTUnwrap(AVAudioFormat(standardFormatWithSampleRate: 44100, channels: 2))
+        let destination = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 100))
+        let source = try XCTUnwrap(AVAudioPCMBuffer(pcmFormat: format, frameCapacity: 4))
+        source.frameLength = 4
+        source.floatChannelData?[0][0] = 0.25
+        source.floatChannelData?[1][0] = 0.25
+
+        AudioBlockRenderer.clear(destination, frameCount: 100)
+        AudioBlockRenderer.mix(source, at: 37, into: destination)
+        AudioBlockRenderer.mix(source, at: 37, into: destination)
+
+        XCTAssertEqual(destination.floatChannelData?[0][36], 0)
+        XCTAssertEqual(destination.floatChannelData?[0][37], 0.5)
+        XCTAssertEqual(destination.floatChannelData?[1][37], 0.5)
+        XCTAssertEqual(destination.floatChannelData?[0][38], 0)
+    }
+}

@@ -8,10 +8,10 @@
 import AVFoundation
 import Foundation
 
-/// Sample-accurate polyrhythm engine using two independent AVAudioPlayerNode tracks.
+/// Sample-accurate polyrhythm engine using rolling, pre-rendered cycle blocks.
 ///
-/// Beat and rhythm run as completely separate scheduling loops so they can fire at the
-/// same sample time without any buffer-mixing code; AVAudioEngine handles the mix.
+/// Beat and rhythm share one absolute sample origin and are mixed into the same
+/// block so cycle reunions occur at an identical sample.
 /// Delegate notifications are scheduled from the same host-time timeline as playback
 /// instead of using buffer completion as a proxy for beat onset.
 ///
@@ -32,26 +32,18 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
     private var rhythmBuffers: AudioBufferClipCache?
     private var isGraphConfigured = false
 
-    // Beat track state
     private let scheduleAheadCount = 4
-    private var beatScheduledCount = 0
-    private var beatNextHostTime: UInt64 = 0
-    private var beatHostTicksDelta: UInt64 = 0
-    private var beatFramesPerInterval: AVAudioFrameCount = 0
-    private var currentBeatIndex = 0
     private var beatCount = 1 // against
 
-    // Rhythm track state
-    private var rhythmScheduledCount = 0
-    private var rhythmNextHostTime: UInt64 = 0
-    private var rhythmHostTicksDelta: UInt64 = 0
-    private var rhythmFramesPerInterval: AVAudioFrameCount = 0
-    private var currentRhythmIndex = 0
     private var rhythmCount = 1 // beats
+    private var rollingBufferSlots: [AudioBufferSlot] = []
+    private var nextRollingBlockIndex: Int64 = 0
+    private var rollingOriginHostTime: UInt64 = 0
 
     // Incremented on every start/stop so stale callbacks self-discard
     private var sessionID = 0
     private var isPlaying = false
+    private var currentBPM: Double = 60
 
     private weak var delegate: PolyrhythmAudioEngineDelegate?
 
@@ -93,6 +85,12 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
         guard engine.isRunning else {
             throw PlaybackError.engineStartFailed
         }
+        let outputFormat = engine.mainMixerNode.outputFormat(forBus: 0)
+        guard beatBuffers?.source.format == outputFormat,
+              rhythmBuffers?.source.format == outputFormat
+        else {
+            throw PlaybackError.engineStartFailed
+        }
 
         sessionID += 1
         beatNode.stop()
@@ -101,29 +99,15 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
         rhythmNode.play()
 
         self.delegate = delegate
+        currentBPM = bpm
         beatCount = against
         rhythmCount = beats
         isPlaying = true
 
-        let sampleRate = engine.mainMixerNode.outputFormat(forBus: 0).sampleRate
-        let samplesPerBeat = sampleRate * 60.0 / bpm
-        let samplesPerRhythm = sampleRate * Double(against) * 60.0 / (bpm * Double(beats))
-
-        beatFramesPerInterval = AVAudioFrameCount(samplesPerBeat)
-        rhythmFramesPerInterval = AVAudioFrameCount(samplesPerRhythm)
-        beatHostTicksDelta = secondsToHostTicks(Double(beatFramesPerInterval) / sampleRate)
-        rhythmHostTicksDelta = secondsToHostTicks(Double(rhythmFramesPerInterval) / sampleRate)
-
         let originHostTime = mach_absolute_time() + secondsToHostTicks(MetronomeConstants.firstBeatDelay)
-        beatNextHostTime = originHostTime
-        rhythmNextHostTime = originHostTime
-        currentBeatIndex = 0
-        currentRhythmIndex = 0
-        beatScheduledCount = 0
-        rhythmScheduledCount = 0
-
-        scheduleBeatBuffers()
-        scheduleRhythmBuffers()
+        rollingOriginHostTime = originHostTime
+        nextRollingBlockIndex = 0
+        prepareRollingBuffers()
     }
 
     func stopPolyrhythm() {
@@ -131,8 +115,8 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
         isPlaying = false
         beatNode.stop()
         rhythmNode.stop()
-        beatScheduledCount = 0
-        rhythmScheduledCount = 0
+        rollingBufferSlots = []
+        nextRollingBlockIndex = 0
     }
 
     func start() throws {
@@ -161,6 +145,114 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
 
     private func hostTicksToNanoseconds(_ ticks: UInt64) -> UInt64 {
         ticks * UInt64(timebaseInfo.numer) / UInt64(timebaseInfo.denom)
+    }
+
+    private func prepareRollingBuffers() {
+        guard isPlaying, let beatBuffers, let rhythmBuffers else { return }
+        let format = engine.mainMixerNode.outputFormat(forBus: 0)
+        prewarmClips(
+            cache: beatBuffers,
+            idealFrameLength: format.sampleRate * 60 / currentBPM,
+        )
+        prewarmClips(
+            cache: rhythmBuffers,
+            idealFrameLength: format.sampleRate * Double(beatCount) * 60
+                / (currentBPM * Double(rhythmCount)),
+        )
+        let idealFrames = format.sampleRate * Double(beatCount) * 60 / currentBPM
+        let capacity = AVAudioFrameCount(ceil(idealFrames) + 1)
+        let poolSize = idealFrames / format.sampleRate > 1 ? 2 : scheduleAheadCount
+        rollingBufferSlots = (0 ..< poolSize).compactMap {
+            _ in AVAudioPCMBuffer(pcmFormat: format, frameCapacity: capacity).map { AudioBufferSlot(buffer: $0) }
+        }
+        guard rollingBufferSlots.count == poolSize else {
+            isPlaying = false
+            return
+        }
+
+        let muted = UserDefaultsService.instance.muteMetronome
+        beatNode.volume = muted ? 0 : 1
+        rhythmNode.volume = 0
+        for slot in rollingBufferSlots {
+            scheduleRollingBlock(using: slot)
+        }
+    }
+
+    private func prewarmClips(cache: AudioBufferClipCache, idealFrameLength: Double) {
+        let lengths = Set([
+            AVAudioFrameCount(floor(idealFrameLength)),
+            AVAudioFrameCount(ceil(idealFrameLength)),
+        ])
+        for length in lengths where length > 0 {
+            _ = cache.buffer(maximumFrameLength: length)
+        }
+    }
+
+    private func scheduleRollingBlock(using slot: AudioBufferSlot) {
+        guard isPlaying, let beatBuffers, let rhythmBuffers else {
+            return
+        }
+        let capturedSession = sessionID
+        let blockIndex = nextRollingBlockIndex
+        guard let plan = try? PolyrhythmAudioBlockPlan(
+            blockIndex: blockIndex,
+            sampleRate: slot.buffer.format.sampleRate,
+            bpm: currentBPM,
+            beats: rhythmCount,
+            against: beatCount,
+        ) else {
+            return
+        }
+        guard plan.frameCount <= slot.buffer.frameCapacity else {
+            return
+        }
+
+        AudioBlockRenderer.clear(slot.buffer, frameCount: plan.frameCount)
+        for event in plan.beatEvents {
+            let source = beatBuffers.buffer(maximumFrameLength: event.maximumFrameLength)
+            AudioBlockRenderer.mix(source, at: event.relativeSample, into: slot.buffer)
+            scheduleDelegateEvent(
+                beatFired: true,
+                rhythmFired: false,
+                beatIndex: event.index,
+                rhythmIndex: 0,
+                hostTime: rollingHostTime(forAbsoluteSample: event.absoluteSample, sampleRate: slot.buffer.format.sampleRate),
+                sessionID: capturedSession,
+            )
+        }
+        for event in plan.rhythmEvents {
+            let source = rhythmBuffers.buffer(maximumFrameLength: event.maximumFrameLength)
+            AudioBlockRenderer.mix(source, at: event.relativeSample, into: slot.buffer)
+            scheduleDelegateEvent(
+                beatFired: false,
+                rhythmFired: true,
+                beatIndex: 0,
+                rhythmIndex: event.index,
+                hostTime: rollingHostTime(forAbsoluteSample: event.absoluteSample, sampleRate: slot.buffer.format.sampleRate),
+                sessionID: capturedSession,
+            )
+        }
+
+        let blockHostTime = rollingHostTime(
+            forAbsoluteSample: plan.absoluteStartSample,
+            sampleRate: slot.buffer.format.sampleRate,
+        )
+        beatNode.scheduleBuffer(
+            slot.buffer,
+            at: AVAudioTime(hostTime: blockHostTime),
+            options: [],
+            completionCallbackType: .dataConsumed,
+        ) { [weak self] _ in
+            DispatchQueue.main.async {
+                guard let self, self.sessionID == capturedSession else { return }
+                self.scheduleRollingBlock(using: slot)
+            }
+        }
+        nextRollingBlockIndex += 1
+    }
+
+    private func rollingHostTime(forAbsoluteSample sample: Int64, sampleRate: Double) -> UInt64 {
+        rollingOriginHostTime + secondsToHostTicks(Double(sample) / sampleRate)
     }
 
     private func readBuffer(from file: AVAudioFile, name: String) throws -> AVAudioPCMBuffer {
@@ -197,78 +289,6 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
             throw PlaybackError.soundConversionFailed(name)
         }
         return convertedBuffer
-    }
-
-    private func scheduleBeatBuffers() {
-        guard isPlaying, let buffers = beatBuffers else { return }
-
-        let capturedSession = sessionID
-        let muted = UserDefaultsService.instance.muteMetronome
-        beatNode.volume = muted ? 0 : 1
-
-        while beatScheduledCount < scheduleAheadCount {
-            let capturedIndex = currentBeatIndex
-            let scheduledHostTime = beatNextHostTime
-            let when = AVAudioTime(hostTime: scheduledHostTime)
-
-            scheduleDelegateEvent(
-                beatFired: true,
-                rhythmFired: false,
-                beatIndex: capturedIndex,
-                rhythmIndex: 0,
-                hostTime: scheduledHostTime,
-                sessionID: capturedSession,
-            )
-
-            let buffer = buffers.buffer(maximumFrameLength: beatFramesPerInterval)
-            beatNode.scheduleBuffer(buffer, at: when, options: [], completionCallbackType: .dataConsumed) { [weak self] _ in
-                DispatchQueue.main.async {
-                    guard let self, self.sessionID == capturedSession else { return }
-                    self.beatScheduledCount -= 1
-                    self.scheduleBeatBuffers()
-                }
-            }
-
-            beatNextHostTime += beatHostTicksDelta
-            currentBeatIndex = (currentBeatIndex + 1) % beatCount
-            beatScheduledCount += 1
-        }
-    }
-
-    private func scheduleRhythmBuffers() {
-        guard isPlaying, let buffers = rhythmBuffers else { return }
-
-        let capturedSession = sessionID
-        let muted = UserDefaultsService.instance.muteMetronome
-        rhythmNode.volume = muted ? 0 : 1
-
-        while rhythmScheduledCount < scheduleAheadCount {
-            let capturedIndex = currentRhythmIndex
-            let scheduledHostTime = rhythmNextHostTime
-            let when = AVAudioTime(hostTime: scheduledHostTime)
-
-            scheduleDelegateEvent(
-                beatFired: false,
-                rhythmFired: true,
-                beatIndex: 0,
-                rhythmIndex: capturedIndex,
-                hostTime: scheduledHostTime,
-                sessionID: capturedSession,
-            )
-
-            let buffer = buffers.buffer(maximumFrameLength: rhythmFramesPerInterval)
-            rhythmNode.scheduleBuffer(buffer, at: when, options: [], completionCallbackType: .dataConsumed) { [weak self] _ in
-                DispatchQueue.main.async {
-                    guard let self, self.sessionID == capturedSession else { return }
-                    self.rhythmScheduledCount -= 1
-                    self.scheduleRhythmBuffers()
-                }
-            }
-
-            rhythmNextHostTime += rhythmHostTicksDelta
-            currentRhythmIndex = (currentRhythmIndex + 1) % rhythmCount
-            rhythmScheduledCount += 1
-        }
     }
 
     private func scheduleDelegateEvent(

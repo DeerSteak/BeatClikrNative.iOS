@@ -3,7 +3,9 @@
 //  beatclikr
 //
 
+import AudioToolbox
 import AVFoundation
+import CoreAudio
 import Foundation
 
 /// Owns one immutable loaded sample and immutable, reusable clips derived from it.
