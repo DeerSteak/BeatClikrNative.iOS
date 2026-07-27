@@ -278,6 +278,8 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
                 beatInterval: event.beatInterval,
                 rampedBpm: nil,
                 hostTime: rollingHostTime(forAbsoluteSample: event.absoluteSample, sampleRate: slot.buffer.format.sampleRate),
+                targetSample: event.absoluteSample,
+                sampleRate: slot.buffer.format.sampleRate,
                 sessionID: capturedSession,
             )
         }
@@ -451,19 +453,50 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
         beatInterval: TimeInterval,
         rampedBpm: Double?,
         hostTime: UInt64,
+        targetSample: Int64? = nil,
+        sampleRate: Double? = nil,
+        presentationLatencyIncluded: Bool = false,
         sessionID capturedSession: Int,
     ) {
-        // Both AVAudioTime.hostTime and DispatchTime derive from mach_absolute_time,
-        // so this deadline fires at the exact same moment the audio buffer plays.
-        let deadlineNs = hostTicksToNanoseconds(hostTime)
+        let presentationLatency = targetSample == nil ? 0 : beatNode.outputPresentationLatency
+        let deadlineHostTime = hostTime
+            + (presentationLatencyIncluded ? 0 : secondsToHostTicks(presentationLatency))
+        let deadlineNs = hostTicksToNanoseconds(deadlineHostTime)
         let deadline = DispatchTime(uptimeNanoseconds: deadlineNs)
         DispatchQueue.main.asyncAfter(deadline: deadline) { [weak self] in
             guard let self, sessionID == capturedSession else { return }
+            if let targetSample, let sampleRate {
+                let presentationFrames = Int64((beatNode.outputPresentationLatency * sampleRate).rounded())
+                let presentedTarget = targetSample + presentationFrames
+                guard renderedSamplePosition() >= presentedTarget else {
+                    scheduleDelegateEvent(
+                        isBeat: isBeat,
+                        beatInterval: beatInterval,
+                        rampedBpm: rampedBpm,
+                        hostTime: mach_absolute_time() + secondsToHostTicks(1.0 / 120.0),
+                        targetSample: targetSample,
+                        sampleRate: sampleRate,
+                        presentationLatencyIncluded: true,
+                        sessionID: capturedSession,
+                    )
+                    return
+                }
+            }
             if let newBpm = rampedBpm {
                 delegate?.metronomeRampStepped(newBpm: newBpm)
             }
             delegate?.metronomeBeatFired(isBeat: isBeat, beatInterval: beatInterval)
         }
+    }
+
+    private func renderedSamplePosition() -> Int64 {
+        guard let renderTime = beatNode.lastRenderTime,
+              let playerTime = beatNode.playerTime(forNodeTime: renderTime),
+              playerTime.isSampleTimeValid
+        else {
+            return -1
+        }
+        return playerTime.sampleTime
     }
 }
 

@@ -218,6 +218,8 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
                 beatIndex: event.index,
                 rhythmIndex: 0,
                 hostTime: rollingHostTime(forAbsoluteSample: event.absoluteSample, sampleRate: slot.buffer.format.sampleRate),
+                targetSample: event.absoluteSample,
+                sampleRate: slot.buffer.format.sampleRate,
                 sessionID: capturedSession,
             )
         }
@@ -230,6 +232,8 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
                 beatIndex: 0,
                 rhythmIndex: event.index,
                 hostTime: rollingHostTime(forAbsoluteSample: event.absoluteSample, sampleRate: slot.buffer.format.sampleRate),
+                targetSample: event.absoluteSample,
+                sampleRate: slot.buffer.format.sampleRate,
                 sessionID: capturedSession,
             )
         }
@@ -296,12 +300,33 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
         beatIndex: Int,
         rhythmIndex: Int,
         hostTime: UInt64,
+        targetSample: Int64,
+        sampleRate: Double,
+        presentationLatencyIncluded: Bool = false,
         sessionID capturedSession: Int,
     ) {
-        let deadlineNs = hostTicksToNanoseconds(hostTime)
+        let deadlineHostTime = hostTime
+            + (presentationLatencyIncluded ? 0 : secondsToHostTicks(beatNode.outputPresentationLatency))
+        let deadlineNs = hostTicksToNanoseconds(deadlineHostTime)
         let deadline = DispatchTime(uptimeNanoseconds: deadlineNs)
         DispatchQueue.main.asyncAfter(deadline: deadline) { [weak self] in
             guard let self, sessionID == capturedSession else { return }
+            let presentationFrames = Int64((beatNode.outputPresentationLatency * sampleRate).rounded())
+            let presentedTarget = targetSample + presentationFrames
+            guard renderedSamplePosition() >= presentedTarget else {
+                scheduleDelegateEvent(
+                    beatFired: beatFired,
+                    rhythmFired: rhythmFired,
+                    beatIndex: beatIndex,
+                    rhythmIndex: rhythmIndex,
+                    hostTime: mach_absolute_time() + secondsToHostTicks(1.0 / 120.0),
+                    targetSample: targetSample,
+                    sampleRate: sampleRate,
+                    presentationLatencyIncluded: true,
+                    sessionID: capturedSession,
+                )
+                return
+            }
             delegate?.polyrhythmBeatFired(
                 beatFired: beatFired,
                 rhythmFired: rhythmFired,
@@ -309,6 +334,16 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
                 rhythmIndex: rhythmIndex,
             )
         }
+    }
+
+    private func renderedSamplePosition() -> Int64 {
+        guard let renderTime = beatNode.lastRenderTime,
+              let playerTime = beatNode.playerTime(forNodeTime: renderTime),
+              playerTime.isSampleTimeValid
+        else {
+            return -1
+        }
+        return playerTime.sampleTime
     }
 }
 
