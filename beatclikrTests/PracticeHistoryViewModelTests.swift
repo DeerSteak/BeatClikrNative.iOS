@@ -10,6 +10,39 @@ import Foundation
 import SwiftData
 import Testing
 
+private enum InjectedPersistenceError: Error {
+    case failure
+}
+
+@MainActor
+private struct FailingPersistenceRepository: PersistenceRepository {
+    enum Operation {
+        case fetch
+        case save
+    }
+
+    let operation: Operation
+    private let real = SwiftDataPersistenceRepository()
+
+    func fetch<Model: PersistentModel>(
+        _ descriptor: FetchDescriptor<Model>,
+        from context: ModelContext,
+    ) -> Result<[Model], PersistenceFailure> {
+        guard operation != .fetch else {
+            return .failure(.fetch(underlying: InjectedPersistenceError.failure))
+        }
+        return real.fetch(descriptor, from: context)
+    }
+
+    func save(_ context: ModelContext) -> Result<Void, PersistenceFailure> {
+        guard operation != .save else {
+            context.rollback()
+            return .failure(.save(underlying: InjectedPersistenceError.failure))
+        }
+        return real.save(context)
+    }
+}
+
 @MainActor
 struct PracticeHistoryViewModelTests {
     private let cal = Calendar.current
@@ -512,5 +545,67 @@ struct PracticeHistoryViewModelTests {
 
         #expect(merged.songsPracticed?.count == 1)
         #expect(merged.songsPracticed?.first?.timesPracticed == 1)
+    }
+
+    @Test func `partial CloudKit practice records are normalized`() throws {
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
+        let context = container.mainContext
+        let song = PracticedSong(title: "Temporary", artist: "Temporary", songId: "temporary")
+        song.id = nil
+        song.title = nil
+        song.artist = nil
+        song.songId = nil
+        song.timesPracticed = nil
+        let session = PracticeSession(date: today, songsPracticed: [song])
+        session.id = nil
+        session.date = nil
+        session.timeZoneIdentifier = nil
+        session.calendarIdentifier = nil
+        context.insert(session)
+
+        try PracticeDayRepair.repair(context: context)
+
+        #expect(session.id == "practice-day:\(session.dayKey!)")
+        #expect(session.date != nil)
+        #expect(session.timeZoneIdentifier != nil)
+        #expect(session.calendarIdentifier == PracticeDayIdentity.calendarIdentifier)
+        #expect(song.id != nil)
+        #expect(song.songId?.hasPrefix("legacy-practiced-song:") == true)
+        #expect(song.title == "Unknown")
+        #expect(song.artist == "")
+        #expect(song.timesPracticed == 1)
+    }
+
+    @Test func `fetch failure is surfaced without replacing valid presentation state`() throws {
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
+        let vm = PracticeHistoryViewModel(
+            repository: PracticeHistoryRepository(
+                persistence: FailingPersistenceRepository(operation: .fetch),
+            ),
+        )
+        vm.practiceDates = [today]
+
+        vm.loadPracticeDates(context: container.mainContext)
+
+        #expect(vm.practiceDates == [today])
+        #expect(vm.persistenceFailure != nil)
+    }
+
+    @Test func `failed practice save rolls back and suppresses success callback`() throws {
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
+        let context = container.mainContext
+        let vm = PracticeHistoryViewModel(
+            repository: PracticeHistoryRepository(
+                persistence: FailingPersistenceRepository(operation: .save),
+            ),
+        )
+        var callbackCount = 0
+        vm.onPracticeRecorded = { _ in callbackCount += 1 }
+
+        vm.recordMetronomePractice(context: context)
+
+        #expect(vm.persistenceFailure != nil)
+        #expect(callbackCount == 0)
+        #expect(try context.fetch(FetchDescriptor<PracticeSession>()).isEmpty)
     }
 }

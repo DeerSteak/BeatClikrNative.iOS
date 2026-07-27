@@ -107,13 +107,57 @@ enum PracticeDayRepair {
         let sessions = try context.fetch(FetchDescriptor<PracticeSession>())
         var changed = 0
 
-        for session in sessions where session.dayKey == nil {
-            guard let date = session.date else { continue }
-            let identity = PracticeDayIdentity(date: date, timeZone: timeZone)
-            session.dayKey = identity.key
-            session.timeZoneIdentifier = identity.timeZoneIdentifier
-            session.calendarIdentifier = identity.calendarIdentifier
-            changed += 1
+        for session in sessions {
+            if session.dayKey == nil, let date = session.date {
+                let identity = PracticeDayIdentity(date: date, timeZone: timeZone)
+                session.dayKey = identity.key
+                session.timeZoneIdentifier = identity.timeZoneIdentifier
+                session.calendarIdentifier = identity.calendarIdentifier
+                changed += 1
+            }
+            guard let dayKey = session.dayKey else { continue }
+            if session.id != "practice-day:\(dayKey)" {
+                session.id = "practice-day:\(dayKey)"
+                changed += 1
+            }
+            if session.date == nil {
+                session.date = PracticeDayIdentity.date(for: dayKey, timeZone: timeZone)
+                changed += 1
+            }
+            if session.timeZoneIdentifier == nil {
+                session.timeZoneIdentifier = timeZone.identifier
+                changed += 1
+            }
+            if session.calendarIdentifier != PracticeDayIdentity.calendarIdentifier {
+                session.calendarIdentifier = PracticeDayIdentity.calendarIdentifier
+                changed += 1
+            }
+            if session.songsPracticed == nil {
+                session.songsPracticed = []
+                changed += 1
+            }
+            for song in session.songsPracticed ?? [] {
+                if song.id == nil {
+                    song.id = UUID().uuidString
+                    changed += 1
+                }
+                if song.songId == nil {
+                    song.songId = "legacy-practiced-song:\(song.id!)"
+                    changed += 1
+                }
+                if song.title == nil {
+                    song.title = String(localized: "Unknown")
+                    changed += 1
+                }
+                if song.artist == nil {
+                    song.artist = ""
+                    changed += 1
+                }
+                if song.timesPracticed == nil || song.timesPracticed! < 1 {
+                    song.timesPracticed = 1
+                    changed += 1
+                }
+            }
         }
 
         let groups = Dictionary(grouping: sessions.compactMap { session in

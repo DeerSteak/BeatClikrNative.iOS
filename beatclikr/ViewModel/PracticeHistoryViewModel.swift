@@ -60,12 +60,18 @@ class PracticeHistoryViewModel: ObservableObject {
     }
 
     func loadPracticeDates(context: ModelContext) {
-        practiceDates = markedDates(context: context)
+        persistenceFailure = nil
+        let dates = markedDates(context: context)
+        guard persistenceFailure == nil else { return }
+        practiceDates = dates
     }
 
     func loadSongs(for date: Date?, context: ModelContext) {
         guard let date else { selectedDateSongs = []; return }
-        selectedDateSongs = session(for: date, context: context)?.songsPracticed ?? []
+        persistenceFailure = nil
+        let songs = session(for: date, context: context)?.songsPracticed ?? []
+        guard persistenceFailure == nil else { return }
+        selectedDateSongs = songs
     }
 
     func recordSongPlayed(song: Song, context: ModelContext) {
@@ -222,7 +228,7 @@ class PracticeHistoryViewModel: ObservableObject {
         }
         switch repository.commit(context: context) {
         case .success:
-            break
+            persistenceFailure = nil
         case let .failure(error):
             persistenceFailure = error
             return
