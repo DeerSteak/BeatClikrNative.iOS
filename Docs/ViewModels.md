@@ -1,12 +1,13 @@
 # ViewModels
 
-All ViewModels are injected as `EnvironmentObject`s from `beatclikrApp` and shared across the view hierarchy as singletons.
+App-scoped ViewModels are created once by `beatclikrApp`, retained as
+`StateObject`s, and injected as `EnvironmentObject`s through the view hierarchy.
 
 ## EnvironmentObjects
 
-- **MetronomePlaybackViewModel** - Orchestrates metronome playback, coordinates services, and publishes truthful `PlaybackState` (`idle`, `preparing`, `playing`, `interrupted`, or `failed`). `isPlaying` is derived from that state, and the view model enters `playing` only after sound loading and engine start succeed. Recoverable failures are exposed to the view as `PlaybackError`. Receives `metronomeBeatFired(isBeat:beatInterval:)` callbacks and animates the metronome icon and beat pulse over exactly `beatInterval` seconds — the engine-computed time to the next accented beat — so animations stay in sync with the actual rhythmic group length rather than always using a fixed quarter-note duration. Also manages **Tempo Ramp**: when `rampEnabled` is true, `beatsPerMinute` is incremented by `rampIncrement` BPM every `rampInterval` accent beats. BPM is capped at `MetronomeConstants.maxBPM`. The starting BPM is captured in `activeBpm` at `start()` and restored when `stop()` is called.
+- **MetronomePlaybackViewModel** - Orchestrates metronome playback, coordinates services, and publishes truthful `PlaybackState` (`idle`, `preparing`, `playing`, `interrupted`, or `failed`). `isPlaying` is derived from that state, and the view model enters `playing` only after sound loading and engine start succeed. Recoverable failures are exposed as `PlaybackError`. Beat callbacks anchor a `MetronomeVisualAnimator`; its `CADisplayLink` derives elapsed phase from the engine’s rendered playback position and respects Reduce Motion. The view model also manages **Tempo Ramp**: when enabled, BPM increases by `rampIncrement` every `rampInterval` accent beats, capped at `MetronomeConstants.maxBPM`; stopping restores the captured starting BPM.
 
-- **PolyrhythmViewModel** - Manages polyrhythm mode state and uses the same truthful `PlaybackState`/`PlaybackError` contract as the metronome. It owns the M:N ratio (`beats` and `against`, each 1–9), BPM, sound selection, and per-row dot animations (`beatPulse`/`rhythmPulse`, `activeBeatIndex`/`activeRhythmIndex`). Receives `polyrhythmBeatFired` callbacks and fades each row's pulse over the appropriate interval.
+- **PolyrhythmViewModel** - Manages polyrhythm mode state and uses the same truthful `PlaybackState`/`PlaybackError` contract as the metronome. It owns the M:N ratio (`beats` and `against`, each 1–15), BPM, sound selection, and per-row visual state. Beat callbacks anchor `PolyrhythmVisualAnimator`; its `CADisplayLink` derives both pulse phases and cycle progress from rendered playback time and suppresses motion under Reduce Motion.
 
 - **SettingsViewModel** - Manages user preferences, notification permission state, and reminder reconciliation. Maintains separate blocked, deferred, prompt, and scheduling-failure states. Every authorized reconciliation obtains a new complete `ReminderPlan` from current settings and practice history, then delegates its verified replacement to `ReminderNotificationService`; see [SongLibrary.md](SongLibrary.md) for the full cross-device notification flow
 
@@ -43,9 +44,12 @@ WindowGroup {
         .environmentObject(playlistListViewModel)
         .environmentObject(practiceHistoryViewModel)
         .environmentObject(metronomeViewModel)
+        .environmentObject(polyrhythmViewModel)
         .environmentObject(settingsViewModel)
 }
 .modelContainer(container)
 ```
 
-This ensures a single shared instance across all views, no duplicate metronome instances, and consistent state throughout the app.
+This ensures one shared instance of each app-level model, one playback
+coordinator, and consistent state throughout the app. These are app-scoped
+objects, not process-global static singletons.

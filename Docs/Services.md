@@ -2,9 +2,9 @@
 
 ## Service Classes
 
-- **ScheduledMetronomeEngine** - Sample-accurate metronome using `AVAudioEngine` and rolling `AVAudioPlayerNode` blocks. Stable playback renders a quarter-note or odd-meter block from independently rounded absolute sample positions into a reusable pool; scheduled slots remain immutable until consumed. Tempo ramps use the immutable per-click fallback. Delegate callbacks come from the same absolute positions so visual animation, haptics, flashlight pulses, and ramp updates line up with beat onset
+- **ScheduledMetronomeEngine** - Sample-accurate metronome using `AVAudioEngine` and rolling `AVAudioPlayerNode` blocks. Stable playback renders a quarter-note or odd-meter block from independently rounded absolute sample positions into a reusable pool; scheduled slots remain immutable until consumed. Tempo ramps use the immutable per-click fallback. The engine exposes rendered playback time and schedules generation-scoped callbacks from the same absolute event positions.
 
-- **ScheduledPolyrhythmEngine** - Renders both voices of an M:N polyrhythm into rolling cycle blocks from one absolute sample origin. Independently rounded cycle boundaries prevent cumulative phase error, and callbacks use the same event positions so both dot rows reunite with the audio at every cycle boundary
+- **ScheduledPolyrhythmEngine** - Renders both voices of an M:N polyrhythm into rolling cycle blocks from one absolute sample origin. Independently rounded cycle boundaries prevent cumulative phase error. Rendered playback time, event callbacks, and both voices share that origin, so visual phase and audio reunite at every cycle boundary.
 
 - **AudioPlayerService** - `@MainActor` implementation of the injectable `AudioPlaybackService` protocol. It owns one `ScheduledMetronomeEngine` and one `ScheduledPolyrhythmEngine`, but prepares each engine lazily. Audio-session setup, sound loading, conversion, configuration, and engine start report typed `PlaybackError` failures rather than being swallowed. Metronome and polyrhythm sound loading remain separate so each mode keeps its own selected instruments.
 
@@ -32,9 +32,9 @@
 ### Background and lock-screen policy
 
 - Active metronome or polyrhythm playback continues when BeatClikr enters the
-  background or the device locks. The app declares only the audio background
-  mode needed for that behavior; entering the background does not start audio
-  or perform unrelated background work.
+  background or the device locks. The `audio` background mode owns that
+  behavior; the separate `remote-notification` mode belongs to CloudKit
+  synchronization. Entering the background does not start audio.
 - Returning to the foreground preserves the current playback state. Normal
   audio interruptions and unavailable output routes still stop playback and
   require the user to press Play again.
@@ -51,7 +51,7 @@
 - “Keep Awake” remains an optional visual-performance preference for users who
   want the beat display to remain visible. Background audio does not depend on
   it, and the idle-timer override is removed whenever the scene is not active.
-- A custom Live Activity is deferred as a future replacement for the
+- A custom Live Activity remains a possible future replacement for the
   system-owned Now Playing presentation. The current media control favors
   reliable stop access over a guaranteed transport glyph.
 
@@ -83,7 +83,7 @@ Clock Source:       One absolute sample origin on the engine output sample rate
 - Subdivision duration: 60 / (100 BPM × 2 subdivisions) = 300 ms
 - The engine independently rounds every event and block boundary from the absolute origin
 - Complete quarter-note/odd-meter blocks are mixed before scheduling
-- Delegate callbacks are scheduled with `DispatchQueue.main.asyncAfter` from the same sample-time positions as playback
+- Delegate callbacks are scheduled against the same sample-time positions as playback and carry playback-generation identity
 - A `.dataRendered` completion callback returns an entire rendered block—not an individual click—to the pool
 - A pool slot is never changed while `AVAudioPlayerNode` may still own it
 
@@ -91,24 +91,24 @@ This approach provides:
 - **Hardware-timeline timing** — beats are scheduled on the audio engine sample clock
 - **No main-thread polling jitter** — playback does not depend on a 1 ms timer
 - **No drift** — fractional samples are distributed through independently rounded absolute boundaries instead of cumulative truncation
-- **Onset-aligned UI events** — visuals, haptics, flashlight pulses, and ramp callbacks are timed to the scheduled beat position rather than the end of a buffer
+- **Onset-aligned events** — callbacks are timed to the scheduled beat position rather than the end of a buffer; visuals then evolve from rendered playback time, while haptic and flashlight effects remain best effort
 - **Bounded rendering work** — stable playback refills once per musical block and allocates no buffers after preparing the pool
 - **Ramp fallback** — changing-tempo ramps retain the immutable per-click scheduler because a static musical block cannot encode a changing BPM
 - **Simulator & device support** — works reliably on all platforms
 
 The block timeline always uses the current engine output sample rate. If loaded
-samples no longer match that format, playback fails safely and requires sound
-reload/reconversion. Route-change detection and automatic restart belong to the
-audio-session lifecycle work in Milestone 3.
+samples no longer match that format, playback fails safely. Route,
+configuration, and media-service changes invalidate the engine graph; the next
+explicit user start rebuilds it and reloads/reconverts the selected sounds.
 
 ### Delegate Pattern
 
 `MetronomePlaybackViewModel` implements `MetronomeAudioEngineDelegate` to receive beat callbacks:
-- Triggers visual animations (icon scale, beat pulse for transport bar)
+- Anchors visual beat phase; a `CADisplayLink` reads rendered playback time to update icon scale and transport pulse without accumulating a separate clock
 - Fires haptic feedback via `VibrationService`
 - Controls flashlight via `FlashlightService`
 - Applies ramped BPM updates when `metronomeRampStepped(newBpm:)` fires
-- All synchronized to the scheduled audio sample timeline
+- Discards stale callbacks by playback generation
 
 `PolyrhythmViewModel` implements `PolyrhythmAudioEngineDelegate` through `AudioPlayerService.polyrhythmDelegate`. The service keeps this separate from `metronomeDelegate` so metronome and polyrhythm screens do not overwrite each other's callback target.
 
@@ -176,7 +176,7 @@ For a 7/8 (3+2+2) pattern at 120 BPM with Odd Eighth:
 - Beat 2 (group of 2): beatInterval = 2 × 250 ms = **500 ms**
 - Beat 3 (group of 2): beatInterval = 2 × 250 ms = **500 ms**
 
-`MetronomePlaybackViewModel` uses `beatInterval` as the animation duration for `iconScale` and `beatPulse`, so animations match the feel of each rhythmic group rather than a fixed quarter note.
+`MetronomePlaybackViewModel` uses `beatInterval` to define the group’s visual phase, but elapsed phase comes from the engine’s rendered playback position. This keeps the icon and pulse aligned to differently sized groups without accumulating callback or cycle drift.
 
 ---
 
@@ -212,11 +212,11 @@ The engine schedules `polyrhythmBeatFired(beatFired:rhythmFired:beatIndex:rhythm
 
 Each dot row uses `HStack(spacing: 0)` with `Spacer(minLength: 0)` between dots so positions are proportional to their time in the cycle. Each dot sits centered on a `Capsule` background line to form a unified timeline metaphor.
 
-Pulse values (`beatPulse` / `rhythmPulse`) snap to 1.0 on firing and fade linearly to 0.0:
+Callbacks anchor each pulse and cycle boundary. A `CADisplayLink` evaluates elapsed phase from rendered playback time; when playback time is temporarily unavailable, it extrapolates from the last valid audio position rather than starting an unrelated long-running clock. Pulse values (`beatPulse` / `rhythmPulse`) fade linearly:
 - Beat pulse fades over one quarter note: `60 / bpm`
 - Rhythm pulse fades over one rhythm interval: `against × (60 / bpm) / beats`
 
-The active dot indices, pulses, and `cycleProgress` are all stored in `PolyrhythmViewModel`.
+The active dot indices, pulses, and `cycleProgress` are published by `PolyrhythmViewModel`. Reduce Motion suppresses pulse and traversing-cycle animation without changing the audio timeline.
 
 ---
 

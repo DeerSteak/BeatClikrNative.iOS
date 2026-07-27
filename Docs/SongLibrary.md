@@ -45,9 +45,14 @@ The song library syncs automatically across devices via **CloudKit** (private da
 
 Settings (instrument choices, practice reminder toggle and time, polyrhythm BPM) sync via **iCloud Key-Value Store** (`NSUbiquitousKeyValueStore`).
 
-### Migration flag pattern
+### Migration and repair policy
 
-Because CloudKit sync can deliver model changes at any time, schema migrations use a persisted flag in `UserDefaults` to ensure one-time migrations run exactly once per device even if the model container is rebuilt. See `UserDefaultsService` for the flag pattern.
+The legacy single-playlist migration uses the local
+`DidMigrateToMultiplePlaylists` flag because it is a one-time structural
+conversion on each device. Practice-day migration and duplicate repair do not
+depend on a one-shot flag: `PracticeDayRepair` is idempotent and runs during
+startup, background maintenance, and history access so later CloudKit arrivals
+are normalized too.
 
 ## Cross-Device Notification Permissions
 
