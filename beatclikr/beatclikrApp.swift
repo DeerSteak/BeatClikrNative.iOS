@@ -93,9 +93,6 @@ struct beatclikrApp: App {
         WindowGroup {
             appContent
                 .preferredColorScheme(defaults.alwaysUseDarkTheme ? .dark : nil)
-                .transaction { transaction in
-                    transaction.disablesAnimations = true
-                }
                 .onAppear {
                     updateIdleTimer(for: scenePhase)
                     metronomeViewModel.setNonAudioEffectsEnabled(scenePhase == .active)

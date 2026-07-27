@@ -203,8 +203,14 @@ final class PlaybackCoordinator: AudioPlaybackService, AudioPlaybackLifecycleDel
     }
 
     func stopAll() {
-        stopMetronome(notifyOwner: true)
-        stopPolyrhythm(notifyOwner: true)
+        switch activeMode {
+        case .metronome:
+            stopMetronome(notifyOwner: true)
+        case .polyrhythm:
+            stopPolyrhythm(notifyOwner: true)
+        case nil:
+            break
+        }
     }
 
     private func stopActivePlayback() {

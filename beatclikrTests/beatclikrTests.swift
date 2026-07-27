@@ -107,6 +107,39 @@ final class TestLockScreenPlaybackController: LockScreenPlaybackControlling {
 
 @MainActor
 final class PlaybackCoordinatorTests: XCTestCase {
+    func testStopAllDoesNotPublishIdleStateWhenNothingIsPlaying() {
+        let audio = TestAudioPlaybackService()
+        let coordinator = PlaybackCoordinator(audio: audio)
+        var metronomeNotifications = 0
+        var polyrhythmNotifications = 0
+        coordinator.onMetronomeStopped = { metronomeNotifications += 1 }
+        coordinator.onPolyrhythmStopped = { polyrhythmNotifications += 1 }
+
+        coordinator.stopAll()
+
+        XCTAssertEqual(audio.metronomeStopCount, 0)
+        XCTAssertEqual(audio.polyrhythmStopCount, 0)
+        XCTAssertEqual(metronomeNotifications, 0)
+        XCTAssertEqual(polyrhythmNotifications, 0)
+    }
+
+    func testStopAllStopsAndNotifiesOnlyTheActiveMode() throws {
+        let audio = TestAudioPlaybackService()
+        let coordinator = PlaybackCoordinator(audio: audio)
+        var metronomeNotifications = 0
+        var polyrhythmNotifications = 0
+        coordinator.onMetronomeStopped = { metronomeNotifications += 1 }
+        coordinator.onPolyrhythmStopped = { polyrhythmNotifications += 1 }
+        try coordinator.startMetronome(bpm: 120, subdivisions: 1, accentPattern: nil)
+
+        coordinator.stopAll()
+
+        XCTAssertEqual(audio.metronomeStopCount, 1)
+        XCTAssertEqual(audio.polyrhythmStopCount, 0)
+        XCTAssertEqual(metronomeNotifications, 1)
+        XCTAssertEqual(polyrhythmNotifications, 0)
+    }
+
     func testLockScreenStopStopsActiveMetronomeAndNotifiesOwner() throws {
         let audio = TestAudioPlaybackService()
         let controls = TestLockScreenPlaybackController()
