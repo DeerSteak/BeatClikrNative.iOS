@@ -44,7 +44,7 @@ struct ReminderPlan: Equatable, Sendable {
         calendar sourceCalendar: Calendar = .current,
         bodyForDate: (Date) -> String,
     ) -> ReminderPlan {
-        var calendar = sourceCalendar
+        let calendar = sourceCalendar
         let timeZone = calendar.timeZone
         let selectedTime = calendar.dateComponents([.hour, .minute], from: reminderTime)
         let startOfToday = calendar.startOfDay(for: now)
