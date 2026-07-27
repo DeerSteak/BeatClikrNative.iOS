@@ -40,6 +40,7 @@ struct HomeView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
     @EnvironmentObject private var settingsViewModel: SettingsViewModel
     @EnvironmentObject private var polyrhythmViewModel: PolyrhythmViewModel
+    @EnvironmentObject private var practiceHistoryViewModel: PracticeHistoryViewModel
     @Binding private var selectedSection: AppSection?
     @State private var splashVisible = true
     @State private var splashOpacity: Double = 1
@@ -154,6 +155,21 @@ struct HomeView: View {
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("Practice reminders require notification permissions. Please enable them in Settings.")
+        }
+        .alert(
+            "Practice History Unavailable",
+            isPresented: Binding(
+                get: { practiceHistoryViewModel.persistenceFailure != nil },
+                set: { if !$0 { practiceHistoryViewModel.persistenceFailure = nil } },
+            ),
+        ) {
+            Button("OK", role: .cancel) {
+                practiceHistoryViewModel.persistenceFailure = nil
+            }
+        } message: {
+            if let failure = practiceHistoryViewModel.persistenceFailure {
+                Text([failure.errorDescription, failure.recoverySuggestion].compactMap(\.self).joined(separator: " "))
+            }
         }
     }
 

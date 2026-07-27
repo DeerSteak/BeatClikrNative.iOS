@@ -15,6 +15,12 @@ class PracticeHistoryViewModel: ObservableObject {
 
     @Published var practiceDates: Set<Date> = []
     @Published var selectedDateSongs: [PracticedSong] = []
+    @Published var persistenceFailure: PersistenceFailure?
+    private let repository: PracticeHistoryRepository
+
+    init(repository: PracticeHistoryRepository = PracticeHistoryRepository()) {
+        self.repository = repository
+    }
 
     var currentStreak: Int {
         currentStreak(from: practiceDates)
@@ -93,7 +99,9 @@ class PracticeHistoryViewModel: ObservableObject {
             predicate: #Predicate { $0.dayKey == key },
         )
 
-        if let existing = try? context.fetch(descriptor).first {
+        if case let .success(sessions) = repository.sessions(matching: descriptor, context: context),
+           let existing = sessions.first
+        {
             return existing
         }
 
@@ -108,13 +116,26 @@ class PracticeHistoryViewModel: ObservableObject {
         let descriptor = FetchDescriptor<PracticeSession>(
             predicate: #Predicate { $0.dayKey == key },
         )
-        return try? context.fetch(descriptor).first
+        switch repository.sessions(matching: descriptor, context: context) {
+        case let .success(sessions):
+            return sessions.first
+        case let .failure(error):
+            persistenceFailure = error
+            return nil
+        }
     }
 
     func markedDates(context: ModelContext) -> Set<Date> {
         PracticeDayRepair.repairIfPossible(context: context)
         let descriptor = FetchDescriptor<PracticeSession>()
-        let sessions = (try? context.fetch(descriptor)) ?? []
+        let sessions: [PracticeSession]
+        switch repository.sessions(matching: descriptor, context: context) {
+        case let .success(fetched):
+            sessions = fetched
+        case let .failure(error):
+            persistenceFailure = error
+            return []
+        }
         return Set(sessions.compactMap { session in
             session.dayKey.flatMap { PracticeDayIdentity.date(for: $0) }
         })
@@ -199,7 +220,13 @@ class PracticeHistoryViewModel: ObservableObject {
         } else {
             session.songsPracticed?.append(practicedSong)
         }
-        try? context.save()
+        switch repository.commit(context: context) {
+        case .success:
+            break
+        case let .failure(error):
+            persistenceFailure = error
+            return
+        }
         loadPracticeDates(context: context)
         onPracticeRecorded?(context)
     }
