@@ -35,7 +35,9 @@ scripts/validate.sh archive
 
 The unit command selects an available iOS simulator automatically. Set
 `SIMULATOR_ID` to use a particular device. Set `DERIVED_DATA_PATH` to choose
-another build directory.
+another build directory. Simulator discovery uses `simctl` JSON and prefers an
+available iPhone. CI explicitly selects the latest stable installed Xcode so
+the selected developer directory and installed simulator runtimes agree.
 
 ## Sound assets
 

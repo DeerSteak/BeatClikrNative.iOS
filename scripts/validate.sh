@@ -42,17 +42,21 @@ find_simulator_id() {
         return
     fi
 
-    xcodebuild \
-        -project "$PROJECT_PATH" \
-        -scheme "$SCHEME" \
-        -showdestinations |
-        sed -n '/platform:iOS Simulator/ {
-            /placeholder/! {
-                s/.*id:\([^,}]*\).*/\1/p
-            }
-        }' |
-        head -n 1 |
-        xargs
+    command -v jq >/dev/null || {
+        echo "error: jq is required to select an iOS Simulator."
+        return 1
+    }
+
+    xcrun simctl list devices available --json |
+        jq -r '
+            [
+                .devices[][]
+                | select(.isAvailable == true)
+                | select(.name | startswith("iPhone"))
+            ]
+            | first
+            | .udid // empty
+        '
 }
 
 run_unit_tests() {
@@ -60,6 +64,12 @@ run_unit_tests() {
     simulator_id="$(find_simulator_id)"
     if [[ -z "$simulator_id" ]]; then
         echo "error: No available iOS Simulator destination was found."
+        echo "Selected Xcode:"
+        xcodebuild -version
+        echo "Installed simulator runtimes:"
+        xcrun simctl list runtimes
+        echo "Available simulator devices:"
+        xcrun simctl list devices available
         return 1
     fi
 
