@@ -2,9 +2,9 @@
 
 ## Service Classes
 
-- **ScheduledMetronomeEngine** - Sample-accurate metronome using `AVAudioEngine` and scheduled `AVAudioPlayerNode` buffers. It keeps a small audio lookahead window on the AVAudioEngine sample timeline, then schedules delegate callbacks from the same sample positions so visual animation, haptics, flashlight pulses, and ramp updates line up with beat onset instead of buffer completion. For odd meter grooves, steps through a `[Bool]` accent pattern on every subdivision tick and computes `beatInterval` (time to the next `true` entry) so the delegate can animate each group correctly
+- **ScheduledMetronomeEngine** - Sample-accurate metronome using `AVAudioEngine` and rolling `AVAudioPlayerNode` blocks. Stable playback renders a quarter-note or odd-meter block from independently rounded absolute sample positions into a reusable pool; scheduled slots remain immutable until consumed. Tempo ramps use the immutable per-click fallback. Delegate callbacks come from the same absolute positions so visual animation, haptics, flashlight pulses, and ramp updates line up with beat onset
 
-- **ScheduledPolyrhythmEngine** - Polyrhythm engine using two independent scheduled `AVAudioPlayerNode` tracks. For M beats against N: the beat track fires every quarter note, the rhythm track fires every `N × 60 / (bpm × M)` seconds, and both tracks start from the same scheduled origin. Schedules `polyrhythmBeatFired` callbacks from each track's sample timeline position with the active beat/rhythm index so the view can animate individual dots independently
+- **ScheduledPolyrhythmEngine** - Renders both voices of an M:N polyrhythm into rolling cycle blocks from one absolute sample origin. Independently rounded cycle boundaries prevent cumulative phase error, and callbacks use the same event positions so both dot rows reunite with the audio at every cycle boundary
 
 - **AudioPlayerService** - `@MainActor` implementation of the injectable `AudioPlaybackService` protocol. It owns one `ScheduledMetronomeEngine` and one `ScheduledPolyrhythmEngine`, but prepares each engine lazily. Audio-session setup, sound loading, conversion, configuration, and engine start report typed `PlaybackError` failures rather than being swallowed. Metronome and polyrhythm sound loading remain separate so each mode keeps its own selected instruments.
 
@@ -23,6 +23,32 @@
   top-level section.
 - Presenting editing, picker, or Focus Mode UI does not implicitly stop audio.
 
+### Background and lock-screen policy
+
+- Active metronome or polyrhythm playback continues when BeatClikr enters the
+  background or the device locks. The app declares only the audio background
+  mode needed for that behavior; entering the background does not start audio
+  or perform unrelated background work.
+- Returning to the foreground preserves the current playback state. Normal
+  audio interruptions and unavailable output routes still stop playback and
+  require the user to press Play again.
+- During playback, BeatClikr publishes minimal Now Playing metadata and enables
+  the lock-screen and Control Center Pause/Stop commands. Both commands stop
+  the active mode and return its UI to idle. The static app display image is
+  supplied as Now Playing artwork without an asynchronous image provider.
+  Stop-capable commands are enabled for each playback session and disabled
+  again on stop, so repeated
+  start-lock-stop cycles do not leave stale controls. If iOS presents a
+  Play-shaped button in the transport slot, it also stops current playback; it
+  never restarts audio. Seeking, skipping, playback-rate changes, and track
+  navigation remain disabled because they are not meaningful for a metronome.
+- “Keep Awake” remains an optional visual-performance preference for users who
+  want the beat display to remain visible. Background audio does not depend on
+  it, and the idle-timer override is removed whenever the scene is not active.
+- A custom Live Activity is deferred as a future replacement for the
+  system-owned Now Playing presentation. The current media control favors
+  reliable stop access over a guaranteed transport glyph.
+
 - **FlashlightService** - Controls device flashlight for visual beat accessibility
 
 - **VibrationService** - Manages haptic feedback via `UIImpactFeedbackGenerator`
@@ -39,28 +65,35 @@ Sample-accurate timing is critical for a metronome. The current implementation u
 
 ### How it works
 
-`ScheduledMetronomeEngine` pre-schedules a small lookahead window of audio buffers and a matching set of delegate events:
+For stable tempos, `ScheduledMetronomeEngine` renders complete musical blocks into a reusable audio-buffer pool and pre-schedules those blocks with matching delegate events:
 
 ```
 First Beat Delay:   67ms (gives the scheduler time to queue initial buffers)
-Schedule Ahead:     4 buffers
-Clock Source:       AVAudioTime sampleTime on the engine output sample rate
+Schedule Ahead:     4 short blocks, or 2 blocks when a block exceeds 1 second
+Clock Source:       One absolute sample origin on the engine output sample rate
 ```
 
 **Example with 100 BPM, 8th note subdivisions:**
 - Subdivision duration: 60 / (100 BPM × 2 subdivisions) = 300 ms
-- The engine converts that duration to samples at the current output sample rate
-- Beat and rhythm buffers are scheduled at exact `AVAudioTime(sampleTime:atRate:)` positions
+- The engine independently rounds every event and block boundary from the absolute origin
+- Complete quarter-note/odd-meter blocks are mixed before scheduling
 - Delegate callbacks are scheduled with `DispatchQueue.main.asyncAfter` from the same sample-time positions as playback
-- Buffer completion callbacks only refill the audio lookahead window
+- A `.dataRendered` completion callback returns an entire rendered block—not an individual click—to the pool
+- A pool slot is never changed while `AVAudioPlayerNode` may still own it
 
 This approach provides:
 - **Hardware-timeline timing** — beats are scheduled on the audio engine sample clock
 - **No main-thread polling jitter** — playback does not depend on a 1 ms timer
-- **No drift** — future buffers are placed by sample time
+- **No drift** — fractional samples are distributed through independently rounded absolute boundaries instead of cumulative truncation
 - **Onset-aligned UI events** — visuals, haptics, flashlight pulses, and ramp callbacks are timed to the scheduled beat position rather than the end of a buffer
-- **Real-time tempo changes** — newly scheduled buffers use updated BPM/subdivision settings
+- **Bounded rendering work** — stable playback refills once per musical block and allocates no buffers after preparing the pool
+- **Ramp fallback** — changing-tempo ramps retain the immutable per-click scheduler because a static musical block cannot encode a changing BPM
 - **Simulator & device support** — works reliably on all platforms
+
+The block timeline always uses the current engine output sample rate. If loaded
+samples no longer match that format, playback fails safely and requires sound
+reload/reconversion. Route-change detection and automatic restart belong to the
+audio-session lifecycle work in Milestone 3.
 
 ### Delegate Pattern
 
@@ -81,8 +114,9 @@ BeatClikrNative.iOS uses **AVFoundation** for sound playback. WAV files are read
 
 ### Sound Architecture
 - WAV files are loaded as `AVAudioFile`s and converted into reusable `AVAudioPCMBuffer`s
-- Beat and rhythm sounds are scheduled on separate player nodes
-- Beat vs. rhythm buffers are selected based on the subdivision counter or accent pattern
+- Loaded sample buffers are immutable. When a click is longer than its scheduling interval, `AudioBufferClipCache` creates and reuses a separate immutable clip for that frame length; scheduled buffers are never shortened in place. Each source uses least-recently-used eviction with a 2 MiB derived-buffer budget and a secondary 16-entry limit, so repeated tempo changes cannot grow memory without bound
+- Stable beat and rhythm sounds are mixed into rolling musical blocks; the ramp fallback schedules immutable click clips
+- Beat vs. rhythm samples are selected based on absolute event indices and the accent pattern
 - Metronome and polyrhythm sound choices are loaded independently through `AudioPlayerService`
 - Supports instant sound switching without interrupting playback for the metronome path
 
@@ -142,11 +176,11 @@ For a 7/8 (3+2+2) pattern at 120 BPM with Odd Eighth:
 
 ## About Polyrhythm
 
-Polyrhythm mode layers two independent rhythms at the same tempo: **M beats against N** (each 1–9). Both complete one cycle in the same total duration — N quarter notes.
+Polyrhythm mode layers two independent rhythms at the same tempo: **M beats against N** (each 1–15). Both complete one cycle in the same total duration — N quarter notes.
 
-### Independent track scheduling
+### Shared-cycle rendering
 
-`ScheduledPolyrhythmEngine` schedules the beat and rhythm as two independent tracks that share the same first-beat origin:
+`ScheduledPolyrhythmEngine` renders beat and rhythm events into one cycle block from a shared first-beat origin:
 
 ```
 Cycle duration        = N × (60 / bpm)
@@ -161,7 +195,7 @@ Shared origin         = firstBeatDelay on the AVAudioEngine sample timeline
 - Rhythm track fires every 2.0 / 3 ≈ 666.7 ms → 3 times per cycle
 - Both tracks schedule their first buffer at the same sample-time origin
 
-The engine schedules `polyrhythmBeatFired(beatFired:rhythmFired:beatIndex:rhythmIndex:)` from the same sample-time positions used for each track's audio buffers. Buffer completion callbacks are only used to refill each track's lookahead window. Because both tracks are scheduled on the same audio sample timeline, simultaneous hits (for example, the downbeat) remain aligned without buffer-mixing code.
+The engine schedules `polyrhythmBeatFired(beatFired:rhythmFired:beatIndex:rhythmIndex:)` from the same absolute sample positions used to mix the audio block. Each cycle boundary is independently rounded from the origin, so fractional cycle lengths alternate by one sample when necessary instead of accumulating phase error. Beat and rhythm downbeats therefore reunite at every cycle boundary.
 
 ### Visual dot rows
 
@@ -177,6 +211,34 @@ Pulse values (`beatPulse` / `rhythmPulse`) snap to 1.0 on firing and fade linear
 - Rhythm pulse fades over one rhythm interval: `against × (60 / bpm) / beats`
 
 The active dot indices, pulses, and `cycleProgress` are all stored in `PolyrhythmViewModel`.
+
+---
+
+## Audio lifecycle policy
+
+`AudioSessionCoordinator` owns audio-session activation and observes interruptions, output-route disconnection, engine configuration changes, and media-services loss/reset.
+
+BeatClikr never resumes playback automatically after a lifecycle event. It stops both engines, clears the active playback mode, stops visual/effect activity, and reports the active view model as `interrupted`. The user must press Play to begin a new session. Engine configuration and media-service events also discard both engine graphs; the next user-initiated start rebuilds the engines and reloads the selected immutable sounds.
+
+This conservative policy prevents unexpected playback after a call, Siri interaction, device unplug, or output-route change.
+
+### Mixing and output-route policy
+
+- BeatClikr uses the `.playback` audio-session category with `.mixWithOthers`.
+  Music, videos, and backing tracks from other apps therefore continue playing
+  when the metronome starts. BeatClikr does not duck their volume.
+- Mixing is the sole supported policy; there is no exclusive-audio setting.
+- The active output route is written to the AudioSession system log when the
+  session activates and when an old output becomes unavailable.
+- Bluetooth output adds device-, codec-, and route-dependent latency. The
+  metronome remains internally sample-accurate, but its audible click can lag
+  visuals, haptics, or flashlight feedback by the route’s transport latency.
+  Built-in speakers or wired audio are recommended when audiovisual alignment
+  matters.
+- Haptic and flashlight feedback are foreground-only, best-effort effects.
+  Their callbacks are tied to a playback generation and are discarded after a
+  stop, restart, interruption, failure, or background transition. They are not
+  sample-accurate and must not be used to judge audio timing.
 
 ---
 

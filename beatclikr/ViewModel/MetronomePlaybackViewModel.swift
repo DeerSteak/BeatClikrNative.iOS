@@ -14,8 +14,8 @@ import SwiftUI
 class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate {
     // MARK: Private variables
 
-    private let vibration: VibrationService
-    private let flashlight: FlashlightService
+    private let vibration: any VibrationControlling
+    private let flashlight: any FlashlightControlling
     private let audio: any AudioPlaybackService
     private let settings: SettingsViewModel
     private var settingsCancellables: Set<AnyCancellable> = []
@@ -29,6 +29,9 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     private var activeBpm: Double = 120.0
     private var applyingRamp: Bool = false
     private var applyingSettingsChange: Bool = false
+    private var effectsSessionID = 0
+    private var flashlightOffWorkItem: DispatchWorkItem?
+    private var nonAudioEffectsEnabled = true
 
     // MARK: Published properties
 
@@ -149,10 +152,11 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     // MARK: Initializer
 
     init(
-        vibration: VibrationService = .instance,
-        flashlight: FlashlightService = .instance,
+        vibration: any VibrationControlling = VibrationService.instance,
+        flashlight: any FlashlightControlling = FlashlightService.instance,
         audio: any AudioPlaybackService = AudioPlayerService.instance,
         settings: SettingsViewModel = SettingsViewModel(),
+        reduceMotionEnabled: @escaping () -> Bool = { UIAccessibility.isReduceMotionEnabled },
     ) {
         self.vibration = vibration
         self.flashlight = flashlight
@@ -179,6 +183,10 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             self?.iconScale = scale
             self?.beatPulse = pulse
         }
+        visualAnimator.playbackTime = { [weak audio] in
+            audio?.metronomePlaybackTime()
+        }
+        visualAnimator.reduceMotionEnabled = reduceMotionEnabled
         observeSettings()
     }
 
@@ -240,6 +248,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     }
 
     func start() {
+        beginEffectsSession()
         playbackState = .preparing
         if clickerType == .metronome {
             song = Song.metronomeSong()
@@ -261,7 +270,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         } catch {
             audio.stopMetronome()
             visualAnimator.stop()
-            flashlight.turnFlashlightOff()
+            invalidateEffectsSession()
             playbackState = .failed(Self.playbackError(from: error))
         }
     }
@@ -269,7 +278,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     func stop() {
         audio.stopMetronome()
         visualAnimator.stop()
-        flashlight.turnFlashlightOff()
+        invalidateEffectsSession()
         playbackState = .idle
         if rampEnabled, clickerType == .metronome {
             beatsPerMinute = activeBpm
@@ -283,11 +292,25 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
     func playbackWasStoppedByCoordinator() {
         visualAnimator.stop()
-        flashlight.turnFlashlightOff()
+        invalidateEffectsSession()
         playbackState = .idle
         if rampEnabled, clickerType == .metronome {
             beatsPerMinute = activeBpm
         }
+    }
+
+    func playbackWasInterrupted() {
+        visualAnimator.stop()
+        invalidateEffectsSession()
+        playbackState = .interrupted
+    }
+
+    /// Audio may continue in the background, but UIKit haptics and the camera
+    /// torch are foreground-only, best-effort effects.
+    func setNonAudioEffectsEnabled(_ enabled: Bool) {
+        nonAudioEffectsEnabled = enabled
+        guard !enabled else { return }
+        invalidateEffectsSession()
     }
 
     func resetMetronome() {
@@ -324,6 +347,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
     }
 
     private func handleBeat(beatInterval: TimeInterval) {
+        guard isPlaying, nonAudioEffectsEnabled else { return }
         if settings.useVibration {
             vibration.vibrateBeat()
         }
@@ -332,21 +356,53 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             let groove = clickerType == .metronome ? selectedGroove : (song.groove ?? .quarter)
             if groove.subdivisions == 1 {
                 // Quarter groove fires no rhythm event, so schedule the flashlight off at the half-beat point.
-                DispatchQueue.main.asyncAfter(deadline: .now() + beatInterval / 2) { [weak self] in
-                    guard let self, isPlaying else { return }
-                    flashlight.turnFlashlightOff()
-                }
+                scheduleFlashlightOff(after: beatInterval / 2)
             }
         }
     }
 
     private func handleRhythm() {
+        guard isPlaying, nonAudioEffectsEnabled else { return }
         if settings.useVibration {
             vibration.vibrateRhythm()
         }
         if settings.useFlashlight {
+            flashlightOffWorkItem?.cancel()
+            flashlightOffWorkItem = nil
             flashlight.turnFlashlightOff()
         }
+    }
+
+    private func beginEffectsSession() {
+        flashlightOffWorkItem?.cancel()
+        flashlightOffWorkItem = nil
+        effectsSessionID &+= 1
+        flashlight.turnFlashlightOff()
+    }
+
+    private func invalidateEffectsSession() {
+        effectsSessionID &+= 1
+        flashlightOffWorkItem?.cancel()
+        flashlightOffWorkItem = nil
+        flashlight.turnFlashlightOff()
+    }
+
+    private func scheduleFlashlightOff(after delay: TimeInterval) {
+        flashlightOffWorkItem?.cancel()
+        let capturedSessionID = effectsSessionID
+        let workItem = DispatchWorkItem { [weak self] in
+            guard let self,
+                  effectsSessionID == capturedSessionID,
+                  isPlaying,
+                  nonAudioEffectsEnabled
+            else {
+                return
+            }
+            flashlight.turnFlashlightOff()
+            flashlightOffWorkItem = nil
+        }
+        flashlightOffWorkItem = workItem
+        DispatchQueue.main.asyncAfter(deadline: .now() + max(delay, 0), execute: workItem)
     }
 
     private func observeSettings() {
@@ -463,8 +519,12 @@ private final class MetronomeVisualAnimator: NSObject {
     private var lastBeatTime: CFTimeInterval = CACurrentMediaTime()
     private var beatInterval: TimeInterval = 0.5
     private var isAnimating = false
+    private var lastPlaybackTime: TimeInterval?
+    private var lastMediaTime: CFTimeInterval?
 
     var onUpdate: ((CGFloat, Double) -> Void)?
+    var playbackTime: (() -> TimeInterval?)?
+    var reduceMotionEnabled: () -> Bool = { false }
 
     func start() {
         guard displayLink == nil else {
@@ -486,21 +546,41 @@ private final class MetronomeVisualAnimator: NSObject {
     }
 
     func notifyBeat(interval: TimeInterval) {
-        lastBeatTime = CACurrentMediaTime()
+        lastBeatTime = currentTime()
         beatInterval = max(interval, 0.001)
-        onUpdate?(MetronomeConstants.iconScaleMax, 1.0)
+        let reduceMotion = reduceMotionEnabled()
+        onUpdate?(
+            reduceMotion ? MetronomeConstants.iconScaleMin : MetronomeConstants.iconScaleMax,
+            reduceMotion ? 0 : 1,
+        )
     }
 
     @objc private func tick(_ displayLink: CADisplayLink) {
         guard isAnimating else { return }
-        let elapsed = displayLink.timestamp - lastBeatTime
-        let progress = min(1.0, max(0.0, elapsed / beatInterval))
+        guard !reduceMotionEnabled() else {
+            onUpdate?(MetronomeConstants.iconScaleMin, 0)
+            return
+        }
+        let elapsed = currentTime(fallback: displayLink.timestamp) - lastBeatTime
+        let progress = AudioVisualPhase.elapsed(from: 0, to: elapsed, duration: beatInterval)
         let scale = lerp(
             from: MetronomeConstants.iconScaleMax,
             to: MetronomeConstants.iconScaleMin,
             progress: progress,
         )
         onUpdate?(scale, 1.0 - progress)
+    }
+
+    private func currentTime(fallback: CFTimeInterval = CACurrentMediaTime()) -> CFTimeInterval {
+        if let playbackTime = playbackTime?() {
+            lastPlaybackTime = playbackTime
+            lastMediaTime = fallback
+            return playbackTime
+        }
+        if let lastPlaybackTime, let lastMediaTime {
+            return lastPlaybackTime + fallback - lastMediaTime
+        }
+        return fallback
     }
 
     private func lerp(from: CGFloat, to: CGFloat, progress: Double) -> CGFloat {

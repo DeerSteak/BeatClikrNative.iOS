@@ -93,7 +93,11 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
 
     // MARK: - Init
 
-    init(audio: any AudioPlaybackService = AudioPlayerService.instance, settings: SettingsViewModel = SettingsViewModel()) {
+    init(
+        audio: any AudioPlaybackService = AudioPlayerService.instance,
+        settings: SettingsViewModel = SettingsViewModel(),
+        reduceMotionEnabled: @escaping () -> Bool = { UIAccessibility.isReduceMotionEnabled },
+    ) {
         self.audio = audio
         self.settings = settings
         beats = settings.polyrhythmBeats
@@ -107,6 +111,10 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
             self?.rhythmPulse = rhythmPulse
             self?.cycleProgress = cycleProgress
         }
+        visualAnimator.playbackTime = { [weak audio] in
+            audio?.polyrhythmPlaybackTime()
+        }
+        visualAnimator.reduceMotionEnabled = reduceMotionEnabled
         observeSettings()
     }
 
@@ -177,6 +185,11 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
         visualAnimator.stop()
         playbackState = .idle
         resetCycleProgress()
+    }
+
+    func playbackWasInterrupted() {
+        visualAnimator.stop()
+        playbackState = .interrupted
     }
 
     private func resetCycleProgress() {
@@ -268,8 +281,12 @@ private final class PolyrhythmVisualAnimator: NSObject {
     private var currentBeatPulse = 0.0
     private var currentRhythmPulse = 0.0
     private var currentCycleProgress = 0.0
+    private var lastPlaybackTime: TimeInterval?
+    private var lastMediaTime: CFTimeInterval?
 
     var onUpdate: ((Double, Double, Double) -> Void)?
+    var playbackTime: (() -> TimeInterval?)?
+    var reduceMotionEnabled: () -> Bool = { false }
 
     func start() {
         guard displayLink == nil else { return }
@@ -291,37 +308,50 @@ private final class PolyrhythmVisualAnimator: NSObject {
     }
 
     func notifyBeat(interval: TimeInterval) {
-        lastBeatTime = CACurrentMediaTime()
+        lastBeatTime = currentTime()
         beatInterval = max(interval, 0.001)
-        beatPulseActive = true
-        currentBeatPulse = 1.0
+        let reduceMotion = reduceMotionEnabled()
+        beatPulseActive = !reduceMotion
+        currentBeatPulse = reduceMotion ? 0 : 1
         onUpdate?(currentBeatPulse, currentRhythmPulse, currentCycleProgress)
     }
 
     func notifyRhythm(interval: TimeInterval) {
-        lastRhythmTime = CACurrentMediaTime()
+        lastRhythmTime = currentTime()
         rhythmInterval = max(interval, 0.001)
-        rhythmPulseActive = true
-        currentRhythmPulse = 1.0
+        let reduceMotion = reduceMotionEnabled()
+        rhythmPulseActive = !reduceMotion
+        currentRhythmPulse = reduceMotion ? 0 : 1
         onUpdate?(currentBeatPulse, currentRhythmPulse, currentCycleProgress)
     }
 
     func notifyCycleStart(duration: TimeInterval) {
-        cycleStartTime = CACurrentMediaTime()
+        cycleStartTime = currentTime()
         cycleDuration = max(duration, 0.001)
-        cycleActive = true
+        cycleActive = !reduceMotionEnabled()
         currentCycleProgress = 0
         onUpdate?(currentBeatPulse, currentRhythmPulse, currentCycleProgress)
     }
 
     @objc private func tick(_ displayLink: CADisplayLink) {
+        guard !reduceMotionEnabled() else {
+            beatPulseActive = false
+            rhythmPulseActive = false
+            cycleActive = false
+            currentBeatPulse = 0
+            currentRhythmPulse = 0
+            currentCycleProgress = 0
+            onUpdate?(0, 0, 0)
+            return
+        }
         guard beatPulseActive || rhythmPulseActive || cycleActive else { return }
+        let timestamp = currentTime(fallback: displayLink.timestamp)
 
         if beatPulseActive {
             currentBeatPulse = progressRemaining(
                 from: lastBeatTime,
                 duration: beatInterval,
-                timestamp: displayLink.timestamp,
+                timestamp: timestamp,
             )
             beatPulseActive = currentBeatPulse > 0
         }
@@ -330,7 +360,7 @@ private final class PolyrhythmVisualAnimator: NSObject {
             currentRhythmPulse = progressRemaining(
                 from: lastRhythmTime,
                 duration: rhythmInterval,
-                timestamp: displayLink.timestamp,
+                timestamp: timestamp,
             )
             rhythmPulseActive = currentRhythmPulse > 0
         }
@@ -339,7 +369,7 @@ private final class PolyrhythmVisualAnimator: NSObject {
             currentCycleProgress = progressElapsed(
                 from: cycleStartTime,
                 duration: cycleDuration,
-                timestamp: displayLink.timestamp,
+                timestamp: timestamp,
             )
             cycleActive = currentCycleProgress < 1
         }
@@ -347,12 +377,23 @@ private final class PolyrhythmVisualAnimator: NSObject {
         onUpdate?(currentBeatPulse, currentRhythmPulse, currentCycleProgress)
     }
 
+    private func currentTime(fallback: CFTimeInterval = CACurrentMediaTime()) -> CFTimeInterval {
+        if let playbackTime = playbackTime?() {
+            lastPlaybackTime = playbackTime
+            lastMediaTime = fallback
+            return playbackTime
+        }
+        if let lastPlaybackTime, let lastMediaTime {
+            return lastPlaybackTime + fallback - lastMediaTime
+        }
+        return fallback
+    }
+
     private func progressRemaining(from startTime: CFTimeInterval, duration: TimeInterval, timestamp: CFTimeInterval) -> Double {
-        1.0 - progressElapsed(from: startTime, duration: duration, timestamp: timestamp)
+        AudioVisualPhase.remaining(from: startTime, to: timestamp, duration: duration)
     }
 
     private func progressElapsed(from startTime: CFTimeInterval, duration: TimeInterval, timestamp: CFTimeInterval) -> Double {
-        let elapsed = timestamp - startTime
-        return min(1.0, max(0.0, elapsed / duration))
+        AudioVisualPhase.elapsed(from: startTime, to: timestamp, duration: duration)
     }
 }

@@ -58,7 +58,7 @@ struct beatclikrApp: App {
         }
 
         let settingsVM = SettingsViewModel()
-        let coordinator = PlaybackCoordinator()
+        let coordinator = PlaybackCoordinator(lockScreenControls: LockScreenPlaybackController())
         let metronome = MetronomePlaybackViewModel(audio: coordinator, settings: settingsVM)
         let polyrhythm = PolyrhythmViewModel(audio: coordinator, settings: settingsVM)
         coordinator.onMetronomeStopped = { [weak metronome] in
@@ -66,6 +66,12 @@ struct beatclikrApp: App {
         }
         coordinator.onPolyrhythmStopped = { [weak polyrhythm] in
             polyrhythm?.playbackWasStoppedByCoordinator()
+        }
+        coordinator.onMetronomeInterrupted = { [weak metronome] in
+            metronome?.playbackWasInterrupted()
+        }
+        coordinator.onPolyrhythmInterrupted = { [weak polyrhythm] in
+            polyrhythm?.playbackWasInterrupted()
         }
         playbackCoordinator = coordinator
         _metronomeViewModel = StateObject(wrappedValue: metronome)
@@ -92,6 +98,7 @@ struct beatclikrApp: App {
                 }
                 .onAppear {
                     updateIdleTimer(for: scenePhase)
+                    metronomeViewModel.setNonAudioEffectsEnabled(scenePhase == .active)
                 }
                 .alert(item: $databaseRecoveryAlert) { alert in
                     Alert(
@@ -126,6 +133,7 @@ struct beatclikrApp: App {
         }
         .modelContainer(container)
         .onChange(of: scenePhase) { _, newPhase in
+            metronomeViewModel.setNonAudioEffectsEnabled(newPhase == .active)
             guard newPhase == .active else {
                 updateIdleTimer(for: newPhase)
                 return

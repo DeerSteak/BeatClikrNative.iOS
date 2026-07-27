@@ -13,6 +13,7 @@ import OSLog
 protocol AudioPlaybackService: AnyObject {
     var metronomeDelegate: MetronomeAudioEngineDelegate? { get set }
     var polyrhythmDelegate: PolyrhythmAudioEngineDelegate? { get set }
+    var lifecycleDelegate: AudioPlaybackLifecycleDelegate? { get set }
 
     func setupMetronomeAudio(beatName: String, rhythmName: String) throws
     func setupPolyrhythmAudio(beatName: String, rhythmName: String) throws
@@ -23,6 +24,23 @@ protocol AudioPlaybackService: AnyObject {
     func setRamp(enabled: Bool, increment: Int, interval: Int)
     func startPolyrhythm(bpm: Double, beats: Int, against: Int) throws
     func stopPolyrhythm()
+    func metronomePlaybackTime() -> TimeInterval?
+    func polyrhythmPlaybackTime() -> TimeInterval?
+}
+
+@MainActor
+protocol AudioPlaybackLifecycleDelegate: AnyObject {
+    func audioPlaybackWasInterrupted()
+}
+
+extension AudioPlaybackService {
+    func metronomePlaybackTime() -> TimeInterval? {
+        nil
+    }
+
+    func polyrhythmPlaybackTime() -> TimeInterval? {
+        nil
+    }
 }
 
 @MainActor
@@ -30,8 +48,16 @@ class AudioPlayerService: AudioPlaybackService, MetronomeAudioEngineDelegate, Po
     static let instance = AudioPlayerService()
 
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "BeatClikr", category: "Playback")
-    private let metronomeEngine = ScheduledMetronomeEngine()
-    private let polyrhythmEngine = ScheduledPolyrhythmEngine()
+    private var metronomeEngine = ScheduledMetronomeEngine()
+    private var polyrhythmEngine = ScheduledPolyrhythmEngine()
+    private lazy var sessionCoordinator: AudioSessionCoordinator = {
+        let coordinator = AudioSessionCoordinator()
+        coordinator.onEvent = { [weak self] event in
+            self?.handleAudioLifecycleEvent(event)
+        }
+        return coordinator
+    }()
+
     private var isAudioSessionReady = false
     private var isMetronomeEngineReady = false
     private var isPolyrhythmEngineReady = false
@@ -41,6 +67,7 @@ class AudioPlayerService: AudioPlaybackService, MetronomeAudioEngineDelegate, Po
 
     weak var metronomeDelegate: MetronomeAudioEngineDelegate?
     weak var polyrhythmDelegate: PolyrhythmAudioEngineDelegate?
+    weak var lifecycleDelegate: AudioPlaybackLifecycleDelegate?
 
     init() {
         activeSoundBank = UserDefaultsService.instance.soundBank
@@ -93,6 +120,14 @@ class AudioPlayerService: AudioPlaybackService, MetronomeAudioEngineDelegate, Po
         polyrhythmEngine.stopPolyrhythm()
     }
 
+    func metronomePlaybackTime() -> TimeInterval? {
+        metronomeEngine.presentedPlaybackTime()
+    }
+
+    func polyrhythmPlaybackTime() -> TimeInterval? {
+        polyrhythmEngine.presentedPlaybackTime()
+    }
+
     // MARK: - MetronomeAudioEngineDelegate
 
     func metronomeBeatFired(isBeat: Bool, beatInterval: TimeInterval) {
@@ -125,9 +160,7 @@ class AudioPlayerService: AudioPlaybackService, MetronomeAudioEngineDelegate, Po
     private func prepareAudioSession() throws {
         guard !isAudioSessionReady else { return }
         do {
-            let session = AVAudioSession.sharedInstance()
-            try session.setCategory(.playback, mode: .default, options: [])
-            try session.setActive(true)
+            try sessionCoordinator.activate()
             isAudioSessionReady = true
         } catch {
             logger.error("Audio session setup failed: \(error, privacy: .public)")
@@ -140,6 +173,7 @@ class AudioPlayerService: AudioPlaybackService, MetronomeAudioEngineDelegate, Po
         do {
             try metronomeEngine.start()
             isMetronomeEngineReady = true
+            sessionCoordinator.observeEngines([metronomeEngine.notificationEngine, polyrhythmEngine.notificationEngine])
         } catch {
             logger.error("Metronome engine start failed: \(error, privacy: .public)")
             throw PlaybackError.engineStartFailed
@@ -151,9 +185,33 @@ class AudioPlayerService: AudioPlaybackService, MetronomeAudioEngineDelegate, Po
         do {
             try polyrhythmEngine.start()
             isPolyrhythmEngineReady = true
+            sessionCoordinator.observeEngines([metronomeEngine.notificationEngine, polyrhythmEngine.notificationEngine])
         } catch {
             logger.error("Polyrhythm engine start failed: \(error, privacy: .public)")
             throw PlaybackError.engineStartFailed
+        }
+    }
+
+    private func handleAudioLifecycleEvent(_ event: AudioLifecycleEvent) {
+        metronomeEngine.stopMetronome()
+        polyrhythmEngine.stopPolyrhythm()
+        lifecycleDelegate?.audioPlaybackWasInterrupted()
+
+        switch event {
+        case .interruptionBegan, .routeDisconnected:
+            break
+        case .engineConfigurationChanged, .mediaServicesLost, .mediaServicesReset:
+            metronomeEngine.stop()
+            polyrhythmEngine.stop()
+            metronomeEngine = ScheduledMetronomeEngine()
+            polyrhythmEngine = ScheduledPolyrhythmEngine()
+            isAudioSessionReady = false
+            isMetronomeEngineReady = false
+            isPolyrhythmEngineReady = false
+            sessionCoordinator.observeEngines([
+                metronomeEngine.notificationEngine,
+                polyrhythmEngine.notificationEngine,
+            ])
         }
     }
 }
