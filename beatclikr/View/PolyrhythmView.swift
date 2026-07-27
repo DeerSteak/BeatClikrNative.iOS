@@ -34,6 +34,7 @@ struct PolyrhythmView: View {
                                 activeIndex: model.activeBeatIndex,
                                 pulse: model.beatPulse,
                                 color: Color.appPrimary,
+                                isPlaying: model.isPlaying,
                             )
                             PolyrhythmDotRow(
                                 label: "Rhythm",
@@ -41,6 +42,7 @@ struct PolyrhythmView: View {
                                 activeIndex: model.activeRhythmIndex,
                                 pulse: model.rhythmPulse,
                                 color: Color.secondary,
+                                isPlaying: model.isPlaying,
                             )
                             PolyrhythmPlayheadRow(
                                 progress: model.cycleProgress,
@@ -58,7 +60,7 @@ struct PolyrhythmView: View {
                         HStack(spacing: 12) {
                             VStack(spacing: 8) {
                                 Text(FormatterHelper.formatDouble(model.bpm))
-                                    .font(.system(size: 60, weight: .thin, design: .rounded))
+                                    .font(.system(.largeTitle, design: .rounded, weight: .thin))
                                     .monospacedDigit()
                                     .contentTransition(.numericText())
                                 Text("BPM")
@@ -67,6 +69,9 @@ struct PolyrhythmView: View {
                                     .tracking(2)
                                     .textCase(.uppercase)
                             }
+                            .accessibilityElement(children: .combine)
+                            .accessibilityLabel("Tempo")
+                            .accessibilityValue("\(Int(model.bpm.rounded())) BPM")
                             TapTempoButton(bpm: $model.bpm)
                         }
                         BpmSliderControl(value: Binding(
@@ -148,9 +153,10 @@ private struct PolyrhythmCountSelector: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(value <= range.lowerBound)
+                .accessibilityLabel("Decrease \(label)")
 
                 Text("\(value)")
-                    .font(.system(size: 40, weight: .thin, design: .rounded))
+                    .font(.system(.largeTitle, design: .rounded, weight: .thin))
                     .monospacedDigit()
                     .frame(minWidth: 44)
                     .lineLimit(1)
@@ -166,9 +172,23 @@ private struct PolyrhythmCountSelector: View {
                 }
                 .buttonStyle(.plain)
                 .disabled(value >= range.upperBound)
+                .accessibilityLabel("Increase \(label)")
             }
         }
         .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text(label))
+        .accessibilityValue(Text("\(value)"))
+        .accessibilityAdjustableAction { direction in
+            switch direction {
+            case .increment:
+                value = min(range.upperBound, value + 1)
+            case .decrement:
+                value = max(range.lowerBound, value - 1)
+            @unknown default:
+                break
+            }
+        }
     }
 }
 
@@ -178,6 +198,7 @@ private struct PolyrhythmDotRow: View {
     let activeIndex: Int
     let pulse: Double
     let color: Color
+    let isPlaying: Bool
 
     @ScaledMetric private var labelWidth: CGFloat = 68
 
@@ -202,11 +223,18 @@ private struct PolyrhythmDotRow: View {
                             .frame(width: 18, height: 18)
                             .opacity(i == activeIndex ? (0.25 + 0.75 * pulse) : 0.25)
                             .scaleEffect(i == activeIndex ? (0.85 + 0.15 * pulse) : 0.85)
+                            .overlay {
+                                Circle()
+                                    .stroke(i == activeIndex && isPlaying ? Color.primary : .clear, lineWidth: 2)
+                            }
                         Spacer(minLength: 0)
                     }
                 }
             }
         }
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(Text("\(label) position"))
+        .accessibilityValue(Text(isPlaying ? "\(activeIndex + 1) of \(count)" : "Stopped"))
     }
 }
 

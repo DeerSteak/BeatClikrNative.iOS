@@ -9,6 +9,7 @@ import SwiftData
 import SwiftUI
 
 struct MetronomeView: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @EnvironmentObject var model: MetronomePlaybackViewModel
 
     var body: some View {
@@ -24,7 +25,7 @@ struct MetronomeView: View {
                             }
                             VStack(spacing: 8) {
                                 Text(FormatterHelper.formatDouble(model.beatsPerMinute))
-                                    .font(.system(size: 60, weight: .thin, design: .rounded))
+                                    .font(.system(.largeTitle, design: .rounded, weight: .thin))
                                     .monospacedDigit()
                                     .contentTransition(.numericText())
                                 Text("BPM")
@@ -33,6 +34,9 @@ struct MetronomeView: View {
                                     .tracking(2)
                                     .textCase(.uppercase)
                             }
+                            .accessibilityElement(children: .combine)
+                            .accessibilityLabel("Tempo")
+                            .accessibilityValue("\(Int(model.beatsPerMinute.rounded())) BPM")
                             TapTempoButton(bpm: $model.beatsPerMinute)
                         }
                         BpmSliderControl(value: Binding(
@@ -138,7 +142,7 @@ struct MetronomeView: View {
                 .controlSize(.large)
                 .tint(Color.appPrimary)
             }
-            .animation(.easeInOut(duration: 0.25), value: model.rampEnabled)
+            .animation(reduceMotion ? nil : .easeInOut(duration: 0.25), value: model.rampEnabled)
             .padding()
         }
         .background(Color(UIColor.systemGroupedBackground))
