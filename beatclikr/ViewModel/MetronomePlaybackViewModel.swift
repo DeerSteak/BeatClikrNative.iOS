@@ -281,6 +281,15 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         playbackState = .idle
     }
 
+    func playbackWasStoppedByCoordinator() {
+        visualAnimator.stop()
+        flashlight.turnFlashlightOff()
+        playbackState = .idle
+        if rampEnabled, clickerType == .metronome {
+            beatsPerMinute = activeBpm
+        }
+    }
+
     func resetMetronome() {
         let wasPlaying = isPlaying
         stop()

@@ -172,6 +172,13 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
         playbackState = .idle
     }
 
+    func playbackWasStoppedByCoordinator() {
+        playheadResetID += 1
+        visualAnimator.stop()
+        playbackState = .idle
+        resetCycleProgress()
+    }
+
     private func resetCycleProgress() {
         var transaction = Transaction()
         transaction.disablesAnimations = true

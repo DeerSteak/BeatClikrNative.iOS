@@ -80,3 +80,65 @@ final class TestAudioPlaybackService: AudioPlaybackService {
         polyrhythmStopCount = 0
     }
 }
+
+@MainActor
+final class PlaybackCoordinatorTests: XCTestCase {
+    func testStartingPolyrhythmDisplacesMetronome() throws {
+        let audio = TestAudioPlaybackService()
+        let coordinator = PlaybackCoordinator(audio: audio)
+        var metronomeWasStopped = false
+        coordinator.onMetronomeStopped = { metronomeWasStopped = true }
+
+        try coordinator.startMetronome(bpm: 120, subdivisions: 1, accentPattern: nil)
+        try coordinator.startPolyrhythm(bpm: 120, beats: 3, against: 2)
+
+        XCTAssertEqual(coordinator.activeMode, .polyrhythm)
+        XCTAssertEqual(audio.metronomeStopCount, 1)
+        XCTAssertTrue(metronomeWasStopped)
+    }
+
+    func testStartingMetronomeDisplacesPolyrhythm() throws {
+        let audio = TestAudioPlaybackService()
+        let coordinator = PlaybackCoordinator(audio: audio)
+        var polyrhythmWasStopped = false
+        coordinator.onPolyrhythmStopped = { polyrhythmWasStopped = true }
+
+        try coordinator.startPolyrhythm(bpm: 120, beats: 3, against: 2)
+        try coordinator.startMetronome(bpm: 120, subdivisions: 1, accentPattern: nil)
+
+        XCTAssertEqual(coordinator.activeMode, .metronome)
+        XCTAssertEqual(audio.polyrhythmStopCount, 1)
+        XCTAssertTrue(polyrhythmWasStopped)
+    }
+
+    func testViewModelsCannotRemainPlayingTogether() {
+        let audio = TestAudioPlaybackService()
+        let coordinator = PlaybackCoordinator(audio: audio)
+        let settings = SettingsViewModel()
+        let metronome = MetronomePlaybackViewModel(audio: coordinator, settings: settings)
+        let polyrhythm = PolyrhythmViewModel(audio: coordinator, settings: settings)
+        coordinator.onMetronomeStopped = { [weak metronome] in
+            metronome?.playbackWasStoppedByCoordinator()
+        }
+        coordinator.onPolyrhythmStopped = { [weak polyrhythm] in
+            polyrhythm?.playbackWasStoppedByCoordinator()
+        }
+
+        metronome.start()
+        polyrhythm.start()
+
+        XCTAssertFalse(metronome.isPlaying)
+        XCTAssertTrue(polyrhythm.isPlaying)
+        XCTAssertEqual(coordinator.activeMode, .polyrhythm)
+    }
+
+    func testFailedReplacementLeavesNoActiveMode() throws {
+        let audio = TestAudioPlaybackService()
+        let coordinator = PlaybackCoordinator(audio: audio)
+        try coordinator.startMetronome(bpm: 120, subdivisions: 1, accentPattern: nil)
+        audio.startError = .engineStartFailed
+
+        XCTAssertThrowsError(try coordinator.startPolyrhythm(bpm: 120, beats: 3, against: 2))
+        XCTAssertNil(coordinator.activeMode)
+    }
+}

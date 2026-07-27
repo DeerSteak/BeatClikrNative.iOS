@@ -8,6 +8,21 @@
 
 - **AudioPlayerService** - `@MainActor` implementation of the injectable `AudioPlaybackService` protocol. It owns one `ScheduledMetronomeEngine` and one `ScheduledPolyrhythmEngine`, but prepares each engine lazily. Audio-session setup, sound loading, conversion, configuration, and engine start report typed `PlaybackError` failures rather than being swallowed. Metronome and polyrhythm sound loading remain separate so each mode keeps its own selected instruments.
 
+- **PlaybackCoordinator** - The single app-level owner of `AudioPlayerService`.
+  Both playback view models receive this coordinator rather than accessing the
+  singleton directly. Starting metronome playback stops and invalidates
+  polyrhythm playback first, and vice versa. Displaced owners are notified so
+  their published state and animations return to idle synchronously.
+
+### Playback navigation policy
+
+- Changing a top-level tab/sidebar section stops all playback.
+- Changing the compact metronome/polyrhythm mode stops the mode being hidden.
+- Navigation-stack pushes and sheets within the Library or Playlist section do
+  not stop playback; transport continues until the user stops it or leaves the
+  top-level section.
+- Presenting editing, picker, or Focus Mode UI does not implicitly stop audio.
+
 - **FlashlightService** - Controls device flashlight for visual beat accessibility
 
 - **VibrationService** - Manages haptic feedback via `UIImpactFeedbackGenerator`

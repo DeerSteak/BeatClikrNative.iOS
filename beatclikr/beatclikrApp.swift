@@ -26,6 +26,7 @@ struct beatclikrApp: App {
     @StateObject private var playlistListViewModel: PlaylistListViewModel
     @StateObject private var settingsViewModel: SettingsViewModel
     @StateObject private var practiceHistoryViewModel: PracticeHistoryViewModel
+    private let playbackCoordinator: PlaybackCoordinator
 
     private static let uiTestPracticeState: String? =
         ProcessInfo.processInfo.environment["UI_TESTING_PRACTICE_STATE"]
@@ -57,9 +58,18 @@ struct beatclikrApp: App {
         }
 
         let settingsVM = SettingsViewModel()
-        let metronome = MetronomePlaybackViewModel(settings: settingsVM)
+        let coordinator = PlaybackCoordinator()
+        let metronome = MetronomePlaybackViewModel(audio: coordinator, settings: settingsVM)
+        let polyrhythm = PolyrhythmViewModel(audio: coordinator, settings: settingsVM)
+        coordinator.onMetronomeStopped = { [weak metronome] in
+            metronome?.playbackWasStoppedByCoordinator()
+        }
+        coordinator.onPolyrhythmStopped = { [weak polyrhythm] in
+            polyrhythm?.playbackWasStoppedByCoordinator()
+        }
+        playbackCoordinator = coordinator
         _metronomeViewModel = StateObject(wrappedValue: metronome)
-        _polyrhythmViewModel = StateObject(wrappedValue: PolyrhythmViewModel(settings: settingsVM))
+        _polyrhythmViewModel = StateObject(wrappedValue: polyrhythm)
         _songLibraryViewModel = StateObject(wrappedValue: SongLibraryViewModel())
         _playlistListViewModel = StateObject(wrappedValue: PlaylistListViewModel())
         let practiceVM = PracticeHistoryViewModel()
@@ -136,6 +146,10 @@ struct beatclikrApp: App {
             .environmentObject(polyrhythmViewModel)
             .environmentObject(settingsViewModel)
             .environmentObject(practiceHistoryViewModel)
+            .onChange(of: selectedSection) { oldSection, newSection in
+                guard oldSection != newSection else { return }
+                playbackCoordinator.stopAll()
+            }
     }
 
     private func updateIdleTimer(for phase: ScenePhase) {

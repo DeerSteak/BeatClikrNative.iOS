@@ -96,7 +96,6 @@ struct PolyrhythmView: View {
             .padding()
         }
         .background(Color(UIColor.systemGroupedBackground))
-        .onDisappear(perform: model.stop)
         .alert(
             String(localized: "Playback Unavailable"),
             isPresented: Binding(

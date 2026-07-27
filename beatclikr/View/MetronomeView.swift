@@ -144,7 +144,6 @@ struct MetronomeView: View {
             .padding()
         }
         .background(Color(UIColor.systemGroupedBackground))
-        .onDisappear(perform: model.stop)
         .onAppear {
             model.clickerType = .metronome
         }
