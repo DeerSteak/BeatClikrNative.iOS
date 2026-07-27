@@ -23,6 +23,23 @@
   top-level section.
 - Presenting editing, picker, or Focus Mode UI does not implicitly stop audio.
 
+### Background and lock-screen policy
+
+- Active metronome or polyrhythm playback continues when BeatClikr enters the
+  background or the device locks. The app declares only the audio background
+  mode needed for that behavior; entering the background does not start audio
+  or perform unrelated background work.
+- Returning to the foreground preserves the current playback state. Normal
+  audio interruptions and unavailable output routes still stop playback and
+  require the user to press Play again.
+- BeatClikr does not currently publish Now Playing metadata or register remote
+  transport commands. Lock-screen and Control Center controls are deferred
+  until the app can offer them without ambiguous play behavior across its two
+  playback modes.
+- “Keep Awake” remains an optional visual-performance preference for users who
+  want the beat display to remain visible. Background audio does not depend on
+  it, and the idle-timer override is removed whenever the scene is not active.
+
 - **FlashlightService** - Controls device flashlight for visual beat accessibility
 
 - **VibrationService** - Manages haptic feedback via `UIImpactFeedbackGenerator`
