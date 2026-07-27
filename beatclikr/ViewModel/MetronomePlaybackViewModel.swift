@@ -11,7 +11,7 @@ import QuartzCore
 import SwiftUI
 
 @MainActor
-class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate {
+final class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate {
     var onPlaybackStarted: ((Song) -> Void)?
     var onPlaybackEnded: (() -> Void)?
 
@@ -45,6 +45,10 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
     var isPlaying: Bool {
         playbackState == .playing
+    }
+
+    var isPrimaryBeat: Bool {
+        isBeat
     }
 
     var playbackError: PlaybackError? {
@@ -534,79 +538,5 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
 
     private static func playbackError(from error: Error) -> PlaybackError {
         error as? PlaybackError ?? .engineStartFailed
-    }
-}
-
-private final class MetronomeVisualAnimator: NSObject {
-    private var displayLink: CADisplayLink?
-    private var lastBeatTime: CFTimeInterval = CACurrentMediaTime()
-    private var beatInterval: TimeInterval = 0.5
-    private var isAnimating = false
-    private var lastPlaybackTime: TimeInterval?
-    private var lastMediaTime: CFTimeInterval?
-
-    var onUpdate: ((CGFloat, Double) -> Void)?
-    var playbackTime: (() -> TimeInterval?)?
-    var reduceMotionEnabled: () -> Bool = { false }
-
-    func start() {
-        guard displayLink == nil else {
-            isAnimating = true
-            return
-        }
-        isAnimating = true
-        let link = CADisplayLink(target: self, selector: #selector(tick(_:)))
-        link.add(to: .main, forMode: .common)
-        displayLink = link
-    }
-
-    func stop() {
-        displayLink?.invalidate()
-        displayLink = nil
-        isAnimating = false
-        lastBeatTime = CACurrentMediaTime()
-        onUpdate?(MetronomeConstants.iconScaleMin, 0)
-    }
-
-    func notifyBeat(interval: TimeInterval) {
-        lastBeatTime = currentTime()
-        beatInterval = max(interval, 0.001)
-        let reduceMotion = reduceMotionEnabled()
-        onUpdate?(
-            reduceMotion ? MetronomeConstants.iconScaleMin : MetronomeConstants.iconScaleMax,
-            reduceMotion ? 0 : 1,
-        )
-    }
-
-    @objc private func tick(_ displayLink: CADisplayLink) {
-        guard isAnimating else { return }
-        guard !reduceMotionEnabled() else {
-            onUpdate?(MetronomeConstants.iconScaleMin, 0)
-            return
-        }
-        let elapsed = currentTime(fallback: displayLink.timestamp) - lastBeatTime
-        let progress = AudioVisualPhase.elapsed(from: 0, to: elapsed, duration: beatInterval)
-        let scale = lerp(
-            from: MetronomeConstants.iconScaleMax,
-            to: MetronomeConstants.iconScaleMin,
-            progress: progress,
-        )
-        onUpdate?(scale, 1.0 - progress)
-    }
-
-    private func currentTime(fallback: CFTimeInterval = CACurrentMediaTime()) -> CFTimeInterval {
-        if let playbackTime = playbackTime?() {
-            lastPlaybackTime = playbackTime
-            lastMediaTime = fallback
-            return playbackTime
-        }
-        if let lastPlaybackTime, let lastMediaTime {
-            return lastPlaybackTime + fallback - lastMediaTime
-        }
-        return fallback
-    }
-
-    private func lerp(from: CGFloat, to: CGFloat, progress: Double) -> CGFloat {
-        from + (to - from) * CGFloat(progress)
     }
 }
