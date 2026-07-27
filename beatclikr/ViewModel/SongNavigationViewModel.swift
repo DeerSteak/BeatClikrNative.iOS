@@ -31,7 +31,7 @@ class SongNavigationViewModel: ObservableObject {
     var onSongPlayed: ((Song) -> Void)?
 
     func playSong(_ song: Song, metronome: MetronomePlaybackViewModel) {
-        metronome.clickerType = .playlist
+        metronome.activatePlaylistMode()
         metronome.switchSong(song)
         metronome.setupMetronome()
         metronome.start()

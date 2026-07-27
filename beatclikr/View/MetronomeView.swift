@@ -144,9 +144,6 @@ struct MetronomeView: View {
             .padding()
         }
         .background(Color(UIColor.systemGroupedBackground))
-        .onAppear {
-            model.clickerType = .metronome
-        }
         .alert(
             String(localized: "Playback Unavailable"),
             isPresented: Binding(

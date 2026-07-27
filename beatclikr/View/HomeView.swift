@@ -110,21 +110,21 @@ struct HomeView: View {
                 #endif
             } else {
                 TabView(selection: compactSelectedSection) {
-                    MetronomeContainerView()
-                        .tabItem { Label("Metronome", image: ImageConstants.tabMetronome) }
-                        .tag(AppSection.metronome)
-                    SongLibraryView()
-                        .tabItem { Label("Library", systemImage: ImageConstants.tabLibrary) }
-                        .tag(AppSection.library)
-                    PlaylistListView()
-                        .tabItem { Label("Playlist", systemImage: ImageConstants.tabPlaylist) }
-                        .tag(AppSection.playlist)
-                    PracticeHistoryView()
-                        .tabItem { Label("History", systemImage: ImageConstants.tabHistory) }
-                        .tag(AppSection.history)
-                    SettingsView()
-                        .tabItem { Label("Settings", systemImage: ImageConstants.tabSettings) }
-                        .tag(AppSection.settings)
+                    Tab("Metronome", image: ImageConstants.tabMetronome, value: AppSection.metronome) {
+                        MetronomeContainerView()
+                    }
+                    Tab("Library", systemImage: ImageConstants.tabLibrary, value: AppSection.library) {
+                        SongLibraryView()
+                    }
+                    Tab("Playlist", systemImage: ImageConstants.tabPlaylist, value: AppSection.playlist) {
+                        PlaylistListView()
+                    }
+                    Tab("History", systemImage: ImageConstants.tabHistory, value: AppSection.history) {
+                        PracticeHistoryView()
+                    }
+                    Tab("Settings", systemImage: ImageConstants.tabSettings, value: AppSection.settings) {
+                        SettingsView()
+                    }
                 }
                 .tint(Color.appPrimary)
             }

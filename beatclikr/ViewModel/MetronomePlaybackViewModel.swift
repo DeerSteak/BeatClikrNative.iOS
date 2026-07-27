@@ -141,7 +141,7 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         }
     }
 
-    @Published var clickerType: ClickerType = .metronome {
+    @Published private(set) var clickerType: ClickerType = .metronome {
         didSet {
             if !isPlaying {
                 resetMetronome()
@@ -188,6 +188,19 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
         }
         visualAnimator.reduceMotionEnabled = reduceMotionEnabled
         observeSettings()
+    }
+
+    func activateMetronomeMode() {
+        setClickerType(.metronome)
+    }
+
+    func activatePlaylistMode() {
+        setClickerType(.playlist)
+    }
+
+    private func setClickerType(_ newType: ClickerType) {
+        guard clickerType != newType else { return }
+        clickerType = newType
     }
 
     // MARK: MetronomeAudioEngineDelegate

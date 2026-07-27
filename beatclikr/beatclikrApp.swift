@@ -147,17 +147,25 @@ struct beatclikrApp: App {
     }
 
     private var appContent: some View {
-        HomeView(selectedSection: $selectedSection)
-            .environmentObject(songLibraryViewModel)
-            .environmentObject(playlistListViewModel)
-            .environmentObject(metronomeViewModel)
-            .environmentObject(polyrhythmViewModel)
-            .environmentObject(settingsViewModel)
-            .environmentObject(practiceHistoryViewModel)
-            .onChange(of: selectedSection) { oldSection, newSection in
-                guard oldSection != newSection else { return }
-                playbackCoordinator.stopAll()
-            }
+        HomeView(
+            selectedSection: Binding(
+                get: { selectedSection },
+                set: { newSection in
+                    guard selectedSection != newSection else { return }
+                    playbackCoordinator.stopAll()
+                    if newSection == .metronome {
+                        metronomeViewModel.activateMetronomeMode()
+                    }
+                    selectedSection = newSection
+                },
+            ),
+        )
+        .environmentObject(songLibraryViewModel)
+        .environmentObject(playlistListViewModel)
+        .environmentObject(metronomeViewModel)
+        .environmentObject(polyrhythmViewModel)
+        .environmentObject(settingsViewModel)
+        .environmentObject(practiceHistoryViewModel)
     }
 
     private func updateIdleTimer(for phase: ScenePhase) {
