@@ -13,7 +13,7 @@ SwiftData persistent models and supporting value types.
   The original timestamp, time-zone identifier, and calendar identifier are
   retained as metadata. Changing time zones never reclassifies an existing
   session.
-- **PracticedSong** - Snapshot of a song's title, BPM, groove, and play count within a session
+- **PracticedSong** - One daily item per stable song/mode, containing snapshot metadata, accumulated active-playback duration, and playback-period count
 
 ## Practice-day merge policy
 
@@ -28,13 +28,17 @@ backgrounding, and practice-history reads run an idempotent repair:
   at migration;
 - duplicate sessions with the same key merge into one deterministic session;
 - different practiced-song IDs are preserved;
-- counts for the same user song are added;
+- duration and playback-period counts for the same stable song ID are added;
 - the built-in metronome and polyrhythm retain one credit per day;
 - repaired duplicates are deleted only after their song snapshots are rebuilt.
 
 Historical legacy timestamps do not contain their original time zone. Their
 first migration therefore preserves the interpretation used by the device
 performing that migration; subsequent travel cannot rewrite it.
+
+Legacy practiced items without duration migrate to 30 seconds so previously
+earned history and streaks remain qualified. Partial CloudKit records are
+normalized centrally before use.
 
 ## Enums
 

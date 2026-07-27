@@ -21,14 +21,23 @@ Within `PlaylistDetailView`:
 
 ## Practice History
 
-Every time a song is played, `PracticeHistoryViewModel.recordSongPlayed` increments that song's play count in today's `PracticeSession`. The History tab shows:
-- A monthly calendar where days with practice are marked with a dot; tap any day to see which songs were played
+Successful audio playback opens a monotonic playback period. Active time is
+checkpointed every 10 seconds and on lifecycle changes, and accumulated into
+one daily item per stable song or built-in mode. Background audio counts;
+paused, stopped, failed, and interrupted time does not. An item qualifies at
+30 accumulated seconds; shorter activity is retained for later accumulation
+but remains hidden and does not earn a calendar dot or streak day.
+
+The History tab shows:
+- A monthly calendar where qualifying days are marked with a dot
+- Metronome and Polyrhythm first, followed by songs sorted by title, artist, and stable identity
+- Total daily duration and playback-period count for each item
 - Current and longest streak counts with start/end dates
 - A reminder banner when the user has an active streak but hasn't practiced today
 
 Streaks are consecutive calendar days ending on today or yesterday. Practicing yesterday keeps the streak alive — missing today breaks it only after today ends.
 
-After each save, the app reschedules 7 ahead-of-time daily notifications with content that reflects the projected streak state for each upcoming day (keep streak alive, streak broken, or generic). Notifications also reschedule when the app becomes active or the reminder time changes in Settings.
+When an item first qualifies, the app reschedules 7 ahead-of-time daily notifications with content that reflects the projected streak state for each upcoming day. Routine duration checkpoints do not repeatedly reschedule reminders.
 
 ## iCloud Sync
 

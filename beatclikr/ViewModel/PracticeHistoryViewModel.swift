@@ -114,7 +114,7 @@ class PracticeHistoryViewModel: ObservableObject {
         let songs = (session(for: date, context: context)?.songsPracticed ?? [])
             .filter { ($0.durationSeconds ?? Self.qualifyingDuration) >= Self.qualifyingDuration }
         guard persistenceFailure == nil else { return }
-        selectedDateSongs = songs
+        selectedDateSongs = sortedPracticeSongs(songs)
     }
 
     func getOrCreateTodaysSession(context: ModelContext) -> PracticeSession {
@@ -237,6 +237,20 @@ class PracticeHistoryViewModel: ObservableObject {
         }
     }
 
+    func sortedPracticeSongs(_ songs: [PracticedSong]) -> [PracticedSong] {
+        songs.sorted { lhs, rhs in
+            let lhsKey = practiceSortKey(lhs)
+            let rhsKey = practiceSortKey(rhs)
+            if lhsKey.rank != rhsKey.rank { return lhsKey.rank < rhsKey.rank }
+            let titleOrder = lhsKey.title.localizedCaseInsensitiveCompare(rhsKey.title)
+            if titleOrder != .orderedSame { return titleOrder == .orderedAscending }
+            let artistOrder = lhsKey.artist.localizedCaseInsensitiveCompare(rhsKey.artist)
+            if artistOrder != .orderedSame { return artistOrder == .orderedAscending }
+            if lhsKey.songID != rhsKey.songID { return lhsKey.songID < rhsKey.songID }
+            return lhsKey.recordID < rhsKey.recordID
+        }
+    }
+
     private func projectedBody(from dates: Set<Date>, referenceDate: Date) -> String {
         let cal = Calendar.current
         let refDay = cal.startOfDay(for: referenceDate)
@@ -273,6 +287,27 @@ class PracticeHistoryViewModel: ObservableObject {
     }
 
     // MARK: - Private helpers
+
+    private func practiceSortKey(_ song: PracticedSong) -> (
+        rank: Int,
+        title: String,
+        artist: String,
+        songID: String,
+        recordID: String,
+    ) {
+        let rank = switch song.songId {
+        case Song.metronomeSongId: 0
+        case "beatclikr.polyrhythm": 1
+        default: 2
+        }
+        return (
+            rank,
+            song.title ?? "",
+            song.artist ?? "",
+            song.songId ?? "",
+            song.id ?? "",
+        )
+    }
 
     private func incrementPlaybackPeriod(_ item: PlaybackItem, context: ModelContext) {
         let practiced = practicedSong(for: item, context: context)

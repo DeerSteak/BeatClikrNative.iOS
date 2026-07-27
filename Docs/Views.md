@@ -16,7 +16,7 @@
 
 - **PlaylistDetailView** - Ordered playlist with inline edit/reorder; shows transport bar when playing
 
-- **PracticeHistoryView** - Calendar showing days on which practice was recorded; tap a day to see details; share button renders a `SharableStreakCard` and opens the system share sheet
+- **PracticeHistoryView** - Calendar showing days with at least one 30-second qualifying item; daily details show Metronome, Polyrhythm, then alphabetized songs with accumulated duration and playback-period count
 
 - **SongDetailsView** - Add or edit a song's metadata (title, artist, BPM, time signature, groove)
 

@@ -447,6 +447,46 @@ struct PracticeHistoryViewModelTests {
         #expect(secondResult.songsPracticed?.first?.timesPracticed == 5)
     }
 
+    @Test func `duplicate practice items merge duration and playback periods`() throws {
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
+        let context = container.mainContext
+        let firstSong = PracticedSong(title: "Shared", artist: "Artist", songId: "song.shared")
+        firstSong.timesPracticed = 2
+        firstSong.durationSeconds = 25
+        let secondSong = PracticedSong(title: "Shared", artist: "Artist", songId: "song.shared")
+        secondSong.timesPracticed = 3
+        secondSong.durationSeconds = 40
+        context.insert(PracticeSession(date: today, songsPracticed: [firstSong]))
+        context.insert(PracticeSession(date: today, songsPracticed: [secondSong]))
+
+        try PracticeDayRepair.repair(context: context)
+
+        let session = try #require(context.fetch(FetchDescriptor<PracticeSession>()).first)
+        let merged = try #require(session.songsPracticed?.first)
+        #expect(session.songsPracticed?.count == 1)
+        #expect(merged.timesPracticed == 5)
+        #expect(merged.durationSeconds == 65)
+    }
+
+    @Test func `practice history orders built in modes before alphabetized songs`() {
+        let vm = PracticeHistoryViewModel()
+        let zulu = PracticedSong(title: "Zulu", artist: "Band", songId: "song.zulu")
+        let polyrhythm = PracticedSong(title: "Polyrhythm", artist: "BeatClikr", songId: "beatclikr.polyrhythm")
+        let alphaB = PracticedSong(title: "Alpha", artist: "Bravo", songId: "song.alpha-b")
+        let metronome = PracticedSong(title: "Metronome", artist: "BeatClikr", songId: Song.metronomeSongId)
+        let alphaA = PracticedSong(title: "Alpha", artist: "Alpha", songId: "song.alpha-a")
+
+        let sorted = vm.sortedPracticeSongs([zulu, polyrhythm, alphaB, metronome, alphaA])
+
+        #expect(sorted.compactMap(\.songId) == [
+            Song.metronomeSongId,
+            "beatclikr.polyrhythm",
+            "song.alpha-a",
+            "song.alpha-b",
+            "song.zulu",
+        ])
+    }
+
     @Test func `duplicate built in modes retain single daily credit`() throws {
         let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
         let context = container.mainContext
