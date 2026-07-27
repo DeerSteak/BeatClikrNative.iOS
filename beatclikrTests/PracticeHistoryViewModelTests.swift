@@ -405,4 +405,112 @@ struct PracticeHistoryViewModelTests {
         #expect(ids.contains("beatclikr.metronome"))
         #expect(ids.contains("beatclikr.polyrhythm"))
     }
+
+    // MARK: - Stable practice-day identity and repair
+
+    @Test func `practice day identity remains the recorded local day after travel`() throws {
+        let losAngeles = try #require(TimeZone(identifier: "America/Los_Angeles"))
+        let tokyo = try #require(TimeZone(identifier: "Asia/Tokyo"))
+        var sourceCalendar = Calendar(identifier: .gregorian)
+        sourceCalendar.timeZone = losAngeles
+        let recordedAt = try #require(sourceCalendar.date(
+            from: DateComponents(year: 2026, month: 3, day: 8, hour: 23, minute: 30),
+        ))
+
+        let session = PracticeSession(date: recordedAt, timeZone: losAngeles)
+
+        #expect(session.dayKey == "2026-03-08")
+        #expect(session.timeZoneIdentifier == losAngeles.identifier)
+        #expect(PracticeDayIdentity(date: recordedAt, timeZone: tokyo).key == "2026-03-09")
+        #expect(session.dayKey == "2026-03-08")
+    }
+
+    @Test func `legacy session migration freezes day and time zone metadata`() throws {
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
+        let context = container.mainContext
+        let zone = try #require(TimeZone(identifier: "America/Chicago"))
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = zone
+        let recordedAt = try #require(calendar.date(
+            from: DateComponents(year: 2026, month: 11, day: 1, hour: 1, minute: 30),
+        ))
+        let legacy = PracticeSession(date: recordedAt)
+        legacy.dayKey = nil
+        legacy.timeZoneIdentifier = nil
+        legacy.calendarIdentifier = nil
+        context.insert(legacy)
+
+        let changes = try PracticeDayRepair.repair(context: context, timeZone: zone)
+
+        #expect(changes == 1)
+        #expect(legacy.dayKey == "2026-11-01")
+        #expect(legacy.timeZoneIdentifier == zone.identifier)
+        #expect(legacy.calendarIdentifier == "gregorian")
+        #expect(legacy.id == "practice-day:2026-11-01")
+    }
+
+    @Test func `duplicate day repair preserves every practiced song`() throws {
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
+        let context = container.mainContext
+        let firstSong = PracticedSong(title: "First", artist: "Artist", songId: "song.first")
+        let secondSong = PracticedSong(title: "Second", artist: "Artist", songId: "song.second")
+        let first = PracticeSession(date: today, songsPracticed: [firstSong])
+        let second = PracticeSession(date: today, songsPracticed: [secondSong])
+        first.id = "device-a"
+        second.id = "device-b"
+        context.insert(first)
+        context.insert(second)
+
+        try PracticeDayRepair.repair(context: context)
+        let sessions = try context.fetch(FetchDescriptor<PracticeSession>())
+        let merged = try #require(sessions.first)
+
+        #expect(sessions.count == 1)
+        #expect(merged.id == "practice-day:\(PracticeDayIdentity(date: today).key)")
+        #expect(Set(merged.songsPracticed?.compactMap(\.songId) ?? []) == ["song.first", "song.second"])
+    }
+
+    @Test func `offline duplicate song counts merge once and repair is idempotent`() throws {
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
+        let context = container.mainContext
+        let firstSong = PracticedSong(title: "Shared", artist: "Artist", songId: "song.shared")
+        firstSong.timesPracticed = 2
+        let secondSong = PracticedSong(title: "Shared", artist: "Artist", songId: "song.shared")
+        secondSong.timesPracticed = 3
+        let first = PracticeSession(date: today, songsPracticed: [firstSong])
+        let second = PracticeSession(date: today, songsPracticed: [secondSong])
+        first.id = "device-a"
+        second.id = "device-b"
+        context.insert(first)
+        context.insert(second)
+
+        try PracticeDayRepair.repair(context: context)
+        let firstResult = try #require(context.fetch(FetchDescriptor<PracticeSession>()).first)
+        #expect(firstResult.songsPracticed?.count == 1)
+        #expect(firstResult.songsPracticed?.first?.timesPracticed == 5)
+
+        let secondRepairChanges = try PracticeDayRepair.repair(context: context)
+        let secondResult = try #require(context.fetch(FetchDescriptor<PracticeSession>()).first)
+        #expect(secondRepairChanges == 0)
+        #expect(secondResult.songsPracticed?.first?.timesPracticed == 5)
+    }
+
+    @Test func `duplicate built in modes retain single daily credit`() throws {
+        let container = try TestModelContainerFactory.make([Song.self, PracticeSession.self, PracticedSong.self])
+        let context = container.mainContext
+        let firstSong = PracticedSong(title: "Metronome", artist: "BeatClikr", songId: Song.metronomeSongId)
+        let secondSong = PracticedSong(title: "Metronome", artist: "BeatClikr", songId: Song.metronomeSongId)
+        let first = PracticeSession(date: today, songsPracticed: [firstSong])
+        let second = PracticeSession(date: today, songsPracticed: [secondSong])
+        first.id = "device-a"
+        second.id = "device-b"
+        context.insert(first)
+        context.insert(second)
+
+        try PracticeDayRepair.repair(context: context)
+        let merged = try #require(context.fetch(FetchDescriptor<PracticeSession>()).first)
+
+        #expect(merged.songsPracticed?.count == 1)
+        #expect(merged.songsPracticed?.first?.timesPracticed == 1)
+    }
 }

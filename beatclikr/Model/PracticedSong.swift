@@ -8,6 +8,17 @@
 import Foundation
 import SwiftData
 
+struct PracticedSongSnapshot {
+    let id: String
+    let title: String?
+    let artist: String?
+    let beatsPerMinute: Double?
+    let beatsPerMeasure: Int?
+    let groove: Groove?
+    let timesPracticed: Int
+    let songId: String?
+}
+
 @Model
 final class PracticedSong: Identifiable, SongDisplayable {
     var id: String?
@@ -42,5 +53,16 @@ final class PracticedSong: Identifiable, SongDisplayable {
         groove = nil
         timesPracticed = 1
         self.songId = songId
+    }
+
+    init(snapshot: PracticedSongSnapshot) {
+        id = snapshot.id
+        title = snapshot.title
+        artist = snapshot.artist
+        beatsPerMinute = snapshot.beatsPerMinute
+        beatsPerMeasure = snapshot.beatsPerMeasure
+        groove = snapshot.groove
+        timesPracticed = snapshot.timesPracticed
+        songId = snapshot.songId
     }
 }

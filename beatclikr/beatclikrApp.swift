@@ -134,6 +134,9 @@ struct beatclikrApp: App {
         .modelContainer(container)
         .onChange(of: scenePhase) { _, newPhase in
             metronomeViewModel.setNonAudioEffectsEnabled(newPhase == .active)
+            if newPhase == .background {
+                PracticeDayRepair.repairIfPossible(context: container.mainContext)
+            }
             guard newPhase == .active else {
                 updateIdleTimer(for: newPhase)
                 return
@@ -216,6 +219,8 @@ struct beatclikrApp: App {
     }
 
     private static func performStartupMaintenance(context: ModelContext) {
+        PracticeDayRepair.repairIfPossible(context: context)
+
         let orphaned = (try? context.fetch(
             FetchDescriptor<PlaylistEntry>(predicate: #Predicate { $0.song == nil }),
         )) ?? []

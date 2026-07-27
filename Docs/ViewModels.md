@@ -16,7 +16,15 @@ All ViewModels are injected as `EnvironmentObject`s from `beatclikrApp` and shar
 
 - **PlaylistDetailViewModel** - Manages playlist sequencing (next/previous/play), edit, reorder, and delete operations for a single playlist
 
-- **PracticeHistoryViewModel** - Records songs played per day (`recordSongPlayed`); publishes `practiceDates` (`Set<Date>`) and `selectedDateSongs` (`[PracticedSong]`) as observable state; exposes computed properties for current/longest streak values, subtitles, reminder flag, and share text so views contain no streak logic; generates personalized notification bodies projected across future days; exposes an `onPracticeRecorded` callback invoked after each save so the app can immediately reschedule notifications
+- **PracticeHistoryViewModel** - Records songs played against a frozen local
+  civil-day identity (`recordSongPlayed`), repairs legacy/duplicate day records
+  before lookup, and publishes `practiceDates` (`Set<Date>`) and
+  `selectedDateSongs` (`[PracticedSong]`) as observable state; exposes computed
+  properties for current/longest streak values, subtitles, reminder flag, and
+  share text so views contain no streak logic; generates personalized
+  notification bodies projected across future days; exposes an
+  `onPracticeRecorded` callback invoked after each save so the app can
+  immediately reschedule notifications
 
 ## Base Class
 

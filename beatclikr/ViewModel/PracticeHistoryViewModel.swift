@@ -87,13 +87,10 @@ class PracticeHistoryViewModel: ObservableObject {
     }
 
     func getOrCreateTodaysSession(context: ModelContext) -> PracticeSession {
-        let start = Calendar.current.startOfDay(for: .now)
-        let end = Calendar.current.date(byAdding: .day, value: 1, to: start)!
-        let distantPast = Date.distantPast
+        PracticeDayRepair.repairIfPossible(context: context)
+        let key = PracticeDayIdentity(date: .now).key
         let descriptor = FetchDescriptor<PracticeSession>(
-            predicate: #Predicate { session in
-                (session.date ?? distantPast) >= start && (session.date ?? distantPast) < end
-            },
+            predicate: #Predicate { $0.dayKey == key },
         )
 
         if let existing = try? context.fetch(descriptor).first {
@@ -106,21 +103,21 @@ class PracticeHistoryViewModel: ObservableObject {
     }
 
     func session(for date: Date, context: ModelContext) -> PracticeSession? {
-        let start = Calendar.current.startOfDay(for: date)
-        let end = Calendar.current.date(byAdding: .day, value: 1, to: start)!
-        let distantPast = Date.distantPast
+        PracticeDayRepair.repairIfPossible(context: context)
+        let key = PracticeDayIdentity(date: date).key
         let descriptor = FetchDescriptor<PracticeSession>(
-            predicate: #Predicate { session in
-                (session.date ?? distantPast) >= start && (session.date ?? distantPast) < end
-            },
+            predicate: #Predicate { $0.dayKey == key },
         )
         return try? context.fetch(descriptor).first
     }
 
     func markedDates(context: ModelContext) -> Set<Date> {
+        PracticeDayRepair.repairIfPossible(context: context)
         let descriptor = FetchDescriptor<PracticeSession>()
         let sessions = (try? context.fetch(descriptor)) ?? []
-        return Set(sessions.compactMap { $0.date.map { Calendar.current.startOfDay(for: $0) } })
+        return Set(sessions.compactMap { session in
+            session.dayKey.flatMap { PracticeDayIdentity.date(for: $0) }
+        })
     }
 
     func currentStreak(from dates: Set<Date>) -> Int {
