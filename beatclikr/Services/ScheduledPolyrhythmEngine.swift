@@ -28,8 +28,8 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
     private let beatNode = AVAudioPlayerNode()
     private let rhythmNode = AVAudioPlayerNode()
 
-    private var beatBuffer: AVAudioPCMBuffer?
-    private var rhythmBuffer: AVAudioPCMBuffer?
+    private var beatBuffers: AudioBufferClipCache?
+    private var rhythmBuffers: AudioBufferClipCache?
     private var isGraphConfigured = false
 
     // Beat track state
@@ -65,8 +65,8 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
     // MARK: - PolyrhythmAudioEngine
 
     func loadSounds(beatName: String, rhythmName: String, from sounds: [SoundFile]) throws {
-        beatBuffer = nil
-        rhythmBuffer = nil
+        beatBuffers = nil
+        rhythmBuffers = nil
         guard let beatSound = sounds.first(where: { $0.displayName == beatName }) else {
             throw PlaybackError.soundNotFound(beatName)
         }
@@ -79,15 +79,15 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
         guard let rhythmFile = rhythmSound.audioFile else {
             throw PlaybackError.soundUnreadable(rhythmName)
         }
-        beatBuffer = try readBuffer(from: beatFile, name: beatName)
-        rhythmBuffer = try readBuffer(from: rhythmFile, name: rhythmName)
+        beatBuffers = try AudioBufferClipCache(source: readBuffer(from: beatFile, name: beatName))
+        rhythmBuffers = try AudioBufferClipCache(source: readBuffer(from: rhythmFile, name: rhythmName))
     }
 
     func startPolyrhythm(bpm: Double, beats: Int, against: Int, delegate: PolyrhythmAudioEngineDelegate) throws {
         guard bpm > 0, beats >= 1, against >= 1 else {
             throw PlaybackError.invalidConfiguration
         }
-        guard beatBuffer != nil, rhythmBuffer != nil else {
+        guard beatBuffers != nil, rhythmBuffers != nil else {
             throw PlaybackError.soundUnreadable("Polyrhythm")
         }
         guard engine.isRunning else {
@@ -200,7 +200,7 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
     }
 
     private func scheduleBeatBuffers() {
-        guard isPlaying, let buffer = beatBuffer else { return }
+        guard isPlaying, let buffers = beatBuffers else { return }
 
         let capturedSession = sessionID
         let muted = UserDefaultsService.instance.muteMetronome
@@ -220,7 +220,7 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
                 sessionID: capturedSession,
             )
 
-            buffer.frameLength = min(buffer.frameCapacity, beatFramesPerInterval)
+            let buffer = buffers.buffer(maximumFrameLength: beatFramesPerInterval)
             beatNode.scheduleBuffer(buffer, at: when, options: [], completionCallbackType: .dataConsumed) { [weak self] _ in
                 DispatchQueue.main.async {
                     guard let self, self.sessionID == capturedSession else { return }
@@ -236,7 +236,7 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
     }
 
     private func scheduleRhythmBuffers() {
-        guard isPlaying, let buffer = rhythmBuffer else { return }
+        guard isPlaying, let buffers = rhythmBuffers else { return }
 
         let capturedSession = sessionID
         let muted = UserDefaultsService.instance.muteMetronome
@@ -256,7 +256,7 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
                 sessionID: capturedSession,
             )
 
-            buffer.frameLength = min(buffer.frameCapacity, rhythmFramesPerInterval)
+            let buffer = buffers.buffer(maximumFrameLength: rhythmFramesPerInterval)
             rhythmNode.scheduleBuffer(buffer, at: when, options: [], completionCallbackType: .dataConsumed) { [weak self] _ in
                 DispatchQueue.main.async {
                     guard let self, self.sessionID == capturedSession else { return }

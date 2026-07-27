@@ -81,6 +81,7 @@ BeatClikrNative.iOS uses **AVFoundation** for sound playback. WAV files are read
 
 ### Sound Architecture
 - WAV files are loaded as `AVAudioFile`s and converted into reusable `AVAudioPCMBuffer`s
+- Loaded sample buffers are immutable. When a click is longer than its scheduling interval, `AudioBufferClipCache` creates and reuses a separate immutable clip for that frame length; scheduled buffers are never shortened in place. Each source uses least-recently-used eviction with a 2 MiB derived-buffer budget and a secondary 16-entry limit, so repeated tempo changes cannot grow memory without bound
 - Beat and rhythm sounds are scheduled on separate player nodes
 - Beat vs. rhythm buffers are selected based on the subdivision counter or accent pattern
 - Metronome and polyrhythm sound choices are loaded independently through `AudioPlayerService`

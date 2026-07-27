@@ -21,8 +21,8 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
     private let beatNode = AVAudioPlayerNode()
     private let rhythmNode = AVAudioPlayerNode()
 
-    private var beatBuffer: AVAudioPCMBuffer?
-    private var rhythmBuffer: AVAudioPCMBuffer?
+    private var beatBuffers: AudioBufferClipCache?
+    private var rhythmBuffers: AudioBufferClipCache?
     private var isGraphConfigured = false
 
     private var scheduledCount = 0
@@ -57,8 +57,8 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
     // MARK: - MetronomeAudioEngine
 
     func loadSounds(beatName: String, rhythmName: String, from sounds: [SoundFile]) throws {
-        beatBuffer = nil
-        rhythmBuffer = nil
+        beatBuffers = nil
+        rhythmBuffers = nil
         guard let beatSound = sounds.first(where: { $0.displayName == beatName }) else {
             throw PlaybackError.soundNotFound(beatName)
         }
@@ -71,15 +71,15 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
         guard let rhythmFile = rhythmSound.audioFile else {
             throw PlaybackError.soundUnreadable(rhythmName)
         }
-        beatBuffer = try readBuffer(from: beatFile, name: beatName)
-        rhythmBuffer = try readBuffer(from: rhythmFile, name: rhythmName)
+        beatBuffers = try AudioBufferClipCache(source: readBuffer(from: beatFile, name: beatName))
+        rhythmBuffers = try AudioBufferClipCache(source: readBuffer(from: rhythmFile, name: rhythmName))
     }
 
     func startMetronome(bpm: Double, subdivisions: Int, accentPattern: [Bool]?, delegate: MetronomeAudioEngineDelegate) throws {
         guard bpm > 0, subdivisions > 0 else {
             throw PlaybackError.invalidConfiguration
         }
-        guard beatBuffer != nil, rhythmBuffer != nil else {
+        guard beatBuffers != nil, rhythmBuffers != nil else {
             throw PlaybackError.soundUnreadable("Metronome")
         }
         guard engine.isRunning else {
@@ -202,7 +202,6 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
         let buffer: AVAudioPCMBuffer
         let isBeat: Bool
         let beatInterval: TimeInterval
-        let framesPerInterval: AVAudioFrameCount
         let hostTicksDelta: UInt64
         let rampedBpm: Double?
     }
@@ -239,7 +238,7 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
 
         if let pattern = accentPattern {
             let isBeat = pattern[patternIndex]
-            guard let audio = isBeat ? beatBuffer : rhythmBuffer else { return nil }
+            guard let buffers = isBeat ? beatBuffers : rhythmBuffers else { return nil }
 
             let beatInterval: TimeInterval
             if isBeat {
@@ -254,14 +253,16 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
                 beatInterval = subdivisionDuration
             }
             patternIndex = (patternIndex + 1) % pattern.count
-            return ScheduledBeat(buffer: audio, isBeat: isBeat, beatInterval: beatInterval, framesPerInterval: framesPerInterval, hostTicksDelta: hostTicksDelta, rampedBpm: rampedBpm)
+            let audio = buffers.buffer(maximumFrameLength: framesPerInterval)
+            return ScheduledBeat(buffer: audio, isBeat: isBeat, beatInterval: beatInterval, hostTicksDelta: hostTicksDelta, rampedBpm: rampedBpm)
         } else {
             let isBeat = currentSubdivision == 0
             let playBeat = useAlternateSixteenth ? currentSubdivision % 2 == 0 : currentSubdivision == 0
-            guard let audio = playBeat ? beatBuffer : rhythmBuffer else { return nil }
+            guard let buffers = playBeat ? beatBuffers : rhythmBuffers else { return nil }
             let beatInterval = 60.0 / currentBPM
             currentSubdivision = (currentSubdivision + 1) % currentSubdivisions
-            return ScheduledBeat(buffer: audio, isBeat: isBeat, beatInterval: beatInterval, framesPerInterval: framesPerInterval, hostTicksDelta: hostTicksDelta, rampedBpm: rampedBpm)
+            let audio = buffers.buffer(maximumFrameLength: framesPerInterval)
+            return ScheduledBeat(buffer: audio, isBeat: isBeat, beatInterval: beatInterval, hostTicksDelta: hostTicksDelta, rampedBpm: rampedBpm)
         }
     }
 
@@ -279,8 +280,6 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
 
         while scheduledCount < scheduleAheadCount {
             guard let beat = nextBeat(sampleRate: sampleRate) else { break }
-
-            beat.buffer.frameLength = min(beat.buffer.frameCapacity, beat.framesPerInterval)
 
             let node = beat.isBeat ? beatNode : rhythmNode
             let scheduledHostTime = nextBeatHostTime
