@@ -7,6 +7,7 @@
 
 import Foundation
 @preconcurrency import MediaPlayer
+import UIKit
 
 enum PlaybackMode: Equatable {
     case metronome
@@ -52,12 +53,19 @@ final class LockScreenPlaybackController: LockScreenPlaybackControlling {
         case .polyrhythm:
             "Polyrhythm"
         }
-        MPNowPlayingInfoCenter.default().nowPlayingInfo = [
+        var nowPlayingInfo: [String: Any] = [
             MPMediaItemPropertyTitle: "BeatClikr",
             MPMediaItemPropertyArtist: modeName,
             MPNowPlayingInfoPropertyIsLiveStream: true,
             MPNowPlayingInfoPropertyPlaybackRate: 1,
         ]
+        if let icon = UIImage(named: "appicondisplay") {
+            // The modern request-handler initializer crashes on some devices
+            // when SpringBoard requests artwork during metronome playback.
+            // This image is static, so the compatibility initializer is safer.
+            nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: icon)
+        }
+        MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
         setStopCommandsEnabled(true)
         MPNowPlayingInfoCenter.default().playbackState = .playing
     }

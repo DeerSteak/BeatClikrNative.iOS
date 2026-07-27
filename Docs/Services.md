@@ -34,8 +34,10 @@
   require the user to press Play again.
 - During playback, BeatClikr publishes minimal Now Playing metadata and enables
   the lock-screen and Control Center Pause/Stop commands. Both commands stop
-  the active mode and return its UI to idle. Stop-capable commands are enabled
-  for each playback session and disabled again on stop, so repeated
+  the active mode and return its UI to idle. The static app display image is
+  supplied as Now Playing artwork without an asynchronous image provider.
+  Stop-capable commands are enabled for each playback session and disabled
+  again on stop, so repeated
   start-lock-stop cycles do not leave stale controls. If iOS presents a
   Play-shaped button in the transport slot, it also stops current playback; it
   never restarts audio. Seeking, skipping, playback-rate changes, and track
