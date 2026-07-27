@@ -1,0 +1,22 @@
+# BeatClikr SwiftFormat configuration
+# Minimum SwiftFormat version: 0.62.1
+# Inferred from the existing source tree on 2026-07-27.
+
+--min-version 0.62.1
+--swift-version 6.3
+
+# Existing wrapping conventions
+--wrap-collections before-first
+--wrap-parameters before-first
+
+# Existing numeric literal convention
+--binary-grouping none
+--decimal-grouping 3,6
+--hex-grouping none
+--octal-grouping none
+
+# BeatClikr intentionally keeps simple if statements on one line.
+--disable wrapIfStatementBodies
+
+# Never traverse generated or dependency directories.
+--exclude .build,build,DerivedData,Pods,Carthage,Dependencies
