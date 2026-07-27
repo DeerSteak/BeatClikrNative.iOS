@@ -179,6 +179,9 @@ class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDelegate
             self?.iconScale = scale
             self?.beatPulse = pulse
         }
+        visualAnimator.playbackTime = { [weak audio] in
+            audio?.metronomePlaybackTime()
+        }
         observeSettings()
     }
 
@@ -463,8 +466,11 @@ private final class MetronomeVisualAnimator: NSObject {
     private var lastBeatTime: CFTimeInterval = CACurrentMediaTime()
     private var beatInterval: TimeInterval = 0.5
     private var isAnimating = false
+    private var lastPlaybackTime: TimeInterval?
+    private var lastMediaTime: CFTimeInterval?
 
     var onUpdate: ((CGFloat, Double) -> Void)?
+    var playbackTime: (() -> TimeInterval?)?
 
     func start() {
         guard displayLink == nil else {
@@ -486,14 +492,14 @@ private final class MetronomeVisualAnimator: NSObject {
     }
 
     func notifyBeat(interval: TimeInterval) {
-        lastBeatTime = CACurrentMediaTime()
+        lastBeatTime = currentTime()
         beatInterval = max(interval, 0.001)
         onUpdate?(MetronomeConstants.iconScaleMax, 1.0)
     }
 
     @objc private func tick(_ displayLink: CADisplayLink) {
         guard isAnimating else { return }
-        let elapsed = displayLink.timestamp - lastBeatTime
+        let elapsed = currentTime(fallback: displayLink.timestamp) - lastBeatTime
         let progress = min(1.0, max(0.0, elapsed / beatInterval))
         let scale = lerp(
             from: MetronomeConstants.iconScaleMax,
@@ -501,6 +507,18 @@ private final class MetronomeVisualAnimator: NSObject {
             progress: progress,
         )
         onUpdate?(scale, 1.0 - progress)
+    }
+
+    private func currentTime(fallback: CFTimeInterval = CACurrentMediaTime()) -> CFTimeInterval {
+        if let playbackTime = playbackTime?() {
+            lastPlaybackTime = playbackTime
+            lastMediaTime = fallback
+            return playbackTime
+        }
+        if let lastPlaybackTime, let lastMediaTime {
+            return lastPlaybackTime + fallback - lastMediaTime
+        }
+        return fallback
     }
 
     private func lerp(from: CGFloat, to: CGFloat, progress: Double) -> CGFloat {

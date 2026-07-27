@@ -107,6 +107,9 @@ class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate {
             self?.rhythmPulse = rhythmPulse
             self?.cycleProgress = cycleProgress
         }
+        visualAnimator.playbackTime = { [weak audio] in
+            audio?.polyrhythmPlaybackTime()
+        }
         observeSettings()
     }
 
@@ -268,8 +271,11 @@ private final class PolyrhythmVisualAnimator: NSObject {
     private var currentBeatPulse = 0.0
     private var currentRhythmPulse = 0.0
     private var currentCycleProgress = 0.0
+    private var lastPlaybackTime: TimeInterval?
+    private var lastMediaTime: CFTimeInterval?
 
     var onUpdate: ((Double, Double, Double) -> Void)?
+    var playbackTime: (() -> TimeInterval?)?
 
     func start() {
         guard displayLink == nil else { return }
@@ -291,7 +297,7 @@ private final class PolyrhythmVisualAnimator: NSObject {
     }
 
     func notifyBeat(interval: TimeInterval) {
-        lastBeatTime = CACurrentMediaTime()
+        lastBeatTime = currentTime()
         beatInterval = max(interval, 0.001)
         beatPulseActive = true
         currentBeatPulse = 1.0
@@ -299,7 +305,7 @@ private final class PolyrhythmVisualAnimator: NSObject {
     }
 
     func notifyRhythm(interval: TimeInterval) {
-        lastRhythmTime = CACurrentMediaTime()
+        lastRhythmTime = currentTime()
         rhythmInterval = max(interval, 0.001)
         rhythmPulseActive = true
         currentRhythmPulse = 1.0
@@ -307,7 +313,7 @@ private final class PolyrhythmVisualAnimator: NSObject {
     }
 
     func notifyCycleStart(duration: TimeInterval) {
-        cycleStartTime = CACurrentMediaTime()
+        cycleStartTime = currentTime()
         cycleDuration = max(duration, 0.001)
         cycleActive = true
         currentCycleProgress = 0
@@ -316,12 +322,13 @@ private final class PolyrhythmVisualAnimator: NSObject {
 
     @objc private func tick(_ displayLink: CADisplayLink) {
         guard beatPulseActive || rhythmPulseActive || cycleActive else { return }
+        let timestamp = currentTime(fallback: displayLink.timestamp)
 
         if beatPulseActive {
             currentBeatPulse = progressRemaining(
                 from: lastBeatTime,
                 duration: beatInterval,
-                timestamp: displayLink.timestamp,
+                timestamp: timestamp,
             )
             beatPulseActive = currentBeatPulse > 0
         }
@@ -330,7 +337,7 @@ private final class PolyrhythmVisualAnimator: NSObject {
             currentRhythmPulse = progressRemaining(
                 from: lastRhythmTime,
                 duration: rhythmInterval,
-                timestamp: displayLink.timestamp,
+                timestamp: timestamp,
             )
             rhythmPulseActive = currentRhythmPulse > 0
         }
@@ -339,12 +346,24 @@ private final class PolyrhythmVisualAnimator: NSObject {
             currentCycleProgress = progressElapsed(
                 from: cycleStartTime,
                 duration: cycleDuration,
-                timestamp: displayLink.timestamp,
+                timestamp: timestamp,
             )
             cycleActive = currentCycleProgress < 1
         }
 
         onUpdate?(currentBeatPulse, currentRhythmPulse, currentCycleProgress)
+    }
+
+    private func currentTime(fallback: CFTimeInterval = CACurrentMediaTime()) -> CFTimeInterval {
+        if let playbackTime = playbackTime?() {
+            lastPlaybackTime = playbackTime
+            lastMediaTime = fallback
+            return playbackTime
+        }
+        if let lastPlaybackTime, let lastMediaTime {
+            return lastPlaybackTime + fallback - lastMediaTime
+        }
+        return fallback
     }
 
     private func progressRemaining(from startTime: CFTimeInterval, duration: TimeInterval, timestamp: CFTimeInterval) -> Double {

@@ -23,6 +23,18 @@ protocol AudioPlaybackService: AnyObject {
     func setRamp(enabled: Bool, increment: Int, interval: Int)
     func startPolyrhythm(bpm: Double, beats: Int, against: Int) throws
     func stopPolyrhythm()
+    func metronomePlaybackTime() -> TimeInterval?
+    func polyrhythmPlaybackTime() -> TimeInterval?
+}
+
+extension AudioPlaybackService {
+    func metronomePlaybackTime() -> TimeInterval? {
+        nil
+    }
+
+    func polyrhythmPlaybackTime() -> TimeInterval? {
+        nil
+    }
 }
 
 @MainActor
@@ -91,6 +103,14 @@ class AudioPlayerService: AudioPlaybackService, MetronomeAudioEngineDelegate, Po
 
     func stopPolyrhythm() {
         polyrhythmEngine.stopPolyrhythm()
+    }
+
+    func metronomePlaybackTime() -> TimeInterval? {
+        metronomeEngine.presentedPlaybackTime()
+    }
+
+    func polyrhythmPlaybackTime() -> TimeInterval? {
+        polyrhythmEngine.presentedPlaybackTime()
     }
 
     // MARK: - MetronomeAudioEngineDelegate

@@ -163,6 +163,18 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
         engine.stop()
     }
 
+    func presentedPlaybackTime() -> TimeInterval? {
+        guard let renderTime = beatNode.lastRenderTime,
+              let playerTime = beatNode.playerTime(forNodeTime: renderTime),
+              playerTime.isSampleTimeValid,
+              playerTime.sampleRate > 0
+        else {
+            return nil
+        }
+        return Double(playerTime.sampleTime) / playerTime.sampleRate
+            - beatNode.outputPresentationLatency
+    }
+
     // MARK: - Private
 
     private func secondsToHostTicks(_ seconds: Double) -> UInt64 {
