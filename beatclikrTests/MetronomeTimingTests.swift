@@ -273,6 +273,51 @@ final class AbsoluteAudioTimelineTests: XCTestCase {
         XCTAssertEqual(plan.events[3].beatInterval, 0.5, accuracy: 0.000_001)
     }
 
+    func testOddMeterLastOnsetHasAFullIntervalBeforeNextDownbeat() throws {
+        let patterns = [
+            [true, false, true, false, true],
+            [true, false, false, true, false, true, false],
+        ]
+
+        for sampleRate in [44100.0, 48000.0] {
+            for subdivisions in [1, 2] {
+                for pattern in patterns {
+                    let first = try MetronomeAudioBlockPlan(
+                        blockIndex: 37,
+                        sampleRate: sampleRate,
+                        bpm: 137,
+                        subdivisions: subdivisions,
+                        accentPattern: pattern,
+                        alternateSixteenth: false,
+                    )
+                    let second = try MetronomeAudioBlockPlan(
+                        blockIndex: 38,
+                        sampleRate: sampleRate,
+                        bpm: 137,
+                        subdivisions: subdivisions,
+                        accentPattern: pattern,
+                        alternateSixteenth: false,
+                    )
+                    let lastOnset = try XCTUnwrap(first.events.last?.absoluteSample)
+                    let nextDownbeat = try XCTUnwrap(second.events.first?.absoluteSample)
+                    let expectedInterval = try AbsoluteAudioTimeline(
+                        sampleRate: sampleRate,
+                        intervalsPerMinute: 137 * Double(subdivisions),
+                    )
+                    let globalLastInterval = Int64(38 * pattern.count - 1)
+                    let expectedFrames = expectedInterval.samplePosition(globalLastInterval + 1)
+                        - expectedInterval.samplePosition(globalLastInterval)
+
+                    XCTAssertEqual(nextDownbeat - lastOnset, expectedFrames)
+                    XCTAssertEqual(
+                        try lastOnset + Int64(XCTUnwrap(first.events.last?.maximumFrameLength)),
+                        nextDownbeat,
+                    )
+                }
+            }
+        }
+    }
+
     func testEverySupportedPolyrhythmSharesExactCycleBoundaries() throws {
         for beats in 1 ... 15 {
             for against in 1 ... 15 {
@@ -296,6 +341,42 @@ final class AbsoluteAudioTimelineTests: XCTestCase {
                 XCTAssertEqual(first.rhythmEvents.first?.relativeSample, 0)
                 XCTAssertTrue(first.beatEvents.allSatisfy { $0.relativeSample < first.frameCount })
                 XCTAssertTrue(first.rhythmEvents.allSatisfy { $0.relativeSample < first.frameCount })
+            }
+        }
+    }
+
+    func testEveryPolyrhythmVoiceHasAFullIntervalBeforeCycleRestart() throws {
+        for sampleRate in [44100.0, 48000.0] {
+            for beats in 1 ... 15 {
+                for against in 1 ... 15 {
+                    let first = try PolyrhythmAudioBlockPlan(
+                        blockIndex: 37,
+                        sampleRate: sampleRate,
+                        bpm: 137,
+                        beats: beats,
+                        against: against,
+                    )
+                    let second = try PolyrhythmAudioBlockPlan(
+                        blockIndex: 38,
+                        sampleRate: sampleRate,
+                        bpm: 137,
+                        beats: beats,
+                        against: against,
+                    )
+                    let lastBeat = try XCTUnwrap(first.beatEvents.last)
+                    let nextBeat = try XCTUnwrap(second.beatEvents.first)
+                    let lastRhythm = try XCTUnwrap(first.rhythmEvents.last)
+                    let nextRhythm = try XCTUnwrap(second.rhythmEvents.first)
+
+                    XCTAssertEqual(
+                        lastBeat.absoluteSample + Int64(lastBeat.maximumFrameLength),
+                        nextBeat.absoluteSample,
+                    )
+                    XCTAssertEqual(
+                        lastRhythm.absoluteSample + Int64(lastRhythm.maximumFrameLength),
+                        nextRhythm.absoluteSample,
+                    )
+                }
             }
         }
     }

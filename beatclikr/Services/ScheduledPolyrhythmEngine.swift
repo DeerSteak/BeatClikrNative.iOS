@@ -95,8 +95,6 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
         sessionID += 1
         beatNode.stop()
         rhythmNode.stop()
-        beatNode.play()
-        rhythmNode.play()
 
         self.delegate = delegate
         currentBPM = bpm
@@ -108,6 +106,9 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
         rollingOriginHostTime = originHostTime
         nextRollingBlockIndex = 0
         prepareRollingBuffers()
+        guard isPlaying else { return }
+        beatNode.play(at: AVAudioTime(hostTime: originHostTime))
+        rhythmNode.play(at: AVAudioTime(hostTime: originHostTime))
     }
 
     func stopPolyrhythm() {
@@ -233,13 +234,11 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
             )
         }
 
-        let blockHostTime = rollingHostTime(
-            forAbsoluteSample: plan.absoluteStartSample,
-            sampleRate: slot.buffer.format.sampleRate,
-        )
+        // The player itself is host-time anchored after the initial queue is built.
+        // Every buffer is appended so boundaries remain on its integer sample timeline.
         beatNode.scheduleBuffer(
             slot.buffer,
-            at: AVAudioTime(hostTime: blockHostTime),
+            at: nil,
             options: [],
             completionCallbackType: .dataConsumed,
         ) { [weak self] _ in

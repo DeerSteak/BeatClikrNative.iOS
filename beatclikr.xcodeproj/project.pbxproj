@@ -34,11 +34,11 @@
 		B59482B12FA3C88A00410C67 /* TapTempoButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59482B02FA3C88A00410C67 /* TapTempoButton.swift */; };
 		B59482B32FA3C90B00410C67 /* SongNavigationViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */; };
 		B59515C22FAA75DA0023CA41 /* BeatPattern.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59515C12FAA75DA0023CA41 /* BeatPattern.swift */; };
+		B59EE8512FA4DBC20021C335 /* SongNavigationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */; };
 		B5A110012FB8000000000001 /* PlaybackState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A110002FB8000000000001 /* PlaybackState.swift */; };
 		B5A113012FB8000000000001 /* PlaybackCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A113002FB8000000000001 /* PlaybackCoordinator.swift */; };
 		B5A114012FB8000000000001 /* AudioBufferClipCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A114002FB8000000000001 /* AudioBufferClipCache.swift */; };
 		B5A115012FB8000000000001 /* AbsoluteAudioTimeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A115002FB8000000000001 /* AbsoluteAudioTimeline.swift */; };
-		B59EE8512FA4DBC20021C335 /* SongNavigationViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */; };
 		B5B638B62FAAD8C300675060 /* PolyrhythmAudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B638B52FAAD8C300675060 /* PolyrhythmAudioEngine.swift */; };
 		B5B638BA2FAAD95800675060 /* PolyrhythmViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B638B92FAAD95800675060 /* PolyrhythmViewModel.swift */; };
 		B5B638BC2FAAD97900675060 /* PolyrhythmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B638BB2FAAD97900675060 /* PolyrhythmView.swift */; };
@@ -142,11 +142,11 @@
 		B59482B02FA3C88A00410C67 /* TapTempoButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapTempoButton.swift; sourceTree = "<group>"; };
 		B59482B22FA3C90B00410C67 /* SongNavigationViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongNavigationViewModel.swift; sourceTree = "<group>"; };
 		B59515C12FAA75DA0023CA41 /* BeatPattern.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BeatPattern.swift; sourceTree = "<group>"; };
+		B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongNavigationViewModelTests.swift; sourceTree = "<group>"; };
 		B5A110002FB8000000000001 /* PlaybackState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackState.swift; sourceTree = "<group>"; };
 		B5A113002FB8000000000001 /* PlaybackCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackCoordinator.swift; sourceTree = "<group>"; };
 		B5A114002FB8000000000001 /* AudioBufferClipCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioBufferClipCache.swift; sourceTree = "<group>"; };
 		B5A115002FB8000000000001 /* AbsoluteAudioTimeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbsoluteAudioTimeline.swift; sourceTree = "<group>"; };
-		B59EE8502FA4DBC20021C335 /* SongNavigationViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongNavigationViewModelTests.swift; sourceTree = "<group>"; };
 		B5B638B52FAAD8C300675060 /* PolyrhythmAudioEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolyrhythmAudioEngine.swift; sourceTree = "<group>"; };
 		B5B638B92FAAD95800675060 /* PolyrhythmViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolyrhythmViewModel.swift; sourceTree = "<group>"; };
 		B5B638BB2FAAD97900675060 /* PolyrhythmView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PolyrhythmView.swift; sourceTree = "<group>"; };
@@ -351,9 +351,9 @@
 				B59515C12FAA75DA0023CA41 /* BeatPattern.swift */,
 				EE04731A2AA39267004E958A /* ClickerType.swift */,
 				EE3BEF3B2A83B476004B0C97 /* Groove.swift */,
+				B5A110002FB8000000000001 /* PlaybackState.swift */,
 				B537D34E2FA382B300CB2D7D /* Playlist.swift */,
 				EE9BD3DC2F89A555007F91FA /* PlaylistEntry.swift */,
-				B5A110002FB8000000000001 /* PlaybackState.swift */,
 				B524A0C32FA52BB60085E73C /* PracticedSong.swift */,
 				B524A0C12FA529E00085E73C /* PracticeSession.swift */,
 				EE84F2F82A7C7A21009E2F23 /* Song.swift */,
@@ -397,11 +397,11 @@
 			isa = PBXGroup;
 			children = (
 				B5A115002FB8000000000001 /* AbsoluteAudioTimeline.swift */,
-				EE478E8A2A879C51008337DB /* AudioPlayerService.swift */,
 				B5A114002FB8000000000001 /* AudioBufferClipCache.swift */,
-				B5A113002FB8000000000001 /* PlaybackCoordinator.swift */,
+				EE478E8A2A879C51008337DB /* AudioPlayerService.swift */,
 				EE82F9A92A7FBFE100B873E7 /* FlashlightService.swift */,
 				CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */,
+				B5A113002FB8000000000001 /* PlaybackCoordinator.swift */,
 				B5B638B52FAAD8C300675060 /* PolyrhythmAudioEngine.swift */,
 				B5F4E57D2FA65B90003FC6E6 /* ReminderNotificationService.swift */,
 				CBDC2C69A4354FB6AE1E388B /* ScheduledMetronomeEngine.swift */,

@@ -52,7 +52,7 @@ Clock Source:       One absolute sample origin on the engine output sample rate
 - The engine independently rounds every event and block boundary from the absolute origin
 - Complete quarter-note/odd-meter blocks are mixed before scheduling
 - Delegate callbacks are scheduled with `DispatchQueue.main.asyncAfter` from the same sample-time positions as playback
-- A completion callback returns an entire consumed block—not an individual click—to the pool
+- A `.dataRendered` completion callback returns an entire rendered block—not an individual click—to the pool
 - A pool slot is never changed while `AVAudioPlayerNode` may still own it
 
 This approach provides:

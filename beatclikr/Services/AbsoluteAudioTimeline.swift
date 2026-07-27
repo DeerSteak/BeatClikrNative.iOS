@@ -10,9 +10,9 @@ import Foundation
 
 /// Stable identity for one buffer in an engine-owned rolling pool.
 ///
-/// AVAudioPlayerNode invokes completion handlers off the main actor. The handler
-/// only transports this identity back to the main actor; all buffer reads and
-/// writes remain main-actor isolated in the owning engine.
+/// AVAudioPlayerNode invokes completion handlers off the main actor. A
+/// `.dataRendered` handler only transports this identity back to the main actor;
+/// all buffer reads and writes remain main-actor isolated in the owning engine.
 final class AudioBufferSlot: @unchecked Sendable {
     let buffer: AVAudioPCMBuffer
 

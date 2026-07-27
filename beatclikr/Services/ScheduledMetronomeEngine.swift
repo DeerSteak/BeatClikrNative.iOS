@@ -178,8 +178,6 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
         sessionID += 1
         beatNode.stop()
         rhythmNode.stop()
-        beatNode.play()
-        rhythmNode.play()
         scheduledCount = 0
         currentSubdivision = 0
         patternIndex = 0
@@ -190,12 +188,17 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
             playbackPath = .dynamic
             rollingBufferSlots = []
             nextBeatHostTime = origin
+            beatNode.play()
+            rhythmNode.play()
             scheduleNextBeats()
         } else {
             playbackPath = .rolling
             rollingOriginHostTime = origin
             nextRollingBlockIndex = 0
             prepareRollingBuffers()
+            guard isPlaying else { return }
+            beatNode.play(at: AVAudioTime(hostTime: origin))
+            rhythmNode.play(at: AVAudioTime(hostTime: origin))
         }
     }
 
@@ -279,13 +282,11 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
             )
         }
 
-        let blockHostTime = rollingHostTime(
-            forAbsoluteSample: plan.absoluteStartSample,
-            sampleRate: slot.buffer.format.sampleRate,
-        )
+        // The player itself is host-time anchored after the initial queue is built.
+        // Every buffer is appended so boundaries remain on its integer sample timeline.
         beatNode.scheduleBuffer(
             slot.buffer,
-            at: AVAudioTime(hostTime: blockHostTime),
+            at: nil,
             options: [],
             completionCallbackType: .dataConsumed,
         ) { [weak self] _ in
