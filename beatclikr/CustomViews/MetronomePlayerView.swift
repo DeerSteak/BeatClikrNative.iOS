@@ -18,6 +18,7 @@ struct MetronomePlayerView: View {
             .frame(height: size * model.iconScale)
             .foregroundColor(Color.appPrimary)
             .accessibilityLabel(model.isPlaying ? "Metronome playing" : "Metronome stopped")
+            .accessibilityValue(model.isPlaying ? (model.isPrimaryBeat ? "Beat" : "Subdivision") : "")
             .accessibilityAddTraits(.updatesFrequently)
     }
 }

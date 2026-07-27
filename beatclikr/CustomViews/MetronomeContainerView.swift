@@ -11,6 +11,7 @@ struct MetronomeContainerView: View {
     private enum Mode: Hashable { case metronome, polyrhythm }
 
     @State private var selectedMode: Mode = .metronome
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @EnvironmentObject private var metronomeModel: MetronomePlaybackViewModel
     @EnvironmentObject private var polyrhythmModel: PolyrhythmViewModel
 
@@ -24,7 +25,7 @@ struct MetronomeContainerView: View {
                         .frame(width: geo.size.width)
                 }
                 .offset(x: selectedMode == .metronome ? 0 : -geo.size.width)
-                .animation(.easeInOut(duration: 0.3), value: selectedMode)
+                .animation(reduceMotion ? nil : .easeInOut(duration: 0.3), value: selectedMode)
             }
             .clipped()
             .onChange(of: selectedMode) { _, newMode in

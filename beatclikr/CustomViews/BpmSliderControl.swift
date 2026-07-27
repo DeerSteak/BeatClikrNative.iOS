@@ -27,6 +27,8 @@ struct BpmSliderControl: View {
 
             Slider(value: $value, in: range, step: 1)
                 .tint(Color.appPrimary)
+                .accessibilityLabel("Tempo")
+                .accessibilityValue("\(Int(value.rounded())) BPM")
 
             Button {
                 value = min(range.upperBound, value + 1)
@@ -40,5 +42,6 @@ struct BpmSliderControl: View {
             .clipShape(Circle())
             .accessibilityLabel("Increase BPM")
         }
+        .accessibilityElement(children: .contain)
     }
 }
