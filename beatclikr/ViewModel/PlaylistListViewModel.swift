@@ -10,7 +10,7 @@ import SwiftData
 import SwiftUI
 
 @MainActor
-class PlaylistListViewModel: ObservableObject {
+final class PlaylistListViewModel: ObservableObject {
     @discardableResult
     func createPlaylist(name: String, context: ModelContext) -> Playlist {
         let playlist = Playlist(name: name)

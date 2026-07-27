@@ -10,7 +10,7 @@ import Foundation
 import SwiftData
 
 @MainActor
-class PracticeHistoryViewModel: ObservableObject {
+final class PracticeHistoryViewModel: ObservableObject {
     static let qualifyingDuration: TimeInterval = 30
 
     struct PlaybackItem {

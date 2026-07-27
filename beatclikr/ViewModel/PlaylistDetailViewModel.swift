@@ -10,7 +10,7 @@ import SwiftData
 import SwiftUI
 
 @MainActor
-class PlaylistDetailViewModel: SongNavigationViewModel {
+final class PlaylistDetailViewModel: SongNavigationViewModel {
     func addSongToPlaylist(_ song: Song, playlist: Playlist, context: ModelContext) {
         withAnimation {
             let entry = PlaylistEntry(song: song, sequence: (playlist.entries ?? []).count)
