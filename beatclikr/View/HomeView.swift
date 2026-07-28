@@ -15,12 +15,12 @@ enum AppSection: String, CaseIterable, Identifiable {
 
     var title: String {
         switch self {
-        case .metronome: "Metronome"
-        case .polyrhythm: "Polyrhythm"
-        case .library: "Song Library"
-        case .playlist: "All Playlists"
-        case .history: "Practice History"
-        case .settings: "Settings"
+        case .metronome: String(localized: "Metronome")
+        case .polyrhythm: String(localized: "Polyrhythm")
+        case .library: String(localized: "Song Library")
+        case .playlist: String(localized: "All Playlists")
+        case .history: String(localized: "Practice History")
+        case .settings: String(localized: "Settings")
         }
     }
 

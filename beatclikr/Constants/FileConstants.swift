@@ -16,7 +16,10 @@ enum SoundBank: String, CaseIterable, Identifiable, CustomStringConvertible, Cod
     }
 
     var description: String {
-        rawValue
+        switch self {
+        case .acoustic: String(localized: "Acoustic")
+        case .synth: String(localized: "Synth")
+        }
     }
 }
 
@@ -46,39 +49,39 @@ enum FileConstants: String, CaseIterable, Identifiable, CustomStringConvertible,
     var description: String {
         switch self {
         case .ClickHi:
-            "Click Hi"
+            String(localized: "Click Hi")
         case .ClickLo:
-            "Click Lo"
+            String(localized: "Click Lo")
         case .Cowbell:
-            "Cowbell"
+            String(localized: "Cowbell")
         case .CrashL:
-            "Crash (Left)"
+            String(localized: "Crash (Left)")
         case .FileExt:
             ".wav"
         case .CrashR:
-            "Crash (Right)"
+            String(localized: "Crash (Right)")
         case .HatClosed:
-            "Hi-Hat (Closed)"
+            String(localized: "Hi-Hat (Closed)")
         case .HatOpen:
-            "Hi-Hat (Open)"
+            String(localized: "Hi-Hat (Open)")
         case .Kick:
-            "Kick"
+            String(localized: "Kick")
         case .RideEdge:
-            "Ride (Edge)"
+            String(localized: "Ride (Edge)")
         case .RideBell:
-            "Ride (Bell)"
+            String(localized: "Ride (Bell)")
         case .Silence:
-            "Silence"
+            String(localized: "Silence")
         case .Snare:
-            "Snare"
+            String(localized: "Snare")
         case .Tamb:
-            "Tamourine"
+            String(localized: "Tambourine")
         case .TomHi:
-            "Tom (High)"
+            String(localized: "Tom (High)")
         case .TomLo:
-            "Tom (Low)"
+            String(localized: "Tom (Low)")
         case .TomMid:
-            "Tom (Mid)"
+            String(localized: "Tom (Mid)")
         }
     }
 

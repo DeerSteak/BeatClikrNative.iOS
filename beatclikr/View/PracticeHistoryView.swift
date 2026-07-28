@@ -53,7 +53,7 @@ struct PracticeHistoryView: View {
 
                 if let selectedDate {
                     List {
-                        Section("Practice History for " + selectedDate.formatted(date: .long, time: .omitted)) {
+                        Section {
                             if model.selectedDateSongs.isEmpty {
                                 Text("No practice recorded")
                                     .foregroundStyle(.secondary)
@@ -75,6 +75,13 @@ struct PracticeHistoryView: View {
                                     }
                                 }
                             }
+                        } header: {
+                            Text(
+                                String(
+                                    format: String(localized: "Practice History for %@"),
+                                    selectedDate.formatted(date: .long, time: .omitted),
+                                ),
+                            )
                         }
                     }
                     .scrollContentBackground(.hidden)
@@ -115,7 +122,7 @@ struct PracticeHistoryView: View {
         formatter.allowedUnits = seconds >= 3600 ? [.hour, .minute] : [.minute, .second]
         formatter.unitsStyle = .abbreviated
         formatter.maximumUnitCount = 2
-        return formatter.string(from: seconds) ?? "0 sec"
+        return formatter.string(from: seconds) ?? String(localized: "0 sec")
     }
 
     @MainActor
@@ -142,8 +149,12 @@ private struct StreakStatView: View {
                 Image(systemName: icon)
                     .foregroundStyle(iconColor)
                     .font(.subheadline)
-                Text("\(value) day\(value == 1 ? "" : "s")")
-                    .font(.headline)
+                Text(
+                    value == 1
+                        ? String(localized: "1 day")
+                        : String(format: String(localized: "%lld days"), value),
+                )
+                .font(.headline)
             }
             Text(label)
                 .font(.caption)

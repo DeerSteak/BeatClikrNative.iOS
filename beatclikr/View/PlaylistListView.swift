@@ -36,14 +36,14 @@ struct PlaylistListView: View {
                             playlistToRename = playlist
                             showingRenameAlert = true
                         } label: {
-                            Text(playlist.name ?? "Untitled")
+                            Text(playlist.name ?? String(localized: "Untitled"))
                                 .frame(maxWidth: .infinity, alignment: .leading)
                         }
                         .foregroundStyle(.primary)
                         .buttonStyle(.plain)
                     } else {
                         NavigationLink(value: playlist) {
-                            Text(playlist.name ?? "Untitled")
+                            Text(playlist.name ?? String(localized: "Untitled"))
                         }
                     }
                 }

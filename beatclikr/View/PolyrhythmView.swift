@@ -29,7 +29,7 @@ struct PolyrhythmView: View {
                         // Visual dot indicators
                         VStack(spacing: 12) {
                             PolyrhythmDotRow(
-                                label: "Beat",
+                                label: String(localized: "Beat"),
                                 count: model.against,
                                 activeIndex: model.activeBeatIndex,
                                 pulse: model.beatPulse,
@@ -37,7 +37,7 @@ struct PolyrhythmView: View {
                                 isPlaying: model.isPlaying,
                             )
                             PolyrhythmDotRow(
-                                label: "Rhythm",
+                                label: String(localized: "Rhythm"),
                                 count: model.beats,
                                 activeIndex: model.activeRhythmIndex,
                                 pulse: model.rhythmPulse,
