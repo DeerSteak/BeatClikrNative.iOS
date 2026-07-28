@@ -17,10 +17,11 @@ struct SongPickerView: View {
 
     var body: some View {
         NavigationStack {
-            List(allSongs) { song in
+            List(allSongs, id: \.persistentModelID) { song in
                 Button {
-                    model.addSongToPlaylist(song, playlist: playlist, context: modelContext)
-                    dismiss()
+                    if model.addSongToPlaylist(song, playlist: playlist, context: modelContext) {
+                        dismiss()
+                    }
                 } label: {
                     SongListItemView(song: song)
                         .frame(maxWidth: .infinity, alignment: .leading)
@@ -38,5 +39,6 @@ struct SongPickerView: View {
                 }
             }
         }
+        .persistenceFailureAlert(model.persistenceFailure, onDismiss: model.dismissPersistenceFailure)
     }
 }

@@ -23,7 +23,7 @@ struct SongLibraryView: View {
         NavigationStack {
             ScrollViewReader { proxy in
                 List {
-                    ForEach(Array(items.enumerated()), id: \.element.id) { index, item in
+                    ForEach(Array(items.enumerated()), id: \.element.persistentModelID) { index, item in
                         HStack {
                             if editMode.isEditing {
                                 Button {
@@ -140,6 +140,7 @@ struct SongLibraryView: View {
                 }
             }
         }
+        .persistenceFailureAlert(model.persistenceFailure, onDismiss: model.dismissPersistenceFailure)
     }
 }
 

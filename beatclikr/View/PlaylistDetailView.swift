@@ -83,11 +83,11 @@ struct PlaylistDetailView: View {
     }
 
     var body: some View {
-        let entries = (playlist.entries ?? []).sorted { ($0.sequence ?? 0) < ($1.sequence ?? 0) }
+        let entries = PlaylistDetailViewModel.orderedEntries(playlist.entries ?? [])
         ScrollViewReader { proxy in
             List {
                 Section {
-                    ForEach(Array(entries.enumerated()), id: \.element.id) { index, entry in
+                    ForEach(Array(entries.enumerated()), id: \.element.persistentModelID) { index, entry in
                         if let song = entry.song {
                             playlistRow(for: song, entry: entry, at: index, in: entries)
                         }
@@ -128,7 +128,7 @@ struct PlaylistDetailView: View {
                     )
                 }
             }
-            .navigationTitle(playlist.name ?? String(localized: "Playlist"))
+            .navigationTitle(playlist.displayName)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {
@@ -172,6 +172,7 @@ struct PlaylistDetailView: View {
                 SongPickerView(playlist: playlist)
                     .environmentObject(model)
             }
+            .persistenceFailureAlert(model.persistenceFailure, onDismiss: model.dismissPersistenceFailure)
         }
     }
 }

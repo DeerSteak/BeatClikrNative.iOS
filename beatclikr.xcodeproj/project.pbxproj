@@ -43,6 +43,10 @@
 		B5D000012FC0000000000001 /* PersistenceRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D000002FC0000000000001 /* PersistenceRepository.swift */; };
 		B5D000032FC0000000000001 /* PracticeHistoryRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5D000022FC0000000000001 /* PracticeHistoryRepository.swift */; };
 		B5E600012FC1000000000001 /* PlaybackVisualAnimators.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E600002FC1000000000001 /* PlaybackVisualAnimators.swift */; };
+		B5E800012FC2000000000001 /* SongRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E800002FC2000000000001 /* SongRepository.swift */; };
+		B5E800032FC2000000000001 /* PlaylistRepository.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E800022FC2000000000001 /* PlaylistRepository.swift */; };
+		B5E800052FC2000000000001 /* PersistenceFailureAlert.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E800042FC2000000000001 /* PersistenceFailureAlert.swift */; };
+		B5E800072FC2000000000001 /* ExistingModelRepositoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5E800062FC2000000000001 /* ExistingModelRepositoryTests.swift */; };
 		B5B638B62FAAD8C300675060 /* PolyrhythmAudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B638B52FAAD8C300675060 /* PolyrhythmAudioEngine.swift */; };
 		B5B638BA2FAAD95800675060 /* PolyrhythmViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B638B92FAAD95800675060 /* PolyrhythmViewModel.swift */; };
 		B5B638BC2FAAD97900675060 /* PolyrhythmView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5B638BB2FAAD97900675060 /* PolyrhythmView.swift */; };
@@ -144,6 +148,10 @@
 		B5D000002FC0000000000001 /* PersistenceRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceRepository.swift; sourceTree = "<group>"; };
 		B5D000022FC0000000000001 /* PracticeHistoryRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeHistoryRepository.swift; sourceTree = "<group>"; };
 		B5E600002FC1000000000001 /* PlaybackVisualAnimators.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaybackVisualAnimators.swift; sourceTree = "<group>"; };
+		B5E800002FC2000000000001 /* SongRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SongRepository.swift; sourceTree = "<group>"; };
+		B5E800022FC2000000000001 /* PlaylistRepository.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlaylistRepository.swift; sourceTree = "<group>"; };
+		B5E800042FC2000000000001 /* PersistenceFailureAlert.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceFailureAlert.swift; sourceTree = "<group>"; };
+		B5E800062FC2000000000001 /* ExistingModelRepositoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExistingModelRepositoryTests.swift; sourceTree = "<group>"; };
 		B5A114002FB8000000000001 /* AudioBufferClipCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioBufferClipCache.swift; sourceTree = "<group>"; };
 		B5A115002FB8000000000001 /* AbsoluteAudioTimeline.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AbsoluteAudioTimeline.swift; sourceTree = "<group>"; };
 		B5A116002FB8000000000001 /* AudioSessionCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioSessionCoordinator.swift; sourceTree = "<group>"; };
@@ -250,6 +258,7 @@
 				B5B638BD2FAADB6300675060 /* MetronomeContainerView.swift */,
 				EE6406B92A7EEE2400DEDED2 /* MetronomePlayerView.swift */,
 				EE738F432FABE7A8002642C3 /* PlaylistFocusView.swift */,
+				B5E800042FC2000000000001 /* PersistenceFailureAlert.swift */,
 				B53234752F8DD8D300BA7DE1 /* PlaylistTransportView.swift */,
 				EE0939E62A7EA838005491BB /* RectangleText.swift */,
 				B5900FC82FAB752B008416A1 /* SettingsCard.swift */,
@@ -318,6 +327,7 @@
 			isa = PBXGroup;
 			children = (
 				EE84F3092A7C7A23009E2F23 /* beatclikrTests.swift */,
+				B5E800062FC2000000000001 /* ExistingModelRepositoryTests.swift */,
 				EE7774262FAD141900B87244 /* BeatPatternTests.swift */,
 				EE7774282FAD142400B87244 /* FormatterHelperTests.swift */,
 				EE7774242FAD140400B87244 /* GrooveTests.swift */,
@@ -406,10 +416,12 @@
 				B5E600002FC1000000000001 /* PlaybackVisualAnimators.swift */,
 				B5D000002FC0000000000001 /* PersistenceRepository.swift */,
 				B5D000022FC0000000000001 /* PracticeHistoryRepository.swift */,
+				B5E800022FC2000000000001 /* PlaylistRepository.swift */,
 				B5B638B52FAAD8C300675060 /* PolyrhythmAudioEngine.swift */,
 				B5F4E57D2FA65B90003FC6E6 /* ReminderNotificationService.swift */,
 				CBDC2C69A4354FB6AE1E388B /* ScheduledMetronomeEngine.swift */,
 				A1B2C3D4E5F6A7B8C9D0E1F3 /* ScheduledPolyrhythmEngine.swift */,
+				B5E800002FC2000000000001 /* SongRepository.swift */,
 				EE82F9A72A7FBD7000B873E7 /* UserDefaultsService.swift */,
 				EE82F9AB2A7FC98200B873E7 /* VibrationService.swift */,
 			);
@@ -649,8 +661,10 @@
 				EE478E8B2A879C51008337DB /* AudioPlayerService.swift in Sources */,
 				B5A113012FB8000000000001 /* PlaybackCoordinator.swift in Sources */,
 				B5E600012FC1000000000001 /* PlaybackVisualAnimators.swift in Sources */,
+				B5E800052FC2000000000001 /* PersistenceFailureAlert.swift in Sources */,
 				B5D000012FC0000000000001 /* PersistenceRepository.swift in Sources */,
 				B5D000032FC0000000000001 /* PracticeHistoryRepository.swift in Sources */,
+				B5E800032FC2000000000001 /* PlaylistRepository.swift in Sources */,
 				B5B638B62FAAD8C300675060 /* PolyrhythmAudioEngine.swift in Sources */,
 				B53042152FA671A100A3CAE6 /* SharableStreakCard.swift in Sources */,
 				EE07558F2A7E84D400E34D29 /* FormatterHelper.swift in Sources */,
@@ -682,6 +696,7 @@
 				B5A114012FB8000000000001 /* AudioBufferClipCache.swift in Sources */,
 				B5A115012FB8000000000001 /* AbsoluteAudioTimeline.swift in Sources */,
 				B5A116012FB8000000000001 /* AudioSessionCoordinator.swift in Sources */,
+				B5E800012FC2000000000001 /* SongRepository.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -690,6 +705,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B5F4E57A2FA5B5BD003FC6E6 /* PracticeHistoryViewModelTests.swift in Sources */,
+				B5E800072FC2000000000001 /* ExistingModelRepositoryTests.swift in Sources */,
 				28363D542F8989430066C665 /* MetronomeConstantsTests.swift in Sources */,
 				EE84F30A2A7C7A23009E2F23 /* beatclikrTests.swift in Sources */,
 				28363D582F898A110066C665 /* ImageConstantsTests.swift in Sources */,

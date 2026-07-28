@@ -13,17 +13,33 @@ protocol SongDisplayable {
     var beatsPerMinute: Double? { get }
 }
 
+struct SongPresentation {
+    let title: String
+    let artist: String
+    let beatsPerMinute: Double
+
+    init(_ song: some SongDisplayable) {
+        let normalizedTitle = song.title?.trimmingCharacters(in: .whitespacesAndNewlines)
+        let normalizedArtist = song.artist?.trimmingCharacters(in: .whitespacesAndNewlines)
+        title = normalizedTitle.flatMap { $0.isEmpty ? nil : $0 } ?? String(localized: "Untitled")
+        artist = normalizedArtist.flatMap { $0.isEmpty ? nil : $0 } ?? String(localized: "Unknown")
+        let candidateBPM = song.beatsPerMinute ?? 60
+        beatsPerMinute = candidateBPM.isFinite && candidateBPM > 0 ? candidateBPM : 60
+    }
+}
+
 struct SongListItemView<S: SongDisplayable>: View {
     var song: S
 
     var body: some View {
+        let presentation = SongPresentation(song)
         VStack(alignment: .leading) {
-            Text(song.title ?? String(localized: "Untitled"))
+            Text(presentation.title)
                 .bold()
                 .font(.title3)
                 .truncationMode(.tail)
                 .lineLimit(1)
-            Text("\(song.artist ?? String(localized: "Unknown")) /  \(FormatterHelper.formatDouble(song.beatsPerMinute ?? 60)) BPM")
+            Text("\(presentation.artist) /  \(FormatterHelper.formatDouble(presentation.beatsPerMinute)) BPM")
         }
         .accessibilityElement(children: .combine)
     }

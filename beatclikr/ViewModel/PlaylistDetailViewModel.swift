@@ -11,48 +11,57 @@ import SwiftUI
 
 @MainActor
 final class PlaylistDetailViewModel: SongNavigationViewModel {
-    func addSongToPlaylist(_ song: Song, playlist: Playlist, context: ModelContext) {
-        withAnimation {
-            let entry = PlaylistEntry(song: song, sequence: (playlist.entries ?? []).count)
-            entry.playlist = playlist
-            context.insert(entry)
-            do {
-                try context.save()
-            } catch {
-                print("Failed to add song to playlist: \(error)")
-            }
+    @Published private(set) var persistenceFailure: PersistenceFailure?
+
+    private let repository: any PlaylistRepository
+
+    init(repository: any PlaylistRepository = SwiftDataPlaylistRepository()) {
+        self.repository = repository
+        super.init()
+    }
+
+    static func orderedEntries(_ entries: [PlaylistEntry]) -> [PlaylistEntry] {
+        SwiftDataPlaylistRepository.orderedEntries(entries)
+    }
+
+    @discardableResult
+    func addSongToPlaylist(_ song: Song, playlist: Playlist, context: ModelContext) -> Bool {
+        switch repository.add(song, to: playlist, context: context) {
+        case .success:
+            persistenceFailure = nil
+            return true
+        case let .failure(failure):
+            persistenceFailure = failure
+            return false
         }
     }
 
-    func deleteEntries(offsets: IndexSet, entries: [PlaylistEntry], context: ModelContext) {
-        withAnimation {
-            let remaining = entries.enumerated()
-                .filter { !offsets.contains($0.offset) }
-                .map(\.element)
-            for index in offsets {
-                context.delete(entries[index])
-            }
-            for (newIndex, entry) in remaining.enumerated() {
-                entry.sequence = newIndex
-            }
-            do {
-                try context.save()
-            } catch {
-                print("Failed to delete playlist entries: \(error)")
-            }
+    @discardableResult
+    func deleteEntries(offsets: IndexSet, entries: [PlaylistEntry], context: ModelContext) -> Bool {
+        let selected = offsets.compactMap { entries.indices.contains($0) ? entries[$0] : nil }
+        switch repository.deleteEntries(selected, from: entries, context: context) {
+        case .success:
+            persistenceFailure = nil
+            return true
+        case let .failure(failure):
+            persistenceFailure = failure
+            return false
         }
     }
 
-    func sortEntries(fromOffsets: IndexSet, toOffset: Int, entries: [PlaylistEntry], context: ModelContext) {
-        var revisedEntries = entries.map(\.self)
-        revisedEntries.move(fromOffsets: fromOffsets, toOffset: toOffset)
-        for (index, entry) in revisedEntries.enumerated() {
-            entry.sequence = index
+    @discardableResult
+    func sortEntries(fromOffsets: IndexSet, toOffset: Int, entries: [PlaylistEntry], context: ModelContext) -> Bool {
+        switch repository.reorder(entries, fromOffsets: fromOffsets, toOffset: toOffset, context: context) {
+        case .success:
+            persistenceFailure = nil
+            return true
+        case let .failure(failure):
+            persistenceFailure = failure
+            return false
         }
-        do {
-            try context.save()
-        } catch {
-            print("Failed to save sort order: \(error)")
-        }
+    }
+
+    func dismissPersistenceFailure() {
+        persistenceFailure = nil
     }
 }

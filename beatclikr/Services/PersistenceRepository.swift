@@ -11,6 +11,8 @@ import SwiftData
 enum PersistenceFailure: LocalizedError {
     case fetch(underlying: Error)
     case save(underlying: Error)
+    case validation(message: String)
+    case conflict(message: String)
 
     var errorDescription: String? {
         switch self {
@@ -18,11 +20,20 @@ enum PersistenceFailure: LocalizedError {
             String(localized: "Your data could not be loaded.")
         case .save:
             String(localized: "Your changes could not be saved.")
+        case let .validation(message), let .conflict(message):
+            message
         }
     }
 
     var recoverySuggestion: String? {
-        String(localized: "Please try again. Your previous saved data is unchanged.")
+        switch self {
+        case .fetch, .save:
+            String(localized: "Please try again. Your previous saved data is unchanged.")
+        case .validation:
+            String(localized: "Correct the highlighted information and try again.")
+        case .conflict:
+            String(localized: "Review the existing items and try again.")
+        }
     }
 }
 
