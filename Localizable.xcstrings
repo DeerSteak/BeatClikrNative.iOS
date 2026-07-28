@@ -1,168 +1,6 @@
 {
   "sourceLanguage" : "en",
   "strings" : {
-    "%lld days" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "%lld días" } } }
-    },
-    "0 sec" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "0 s" } } }
-    },
-    "1 day" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "1 día" } } }
-    },
-    "Acoustic" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Acústico" } } }
-    },
-    "Click Hi" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Clic agudo" } } }
-    },
-    "Click Lo" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Clic grave" } } }
-    },
-    "Cowbell" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Cencerro" } } }
-    },
-    "Crash (Left)" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Crash (izquierdo)" } } }
-    },
-    "Crash (Right)" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Crash (derecho)" } } }
-    },
-    "Eighth Note" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Corchea" } } }
-    },
-    "Hi-Hat (Closed)" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Charles (cerrado)" } } }
-    },
-    "Hi-Hat (Open)" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Charles (abierto)" } } }
-    },
-    "I've been practicing with BeatClikr! 🎼\nDownload it now: %@" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "¡He estado practicando con BeatClikr! 🎼\nDescárgalo ahora: %@" } } }
-    },
-    "I'm on a %lld-day streak with BeatClikr! 🎵\nDownload it now: %@" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "¡Llevo una racha de %lld días con BeatClikr! 🎵\nDescárgalo ahora: %@" } } }
-    },
-    "Kick" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Bombo" } } }
-    },
-    "My longest BeatClikr practice streak is %lld days! Try to break my record. 🎶\nDownload it now: %@" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "¡Mi racha de práctica más larga en BeatClikr es de %lld días! Intenta superar mi récord. 🎶\nDescárgalo ahora: %@" } } }
-    },
-    "Odd Eighth" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Corcheas irregulares" } } }
-    },
-    "Odd Quarter" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Negras irregulares" } } }
-    },
-    "Practice History for %@" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Historial de práctica del %@" } } }
-    },
-    "Quarter Note" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Negra" } } }
-    },
-    "Ride (Bell)" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Ride (campana)" } } }
-    },
-    "Ride (Edge)" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Ride (borde)" } } }
-    },
-    "Silence" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Silencio" } } }
-    },
-    "Sixteenth Note" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Semicorchea" } } }
-    },
-    "Snare" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Caja" } } }
-    },
-    "song" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "canción" } } }
-    },
-    "Synth" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Sintetizador" } } }
-    },
-    "Tambourine" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Pandereta" } } }
-    },
-    "Tom (High)" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Tom (agudo)" } } }
-    },
-    "Tom (Low)" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Tom (grave)" } } }
-    },
-    "Tom (Mid)" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Tom (medio)" } } }
-    },
-    "Triplet 6/8" : {
-      "localizations" : { "es" : { "stringUnit" : { "state" : "translated", "value" : "Tresillo 6/8" } } }
-    },
-    "%@ position" : {
-      "comment" : "VoiceOver label for a position within a polyrhythm line.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Posición de %@"
-          }
-        }
-      }
-    },
-    "%lld of %lld" : {
-      "comment" : "VoiceOver value describing the active position and total positions.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "%1$lld de %2$lld"
-          }
-        }
-      }
-    },
-    "Decrease %@" : {
-      "comment" : "VoiceOver label for a button that decreases the named value.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Disminuir %@"
-          }
-        }
-      }
-    },
-    "Increase %@" : {
-      "comment" : "VoiceOver label for a button that increases the named value.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Aumentar %@"
-          }
-        }
-      }
-    },
-    "Stopped" : {
-      "comment" : "VoiceOver value for playback that is stopped.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Detenido"
-          }
-        }
-      }
-    },
-    "Subdivision" : {
-      "comment" : "VoiceOver value identifying a metronome subdivision.",
-      "localizations" : {
-        "es" : {
-          "stringUnit" : {
-            "state" : "translated",
-            "value" : "Subdivisión"
-          }
-        }
-      }
-    },
     "--" : {
       "comment" : "A label with no data",
       "localizations" : {
@@ -201,6 +39,17 @@
         }
       },
       "shouldTranslate" : false
+    },
+    "%@ position" : {
+      "comment" : "VoiceOver label for a position within a polyrhythm line.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Posición de %@"
+          }
+        }
+      }
     },
     "%lld" : {
       "comment" : "A monospaced digit text field that lets the user select a value between 0 and 100.",
@@ -245,6 +94,27 @@
         }
       }
     },
+    "%lld days" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%lld días"
+          }
+        }
+      }
+    },
+    "%lld of %lld" : {
+      "comment" : "VoiceOver value describing the active position and total positions.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "%1$lld de %2$lld"
+          }
+        }
+      }
+    },
     "%lld times practiced" : {
       "comment" : "A label describing how many times a song was practiced. The argument is the number of times practiced.",
       "isCommentAutoGenerated" : true,
@@ -265,12 +135,42 @@
       "isCommentAutoGenerated" : true,
       "shouldTranslate" : false
     },
+    "0 sec" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "0 s"
+          }
+        }
+      }
+    },
+    "1 day" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "1 día"
+          }
+        }
+      }
+    },
     "About" : {
       "localizations" : {
         "es" : {
           "stringUnit" : {
             "state" : "translated",
             "value" : "Acerca de"
+          }
+        }
+      }
+    },
+    "Acoustic" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Acústico"
           }
         }
       }
@@ -445,6 +345,26 @@
         }
       }
     },
+    "Click Hi" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clic agudo"
+          }
+        }
+      }
+    },
+    "Click Lo" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clic grave"
+          }
+        }
+      }
+    },
     "Close" : {
       "comment" : "A button that dismisses the current view.",
       "isCommentAutoGenerated" : true,
@@ -464,6 +384,36 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Derechos de Autor"
+          }
+        }
+      }
+    },
+    "Cowbell" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cencerro"
+          }
+        }
+      }
+    },
+    "Crash (Left)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crash (izquierdo)"
+          }
+        }
+      }
+    },
+    "Crash (Right)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Crash (derecho)"
           }
         }
       }
@@ -511,6 +461,17 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "racha de días"
+          }
+        }
+      }
+    },
+    "Decrease %@" : {
+      "comment" : "VoiceOver label for a button that decreases the named value.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Disminuir %@"
           }
         }
       }
@@ -574,6 +535,16 @@
         }
       }
     },
+    "Eighth Note" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corchea"
+          }
+        }
+      }
+    },
     "Enable" : {
       "comment" : "A button that enables notifications on this device when they were previously deferred.",
       "localizations" : {
@@ -622,6 +593,26 @@
       "comment" : "A label for the song’s Groove",
       "shouldTranslate" : false
     },
+    "Hi-Hat (Closed)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charles (cerrado)"
+          }
+        }
+      }
+    },
+    "Hi-Hat (Open)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Charles (abierto)"
+          }
+        }
+      }
+    },
     "History" : {
       "comment" : "A tab for the user's practice history.",
       "isCommentAutoGenerated" : true,
@@ -630,6 +621,37 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Historial"
+          }
+        }
+      }
+    },
+    "I'm on a %lld-day streak with BeatClikr! 🎵\nDownload it now: %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Llevo una racha de %lld días con BeatClikr! 🎵\nDescárgalo ahora: %@"
+          }
+        }
+      }
+    },
+    "I've been practicing with BeatClikr! 🎼\nDownload it now: %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡He estado practicando con BeatClikr! 🎼\nDescárgalo ahora: %@"
+          }
+        }
+      }
+    },
+    "Increase %@" : {
+      "comment" : "VoiceOver label for a button that increases the named value.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Aumentar %@"
           }
         }
       }
@@ -670,6 +692,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Mantener pantalla encendida"
+          }
+        }
+      }
+    },
+    "Kick" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Bombo"
           }
         }
       }
@@ -845,6 +877,16 @@
         }
       }
     },
+    "My longest BeatClikr practice streak is %lld days! Try to break my record. 🎶\nDownload it now: %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "¡Mi racha de práctica más larga en BeatClikr es de %lld días! Intenta superar mi récord. 🎶\nDescárgalo ahora: %@"
+          }
+        }
+      }
+    },
     "My Practice Streak" : {
       "comment" : "The title of the share sheet.",
       "isCommentAutoGenerated" : true,
@@ -957,6 +999,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Reproduciendo ahora"
+          }
+        }
+      }
+    },
+    "Odd Eighth" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Corcheas irregulares"
+          }
+        }
+      }
+    },
+    "Odd Quarter" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Negras irregulares"
           }
         }
       }
@@ -1131,6 +1193,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Historial de Práctica"
+          }
+        }
+      }
+    },
+    "Practice History for %@" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Historial de práctica del %@"
           }
         }
       }
@@ -1385,6 +1457,16 @@
         }
       }
     },
+    "Quarter Note" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Negra"
+          }
+        }
+      }
+    },
     "Reminder Time" : {
       "comment" : "A label for the time of the user's reminder.",
       "isCommentAutoGenerated" : true,
@@ -1467,6 +1549,26 @@
         }
       }
     },
+    "Ride (Bell)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ride (campana)"
+          }
+        }
+      }
+    },
+    "Ride (Edge)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Ride (borde)"
+          }
+        }
+      }
+    },
     "Save" : {
       "comment" : "A label for a button to save changes to a song",
       "localizations" : {
@@ -1502,6 +1604,16 @@
         }
       }
     },
+    "Silence" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Silencio"
+          }
+        }
+      }
+    },
     "Since %@" : {
       "comment" : "Subtitle showing the start date of the current practice streak. The argument is a formatted date string.",
       "localizations" : {
@@ -1509,6 +1621,16 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Desde %@"
+          }
+        }
+      }
+    },
+    "Sixteenth Note" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Semicorchea"
           }
         }
       }
@@ -1527,6 +1649,26 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Semicorcheas alternadas"
+          }
+        }
+      }
+    },
+    "Snare" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Caja"
+          }
+        }
+      }
+    },
+    "song" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "canción"
           }
         }
       }
@@ -1595,6 +1737,48 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Banco de sonidos"
+          }
+        }
+      }
+    },
+    "Stopped" : {
+      "comment" : "VoiceOver value for playback that is stopped.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Detenido"
+          }
+        }
+      }
+    },
+    "Subdivision" : {
+      "comment" : "VoiceOver value identifying a metronome subdivision.",
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Subdivisión"
+          }
+        }
+      }
+    },
+    "Synth" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Sintetizador"
+          }
+        }
+      }
+    },
+    "Tambourine" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Pandereta"
           }
         }
       }
@@ -1714,6 +1898,46 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "Título"
+          }
+        }
+      }
+    },
+    "Tom (High)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tom (agudo)"
+          }
+        }
+      }
+    },
+    "Tom (Low)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tom (grave)"
+          }
+        }
+      }
+    },
+    "Tom (Mid)" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tom (medio)"
+          }
+        }
+      }
+    },
+    "Triplet 6/8" : {
+      "localizations" : {
+        "es" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Tresillo 6/8"
           }
         }
       }
