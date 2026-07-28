@@ -2,21 +2,16 @@
 
 Playback performance has two separate gates:
 
-1. Deterministic tests protect sample-timeline correctness and bounded cache
-   behavior.
-2. Instruments and Activity Monitor measurements protect real CPU, allocation,
-   and resident-memory behavior.
+1. Deterministic tests protect sample-timeline correctness and bounded cache behavior.
+2. Instruments and Activity Monitor measurements protect real CPU, allocation, and resident-memory behavior.
 
-Synthetic tests cannot establish a device CPU budget. Measurements must use an
-unchanged build, scenario, duration, and hardware description so later results
-are comparable.
+Synthetic tests cannot establish a device CPU budget. Measurements must use an unchanged build, scenario, duration, and hardware description so later results are comparable.
 
 ## Automated invariants
 
 `AbsoluteAudioTimelineTests` verifies:
 
-- rendered onset samples for normal, accented, alternate-sixteenth, odd-meter,
-  and polyrhythm playback;
+- rendered onset samples for normal, accented, alternate-sixteenth, odd-meter, and polyrhythm playback;
 - exact cycle boundaries and simultaneous polyrhythm reunions;
 - click-tail behavior at adjacent rolling-block boundaries;
 - eight-hour metronome and polyrhythm timelines without wall-clock waiting;
@@ -28,13 +23,11 @@ are comparable.
 - at most 2 MiB of derived audio per loaded source;
 - least-recently-used eviction under aggressive frame-length changes.
 
-These limits do not include the immutable source buffer or the small rolling
-render-buffer pool owned by each active engine.
+These limits do not include the immutable source buffer or the small rolling render-buffer pool owned by each active engine.
 
 ## Measurement matrix
 
-Measure each row for 15 minutes in both Catalyst Debug and Release builds.
-Repeat the Release matrix on a physical iPhone through TestFlight.
+Measure each row for 15 minutes in both Catalyst Debug and Release builds. Repeat the Release matrix on a physical iPhone through TestFlight.
 
 | Scenario | Configuration |
 | --- | --- |
@@ -53,10 +46,7 @@ For each run, record:
 - whether CPU and memory reach a stable plateau;
 - audio glitches, missing/doubled clicks, or visible timing jumps.
 
-Use Time Profiler for the maximum-rate and polyrhythm rows. Attribute samples
-separately to audio rendering/scheduling, `CADisplayLink`, and SwiftUI work. Use
-Allocations for the static and change-stress rows; a stable static run must not
-show continuing `AVAudioPCMBuffer` growth.
+Use Time Profiler for the maximum-rate and polyrhythm rows. Attribute samples separately to audio rendering/scheduling, `CADisplayLink`, and SwiftUI work. Use Allocations for the static and change-stress rows; a stable static run must not show continuing `AVAudioPCMBuffer` growth.
 
 ## Observations
 
@@ -66,9 +56,7 @@ show continuing `AVAudioPCMBuffer` growth.
 
 ## Release thresholds
 
-Numeric CPU and memory thresholds remain intentionally unset until the complete
-Catalyst Release and physical-iPhone matrix has been recorded. The nonnumeric
-release requirements are:
+Numeric CPU and memory thresholds remain intentionally unset until the complete Catalyst Release and physical-iPhone matrix has been recorded. The nonnumeric release requirements are:
 
 - no audible glitch or missing/doubled onset;
 - CPU and resident memory plateau during unchanged playback;

@@ -24,11 +24,6 @@ For both Debug and Release:
 2. Inspect the signed application entitlements with `codesign`.
 3. Confirm the product contains only runtime assets, localized strings, sound files, and required metadata.
 
-Debug and Release source entitlements and processed background modes were
-audited in Milestone 6.1. Simulator signatures intentionally contain no
-effective capabilities. The unsigned device archive proved the payload layout,
-but not provisioning-controlled values.
+Debug and Release source entitlements and processed background modes were audited in Milestone 6.1. Simulator signatures intentionally contain no effective capabilities. The unsigned device archive proved the payload layout, but not provisioning-controlled values.
 
-For the next distribution archive, repeat the entitlement inspection on the
-signed `.app` because the provisioning profile controls the final
-`aps-environment` value. This is the remaining Milestone 6.1 acceptance check.
+For the next distribution archive, repeat the entitlement inspection on the signed `.app` because the provisioning profile controls the final `aps-environment` value. This is the remaining Milestone 6.1 acceptance check.

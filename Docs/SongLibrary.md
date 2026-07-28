@@ -13,6 +13,8 @@ Songs are displayed in `SongLibraryView`, sorted alphabetically by title then ar
 
 The app supports multiple named playlists. Each `Playlist` owns an ordered list of `PlaylistEntry` records that link back to library songs.
 
+Songs are unique within each playlist. Local duplicate additions are rejected. All song and playlist writes pass through typed repositories; failed saves restore the last committed values and surface a recovery alert. Playlist ordering uses the stored sequence with stable record identity as a deterministic tie-breaker after concurrent CloudKit activity.
+
 Within `PlaylistDetailView`:
 - Drag-to-reorder and delete via Edit mode
 - Inline edit of any song's details
@@ -21,12 +23,7 @@ Within `PlaylistDetailView`:
 
 ## Practice History
 
-Successful audio playback opens a monotonic playback period. Active time is
-checkpointed every 10 seconds and on lifecycle changes, and accumulated into
-one daily item per stable song or built-in mode. Background audio counts;
-paused, stopped, failed, and interrupted time does not. An item qualifies at
-30 accumulated seconds; shorter activity is retained for later accumulation
-but remains hidden and does not earn a calendar dot or streak day.
+Successful audio playback opens a monotonic playback period. Active time is checkpointed every 10 seconds and on lifecycle changes, and accumulated into one daily item per stable song or built-in mode. Background audio counts; paused, stopped, failed, and interrupted time does not. An item qualifies at 30 accumulated seconds; shorter activity is retained for later accumulation but remains hidden and does not earn a calendar dot or streak day.
 
 The History tab shows:
 - A monthly calendar where qualifying days are marked with a dot
@@ -47,12 +44,7 @@ Settings (instrument choices, practice reminder toggle and time, polyrhythm BPM)
 
 ### Migration and repair policy
 
-The legacy single-playlist migration uses the local
-`DidMigrateToMultiplePlaylists` flag because it is a one-time structural
-conversion on each device. Practice-day migration and duplicate repair do not
-depend on a one-shot flag: `PracticeDayRepair` is idempotent and runs during
-startup, background maintenance, and history access so later CloudKit arrivals
-are normalized too.
+The legacy single-playlist migration uses the local `DidMigrateToMultiplePlaylists` flag because it is a one-time structural conversion on each device. Practice-day migration and duplicate repair do not depend on a one-shot flag: `PracticeDayRepair` is idempotent and runs during startup, background maintenance, and history access so later CloudKit arrivals are normalized too.
 
 ## Cross-Device Notification Permissions
 
