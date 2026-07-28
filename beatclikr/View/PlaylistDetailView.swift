@@ -34,7 +34,7 @@ struct PlaylistDetailView: View {
                         .font(.title3)
                 }
                 .buttonStyle(.plain)
-                .accessibilityLabel("Delete \(song.title ?? "song")")
+                .accessibilityLabel("Delete \(song.title ?? String(localized: "song"))")
                 .transition(.opacity.combined(with: .scale(scale: 0.8, anchor: .leading)))
             }
             Button {
@@ -68,7 +68,7 @@ struct PlaylistDetailView: View {
                 }
                 .buttonStyle(.plain)
                 .padding(.trailing, 8)
-                .accessibilityLabel("Edit \(song.title ?? "song")")
+                .accessibilityLabel("Edit \(song.title ?? String(localized: "song"))")
                 .transition(.opacity.combined(with: .scale(scale: 0.8, anchor: .trailing)))
             }
         }
@@ -128,7 +128,7 @@ struct PlaylistDetailView: View {
                     )
                 }
             }
-            .navigationTitle(playlist.name ?? "Playlist")
+            .navigationTitle(playlist.name ?? String(localized: "Playlist"))
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
                     Button {

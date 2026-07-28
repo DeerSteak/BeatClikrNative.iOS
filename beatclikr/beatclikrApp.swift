@@ -11,7 +11,7 @@ import SwiftUI
 
 @main
 @MainActor
-struct beatclikrApp: App {
+struct BeatClikrApp: App {
     @Environment(\.scenePhase) private var scenePhase
 
     @State private var container: ModelContainer

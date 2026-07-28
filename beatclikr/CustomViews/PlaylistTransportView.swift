@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct PlaylistTransportView: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @EnvironmentObject var metronome: MetronomePlaybackViewModel
 
     var currentTitle: String?
@@ -20,7 +22,10 @@ struct PlaylistTransportView: View {
     var body: some View {
         VStack(spacing: 12) {
             if onPrevious != nil || onNext != nil {
-                HStack(spacing: 16) {
+                let layout = dynamicTypeSize.isAccessibilitySize
+                    ? AnyLayout(VStackLayout(spacing: 16))
+                    : AnyLayout(HStackLayout(spacing: 16))
+                layout {
                     Button { onPrevious?() } label: {
                         HStack {
                             Image(systemName: ImageConstants.chevronLeft)
@@ -77,7 +82,7 @@ struct PlaylistTransportView: View {
         .background(.regularMaterial)
         .overlay {
             Color.accent
-                .opacity(metronome.isPlaying ? metronome.beatPulse * 0.35 : 0)
+                .opacity(metronome.isPlaying && !reduceMotion ? metronome.beatPulse * 0.35 : 0)
                 .allowsHitTesting(false)
         }
     }

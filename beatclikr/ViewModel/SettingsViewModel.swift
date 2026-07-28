@@ -10,7 +10,7 @@ import UIKit
 import UserNotifications
 
 @MainActor
-class SettingsViewModel: ObservableObject {
+final class SettingsViewModel: ObservableObject {
     private let defaults: UserDefaultsService = .instance
     private let notificationService: any ReminderNotificationServicing
     private let reminderPlanProvider: (Date) -> ReminderPlan

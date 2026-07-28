@@ -10,7 +10,7 @@ import Foundation
 import SwiftData
 
 @MainActor
-class PracticeHistoryViewModel: ObservableObject {
+final class PracticeHistoryViewModel: ObservableObject {
     static let qualifyingDuration: TimeInterval = 30
 
     struct PlaybackItem {
@@ -93,11 +93,22 @@ class PracticeHistoryViewModel: ObservableObject {
     var shareText: String {
         let link = "https://apps.apple.com/app/id1512245974"
         if currentStreak > 0 {
-            return "I'm on a \(currentStreak)-day streak with BeatClikr! 🎵 \nDownload it now: \(link)"
+            return String(
+                format: String(localized: "I'm on a %lld-day streak with BeatClikr! 🎵\nDownload it now: %@"),
+                currentStreak,
+                link,
+            )
         } else if longestStreak > 0 {
-            return "My longest BeatClikr practice streak is \(longestStreak) days! Try to break my record. 🎶 \nDownload it now: \(link)"
+            return String(
+                format: String(localized: "My longest BeatClikr practice streak is %lld days! Try to break my record. 🎶\nDownload it now: %@"),
+                longestStreak,
+                link,
+            )
         } else {
-            return "I've been practicing with BeatClikr! 🎼 \nDownload it now: \(link)"
+            return String(
+                format: String(localized: "I've been practicing with BeatClikr! 🎼\nDownload it now: %@"),
+                link,
+            )
         }
     }
 

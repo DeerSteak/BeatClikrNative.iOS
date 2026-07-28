@@ -44,7 +44,7 @@ extension AudioPlaybackService {
 }
 
 @MainActor
-class AudioPlayerService: AudioPlaybackService, MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDelegate {
+final class AudioPlayerService: AudioPlaybackService, MetronomeAudioEngineDelegate, PolyrhythmAudioEngineDelegate {
     static let instance = AudioPlayerService()
 
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "BeatClikr", category: "Playback")

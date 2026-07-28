@@ -15,7 +15,7 @@ protocol FlashlightControlling: AnyObject {
 }
 
 @MainActor
-class FlashlightService: FlashlightControlling {
+final class FlashlightService: FlashlightControlling {
     static let instance = FlashlightService()
 
     private var hasFlashlight: Bool

@@ -10,7 +10,7 @@ import SwiftData
 import SwiftUI
 
 @MainActor
-class SongLibraryViewModel: SongNavigationViewModel {
+final class SongLibraryViewModel: SongNavigationViewModel {
     func deleteItems(offsets: IndexSet, items: [Song], context: ModelContext) {
         withAnimation {
             for index in offsets {

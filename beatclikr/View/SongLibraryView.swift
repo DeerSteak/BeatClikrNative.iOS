@@ -34,7 +34,7 @@ struct SongLibraryView: View {
                                         .font(.title3)
                                 }
                                 .buttonStyle(.plain)
-                                .accessibilityLabel("Delete \(item.title ?? "song")")
+                                .accessibilityLabel("Delete \(item.title ?? String(localized: "song"))")
                                 .transition(.opacity.combined(with: .scale(scale: 0.8, anchor: .leading)))
                             }
                             Button {
@@ -67,7 +67,7 @@ struct SongLibraryView: View {
                                         .foregroundStyle(.secondary)
                                 }
                                 .buttonStyle(.plain)
-                                .accessibilityLabel("Edit \(item.title ?? "song")")
+                                .accessibilityLabel("Edit \(item.title ?? String(localized: "song"))")
                                 .transition(.opacity.combined(with: .scale(scale: 0.8, anchor: .trailing)))
                             }
                         }

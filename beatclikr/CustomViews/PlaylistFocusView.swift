@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct PlaylistFocusView: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
     @EnvironmentObject var metronome: MetronomePlaybackViewModel
     @ObservedObject var model: SongNavigationViewModel
 
@@ -56,17 +58,19 @@ struct PlaylistFocusView: View {
     }
 
     private func pulsingCircle(size: CGFloat) -> some View {
-        ZStack {
+        let pulse = reduceMotion ? 0 : metronome.beatPulse
+        return ZStack {
             Circle()
-                .fill(Color.white.opacity(metronome.beatPulse * 0.1))
+                .fill(Color.white.opacity(pulse * 0.1))
                 .frame(width: size * 1.25, height: size * 1.25)
-                .scaleEffect(0.75 + metronome.beatPulse * 0.25)
+                .scaleEffect(0.75 + pulse * 0.25)
 
             Circle()
-                .fill(Color.white.opacity(0.08 + metronome.beatPulse * 0.62))
+                .fill(Color.white.opacity(0.08 + pulse * 0.62))
                 .frame(width: size, height: size)
-                .scaleEffect(0.7 + metronome.beatPulse * 0.3)
+                .scaleEffect(0.7 + pulse * 0.3)
         }
+        .accessibilityHidden(true)
     }
 
     private var nowPlayingLabel: some View {
@@ -88,7 +92,10 @@ struct PlaylistFocusView: View {
     }
 
     private var transportRow: some View {
-        HStack(spacing: 16) {
+        let layout = dynamicTypeSize.isAccessibilitySize
+            ? AnyLayout(VStackLayout(spacing: 16))
+            : AnyLayout(HStackLayout(spacing: 16))
+        return layout {
             Button { model.playPrevious(items: entries, metronome: metronome) } label: {
                 HStack {
                     Image(systemName: ImageConstants.chevronLeft)

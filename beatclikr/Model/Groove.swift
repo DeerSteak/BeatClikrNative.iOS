@@ -21,12 +21,12 @@ enum Groove: Int, CaseIterable, Identifiable, CustomStringConvertible, Codable {
 
     var description: String {
         switch self {
-        case .quarter: "Quarter Note"
-        case .eighth: "Eighth Note"
-        case .triplet: "Triplet 6/8"
-        case .sixteenth: "Sixteenth Note"
-        case .oddMeterQuarter: "Odd Quarter"
-        case .oddMeterEighth: "Odd Eighth"
+        case .quarter: String(localized: "Quarter Note")
+        case .eighth: String(localized: "Eighth Note")
+        case .triplet: String(localized: "Triplet 6/8")
+        case .sixteenth: String(localized: "Sixteenth Note")
+        case .oddMeterQuarter: String(localized: "Odd Quarter")
+        case .oddMeterEighth: String(localized: "Odd Eighth")
         }
     }
 
