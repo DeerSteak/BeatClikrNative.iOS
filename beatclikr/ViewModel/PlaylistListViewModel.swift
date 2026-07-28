@@ -11,39 +11,52 @@ import SwiftUI
 
 @MainActor
 final class PlaylistListViewModel: ObservableObject {
+    @Published private(set) var persistenceFailure: PersistenceFailure?
+
+    private let repository: any PlaylistRepository
+
+    init(repository: any PlaylistRepository = SwiftDataPlaylistRepository()) {
+        self.repository = repository
+    }
+
     @discardableResult
-    func createPlaylist(name: String, context: ModelContext) -> Playlist {
-        let playlist = Playlist(name: name)
-        context.insert(playlist)
-        do {
-            try context.save()
-        } catch {
-            print("Failed to create playlist: \(error)")
-        }
-        return playlist
-    }
-
-    func renamePlaylist(_ playlist: Playlist, name: String, context: ModelContext) {
-        let trimmed = name.trimmingCharacters(in: .whitespaces)
-        guard !trimmed.isEmpty else { return }
-        playlist.name = trimmed
-        do {
-            try context.save()
-        } catch {
-            print("Failed to rename playlist: \(error)")
+    func createPlaylist(name: String, context: ModelContext) -> Playlist? {
+        switch repository.create(name: name, context: context) {
+        case let .success(playlist):
+            persistenceFailure = nil
+            return playlist
+        case let .failure(failure):
+            persistenceFailure = failure
+            return nil
         }
     }
 
-    func deletePlaylists(offsets: IndexSet, playlists: [Playlist], context: ModelContext) {
-        withAnimation {
-            for index in offsets {
-                context.delete(playlists[index])
-            }
-            do {
-                try context.save()
-            } catch {
-                print("Failed to delete playlists: \(error)")
-            }
+    @discardableResult
+    func renamePlaylist(_ playlist: Playlist, name: String, context: ModelContext) -> Bool {
+        switch repository.rename(playlist, name: name, context: context) {
+        case .success:
+            persistenceFailure = nil
+            return true
+        case let .failure(failure):
+            persistenceFailure = failure
+            return false
         }
+    }
+
+    @discardableResult
+    func deletePlaylists(offsets: IndexSet, playlists: [Playlist], context: ModelContext) -> Bool {
+        let selected = offsets.compactMap { playlists.indices.contains($0) ? playlists[$0] : nil }
+        switch repository.delete(selected, context: context) {
+        case .success:
+            persistenceFailure = nil
+            return true
+        case let .failure(failure):
+            persistenceFailure = failure
+            return false
+        }
+    }
+
+    func dismissPersistenceFailure() {
+        persistenceFailure = nil
     }
 }

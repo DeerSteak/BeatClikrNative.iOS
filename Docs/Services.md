@@ -8,52 +8,37 @@
 
 - **AudioPlayerService** - `@MainActor` implementation of the injectable `AudioPlaybackService` protocol. It owns one `ScheduledMetronomeEngine` and one `ScheduledPolyrhythmEngine`, but prepares each engine lazily. Audio-session setup, sound loading, conversion, configuration, and engine start report typed `PlaybackError` failures rather than being swallowed. Metronome and polyrhythm sound loading remain separate so each mode keeps its own selected instruments.
 
-- **PlaybackCoordinator** - The single app-level owner of `AudioPlayerService`.
-  Both playback view models receive this coordinator rather than accessing the
-  singleton directly. Starting metronome playback stops and invalidates
-  polyrhythm playback first, and vice versa. Displaced owners are notified so
-  their published state and animations return to idle synchronously.
+- **PlaybackCoordinator** - The single app-level owner of `AudioPlayerService`. Both playback view models receive this coordinator rather than accessing the singleton directly. Starting metronome playback stops and invalidates polyrhythm playback first, and vice versa. Displaced owners are notified so their published state and animations return to idle synchronously.
 
-- **PersistenceRepository** - Generic SwiftData fetch/save boundary returning
-  typed failures and rolling back failed saves.
+- **PersistenceRepository** - Generic SwiftData fetch/save boundary returning typed failures and rolling back failed saves.
 
-- **PracticeHistoryRepository** - Practice-domain repository built on the
-  generic persistence boundary. Practice views do not perform saves directly.
+- **PracticeHistoryRepository** - Practice-domain repository built on the generic persistence boundary. Practice views do not perform saves directly.
+
+- **SongRepository** - Owns song validation, create/edit, and delete mutations. It returns typed results, restores the last committed field values when a save fails, and never lets the editor dismiss as though an uncommitted change succeeded.
+
+- **PlaylistRepository** - Owns playlist create/rename/delete and entry add/delete/reorder mutations. Failed saves roll back both SwiftData and in-memory values. A song may appear only once in a playlist. Entry order is determined by `sequence`, then stable record identity, so missing or tied CloudKit fields still produce a repeatable presentation order.
+
+### Playlist convergence policy
+
+- Local duplicate additions are rejected with a visible recovery message.
+- A local reorder writes a contiguous `0..<count` sequence for every surviving entry.
+- CloudKit remains responsible for resolving writes to each individual record. After concurrent insert/reorder activity, tied sequences are ordered by stable entry identity rather than fetch order.
+- Deletes remove the entry record; the next successful local delete or reorder compacts surviving sequences. Partial records sort after valid sequences and use centralized display fallbacks instead of crashing.
 
 ### Playback navigation policy
 
 - Changing a top-level tab/sidebar section stops all playback.
 - Changing the compact metronome/polyrhythm mode stops the mode being hidden.
-- Navigation-stack pushes and sheets within the Library or Playlist section do
-  not stop playback; transport continues until the user stops it or leaves the
-  top-level section.
+- Navigation-stack pushes and sheets within the Library or Playlist section do not stop playback; transport continues until the user stops it or leaves the top-level section.
 - Presenting editing, picker, or Focus Mode UI does not implicitly stop audio.
 
 ### Background and lock-screen policy
 
-- Active metronome or polyrhythm playback continues when BeatClikr enters the
-  background or the device locks. The `audio` background mode owns that
-  behavior; the separate `remote-notification` mode belongs to CloudKit
-  synchronization. Entering the background does not start audio.
-- Returning to the foreground preserves the current playback state. Normal
-  audio interruptions and unavailable output routes still stop playback and
-  require the user to press Play again.
-- During playback, BeatClikr publishes minimal Now Playing metadata and enables
-  the lock-screen and Control Center Pause/Stop commands. Both commands stop
-  the active mode and return its UI to idle. The static app display image is
-  supplied as Now Playing artwork without an asynchronous image provider.
-  Stop-capable commands are enabled for each playback session and disabled
-  again on stop, so repeated
-  start-lock-stop cycles do not leave stale controls. If iOS presents a
-  Play-shaped button in the transport slot, it also stops current playback; it
-  never restarts audio. Seeking, skipping, playback-rate changes, and track
-  navigation remain disabled because they are not meaningful for a metronome.
-- “Keep Awake” remains an optional visual-performance preference for users who
-  want the beat display to remain visible. Background audio does not depend on
-  it, and the idle-timer override is removed whenever the scene is not active.
-- A custom Live Activity remains a possible future replacement for the
-  system-owned Now Playing presentation. The current media control favors
-  reliable stop access over a guaranteed transport glyph.
+- Active metronome or polyrhythm playback continues when BeatClikr enters the background or the device locks. The `audio` background mode owns that behavior; the separate `remote-notification` mode belongs to CloudKit synchronization. Entering the background does not start audio.
+- Returning to the foreground preserves the current playback state. Normal audio interruptions and unavailable output routes still stop playback and require the user to press Play again.
+- During playback, BeatClikr publishes minimal Now Playing metadata and enables the lock-screen and Control Center Pause/Stop commands. Both commands stop the active mode and return its UI to idle. The static app display image is supplied as Now Playing artwork without an asynchronous image provider. Stop-capable commands are enabled for each playback session and disabled again on stop, so repeated start-lock-stop cycles do not leave stale controls. If iOS presents a Play-shaped button in the transport slot, it also stops current playback; it never restarts audio. Seeking, skipping, playback-rate changes, and track navigation remain disabled because they are not meaningful for a metronome.
+- “Keep Awake” remains an optional visual-performance preference for users who want the beat display to remain visible. Background audio does not depend on it, and the idle-timer override is removed whenever the scene is not active.
+- A custom Live Activity remains a possible future replacement for the system-owned Now Playing presentation. The current media control favors reliable stop access over a guaranteed transport glyph.
 
 - **FlashlightService** - Controls device flashlight for visual beat accessibility
 
@@ -96,10 +81,7 @@ This approach provides:
 - **Ramp fallback** — changing-tempo ramps retain the immutable per-click scheduler because a static musical block cannot encode a changing BPM
 - **Simulator & device support** — works reliably on all platforms
 
-The block timeline always uses the current engine output sample rate. If loaded
-samples no longer match that format, playback fails safely. Route,
-configuration, and media-service changes invalidate the engine graph; the next
-explicit user start rebuilds it and reloads/reconverts the selected sounds.
+The block timeline always uses the current engine output sample rate. If loaded samples no longer match that format, playback fails safely. Route, configuration, and media-service changes invalidate the engine graph; the next explicit user start rebuilds it and reloads/reconverts the selected sounds.
 
 ### Delegate Pattern
 
@@ -230,21 +212,11 @@ This conservative policy prevents unexpected playback after a call, Siri interac
 
 ### Mixing and output-route policy
 
-- BeatClikr uses the `.playback` audio-session category with `.mixWithOthers`.
-  Music, videos, and backing tracks from other apps therefore continue playing
-  when the metronome starts. BeatClikr does not duck their volume.
+- BeatClikr uses the `.playback` audio-session category with `.mixWithOthers`. Music, videos, and backing tracks from other apps therefore continue playing when the metronome starts. BeatClikr does not duck their volume.
 - Mixing is the sole supported policy; there is no exclusive-audio setting.
-- The active output route is written to the AudioSession system log when the
-  session activates and when an old output becomes unavailable.
-- Bluetooth output adds device-, codec-, and route-dependent latency. The
-  metronome remains internally sample-accurate, but its audible click can lag
-  visuals, haptics, or flashlight feedback by the route’s transport latency.
-  Built-in speakers or wired audio are recommended when audiovisual alignment
-  matters.
-- Haptic and flashlight feedback are foreground-only, best-effort effects.
-  Their callbacks are tied to a playback generation and are discarded after a
-  stop, restart, interruption, failure, or background transition. They are not
-  sample-accurate and must not be used to judge audio timing.
+- The active output route is written to the AudioSession system log when the session activates and when an old output becomes unavailable.
+- Bluetooth output adds device-, codec-, and route-dependent latency. The metronome remains internally sample-accurate, but its audible click can lag visuals, haptics, or flashlight feedback by the route’s transport latency. Built-in speakers or wired audio are recommended when audiovisual alignment matters.
+- Haptic and flashlight feedback are foreground-only, best-effort effects. Their callbacks are tied to a playback generation and are discarded after a stop, restart, interruption, failure, or background transition. They are not sample-accurate and must not be used to judge audio timing.
 
 ## Tap Tempo
 

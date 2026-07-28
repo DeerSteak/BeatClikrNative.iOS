@@ -19,8 +19,6 @@ struct SongDetailsView: View {
     @State var selectedGroove: Groove
     @State var selectedBeatPattern: BeatPattern?
 
-    @State var showAlert: Bool
-
     var song: Song
 
     init() {
@@ -29,7 +27,6 @@ struct SongDetailsView: View {
         _artist = State(initialValue: "")
         _bpm = State(initialValue: 60)
         _beats = State(initialValue: 4)
-        _showAlert = State(initialValue: false)
         _selectedGroove = State(initialValue: .quarter)
         _selectedBeatPattern = State(initialValue: nil)
     }
@@ -40,7 +37,6 @@ struct SongDetailsView: View {
         _artist = State(initialValue: song.artist ?? "")
         _bpm = State(initialValue: song.beatsPerMinute ?? 60)
         _beats = State(initialValue: song.beatsPerMeasure ?? 4)
-        _showAlert = State(initialValue: false)
         _selectedGroove = State(initialValue: song.groove ?? .quarter)
         _selectedBeatPattern = State(initialValue: BeatPattern(rawValue: song.beatPattern ?? ""))
     }
@@ -95,32 +91,23 @@ struct SongDetailsView: View {
                     }
                 }
             }
-            .alert(isPresented: $showAlert) {
-                Alert(title: Text("Error saving"))
-            }
+            .persistenceFailureAlert(model.persistenceFailure, onDismiss: model.dismissPersistenceFailure)
         }
     }
 
     func saveSong() -> Bool {
-        song.title = title
-        song.artist = artist
-        song.beatsPerMinute = bpm
-        song.beatsPerMeasure = beats
-        song.groove = selectedGroove
-        song.beatPattern = selectedGroove.isOddMeter ? selectedBeatPattern?.rawValue : nil
-
-        if song.title?.isEmpty ?? true || song.artist?.isEmpty ?? true {
-            return false
-        }
-        if song.modelContext == nil {
-            modelContext.insert(song)
-        }
-        do {
-            try modelContext.save()
-            return true
-        } catch {
-            return false
-        }
+        model.saveSong(
+            song,
+            values: SongValues(
+                title: title,
+                artist: artist,
+                beatsPerMinute: bpm,
+                beatsPerMeasure: beats,
+                groove: selectedGroove,
+                beatPattern: selectedBeatPattern?.rawValue,
+            ),
+            context: modelContext,
+        )
     }
 
     func songIsValid() -> Bool {

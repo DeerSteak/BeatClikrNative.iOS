@@ -22,4 +22,9 @@ final class Playlist: Identifiable {
         self.name = name
         createdAt = Date()
     }
+
+    var displayName: String {
+        let trimmed = name?.trimmingCharacters(in: .whitespacesAndNewlines)
+        return trimmed.flatMap { $0.isEmpty ? nil : $0 } ?? String(localized: "Playlist")
+    }
 }

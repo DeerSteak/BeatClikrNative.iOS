@@ -1,7 +1,6 @@
 # ViewModels
 
-App-scoped ViewModels are created once by `beatclikrApp`, retained as
-`StateObject`s, and injected as `EnvironmentObject`s through the view hierarchy.
+App-scoped ViewModels are created once by `beatclikrApp`, retained as `StateObject`s, and injected as `EnvironmentObject`s through the view hierarchy.
 
 ## EnvironmentObjects
 
@@ -11,23 +10,13 @@ App-scoped ViewModels are created once by `beatclikrApp`, retained as
 
 - **SettingsViewModel** - Manages user preferences, notification permission state, and reminder reconciliation. Maintains separate blocked, deferred, prompt, and scheduling-failure states. Every authorized reconciliation obtains a new complete `ReminderPlan` from current settings and practice history, then delegates its verified replacement to `ReminderNotificationService`; see [SongLibrary.md](SongLibrary.md) for the full cross-device notification flow
 
-- **SongLibraryViewModel** - Handles song library CRUD operations and playlist-style playback for the flat song list
+- **SongLibraryViewModel** - Handles playlist-style playback for the flat song list and routes typed song CRUD results through `SongRepository`. Failed mutations remain visible and do not dismiss editors.
 
-- **PlaylistListViewModel** - Manages the list of playlists (create, delete)
+- **PlaylistListViewModel** - Routes playlist create, rename, and delete through `PlaylistRepository` and publishes recoverable persistence failures.
 
-- **PlaylistDetailViewModel** - Manages playlist sequencing (next/previous/play), edit, reorder, and delete operations for a single playlist
+- **PlaylistDetailViewModel** - Manages playlist sequencing (next/previous/play) while routing add, reorder, and delete mutations through `PlaylistRepository`.
 
-- **PracticeHistoryViewModel** - Tracks active playback periods using a
-  monotonic clock, checkpoints duration every 10 seconds and on lifecycle
-  transitions, and attributes switches to the correct stable song/mode ID.
-  It repairs legacy/duplicate day records before lookup and publishes
-  `practiceDates` (`Set<Date>`) and
-  `selectedDateSongs` (`[PracticedSong]`) as observable state; exposes computed
-  properties for current/longest streak values, subtitles, reminder flag, and
-  share text so views contain no streak logic; generates personalized
-  notification bodies projected across future days; exposes an
-  `onPracticeRecorded` callback invoked only when an item first crosses the
-  30-second qualification threshold
+- **PracticeHistoryViewModel** - Tracks active playback periods using a monotonic clock, checkpoints duration every 10 seconds and on lifecycle transitions, and attributes switches to the correct stable song/mode ID. It repairs legacy/duplicate day records before lookup and publishes `practiceDates` (`Set<Date>`) and `selectedDateSongs` (`[PracticedSong]`) as observable state; exposes computed properties for current/longest streak values, subtitles, reminder flag, and share text so views contain no streak logic; generates personalized notification bodies projected across future days; exposes an `onPracticeRecorded` callback invoked only when an item first crosses the 30-second qualification threshold
 
 ## Base Class
 
@@ -50,6 +39,4 @@ WindowGroup {
 .modelContainer(container)
 ```
 
-This ensures one shared instance of each app-level model, one playback
-coordinator, and consistent state throughout the app. These are app-scoped
-objects, not process-global static singletons.
+This ensures one shared instance of each app-level model, one playback coordinator, and consistent state throughout the app. These are app-scoped objects, not process-global static singletons.

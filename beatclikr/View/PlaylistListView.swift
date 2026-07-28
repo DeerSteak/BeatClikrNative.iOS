@@ -29,7 +29,7 @@ struct PlaylistListView: View {
     var body: some View {
         NavigationStack(path: $path) {
             List {
-                ForEach(sortedPlaylists) { playlist in
+                ForEach(sortedPlaylists, id: \.persistentModelID) { playlist in
                     if editMode.isEditing {
                         Button {
                             renameText = playlist.name ?? ""
@@ -106,8 +106,9 @@ struct PlaylistListView: View {
                 Button("Create") {
                     let name = newPlaylistName.trimmingCharacters(in: .whitespaces)
                     guard !name.isEmpty else { return }
-                    let playlist = model.createPlaylist(name: name, context: modelContext)
-                    path.append(playlist)
+                    if let playlist = model.createPlaylist(name: name, context: modelContext) {
+                        path.append(playlist)
+                    }
                 }
                 Button("Cancel", role: .cancel) {}
             }
@@ -120,6 +121,7 @@ struct PlaylistListView: View {
             }
         }
         .onAppear { path = NavigationPath() }
+        .persistenceFailureAlert(model.persistenceFailure, onDismiss: model.dismissPersistenceFailure)
     }
 }
 
