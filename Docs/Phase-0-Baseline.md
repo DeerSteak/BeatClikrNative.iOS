@@ -46,7 +46,7 @@ Record at least five seconds of silence before Play and after Stop. Note the acc
 
 ## Live-change capture
 
-Run one uninterrupted screen recording and audio capture. Allow 10 seconds of stable playback before the first action and after the last action.
+Follow [`Phase-0-Live-Change-Run-Sheet.md`](Phase-0-Live-Change-Run-Sheet.md) for the exact operator timeline and action manifest. Run one uninterrupted screen recording and audio capture. Allow 10 seconds of stable playback before the first action and after the last action.
 
 1. Start standard playback at 120 BPM quarter notes.
 2. Change slowly through 121, 122, 123, and 124 BPM, holding each value for 10 seconds.
