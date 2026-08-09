@@ -7,7 +7,6 @@
 
 import Foundation
 @preconcurrency import MediaPlayer
-import UIKit
 
 enum PlaybackMode: Equatable {
     case metronome
@@ -53,17 +52,13 @@ final class LockScreenPlaybackController: LockScreenPlaybackControlling {
         case .polyrhythm:
             "Polyrhythm"
         }
-        var nowPlayingInfo: [String: Any] = [
+        let nowPlayingInfo: [String: Any] = [
             MPMediaItemPropertyTitle: "BeatClikr",
             MPMediaItemPropertyArtist: modeName,
             MPNowPlayingInfoPropertyIsLiveStream: true,
+            MPNowPlayingInfoPropertyMediaType: MPNowPlayingInfoMediaType.audio.rawValue,
             MPNowPlayingInfoPropertyPlaybackRate: 1,
         ]
-        if let icon = UIImage(named: "appicondisplay") {
-            nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(
-                boundsSize: icon.size,
-            ) { _ in icon }
-        }
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
         setStopCommandsEnabled(true)
         MPNowPlayingInfoCenter.default().playbackState = .playing
