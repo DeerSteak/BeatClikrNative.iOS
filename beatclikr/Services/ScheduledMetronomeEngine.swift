@@ -7,6 +7,7 @@
 
 import AVFoundation
 import Foundation
+import OSLog
 
 /// Sample-accurate metronome engine using AVAudioPlayerNode scheduled buffers.
 /// Pre-schedules audio buffers on the audio thread for sample-accurate playback.
@@ -17,6 +18,7 @@ import Foundation
 /// anchored to mach_absolute_time, eliminating clock-domain drift between them.
 @MainActor
 class ScheduledMetronomeEngine: MetronomeAudioEngine {
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "BeatClikr", category: "MetronomeFormat")
     private let engine = AVAudioEngine()
     private let beatNode = AVAudioPlayerNode()
     private let rhythmNode = AVAudioPlayerNode()
@@ -159,6 +161,7 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
             isGraphConfigured = true
         }
         try engine.start()
+        logRenderFormats(reason: "engine started")
     }
 
     func stop() {
@@ -238,6 +241,7 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
             isPlaying = false
             return
         }
+        logRenderFormats(reason: "rolling pool prepared", buffer: rollingBufferSlots.first?.buffer)
 
         let muted = UserDefaultsService.instance.muteMetronome
         beatNode.volume = muted ? 0 : 1
@@ -318,6 +322,11 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
 
     private func rollingHostTime(forAbsoluteSample sample: Int64, sampleRate: Double) -> UInt64 {
         rollingOriginHostTime + secondsToHostTicks(Double(sample) / sampleRate)
+    }
+
+    private func logRenderFormats(reason: String, buffer: AVAudioPCMBuffer? = nil) {
+        let snapshot = AudioRenderFormatSnapshot(engine: engine, player: beatNode, buffer: buffer)
+        logger.info("Audio formats \(reason, privacy: .public): \(snapshot.diagnosticText, privacy: .public)")
     }
 
     private func readBuffer(from file: AVAudioFile, name: String) throws -> AVAudioPCMBuffer {

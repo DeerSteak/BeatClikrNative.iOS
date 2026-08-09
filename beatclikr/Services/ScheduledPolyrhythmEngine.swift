@@ -7,6 +7,7 @@
 
 import AVFoundation
 import Foundation
+import OSLog
 
 /// Sample-accurate polyrhythm engine using rolling, pre-rendered cycle blocks.
 ///
@@ -24,6 +25,7 @@ import Foundation
 ///   - Both tracks start at the same firstBeatDelay origin
 @MainActor
 class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
+    private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "BeatClikr", category: "PolyrhythmFormat")
     private let engine = AVAudioEngine()
     private let beatNode = AVAudioPlayerNode()
     private let rhythmNode = AVAudioPlayerNode()
@@ -133,6 +135,7 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
             isGraphConfigured = true
         }
         try engine.start()
+        logRenderFormats(reason: "engine started")
     }
 
     func stop() {
@@ -186,6 +189,7 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
             isPlaying = false
             return
         }
+        logRenderFormats(reason: "rolling pool prepared", buffer: rollingBufferSlots.first?.buffer)
 
         let muted = UserDefaultsService.instance.muteMetronome
         beatNode.volume = muted ? 0 : 1
@@ -272,6 +276,11 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
 
     private func rollingHostTime(forAbsoluteSample sample: Int64, sampleRate: Double) -> UInt64 {
         rollingOriginHostTime + secondsToHostTicks(Double(sample) / sampleRate)
+    }
+
+    private func logRenderFormats(reason: String, buffer: AVAudioPCMBuffer? = nil) {
+        let snapshot = AudioRenderFormatSnapshot(engine: engine, player: beatNode, buffer: buffer)
+        logger.info("Audio formats \(reason, privacy: .public): \(snapshot.diagnosticText, privacy: .public)")
     }
 
     private func readBuffer(from file: AVAudioFile, name: String) throws -> AVAudioPCMBuffer {

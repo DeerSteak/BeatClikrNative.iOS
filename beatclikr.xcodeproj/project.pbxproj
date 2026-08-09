@@ -11,6 +11,7 @@
 		28363D582F898A110066C665 /* ImageConstantsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28363D552F898A110066C665 /* ImageConstantsTests.swift */; };
 		28363D592F898A110066C665 /* MetronomePlaybackViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28363D562F898A110066C665 /* MetronomePlaybackViewModelTests.swift */; };
 		28363D5A2F898A110066C665 /* MetronomeTimingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28363D572F898A110066C665 /* MetronomeTimingTests.swift */; };
+		B5A117012FB8000000000001 /* AudioRenderFormat.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A117002FB8000000000001 /* AudioRenderFormat.swift */; };
 		283672342F8988AB0090EE63 /* MetronomeConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 283672332F8988AB0090EE63 /* MetronomeConstants.swift */; };
 		30DEB7A2263835E813BCF3F4 /* MetronomeAudioEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3FDD3D82C764229A8FFB9C /* MetronomeAudioEngine.swift */; };
 		74DC6A76FA4044E1B3794662 /* ScheduledMetronomeEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = CBDC2C69A4354FB6AE1E388B /* ScheduledMetronomeEngine.swift */; };
@@ -121,6 +122,7 @@
 		28363D552F898A110066C665 /* ImageConstantsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageConstantsTests.swift; sourceTree = "<group>"; };
 		28363D562F898A110066C665 /* MetronomePlaybackViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomePlaybackViewModelTests.swift; sourceTree = "<group>"; };
 		28363D572F898A110066C665 /* MetronomeTimingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeTimingTests.swift; sourceTree = "<group>"; };
+		B5A117002FB8000000000001 /* AudioRenderFormat.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AudioRenderFormat.swift; sourceTree = "<group>"; };
 		283672332F8988AB0090EE63 /* MetronomeConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MetronomeConstants.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A7B8C9D0E1F3 /* ScheduledPolyrhythmEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduledPolyrhythmEngine.swift; sourceTree = "<group>"; };
 		B524A0BD2FA528BF0085E73C /* PracticeHistoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PracticeHistoryView.swift; sourceTree = "<group>"; };
@@ -406,6 +408,7 @@
 		EE84F3252A7C7A55009E2F23 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				B5A117002FB8000000000001 /* AudioRenderFormat.swift */,
 				B5A115002FB8000000000001 /* AbsoluteAudioTimeline.swift */,
 				B5A114002FB8000000000001 /* AudioBufferClipCache.swift */,
 				EE478E8A2A879C51008337DB /* AudioPlayerService.swift */,
@@ -693,6 +696,7 @@
 				B5B638BC2FAAD97900675060 /* PolyrhythmView.swift in Sources */,
 				74DC6A76FA4044E1B3794662 /* ScheduledMetronomeEngine.swift in Sources */,
 				A1B2C3D4E5F6A7B8C9D0E1F2 /* ScheduledPolyrhythmEngine.swift in Sources */,
+				B5A117012FB8000000000001 /* AudioRenderFormat.swift in Sources */,
 				B5A114012FB8000000000001 /* AudioBufferClipCache.swift in Sources */,
 				B5A115012FB8000000000001 /* AbsoluteAudioTimeline.swift in Sources */,
 				B5A116012FB8000000000001 /* AudioSessionCoordinator.swift in Sources */,

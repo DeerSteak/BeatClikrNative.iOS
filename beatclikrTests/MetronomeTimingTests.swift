@@ -201,6 +201,29 @@ final class AudioBufferClipCacheTests: XCTestCase {
 }
 
 final class AbsoluteAudioTimelineTests: XCTestCase {
+    func testCrossRateContractReproducesMeasuredTempoDefect() throws {
+        let measured120 = try XCTUnwrap(AudioRenderFormatContract.effectiveBPM(
+            requestedBPM: 120,
+            planningSampleRate: 48000,
+            consumptionSampleRate: 44100,
+        ))
+        let measured137 = try XCTUnwrap(AudioRenderFormatContract.effectiveBPM(
+            requestedBPM: 137,
+            planningSampleRate: 48000,
+            consumptionSampleRate: 44100,
+        ))
+
+        XCTAssertEqual(measured120, 110.25, accuracy: 0.001)
+        XCTAssertEqual(measured137, 125.86875, accuracy: 0.001)
+    }
+
+    func testRenderFormatContractRequiresOnePositiveSampleRate() {
+        XCTAssertTrue(AudioRenderFormatContract.ratesMatch(44100, 44100))
+        XCTAssertTrue(AudioRenderFormatContract.ratesMatch(48000, 48000))
+        XCTAssertFalse(AudioRenderFormatContract.ratesMatch(48000, 44100))
+        XCTAssertFalse(AudioRenderFormatContract.ratesMatch(0, 0))
+    }
+
     func testAwkwardTempoStaysWithinHalfSampleForMillionsOfEvents() throws {
         let timeline = try AbsoluteAudioTimeline(sampleRate: 44100, intervalsPerMinute: 137 * 3)
 
