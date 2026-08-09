@@ -17,6 +17,8 @@ Synthetic tests cannot establish a device CPU budget. Measurements must use an u
 - eight-hour metronome and polyrhythm timelines without wall-clock waiting;
 - no new derived click buffers after a stable tempo has been prewarmed.
 
+`AudioRenderFormatContract` requires the output node, main mixer, player connection, and rolling buffer to use one sample rate. Player nodes are connected with an explicit standard PCM format derived from the active output instead of an implicit format. A mismatch fails playback rather than stretching a 48 kHz musical block on a 44.1 kHz timeline. Runtime diagnostics record the session, output, mixer, player, and buffer rates at engine start and pool preparation.
+
 `AudioBufferClipCacheTests` enforces the secondary-cache limits:
 
 - at most 16 derived buffers per loaded source;

@@ -142,6 +142,8 @@ final class AudioSessionCoordinator {
         let outputs = session.currentRoute.outputs
             .map { "\($0.portName) [\($0.portType.rawValue)]" }
             .joined(separator: ", ")
-        logger.info("Audio route \(reason, privacy: .public): \(outputs, privacy: .public)")
+        let sampleRate = session.sampleRate
+        let bufferDuration = session.ioBufferDuration
+        logger.info("Audio route \(reason, privacy: .public): \(outputs, privacy: .public); sampleRate=\(sampleRate, privacy: .public) ioBufferDuration=\(bufferDuration, privacy: .public)")
     }
 }

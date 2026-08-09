@@ -13,6 +13,20 @@ struct AudioRenderFormatSnapshot: Equatable {
     let bufferSampleRate: Double?
 
     init(
+        sessionSampleRate: Double,
+        outputSampleRate: Double,
+        mixerSampleRate: Double,
+        playerSampleRate: Double,
+        bufferSampleRate: Double? = nil,
+    ) {
+        self.sessionSampleRate = sessionSampleRate
+        self.outputSampleRate = outputSampleRate
+        self.mixerSampleRate = mixerSampleRate
+        self.playerSampleRate = playerSampleRate
+        self.bufferSampleRate = bufferSampleRate
+    }
+
+    init(
         session: AVAudioSession = .sharedInstance(),
         engine: AVAudioEngine,
         player: AVAudioPlayerNode,
@@ -58,6 +72,10 @@ enum AudioRenderFormatContract {
         return snapshot.bufferSampleRate.map {
             ratesMatch(snapshot.outputSampleRate, $0)
         } ?? true
+    }
+
+    static func formatChanged(from old: AVAudioFormat, to new: AVAudioFormat) -> Bool {
+        !ratesMatch(old.sampleRate, new.sampleRate) || old.channelCount != new.channelCount
     }
 
     static func effectiveBPM(
