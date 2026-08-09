@@ -36,8 +36,8 @@ Reuse Android contract IDs and fixture meanings so parity stays reviewable. Copy
 **Purpose:** preserve evidence before changing the scheduler and distinguish application timing defects from route or recording artifacts.
 
 - [x] Record the Android source commit and copy MT-001 through MT-032 and TB-001 through TB-018 into an iOS clause-to-evidence register without paraphrasing away their meaning.
-- [ ] Record the iOS source commit, Xcode and Swift versions, iPhone model, iOS build, route, sample rate, I/O buffer duration, app settings, and exact measurement commands.
-- [ ] Choose one supported physical iPhone and built-in speaker as the initial reference environment.
+- [ ] Record the iOS source commit, Xcode and Swift versions, iPhone model, iOS build, route, sample rate, I/O buffer duration, app settings, and exact measurement commands. Toolchain, device, route, settings, and commands are pinned; runtime sample rate and I/O buffer duration remain capture-pending.
+- [x] Choose one supported physical iPhone and built-in speaker as the initial reference environment.
 - [ ] Capture at least 20 minutes each at 30 BPM quarter notes, 120 BPM eighth notes, and 240 BPM sixteenth notes.
 - [ ] Capture 15:14 and representative equal/shared-factor polyrhythms.
 - [ ] Run a focused live-change capture with slow and rapid tempo, groove, meter, sound, ramp, and mode changes.
