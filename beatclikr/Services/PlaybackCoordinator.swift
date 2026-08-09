@@ -60,10 +60,9 @@ final class LockScreenPlaybackController: LockScreenPlaybackControlling {
             MPNowPlayingInfoPropertyPlaybackRate: 1,
         ]
         if let icon = UIImage(named: "appicondisplay") {
-            // The modern request-handler initializer crashes on some devices
-            // when SpringBoard requests artwork during metronome playback.
-            // This image is static, so the compatibility initializer is safer.
-            nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(image: icon)
+            nowPlayingInfo[MPMediaItemPropertyArtwork] = MPMediaItemArtwork(
+                boundsSize: icon.size,
+            ) { _ in icon }
         }
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
         setStopCommandsEnabled(true)
