@@ -87,7 +87,10 @@ sw_vers
 xcrun devicectl device info details --device 'Ben’s iPhone'
 shasum -a 256 /absolute/path/to/capture.wav
 afinfo /absolute/path/to/capture.wav
+python3 tools/analyze_acoustic_onsets.py /absolute/path/to/capture.wav --interval-ms 250 --grouping 4
 ```
+
+Set `--interval-ms` to the expected event interval. Use `--grouping` to compare a musically meaningful span and reduce sensitivity to individual acoustic-onset placement; record the value in the run manifest. The example analyzes 120 BPM eighth notes over four-event groups. Preserve the complete output. Tune `--threshold`, `--minimum-distance-ms`, or `--window-ms` only through a documented sensitivity analysis, never solely to obtain a passing classification.
 
 Build the unchanged code for the physical reference device with:
 
