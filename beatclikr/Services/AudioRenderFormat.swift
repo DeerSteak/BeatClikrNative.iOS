@@ -26,7 +26,7 @@ struct AudioRenderFormatSnapshot: Equatable {
     }
 
     var diagnosticText: String {
-        let bufferText = bufferSampleRate.map(String.init) ?? "none"
+        let bufferText = bufferSampleRate.map { String($0) } ?? "none"
         return "session=\(sessionSampleRate) output=\(outputSampleRate) mixer=\(mixerSampleRate) "
             + "player=\(playerSampleRate) buffer=\(bufferText)"
     }
@@ -37,6 +37,27 @@ enum AudioRenderFormatContract {
 
     static func ratesMatch(_ first: Double, _ second: Double) -> Bool {
         first > 0 && second > 0 && abs(first - second) <= sampleRateTolerance
+    }
+
+    static func standardRenderFormat(outputFormat: AVAudioFormat) -> AVAudioFormat? {
+        guard outputFormat.sampleRate > 0, outputFormat.channelCount > 0 else {
+            return nil
+        }
+        return AVAudioFormat(
+            standardFormatWithSampleRate: outputFormat.sampleRate,
+            channels: outputFormat.channelCount,
+        )
+    }
+
+    static func renderRatesMatch(_ snapshot: AudioRenderFormatSnapshot) -> Bool {
+        guard ratesMatch(snapshot.outputSampleRate, snapshot.mixerSampleRate),
+              ratesMatch(snapshot.outputSampleRate, snapshot.playerSampleRate)
+        else {
+            return false
+        }
+        return snapshot.bufferSampleRate.map {
+            ratesMatch(snapshot.outputSampleRate, $0)
+        } ?? true
     }
 
     static func effectiveBPM(

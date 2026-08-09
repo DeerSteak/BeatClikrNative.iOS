@@ -224,6 +224,34 @@ final class AbsoluteAudioTimelineTests: XCTestCase {
         XCTAssertFalse(AudioRenderFormatContract.ratesMatch(0, 0))
     }
 
+    func testRenderFormatUsesActualOutputRateAndChannels() throws {
+        let output = try XCTUnwrap(AVAudioFormat(
+            standardFormatWithSampleRate: 44100,
+            channels: 2,
+        ))
+        let render = try XCTUnwrap(AudioRenderFormatContract.standardRenderFormat(outputFormat: output))
+
+        XCTAssertEqual(render.sampleRate, 44100)
+        XCTAssertEqual(render.channelCount, 2)
+        XCTAssertTrue(render.isStandard)
+    }
+
+    func testExplicitPlayerConnectionUsesSelectedRenderRate() throws {
+        let engine = AVAudioEngine()
+        let player = AVAudioPlayerNode()
+        let output = engine.outputNode.inputFormat(forBus: 0)
+        let render = try XCTUnwrap(AudioRenderFormatContract.standardRenderFormat(outputFormat: output))
+
+        engine.attach(player)
+        engine.connect(player, to: engine.mainMixerNode, format: render)
+
+        XCTAssertTrue(AudioRenderFormatContract.ratesMatch(
+            player.outputFormat(forBus: 0).sampleRate,
+            render.sampleRate,
+        ))
+        XCTAssertEqual(player.outputFormat(forBus: 0).channelCount, render.channelCount)
+    }
+
     func testAwkwardTempoStaysWithinHalfSampleForMillionsOfEvents() throws {
         let timeline = try AbsoluteAudioTimeline(sampleRate: 44100, intervalsPerMinute: 137 * 3)
 

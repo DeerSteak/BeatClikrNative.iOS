@@ -37,6 +37,7 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
     private var beatBuffers: AudioBufferClipCache?
     private var rhythmBuffers: AudioBufferClipCache?
     private var isGraphConfigured = false
+    private var renderFormat: AVAudioFormat?
 
     private let scheduleAheadCount = 4
     private var beatCount = 1 // against
@@ -91,9 +92,9 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
         guard engine.isRunning else {
             throw PlaybackError.engineStartFailed
         }
-        let outputFormat = engine.mainMixerNode.outputFormat(forBus: 0)
-        guard beatBuffers?.source.format == outputFormat,
-              rhythmBuffers?.source.format == outputFormat
+        guard let renderFormat,
+              beatBuffers?.source.format == renderFormat,
+              rhythmBuffers?.source.format == renderFormat
         else {
             throw PlaybackError.engineStartFailed
         }
@@ -128,14 +129,24 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
 
     func start() throws {
         if !isGraphConfigured {
+            let outputFormat = engine.outputNode.inputFormat(forBus: 0)
+            guard let renderFormat = AudioRenderFormatContract.standardRenderFormat(outputFormat: outputFormat) else {
+                throw PlaybackError.audioFormatMismatch
+            }
             engine.attach(beatNode)
             engine.attach(rhythmNode)
-            engine.connect(beatNode, to: engine.mainMixerNode, format: nil)
-            engine.connect(rhythmNode, to: engine.mainMixerNode, format: nil)
+            engine.connect(beatNode, to: engine.mainMixerNode, format: renderFormat)
+            engine.connect(rhythmNode, to: engine.mainMixerNode, format: renderFormat)
+            self.renderFormat = renderFormat
             isGraphConfigured = true
         }
         try engine.start()
         logRenderFormats(reason: "engine started")
+        let snapshot = AudioRenderFormatSnapshot(engine: engine, player: beatNode)
+        guard AudioRenderFormatContract.renderRatesMatch(snapshot) else {
+            engine.stop()
+            throw PlaybackError.audioFormatMismatch
+        }
     }
 
     func stop() {
@@ -169,7 +180,10 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
 
     private func prepareRollingBuffers() {
         guard isPlaying, let beatBuffers, let rhythmBuffers else { return }
-        let format = engine.mainMixerNode.outputFormat(forBus: 0)
+        guard let format = renderFormat else {
+            isPlaying = false
+            return
+        }
         prewarmClips(
             cache: beatBuffers,
             idealFrameLength: format.sampleRate * 60 / currentBPM,
@@ -190,6 +204,15 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
             return
         }
         logRenderFormats(reason: "rolling pool prepared", buffer: rollingBufferSlots.first?.buffer)
+        let snapshot = AudioRenderFormatSnapshot(
+            engine: engine,
+            player: beatNode,
+            buffer: rollingBufferSlots.first?.buffer,
+        )
+        guard AudioRenderFormatContract.renderRatesMatch(snapshot) else {
+            isPlaying = false
+            return
+        }
 
         let muted = UserDefaultsService.instance.muteMetronome
         beatNode.volume = muted ? 0 : 1
@@ -295,7 +318,9 @@ class ScheduledPolyrhythmEngine: PolyrhythmAudioEngine {
             throw PlaybackError.soundUnreadable(name)
         }
 
-        let outputFormat = engine.mainMixerNode.outputFormat(forBus: 0)
+        guard let outputFormat = renderFormat else {
+            throw PlaybackError.audioFormatMismatch
+        }
         guard sourceBuffer.format != outputFormat else { return sourceBuffer }
         guard let converter = AVAudioConverter(from: sourceBuffer.format, to: outputFormat) else { return sourceBuffer }
 
