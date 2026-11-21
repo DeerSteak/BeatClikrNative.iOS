@@ -73,6 +73,12 @@ run_unit_tests() {
         return 1
     fi
 
+    if [[ "${TIME_SIMULATOR_BOOT:-0}" == "1" ]]; then
+        echo "Waiting for iOS Simulator $simulator_id to finish booting."
+        local TIMEFORMAT='iOS Simulator boot readiness took %3R seconds.'
+        time xcrun simctl bootstatus "$simulator_id" -b
+    fi
+
     xcodebuild \
         -project "$PROJECT_PATH" \
         -scheme "$SCHEME" \
