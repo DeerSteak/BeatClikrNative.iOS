@@ -117,13 +117,13 @@ struct PlaylistFocusView: View {
             .accessibilityLabel("Previous Song")
 
             Button {
-                if metronome.isPlaying {
+                if metronome.playbackState.canPause {
                     metronome.stop()
                 } else {
                     model.playOrResume(items: entries, metronome: metronome)
                 }
             } label: {
-                Image(systemName: metronome.isPlaying ? ImageConstants.pause : ImageConstants.play)
+                Image(systemName: metronome.playbackState.canPause ? ImageConstants.pause : ImageConstants.play)
                     .font(.title2)
                     .fontWeight(.semibold)
                     .frame(width: 56, height: 56)
@@ -134,7 +134,7 @@ struct PlaylistFocusView: View {
                     .foregroundStyle(Color.white)
             }
             .buttonStyle(.plain)
-            .accessibilityLabel(metronome.isPlaying ? "Pause" : "Play")
+            .accessibilityLabel(metronome.playbackState.canPause ? "Pause" : "Play")
 
             Button { model.playNext(items: entries, metronome: metronome) } label: {
                 HStack {

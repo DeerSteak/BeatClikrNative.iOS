@@ -45,6 +45,7 @@ final class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate
     }
 
     @Published private(set) var playbackState: PlaybackState = .idle
+    private var preparationID: UUID?
 
     var isPlaying: Bool {
         playbackState == .playing
@@ -145,7 +146,7 @@ final class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate
     // MARK: - Playback control
 
     func togglePlayPause() {
-        if isPlaying { stop() } else { start() }
+        if playbackState.canPause { stop() } else { start() }
     }
 
     func start() {
@@ -154,10 +155,25 @@ final class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate
             return
         }
 
+        let id = UUID()
+        preparationID = id
         playbackState = .preparing
+        audio.prepareForPlayback(mode: .polyrhythm) { [weak self] result in
+            guard let self, preparationID == id, playbackState == .preparing else { return }
+            preparationID = nil
+            finishStart(after: result)
+        }
+    }
+
+    private func finishStart(after preparation: Result<Void, Error>) {
+        if case .failure(is CancellationError) = preparation {
+            playbackState = .idle
+            return
+        }
         playheadResetID += 1
         resetCycleProgress()
         do {
+            try preparation.get()
             try audio.setupPolyrhythmAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
             try audio.startPolyrhythm(bpm: bpm, beats: beats, against: against)
             visualAnimator.start()
@@ -172,6 +188,7 @@ final class PolyrhythmViewModel: ObservableObject, PolyrhythmAudioEngineDelegate
     }
 
     func stop() {
+        preparationID = nil
         let wasPlaying = isPlaying
         playheadResetID += 1
         audio.stopPolyrhythm()

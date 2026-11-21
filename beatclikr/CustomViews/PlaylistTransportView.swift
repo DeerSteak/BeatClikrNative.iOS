@@ -89,13 +89,13 @@ struct PlaylistTransportView: View {
 
     private var playPauseButton: some View {
         Button {
-            if metronome.isPlaying {
+            if metronome.playbackState.canPause {
                 metronome.stop()
             } else {
                 onPlay?()
             }
         } label: {
-            Image(systemName: metronome.isPlaying ? ImageConstants.pause : ImageConstants.play)
+            Image(systemName: metronome.playbackState.canPause ? ImageConstants.pause : ImageConstants.play)
                 .font(.title2)
                 .fontWeight(.semibold)
                 .frame(width: 56, height: 56)
@@ -105,7 +105,7 @@ struct PlaylistTransportView: View {
                 )
                 .foregroundStyle(.white)
         }
-        .accessibilityLabel(metronome.isPlaying ? "Pause" : "Play")
+        .accessibilityLabel(metronome.playbackState.canPause ? "Pause" : "Play")
     }
 
     private var nowPlayingLabel: some View {

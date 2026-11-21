@@ -102,6 +102,7 @@ final class LockScreenPlaybackController: LockScreenPlaybackControlling {
 final class PlaybackCoordinator: AudioPlaybackService, AudioPlaybackLifecycleDelegate {
     private let audio: any AudioPlaybackService
     private let lockScreenControls: (any LockScreenPlaybackControlling)?
+    private var pendingPreparation: (id: UUID, mode: PlaybackMode, completion: @MainActor (Result<Void, Error>) -> Void)?
 
     private(set) var activeMode: PlaybackMode?
     var onMetronomeStopped: (() -> Void)?
@@ -136,6 +137,23 @@ final class PlaybackCoordinator: AudioPlaybackService, AudioPlaybackLifecycleDel
         }
     }
 
+    func prepareForPlayback(mode: PlaybackMode, completion: @escaping @MainActor (Result<Void, Error>) -> Void) {
+        cancelPreparation()
+        let id = UUID()
+        pendingPreparation = (id, mode, completion)
+        audio.prepareForPlayback(mode: mode) { [weak self] result in
+            guard let self, let pending = pendingPreparation, pending.id == id else { return }
+            pendingPreparation = nil
+            pending.completion(result)
+        }
+    }
+
+    private func cancelPreparation() {
+        let completion = pendingPreparation?.completion
+        pendingPreparation = nil
+        completion?(.failure(CancellationError()))
+    }
+
     func setupMetronomeAudio(beatName: String, rhythmName: String) throws {
         try audio.setupMetronomeAudio(beatName: beatName, rhythmName: rhythmName)
     }
@@ -162,6 +180,7 @@ final class PlaybackCoordinator: AudioPlaybackService, AudioPlaybackLifecycleDel
     }
 
     private func stopMetronome(notifyOwner: Bool) {
+        if pendingPreparation?.mode == .metronome { cancelPreparation() }
         audio.stopMetronome()
         if activeMode == .metronome {
             activeMode = nil
@@ -194,6 +213,7 @@ final class PlaybackCoordinator: AudioPlaybackService, AudioPlaybackLifecycleDel
     }
 
     private func stopPolyrhythm(notifyOwner: Bool) {
+        if pendingPreparation?.mode == .polyrhythm { cancelPreparation() }
         audio.stopPolyrhythm()
         if activeMode == .polyrhythm {
             activeMode = nil
@@ -205,6 +225,7 @@ final class PlaybackCoordinator: AudioPlaybackService, AudioPlaybackLifecycleDel
     }
 
     func stopAll() {
+        cancelPreparation()
         switch activeMode {
         case .metronome:
             stopMetronome(notifyOwner: true)
@@ -227,6 +248,7 @@ final class PlaybackCoordinator: AudioPlaybackService, AudioPlaybackLifecycleDel
     }
 
     func audioPlaybackWasInterrupted() {
+        cancelPreparation()
         let interruptedMode = activeMode
         activeMode = nil
         lockScreenControls?.playbackStopped()

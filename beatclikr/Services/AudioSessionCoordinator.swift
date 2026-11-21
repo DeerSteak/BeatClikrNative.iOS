@@ -41,6 +41,7 @@ struct AudioSessionPolicy {
 final class AudioSessionCoordinator {
     private let logger = Logger(subsystem: Bundle.main.bundleIdentifier ?? "BeatClikr", category: "AudioSession")
     private let session: AVAudioSession
+    private let activationQueue = DispatchQueue(label: "com.bfunkstudios.beatclikr.audio-session")
     private let notificationCenter: NotificationCenter
     private var sessionObservers: [AudioNotificationToken] = []
     private var engineObservers: [AudioNotificationToken] = []
@@ -62,11 +63,21 @@ final class AudioSessionCoordinator {
         }
     }
 
-    func activate() throws {
-        let policy = AudioSessionPolicy.mixedPlayback
-        try session.setCategory(policy.category, mode: policy.mode, options: policy.options)
-        try session.setActive(true)
-        logCurrentOutput(reason: "activated")
+    func activate(completion: @escaping @MainActor @Sendable (Result<Void, Error>) -> Void) {
+        activationQueue.async { [weak self, session] in
+            // Keep the blocking API off the main thread on older OS versions too.
+            let result = Result {
+                let policy = AudioSessionPolicy.mixedPlayback
+                try session.setCategory(policy.category, mode: policy.mode, options: policy.options)
+                try session.setActive(true)
+            }
+            Task { @MainActor [weak self] in
+                if case .success = result {
+                    self?.logCurrentOutput(reason: "activated")
+                }
+                completion(result)
+            }
+        }
     }
 
     func observeEngines(_ engines: [AVAudioEngine]) {

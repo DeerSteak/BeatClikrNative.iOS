@@ -11,6 +11,10 @@ enum PlaybackState: Equatable {
     case playing
     case interrupted
     case failed(PlaybackError)
+
+    var canPause: Bool {
+        self == .playing || self == .preparing
+    }
 }
 
 enum PlaybackError: Error, Equatable, LocalizedError {

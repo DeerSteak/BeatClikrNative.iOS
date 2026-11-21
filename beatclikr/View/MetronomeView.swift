@@ -129,10 +129,10 @@ struct MetronomeView: View {
                 }
 
                 // Play / Pause
-                Button(action: togglePlayPause) {
+                Button(action: model.togglePlayPause) {
                     Label(
-                        model.isPlaying ? String(localized: "Pause") : String(localized: "Play"),
-                        systemImage: model.isPlaying ? ImageConstants.pause : ImageConstants.play,
+                        model.playbackState.canPause ? String(localized: "Pause") : String(localized: "Play"),
+                        systemImage: model.playbackState.canPause ? ImageConstants.pause : ImageConstants.play,
                     )
                     .font(.title2.bold())
                     .frame(maxWidth: .infinity)
@@ -161,14 +161,6 @@ struct MetronomeView: View {
             }
         } message: {
             Text(model.playbackError?.localizedDescription ?? "")
-        }
-    }
-
-    private func togglePlayPause() {
-        if model.isPlaying {
-            model.stop()
-        } else {
-            model.start()
         }
     }
 }

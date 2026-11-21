@@ -15,6 +15,7 @@ protocol AudioPlaybackService: AnyObject {
     var polyrhythmDelegate: PolyrhythmAudioEngineDelegate? { get set }
     var lifecycleDelegate: AudioPlaybackLifecycleDelegate? { get set }
 
+    func prepareForPlayback(mode: PlaybackMode, completion: @escaping @MainActor (Result<Void, Error>) -> Void)
     func setupMetronomeAudio(beatName: String, rhythmName: String) throws
     func setupPolyrhythmAudio(beatName: String, rhythmName: String) throws
     func setSoundBank(_ bank: SoundBank)
@@ -59,6 +60,8 @@ final class AudioPlayerService: AudioPlaybackService, MetronomeAudioEngineDelega
     }()
 
     private var isAudioSessionReady = false
+    private var activationID: UUID?
+    private var activationCompletions: [@MainActor (Result<Void, Error>) -> Void] = []
     private var isMetronomeEngineReady = false
     private var isPolyrhythmEngineReady = false
 
@@ -76,15 +79,36 @@ final class AudioPlayerService: AudioPlaybackService, MetronomeAudioEngineDelega
 
     // MARK: - Public API
 
+    func prepareForPlayback(mode _: PlaybackMode, completion: @escaping @MainActor (Result<Void, Error>) -> Void) {
+        if isAudioSessionReady {
+            completion(.success(()))
+            return
+        }
+        activationCompletions.append(completion)
+        guard activationID == nil else { return }
+        let id = UUID()
+        activationID = id
+        sessionCoordinator.activate { [weak self] result in
+            guard let self, activationID == id else { return }
+            if case let .failure(error) = result {
+                logger.error("Audio session setup failed: \(error, privacy: .public)")
+                finishActivation(.failure(PlaybackError.audioSessionUnavailable))
+            } else {
+                isAudioSessionReady = true
+                finishActivation(.success(()))
+            }
+        }
+    }
+
     func setupMetronomeAudio(beatName: String, rhythmName: String) throws {
-        try prepareAudioSession()
+        guard isAudioSessionReady else { throw PlaybackError.audioSessionUnavailable }
         try prepareMetronomeEngine()
         reloadSoundsIfNeeded()
         try metronomeEngine.loadSounds(beatName: beatName, rhythmName: rhythmName, from: sounds)
     }
 
     func setupPolyrhythmAudio(beatName: String, rhythmName: String) throws {
-        try prepareAudioSession()
+        guard isAudioSessionReady else { throw PlaybackError.audioSessionUnavailable }
         try preparePolyrhythmEngine()
         reloadSoundsIfNeeded()
         try polyrhythmEngine.loadSounds(beatName: beatName, rhythmName: rhythmName, from: sounds)
@@ -157,14 +181,12 @@ final class AudioPlayerService: AudioPlaybackService, MetronomeAudioEngineDelega
         setSoundBank(UserDefaultsService.instance.soundBank)
     }
 
-    private func prepareAudioSession() throws {
-        guard !isAudioSessionReady else { return }
-        do {
-            try sessionCoordinator.activate()
-            isAudioSessionReady = true
-        } catch {
-            logger.error("Audio session setup failed: \(error, privacy: .public)")
-            throw PlaybackError.audioSessionUnavailable
+    private func finishActivation(_ result: Result<Void, Error>) {
+        activationID = nil
+        let completions = activationCompletions
+        activationCompletions.removeAll()
+        for completion in completions {
+            completion(result)
         }
     }
 
@@ -213,5 +235,6 @@ final class AudioPlayerService: AudioPlaybackService, MetronomeAudioEngineDelega
                 polyrhythmEngine.notificationEngine,
             ])
         }
+        finishActivation(.failure(CancellationError()))
     }
 }

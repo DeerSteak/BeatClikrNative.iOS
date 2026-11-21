@@ -40,10 +40,28 @@ final class TestAudioPlaybackService: AudioPlaybackService {
 
     var setupError: PlaybackError?
     var startError: PlaybackError?
+    var deferPreparation = false
+    private var preparationCompletions: [@MainActor (Result<Void, Error>) -> Void] = []
     private(set) var metronomeStartCount = 0
     private(set) var polyrhythmStartCount = 0
     private(set) var metronomeStopCount = 0
     private(set) var polyrhythmStopCount = 0
+
+    func prepareForPlayback(mode _: PlaybackMode, completion: @escaping @MainActor (Result<Void, Error>) -> Void) {
+        if deferPreparation {
+            preparationCompletions.append(completion)
+        } else {
+            completion(.success(()))
+        }
+    }
+
+    func finishPreparation(_ result: Result<Void, Error> = .success(())) {
+        let completions = preparationCompletions
+        preparationCompletions.removeAll()
+        for completion in completions {
+            completion(result)
+        }
+    }
 
     func setupMetronomeAudio(beatName _: String, rhythmName _: String) throws {
         if let setupError { throw setupError }
@@ -107,6 +125,24 @@ final class TestLockScreenPlaybackController: LockScreenPlaybackControlling {
 
 @MainActor
 final class PlaybackCoordinatorTests: XCTestCase {
+    func testOnlyLatestPlaybackModeStartsAfterSessionPreparation() {
+        let audio = TestAudioPlaybackService()
+        audio.deferPreparation = true
+        let coordinator = PlaybackCoordinator(audio: audio)
+        let metronome = MetronomePlaybackViewModel(audio: coordinator)
+        let polyrhythm = PolyrhythmViewModel(audio: coordinator)
+
+        metronome.start()
+        polyrhythm.start()
+        XCTAssertEqual(metronome.playbackState, .idle)
+        XCTAssertEqual(polyrhythm.playbackState, .preparing)
+
+        audio.finishPreparation()
+        XCTAssertEqual(audio.metronomeStartCount, 0)
+        XCTAssertEqual(audio.polyrhythmStartCount, 1)
+        XCTAssertEqual(coordinator.activeMode, .polyrhythm)
+    }
+
     func testStopAllDoesNotPublishIdleStateWhenNothingIsPlaying() {
         let audio = TestAudioPlaybackService()
         let coordinator = PlaybackCoordinator(audio: audio)

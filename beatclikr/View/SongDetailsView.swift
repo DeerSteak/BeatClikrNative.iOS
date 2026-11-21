@@ -5,6 +5,7 @@
 //  Created by Ben Funk on 8/5/23.
 //
 
+import SwiftData
 import SwiftUI
 
 struct SongDetailsView: View {

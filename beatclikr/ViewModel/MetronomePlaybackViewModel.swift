@@ -41,6 +41,7 @@ final class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDe
     @Published var iconScale: CGFloat = MetronomeConstants.iconScaleMin
     @Published var beatPulse: Double = 0
     @Published private(set) var playbackState: PlaybackState = .idle
+    private var preparationID: UUID?
     @Published var currentSongTitle: String? = nil
 
     var isPlaying: Bool {
@@ -264,12 +265,26 @@ final class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDe
     }
 
     func togglePlayPause() {
-        if isPlaying { stop() } else { start() }
+        if playbackState.canPause { stop() } else { start() }
     }
 
     func start() {
-        beginEffectsSession()
+        let id = UUID()
+        preparationID = id
         playbackState = .preparing
+        audio.prepareForPlayback(mode: .metronome) { [weak self] result in
+            guard let self, preparationID == id, playbackState == .preparing else { return }
+            preparationID = nil
+            finishStart(after: result)
+        }
+    }
+
+    private func finishStart(after preparation: Result<Void, Error>) {
+        if case .failure(is CancellationError) = preparation {
+            playbackState = .idle
+            return
+        }
+        beginEffectsSession()
         if clickerType == .metronome {
             song = Song.metronomeSong()
             song.beatsPerMinute = beatsPerMinute
@@ -282,6 +297,7 @@ final class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDe
         let groove = song.groove ?? selectedGroove
         audio.setRamp(enabled: rampEnabled && clickerType == .metronome, increment: rampIncrement, interval: rampInterval)
         do {
+            try preparation.get()
             try audio.setupMetronomeAudio(beatName: beat.rawValue, rhythmName: rhythm.rawValue)
             try audio.startMetronome(bpm: bpm, subdivisions: groove.subdivisions, accentPattern: computeAccentPattern())
             vibration.prepare()
@@ -297,6 +313,7 @@ final class MetronomePlaybackViewModel: ObservableObject, MetronomeAudioEngineDe
     }
 
     func stop() {
+        preparationID = nil
         let wasPlaying = isPlaying
         audio.stopMetronome()
         visualAnimator.stop()

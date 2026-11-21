@@ -86,6 +86,28 @@ final class MetronomePlaybackViewModelTests: XCTestCase {
 
     // MARK: - Playback State Tests
 
+    func testPauseWhilePreparingPreventsLatePlayback() {
+        audio.deferPreparation = true
+        viewModel.start()
+        XCTAssertEqual(viewModel.playbackState, .preparing)
+        XCTAssertEqual(audio.metronomeStartCount, 0)
+
+        viewModel.togglePlayPause()
+        audio.finishPreparation()
+
+        XCTAssertEqual(viewModel.playbackState, .idle)
+        XCTAssertEqual(audio.metronomeStartCount, 0)
+    }
+
+    func testSessionPreparationFailureUsesPlaybackError() {
+        audio.deferPreparation = true
+        viewModel.start()
+        audio.finishPreparation(.failure(PlaybackError.audioSessionUnavailable))
+
+        XCTAssertEqual(viewModel.playbackState, .failed(.audioSessionUnavailable))
+        XCTAssertEqual(audio.metronomeStartCount, 0)
+    }
+
     func testInitialPlaybackState() {
         XCTAssertFalse(viewModel.isPlaying, "Metronome should not be playing initially")
         XCTAssertEqual(viewModel.playbackState, .idle)
