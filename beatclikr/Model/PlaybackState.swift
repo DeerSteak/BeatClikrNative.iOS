@@ -16,6 +16,7 @@ enum PlaybackState: Equatable {
 enum PlaybackError: Error, Equatable, LocalizedError {
     case audioSessionUnavailable
     case engineStartFailed
+    case audioFormatMismatch
     case soundNotFound(String)
     case soundUnreadable(String)
     case soundConversionFailed(String)
@@ -27,6 +28,8 @@ enum PlaybackError: Error, Equatable, LocalizedError {
             String(localized: "BeatClikr couldn't access the audio system.")
         case .engineStartFailed:
             String(localized: "BeatClikr couldn't start the audio engine.")
+        case .audioFormatMismatch:
+            String(localized: "BeatClikr couldn't match the current audio output format.")
         case let .soundNotFound(name):
             String(localized: "The selected sound “\(name)” is missing.")
         case let .soundUnreadable(name):

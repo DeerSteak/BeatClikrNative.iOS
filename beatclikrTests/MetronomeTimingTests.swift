@@ -201,6 +201,123 @@ final class AudioBufferClipCacheTests: XCTestCase {
 }
 
 final class AbsoluteAudioTimelineTests: XCTestCase {
+    func testCrossRateContractReproducesMeasuredTempoDefect() throws {
+        let measured120 = try XCTUnwrap(AudioRenderFormatContract.effectiveBPM(
+            requestedBPM: 120,
+            planningSampleRate: 48000,
+            consumptionSampleRate: 44100,
+        ))
+        let measured137 = try XCTUnwrap(AudioRenderFormatContract.effectiveBPM(
+            requestedBPM: 137,
+            planningSampleRate: 48000,
+            consumptionSampleRate: 44100,
+        ))
+
+        XCTAssertEqual(measured120, 110.25, accuracy: 0.001)
+        XCTAssertEqual(measured137, 125.86875, accuracy: 0.001)
+    }
+
+    func testRenderFormatContractRequiresOnePositiveSampleRate() {
+        XCTAssertTrue(AudioRenderFormatContract.ratesMatch(44100, 44100))
+        XCTAssertTrue(AudioRenderFormatContract.ratesMatch(48000, 48000))
+        XCTAssertFalse(AudioRenderFormatContract.ratesMatch(48000, 44100))
+        XCTAssertFalse(AudioRenderFormatContract.ratesMatch(0, 0))
+    }
+
+    func testRenderFormatUsesActualOutputRateAndChannels() throws {
+        let output = try XCTUnwrap(AVAudioFormat(
+            standardFormatWithSampleRate: 44100,
+            channels: 2,
+        ))
+        let render = try XCTUnwrap(AudioRenderFormatContract.standardRenderFormat(outputFormat: output))
+
+        XCTAssertEqual(render.sampleRate, 44100)
+        XCTAssertEqual(render.channelCount, 2)
+        XCTAssertTrue(render.isStandard)
+    }
+
+    func testExplicitPlayerConnectionUsesSelectedRenderRate() throws {
+        let engine = AVAudioEngine()
+        let player = AVAudioPlayerNode()
+        let output = engine.outputNode.inputFormat(forBus: 0)
+        let render = try XCTUnwrap(AudioRenderFormatContract.standardRenderFormat(outputFormat: output))
+
+        engine.attach(player)
+        engine.connect(player, to: engine.mainMixerNode, format: render)
+
+        XCTAssertTrue(AudioRenderFormatContract.ratesMatch(
+            player.outputFormat(forBus: 0).sampleRate,
+            render.sampleRate,
+        ))
+        XCTAssertEqual(player.outputFormat(forBus: 0).channelCount, render.channelCount)
+    }
+
+    func testRenderRateValidationRejectsEveryCrossRateBoundary() {
+        let valid = AudioRenderFormatSnapshot(
+            sessionSampleRate: 44100,
+            outputSampleRate: 48000,
+            mixerSampleRate: 48000,
+            playerSampleRate: 48000,
+            bufferSampleRate: 48000,
+        )
+        let wrongPlayer = AudioRenderFormatSnapshot(
+            sessionSampleRate: 44100,
+            outputSampleRate: 48000,
+            mixerSampleRate: 48000,
+            playerSampleRate: 44100,
+            bufferSampleRate: 48000,
+        )
+        let wrongBuffer = AudioRenderFormatSnapshot(
+            sessionSampleRate: 44100,
+            outputSampleRate: 48000,
+            mixerSampleRate: 48000,
+            playerSampleRate: 48000,
+            bufferSampleRate: 44100,
+        )
+
+        XCTAssertTrue(AudioRenderFormatContract.renderRatesMatch(valid))
+        XCTAssertFalse(AudioRenderFormatContract.renderRatesMatch(wrongPlayer))
+        XCTAssertFalse(AudioRenderFormatContract.renderRatesMatch(wrongBuffer))
+    }
+
+    func testRollingBlocksPreserveTempoAtEveryQualifiedRate() throws {
+        for sampleRate in [44100.0, 48000.0] {
+            let standard = try MetronomeAudioBlockPlan(
+                blockIndex: 100,
+                sampleRate: sampleRate,
+                bpm: 120,
+                subdivisions: 1,
+                accentPattern: nil,
+                alternateSixteenth: false,
+            )
+            let triplet = try MetronomeAudioBlockPlan(
+                blockIndex: 100,
+                sampleRate: sampleRate,
+                bpm: 137,
+                subdivisions: 3,
+                accentPattern: nil,
+                alternateSixteenth: false,
+            )
+
+            XCTAssertEqual(Double(standard.frameCount) / sampleRate, 0.5, accuracy: 1 / sampleRate)
+            XCTAssertEqual(
+                Double(triplet.frameCount) / sampleRate,
+                60 / 137,
+                accuracy: 1 / sampleRate,
+            )
+        }
+    }
+
+    func testOutputFormatChangesInvalidateTheRenderContract() throws {
+        let old = try XCTUnwrap(AVAudioFormat(standardFormatWithSampleRate: 48000, channels: 2))
+        let newRate = try XCTUnwrap(AVAudioFormat(standardFormatWithSampleRate: 44100, channels: 2))
+        let newChannels = try XCTUnwrap(AVAudioFormat(standardFormatWithSampleRate: 48000, channels: 1))
+
+        XCTAssertFalse(AudioRenderFormatContract.formatChanged(from: old, to: old))
+        XCTAssertTrue(AudioRenderFormatContract.formatChanged(from: old, to: newRate))
+        XCTAssertTrue(AudioRenderFormatContract.formatChanged(from: old, to: newChannels))
+    }
+
     func testAwkwardTempoStaysWithinHalfSampleForMillionsOfEvents() throws {
         let timeline = try AbsoluteAudioTimeline(sampleRate: 44100, intervalsPerMinute: 137 * 3)
 

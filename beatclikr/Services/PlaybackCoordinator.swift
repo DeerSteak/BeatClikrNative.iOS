@@ -57,6 +57,7 @@ final class LockScreenPlaybackController: LockScreenPlaybackControlling {
             MPMediaItemPropertyTitle: "BeatClikr",
             MPMediaItemPropertyArtist: modeName,
             MPNowPlayingInfoPropertyIsLiveStream: true,
+            MPNowPlayingInfoPropertyMediaType: MPNowPlayingInfoMediaType.audio.rawValue,
             MPNowPlayingInfoPropertyPlaybackRate: 1,
         ]
         if let icon = UIImage(named: "appicondisplay") {
