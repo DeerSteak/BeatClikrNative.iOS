@@ -277,10 +277,7 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
             subdivisions: currentSubdivisions,
             accentPattern: accentPattern,
             alternateSixteenth: useAlternateSixteenth,
-        ) else {
-            return
-        }
-        guard plan.frameCount <= slot.buffer.frameCapacity else {
+        ), plan.frameCount <= slot.buffer.frameCapacity else {
             return
         }
 
@@ -333,8 +330,7 @@ class ScheduledMetronomeEngine: MetronomeAudioEngine {
         }
 
         let outputFormat = engine.mainMixerNode.outputFormat(forBus: 0)
-        guard sourceBuffer.format != outputFormat else { return sourceBuffer }
-        guard let converter = AVAudioConverter(from: sourceBuffer.format, to: outputFormat) else { return sourceBuffer }
+        guard sourceBuffer.format != outputFormat, let converter = AVAudioConverter(from: sourceBuffer.format, to: outputFormat) else { return sourceBuffer }
 
         let convertedFrameCapacity = AVAudioFrameCount(
             ceil(Double(sourceBuffer.frameLength) * outputFormat.sampleRate / sourceBuffer.format.sampleRate),
