@@ -59,7 +59,7 @@ enum AudioRenderFormatContract {
         }
         return AVAudioFormat(
             standardFormatWithSampleRate: outputFormat.sampleRate,
-            channels: outputFormat.channelCount,
+            channels: min(outputFormat.channelCount, 2),
         )
     }
 

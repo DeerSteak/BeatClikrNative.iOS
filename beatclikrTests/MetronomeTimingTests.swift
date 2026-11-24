@@ -224,7 +224,7 @@ final class AbsoluteAudioTimelineTests: XCTestCase {
         XCTAssertFalse(AudioRenderFormatContract.ratesMatch(0, 0))
     }
 
-    func testRenderFormatUsesActualOutputRateAndChannels() throws {
+    func testRenderFormatPreservesStereoOutputRateAndChannels() throws {
         let output = try XCTUnwrap(AVAudioFormat(
             standardFormatWithSampleRate: 44100,
             channels: 2,
@@ -232,6 +232,17 @@ final class AbsoluteAudioTimelineTests: XCTestCase {
         let render = try XCTUnwrap(AudioRenderFormatContract.standardRenderFormat(outputFormat: output))
 
         XCTAssertEqual(render.sampleRate, 44100)
+        XCTAssertEqual(render.channelCount, 2)
+        XCTAssertTrue(render.isStandard)
+    }
+
+    func testRenderFormatUsesStereoPlayersForFourChannelOutput() throws {
+        let layout = try XCTUnwrap(AVAudioChannelLayout(layoutTag: kAudioChannelLayoutTag_DiscreteInOrder | 4))
+        let output = AVAudioFormat(standardFormatWithSampleRate: 48000, channelLayout: layout)
+        XCTAssertEqual(output.channelCount, 4)
+
+        let render = try XCTUnwrap(AudioRenderFormatContract.standardRenderFormat(outputFormat: output))
+        XCTAssertEqual(render.sampleRate, 48000)
         XCTAssertEqual(render.channelCount, 2)
         XCTAssertTrue(render.isStandard)
     }
