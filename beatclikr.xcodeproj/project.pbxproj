@@ -885,7 +885,7 @@
 				CODE_SIGN_ENTITLEMENTS = beatclikr/beatclikrDebug.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 35;
 				DEVELOPMENT_ASSET_PATHS = "\"beatclikr/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -904,7 +904,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.2.2;
+				MARKETING_VERSION = 4.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bfunkstudios.beatclikr;
 				PRODUCT_NAME = BeatClikr;
 				PROVISIONING_PROFILE_SPECIFIER = "";
@@ -926,7 +926,7 @@
 				CODE_SIGN_ENTITLEMENTS = beatclikr/beatclikr.entitlements;
 				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 34;
+				CURRENT_PROJECT_VERSION = 35;
 				DEVELOPMENT_ASSET_PATHS = "\"beatclikr/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -945,7 +945,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 4.2.2;
+				MARKETING_VERSION = 4.2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.bfunkstudios.beatclikr;
 				PRODUCT_NAME = BeatClikr;
 				PROVISIONING_PROFILE_SPECIFIER = "";
